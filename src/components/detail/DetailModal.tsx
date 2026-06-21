@@ -1,11 +1,13 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDetailStore } from '@/store/detailStore';
+import { useNavigate } from 'react-router-dom';
 import type {
   FrontendEvent,
   FrontendPerson,
   FrontendDynasty,
   FrontendKnowledge,
 } from '@/services/api';
+import { fetchTimelineEvents, fetchAllPersons, fetchDynasties, fetchKnowledgeCards } from '@/services/api';
 
 // ──────────────────────────────────────────────
 // 各类型详情子组件
@@ -25,9 +27,9 @@ function EventDetail({ data }: { data: FrontendEvent }) {
           {data.category}
         </span>
       </div>
-      <p className="text-ink-700 leading-relaxed">{data.description}</p>
+      <p className="text-ink-800 leading-relaxed">{data.description}</p>
       {data.fulltext && (
-        <p className="text-sm text-ink-500 leading-relaxed border-l-2 border-accent/30 pl-3">
+        <p className="text-sm text-ink-700 leading-relaxed border-l-2 border-accent/30 pl-3">
           {data.fulltext}
         </p>
       )}
@@ -64,12 +66,12 @@ function PersonDetail({ data }: { data: FrontendPerson }) {
         )}
       </div>
       {data.quote && (
-        <blockquote className="text-lg font-medium text-ink-700 italic border-l-2 border-accent/30 pl-3">
+        <blockquote className="text-lg font-medium text-ink-800 italic border-l-2 border-accent/30 pl-3">
           "{data.quote}"
         </blockquote>
       )}
       {data.bio && (
-        <p className="text-ink-600 leading-relaxed">{data.bio}</p>
+        <p className="text-ink-800 leading-relaxed">{data.bio}</p>
       )}
       {data.roles.length > 0 && (
         <div className="flex flex-wrap gap-2">
@@ -113,32 +115,32 @@ function DynastyDetail({ data }: { data: FrontendDynasty }) {
         </p>
       )}
       {data.description && (
-        <p className="text-ink-600 leading-relaxed">{data.description}</p>
+        <p className="text-ink-800 leading-relaxed">{data.description}</p>
       )}
       <div className="grid grid-cols-2 gap-4 text-sm">
         {data.founder && (
           <div>
-            <span className="text-ink-400">建立者：</span>
-            <span className="text-ink-700 font-medium">{data.founder}</span>
+            <span className="text-ink-500">建立者：</span>
+            <span className="text-ink-800 font-medium">{data.founder}</span>
           </div>
         )}
         <div>
-          <span className="text-ink-400">都城：</span>
-          <span className="text-ink-700 font-medium">{data.capital}</span>
+          <span className="text-ink-500">都城：</span>
+          <span className="text-ink-800 font-medium">{data.capital}</span>
         </div>
         <div>
-          <span className="text-ink-400">时长：</span>
-          <span className="text-ink-700 font-medium">{data.duration}</span>
+          <span className="text-ink-500">时长：</span>
+          <span className="text-ink-800 font-medium">{data.duration}</span>
         </div>
         {data.fallReason && (
           <div>
-            <span className="text-ink-400">灭亡原因：</span>
-            <span className="text-ink-700 font-medium">{data.fallReason}</span>
+            <span className="text-ink-500">灭亡原因：</span>
+            <span className="text-ink-800 font-medium">{data.fallReason}</span>
           </div>
         )}
       </div>
       {data.legacy && (
-        <p className="text-sm text-ink-500 border-t border-ink-100 pt-3">
+        <p className="text-sm text-ink-700 border-t border-ink-100 pt-3">
           <span className="font-semibold text-ink-700">影响：</span>{data.legacy}
         </p>
       )}
@@ -162,10 +164,10 @@ function KnowledgeDetail({ data }: { data: FrontendKnowledge }) {
         )}
       </div>
       {data.description && (
-        <p className="text-ink-700 leading-relaxed">{data.description}</p>
+        <p className="text-ink-800 leading-relaxed">{data.description}</p>
       )}
       {data.fulltext && (
-        <p className="text-sm text-ink-500 leading-relaxed border-l-2 border-accent/30 pl-3">
+        <p className="text-sm text-ink-700 leading-relaxed border-l-2 border-accent/30 pl-3">
           {data.fulltext}
         </p>
       )}
@@ -178,6 +180,119 @@ function KnowledgeDetail({ data }: { data: FrontendKnowledge }) {
             <span key={tag} className="text-xs px-2 py-1 bg-ink-50 rounded-full text-ink-400">
               #{tag}
             </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ──────────────────────────────────────────────
+// 相关推荐组件
+// ──────────────────────────────────────────────
+
+interface RecommendationItem {
+  id: number;
+  title: string;
+}
+
+function Recommendations({ type, data }: { type: string | null; data: FrontendEvent | FrontendPerson | FrontendDynasty | FrontendKnowledge | null }) {
+  const navigate = useNavigate();
+  const [recommendations, setRecommendations] = useState<RecommendationItem[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!type || !data) return;
+    setLoading(true);
+
+    // 从当前数据类型推断推荐来源
+    const fetchRelated = async () => {
+      try {
+        let allItems: { id: number; title: string; dynasty?: string }[] = [];
+        let filterField = '';
+        let filterValue = '';
+
+        if (type === 'event') {
+          const eventData = data as FrontendEvent;
+          const allEvents = await fetchTimelineEvents();
+          allItems = allEvents.map((e: any) => ({ id: Number(e.id), title: e.title, dynasty: e.dynasty }));
+          // 推荐同类别或同朝代的其他事件
+          if (eventData.category) {
+            filterField = 'category';
+            filterValue = eventData.category;
+          }
+        } else if (type === 'person') {
+          const personData = data as FrontendPerson;
+          const allPersons = await fetchAllPersons();
+          allItems = allPersons.map((p: any) => ({ id: Number(p.id), title: p.name, dynasty: p.dynasty }));
+          if (personData.dynasty) {
+            filterField = 'dynasty';
+            filterValue = personData.dynasty;
+          }
+        } else if (type === 'dynasty') {
+          const dynastyData = data as FrontendDynasty;
+          const allDynasties = await fetchDynasties();
+          allItems = allDynasties.map((d: any) => ({ id: Number(d.id), title: d.name }));
+        } else if (type === 'knowledge') {
+          const knowledgeData = data as FrontendKnowledge;
+          const allKnowledge = await fetchKnowledgeCards();
+          allItems = allKnowledge.map((k: any) => ({ id: Number(k.id), title: k.title }));
+        }
+
+        // 过滤掉当前项，如果有筛选条件则只保留匹配的
+        let filtered = allItems.filter((item) => {
+          if (!filterField) return true;
+          return item[filterField as keyof typeof item] === filterValue;
+        });
+
+        // 排除当前项
+        const currentId = data.id ? Number(data.id) : 0;
+        filtered = filtered.filter((item) => item.id !== currentId);
+
+        // 取前 4 个
+        setRecommendations(filtered.slice(0, 4));
+      } catch {
+        // 静默失败
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRelated();
+  }, [type, data]);
+
+  if (recommendations.length === 0) return null;
+
+  const handleNavigate = (id: number) => {
+    navigate(`/${type}?id=${id}`);
+    // 同时关闭弹窗
+    // 注意：这里需要调用 closeDetail，但由于 navigate 会触发重新渲染，弹窗会自动关闭
+  };
+
+  return (
+    <div className="mt-6 pt-4 border-t border-ink-300 bg-ink-100/80 -mx-6 px-6 py-4 rounded-b-2xl">
+      <h4 className="text-sm font-bold text-ink-900 mb-3 flex items-center gap-2">
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+        相关推荐
+      </h4>
+      {loading ? (
+        <div className="flex gap-2 flex-wrap">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-8 w-24 bg-ink-100 rounded-full animate-pulse" />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {recommendations.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => handleNavigate(item.id)}
+              className="text-sm px-4 py-2 bg-accent text-white hover:bg-red-800 rounded-full font-medium transition-colors shadow-md"
+            >
+              {item.title}
+            </button>
           ))}
         </div>
       )}
@@ -318,6 +433,9 @@ export default function DetailModal() {
         {/* Body */}
         <div className="px-6 py-5 overflow-y-auto max-h-[calc(85vh-80px)]">
           {renderDetail()}
+
+          {/* 相关推荐 */}
+          <Recommendations type={type} data={data} />
         </div>
 
         {/* 移动端底部安全区 */}
