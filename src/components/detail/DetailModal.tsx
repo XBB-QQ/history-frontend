@@ -189,6 +189,43 @@ function KnowledgeDetail({ data }: { data: FrontendKnowledge }) {
 // 主弹窗组件
 // ──────────────────────────────────────────────
 
+/**
+ * 移动端抽屉把手指示器
+ */
+function DrawerHandle() {
+  return (
+    <div className="flex justify-center pt-2 pb-1 md:hidden">
+      <div className="w-10 h-1 rounded-full bg-ink-300" />
+    </div>
+  );
+}
+
+/**
+ * 触摸滑动钩子
+ */
+function useSwipeDown(onSwipeDown: () => void) {
+  const touchStartY = useRef(0);
+  const touchEndY = useRef(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.changedTouches[0].screenY;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndY.current = e.changedTouches[0].screenY;
+  };
+
+  const handleTouchEnd = () => {
+    const diff = touchEndY.current - touchStartY.current;
+    if (diff > 80) {
+      // 向下滑动超过 80px → 关闭
+      onSwipeDown();
+    }
+  };
+
+  return { handleTouchStart, handleTouchMove, handleTouchEnd };
+}
+
 export default function DetailModal() {
   const { isOpen, type, data, closeDetail } = useDetailStore();
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -207,6 +244,9 @@ export default function DetailModal() {
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === overlayRef.current) closeDetail();
   };
+
+  // 触摸滑动关闭
+  const { handleTouchStart, handleTouchMove, handleTouchEnd } = useSwipeDown(closeDetail);
 
   if (!isOpen || !data) return null;
 
@@ -235,17 +275,29 @@ export default function DetailModal() {
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4 animate-fade-in"
+      className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4 animate-fade-in md:p-6"
       onClick={handleOverlayClick}
     >
-      <div className="bg-paper rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden shadow-2xl animate-slide-up">
+      {/* 桌面端：居中弹窗 | 移动端：底部抽屉 */}
+      <div
+        className="bg-paper rounded-t-2xl shadow-2xl w-full max-w-2xl overflow-hidden
+                   max-h-[90vh] md:max-h-[85vh] md:rounded-2xl
+                   fixed bottom-0 left-0 right-0 md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2
+                   animate-[drawerSlideUp_0.35s_ease-out_forwards] md:animate-slide-up"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* 移动端抽屉把手 */}
+        <DrawerHandle />
+
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-ink-200">
           <div className="flex items-center gap-3">
             <span className="text-sm px-2 py-0.5 bg-accent/10 rounded-full text-accent">
               {typeLabels[type] || type}
             </span>
-            <h2 className="text-xl font-bold">
+            <h2 className="text-xl font-bold truncate">
               {type === 'event' && (data as FrontendEvent)?.title}
               {type === 'person' && (data as FrontendPerson)?.name}
               {type === 'dynasty' && (data as FrontendDynasty)?.name}
@@ -254,7 +306,7 @@ export default function DetailModal() {
           </div>
           <button
             onClick={closeDetail}
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-ink-100 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-ink-100 transition-colors flex-shrink-0"
             aria-label="关闭"
           >
             <svg className="w-5 h-5 text-ink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -267,6 +319,9 @@ export default function DetailModal() {
         <div className="px-6 py-5 overflow-y-auto max-h-[calc(85vh-80px)]">
           {renderDetail()}
         </div>
+
+        {/* 移动端底部安全区 */}
+        <div className="h-6 md:hidden" />
       </div>
     </div>
   );
