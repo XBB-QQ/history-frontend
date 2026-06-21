@@ -6,6 +6,7 @@ import PersonsPage from './pages/PersonsPage';
 import KnowledgePage from './pages/KnowledgePage';
 import NotFoundPage from './pages/NotFoundPage';
 import Navbar from './components/layout/Navbar';
+import Footer from './components/layout/Footer';
 import DetailModal from './components/detail/DetailModal';
 import BackgroundLayer from './components/background/BackgroundLayer';
 
@@ -21,6 +22,7 @@ function App() {
         <Route path="/knowledge" element={<KnowledgePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      <Footer />
       <DetailModal />
     </BackgroundLayer>
   );
