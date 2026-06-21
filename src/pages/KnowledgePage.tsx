@@ -22,7 +22,7 @@ function KnowledgePage() {
 
   if (loading || cards.length === 0) {
     return (
-      <div className="min-h-screen bg-paper py-12 px-4">
+      <div className="min-h-screen bg-paper pt-20 pb-12 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <SectionHeader
             label="KNOWLEDGE"
@@ -37,7 +37,7 @@ function KnowledgePage() {
   }
 
   return (
-    <div className="min-h-screen bg-paper py-12 px-4">
+    <div className="min-h-screen bg-paper pt-20 pb-12 px-4">
       <div className="max-w-5xl mx-auto text-center">
         <SectionHeader
           label="KNOWLEDGE"

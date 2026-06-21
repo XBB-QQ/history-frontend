@@ -1,11 +1,12 @@
 import { create } from 'zustand';
+import type { FrontendEvent, FrontendPerson, FrontendDynasty, FrontendKnowledge, DetailType } from '@/services/api';
 
 interface DetailState {
   isOpen: boolean;
-  type: string | null;
-  id: string | null;
-  data: Record<string, unknown> | null;
-  openDetail: (type: string, id: string, data: Record<string, unknown>) => void;
+  type: DetailType | null;
+  id: number | null;
+  data: FrontendEvent | FrontendPerson | FrontendDynasty | FrontendKnowledge | null;
+  openDetail: (type: DetailType, id: number, data: FrontendEvent | FrontendPerson | FrontendDynasty | FrontendKnowledge) => void;
   closeDetail: () => void;
 }
 

@@ -1,3 +1,4 @@
+import { useDetailStore } from '@/store/detailStore';
 import type { EventItem } from '@/types';
 
 interface TimelineEventProps {
@@ -5,9 +6,12 @@ interface TimelineEventProps {
 }
 
 export default function TimelineEvent({ event }: TimelineEventProps) {
+  const openDetail = useDetailStore((s) => s.openDetail);
+
   return (
     <div
-      className="bg-white/60 backdrop-blur-sm rounded-xl p-6 border border-ink-200 hover:shadow-md transition-all duration-300"
+      className="bg-white/60 backdrop-blur-sm rounded-xl p-6 border border-ink-200 hover:shadow-md hover:border-accent/50 transition-all duration-300 cursor-pointer"
+      onClick={() => openDetail('event', event.id ? Number(event.id) : 0, event)}
     >
       <div className="flex items-start gap-4">
         <div className="flex-shrink-0 w-20 text-right">

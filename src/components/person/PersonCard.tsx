@@ -1,3 +1,4 @@
+import { useDetailStore } from '@/store/detailStore';
 import type { PersonItem } from '@/types';
 
 interface PersonCardProps {
@@ -5,8 +6,13 @@ interface PersonCardProps {
 }
 
 export default function PersonCard({ person }: PersonCardProps) {
+  const openDetail = useDetailStore((s) => s.openDetail);
+
   return (
-    <div className="bg-white/60 rounded-xl p-4 border border-ink-200 hover:border-accent transition-colors">
+    <div
+      className="bg-white/60 rounded-xl p-4 border border-ink-200 hover:border-accent hover:shadow-md transition-all duration-300 cursor-pointer"
+      onClick={() => openDetail('person', person.id ? Number(person.id) : 0, person)}
+    >
       <div className="text-2xl mb-2 text-center">&#128104;</div>
       <div className="text-sm font-bold text-center">{person.name}</div>
       {person.dynasty && (

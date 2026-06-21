@@ -460,3 +460,6 @@ export async function searchKnowledge(query: string): Promise<FrontendKnowledge[
   );
   return data.content.map(adaptKnowledge);
 }
+
+export type DetailType = 'event' | 'person' | 'dynasty' | 'knowledge';
+

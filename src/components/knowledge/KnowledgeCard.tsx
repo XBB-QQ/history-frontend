@@ -1,3 +1,4 @@
+import { useDetailStore } from '@/store/detailStore';
 import type { KnowledgeCardItem } from '@/types';
 
 interface KnowledgeCardProps {
@@ -5,8 +6,13 @@ interface KnowledgeCardProps {
 }
 
 export default function KnowledgeCard({ card }: KnowledgeCardProps) {
+  const openDetail = useDetailStore((s) => s.openDetail);
+
   return (
-    <div className="bg-white/60 backdrop-blur-sm rounded-xl p-6 border border-ink-200 hover:shadow-md transition-all duration-300">
+    <div
+      className="bg-white/60 backdrop-blur-sm rounded-xl p-6 border border-ink-200 hover:shadow-md hover:border-accent/50 transition-all duration-300 cursor-pointer"
+      onClick={() => openDetail('knowledge', card.id ? Number(card.id) : 0, card)}
+    >
       {card.startYear && (
         <span className="text-xs px-2 py-1 bg-accent/10 rounded-full text-accent">
           {card.startYear}年
