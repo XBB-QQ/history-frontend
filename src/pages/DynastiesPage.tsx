@@ -4,6 +4,7 @@ import type { DynastyItem } from '@/types';
 import { fetchDynasties } from '@/services/api';
 import SectionHeader from '@/components/common/SectionHeader';
 import DynastyGrid from '@/components/dynasty/DynastyGrid';
+import RevealOnScroll from '@/components/common/RevealOnScroll';
 
 function DynastiesPage() {
   const [dynasties, setDynasties] = useState<DynastyItem[]>([]);
@@ -24,13 +25,17 @@ function DynastiesPage() {
     return (
       <div className="min-h-screen bg-paper pt-20 pb-12 px-4">
         <div className="max-w-5xl mx-auto text-center">
-          <SectionHeader
-            label="DYNASTIES"
-            title="历代朝代"
-            description="纵观中国主要朝代，感受历史脉动"
-          />
+          <RevealOnScroll direction="fade">
+            <SectionHeader
+              label="DYNASTIES"
+              title="历代朝代"
+              description="纵观中国主要朝代，感受历史脉动"
+            />
+          </RevealOnScroll>
           <div className="text-ink-400 py-20">加载中...</div>
-          <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>
+          <RevealOnScroll direction="fade" delay={200}>
+            <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>
+          </RevealOnScroll>
         </div>
       </div>
     );
@@ -39,13 +44,19 @@ function DynastiesPage() {
   return (
     <div className="min-h-screen bg-paper pt-20 pb-12 px-4">
       <div className="max-w-5xl mx-auto text-center">
-        <SectionHeader
-          label="DYNASTIES"
-          title="历代朝代"
-          description="纵观中国主要朝代，感受历史脉动"
-        />
-        <DynastyGrid dynasties={dynasties} />
-        <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>
+        <RevealOnScroll direction="fade">
+          <SectionHeader
+            label="DYNASTIES"
+            title="历代朝代"
+            description="纵观中国主要朝代，感受历史脉动"
+          />
+        </RevealOnScroll>
+        <RevealOnScroll direction="up" delay={200}>
+          <DynastyGrid dynasties={dynasties} />
+        </RevealOnScroll>
+        <RevealOnScroll direction="fade" delay={400}>
+          <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>
+        </RevealOnScroll>
       </div>
     </div>
   );

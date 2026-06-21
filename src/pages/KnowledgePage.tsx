@@ -4,6 +4,7 @@ import type { KnowledgeCardItem } from '@/types';
 import { fetchKnowledgeCards } from '@/services/api';
 import SectionHeader from '@/components/common/SectionHeader';
 import KnowledgeGrid from '@/components/knowledge/KnowledgeGrid';
+import RevealOnScroll from '@/components/common/RevealOnScroll';
 
 function KnowledgePage() {
   const [cards, setCards] = useState<KnowledgeCardItem[]>([]);
@@ -24,13 +25,17 @@ function KnowledgePage() {
     return (
       <div className="min-h-screen bg-paper pt-20 pb-12 px-4">
         <div className="max-w-5xl mx-auto text-center">
-          <SectionHeader
-            label="KNOWLEDGE"
-            title="史海钩沉"
-            description="知识卡片，深入理解文明脉络"
-          />
+          <RevealOnScroll direction="fade">
+            <SectionHeader
+              label="KNOWLEDGE"
+              title="史海钩沉"
+              description="知识卡片，深入理解文明脉络"
+            />
+          </RevealOnScroll>
           <div className="text-ink-400 py-20">加载中...</div>
-          <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>
+          <RevealOnScroll direction="fade" delay={200}>
+            <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>
+          </RevealOnScroll>
         </div>
       </div>
     );
@@ -39,13 +44,19 @@ function KnowledgePage() {
   return (
     <div className="min-h-screen bg-paper pt-20 pb-12 px-4">
       <div className="max-w-5xl mx-auto text-center">
-        <SectionHeader
-          label="KNOWLEDGE"
-          title="史海钩沉"
-          description="知识卡片，深入理解文明脉络"
-        />
-        <KnowledgeGrid cards={cards} />
-        <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>
+        <RevealOnScroll direction="fade">
+          <SectionHeader
+            label="KNOWLEDGE"
+            title="史海钩沉"
+            description="知识卡片，深入理解文明脉络"
+          />
+        </RevealOnScroll>
+        <RevealOnScroll direction="up" delay={200}>
+          <KnowledgeGrid cards={cards} />
+        </RevealOnScroll>
+        <RevealOnScroll direction="fade" delay={400}>
+          <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>
+        </RevealOnScroll>
       </div>
     </div>
   );
