@@ -4,6 +4,7 @@ import type { PersonItem } from '@/types';
 import { fetchAllPersons } from '@/services/api';
 import SectionHeader from '@/components/common/SectionHeader';
 import PersonGrid from '@/components/person/PersonGrid';
+import { GridSkeleton } from '@/components/common/Skeleton';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 
 function PersonsPage() {
@@ -32,7 +33,7 @@ function PersonsPage() {
               description="五十位历史人物，各领风骚数百年"
             />
           </RevealOnScroll>
-          <div className="text-ink-400 py-20">加载中...</div>
+          <GridSkeleton count={8} />
           <RevealOnScroll direction="fade" delay={200}>
             <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>
           </RevealOnScroll>
@@ -52,7 +53,7 @@ function PersonsPage() {
           />
         </RevealOnScroll>
         <RevealOnScroll direction="up" delay={200}>
-          <PersonGrid persons={persons} />
+          {loading ? <GridSkeleton count={8} /> : <PersonGrid persons={persons} />}
         </RevealOnScroll>
         <RevealOnScroll direction="fade" delay={400}>
           <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>

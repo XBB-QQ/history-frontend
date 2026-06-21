@@ -4,6 +4,7 @@ import type { DynastyItem } from '@/types';
 import { fetchDynasties } from '@/services/api';
 import SectionHeader from '@/components/common/SectionHeader';
 import DynastyGrid from '@/components/dynasty/DynastyGrid';
+import { GridSkeleton } from '@/components/common/Skeleton';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 
 function DynastiesPage() {
@@ -32,7 +33,7 @@ function DynastiesPage() {
               description="纵观中国主要朝代，感受历史脉动"
             />
           </RevealOnScroll>
-          <div className="text-ink-400 py-20">加载中...</div>
+          <GridSkeleton count={8} />
           <RevealOnScroll direction="fade" delay={200}>
             <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>
           </RevealOnScroll>
@@ -52,7 +53,7 @@ function DynastiesPage() {
           />
         </RevealOnScroll>
         <RevealOnScroll direction="up" delay={200}>
-          <DynastyGrid dynasties={dynasties} />
+          {loading ? <GridSkeleton count={8} /> : <DynastyGrid dynasties={dynasties} />}
         </RevealOnScroll>
         <RevealOnScroll direction="fade" delay={400}>
           <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>

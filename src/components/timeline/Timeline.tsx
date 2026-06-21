@@ -1,5 +1,6 @@
 import type { EventItem } from '@/types';
 import TimelineEvent from './TimelineEvent';
+import { CardSkeleton } from '@/components/common/Skeleton';
 
 interface TimelineProps {
   events: EventItem[];
@@ -8,7 +9,7 @@ interface TimelineProps {
 
 export default function Timeline({ events, loading }: TimelineProps) {
   if (loading) {
-    return <div className="text-center py-20 text-ink-400">加载中...</div>;
+    return <CardSkeleton count={6} />;
   }
 
   if (events.length === 0) {

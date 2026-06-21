@@ -19,24 +19,24 @@ function EventDetail({ data }: { data: FrontendEvent }) {
       <div className="flex items-center gap-3">
         <span className="text-lg font-bold text-accent">{data.yearDisplay}</span>
         {data.dynasty && (
-          <span className="text-sm px-2 py-1 bg-ink-100 rounded-full text-ink-600">
+          <span className="text-sm px-2 py-1 bg-ink-100 dark:bg-ink-800 rounded-full text-ink-600 dark:text-ink-300">
             {data.dynasty}
           </span>
         )}
-        <span className="text-sm px-2 py-1 bg-ink-100 rounded-full text-ink-600">
+        <span className="text-sm px-2 py-1 bg-ink-100 dark:bg-ink-800 rounded-full text-ink-600 dark:text-ink-300">
           {data.category}
         </span>
       </div>
       <p className="text-ink-800 leading-relaxed">{data.description}</p>
       {data.fulltext && (
-        <p className="text-sm text-ink-700 leading-relaxed border-l-2 border-accent/30 pl-3">
+        <p className="text-sm text-ink-700 dark:text-ink-300 leading-relaxed border-l-2 border-accent/30 pl-3">
           {data.fulltext}
         </p>
       )}
       {data.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 pt-2">
           {data.tags.map((tag) => (
-            <span key={tag} className="text-xs px-2 py-1 bg-ink-50 rounded-full text-ink-400">
+            <span key={tag} className="text-xs px-2 py-1 bg-ink-50 dark:bg-ink-800 rounded-full text-ink-400 dark:text-ink-500 dark:text-ink-400">
               #{tag}
             </span>
           ))}
@@ -55,14 +55,14 @@ function PersonDetail({ data }: { data: FrontendPerson }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 flex-wrap">
-        <span className="text-sm px-2 py-1 bg-ink-100 rounded-full text-ink-600">
+        <span className="text-sm px-2 py-1 bg-ink-100 dark:bg-ink-800 rounded-full text-ink-600 dark:text-ink-300">
           {data.dynasty || '未知朝代'}
         </span>
         {data.gender === 'female' && (
           <span className="text-xs px-2 py-1 bg-pink-100 rounded-full text-pink-600">女</span>
         )}
         {data.courtesyName && (
-          <span className="text-sm text-ink-400">字 {data.courtesyName}</span>
+          <span className="text-sm text-ink-400 dark:text-ink-500 dark:text-ink-400">字 {data.courtesyName}</span>
         )}
       </div>
       {data.quote && (
@@ -76,7 +76,7 @@ function PersonDetail({ data }: { data: FrontendPerson }) {
       {data.roles.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {data.roles.map((role) => (
-            <span key={role} className="text-xs px-2 py-1 bg-ink-50 rounded-full text-ink-400">
+            <span key={role} className="text-xs px-2 py-1 bg-ink-50 dark:bg-ink-800 rounded-full text-ink-400 dark:text-ink-500 dark:text-ink-400">
               {role}
             </span>
           ))}
@@ -85,7 +85,7 @@ function PersonDetail({ data }: { data: FrontendPerson }) {
       {data.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 pt-2">
           {data.tags.map((tag) => (
-            <span key={tag} className="text-xs px-2 py-1 bg-ink-50 rounded-full text-ink-400">
+            <span key={tag} className="text-xs px-2 py-1 bg-ink-50 dark:bg-ink-800 rounded-full text-ink-400 dark:text-ink-500 dark:text-ink-400">
               #{tag}
             </span>
           ))}
@@ -106,12 +106,12 @@ function DynastyDetail({ data }: { data: FrontendDynasty }) {
             {data.periodEnd < 0 ? `${Math.abs(data.periodEnd)} BC` : `${data.periodEnd} AD`}
           </span>
         ) : (
-          <span className="text-sm text-ink-400">{data.period}</span>
+          <span className="text-sm text-ink-400 dark:text-ink-500 dark:text-ink-400">{data.period}</span>
         )}
       </div>
       {data.highlights && (
-        <p className="text-sm text-ink-500">
-          <span className="font-semibold text-ink-700">亮点：</span>{data.highlights}
+        <p className="text-sm text-ink-500 dark:text-ink-400">
+          <span className="font-semibold text-ink-700 dark:text-ink-300">亮点：</span>{data.highlights}
         </p>
       )}
       {data.description && (
@@ -120,28 +120,28 @@ function DynastyDetail({ data }: { data: FrontendDynasty }) {
       <div className="grid grid-cols-2 gap-4 text-sm">
         {data.founder && (
           <div>
-            <span className="text-ink-500">建立者：</span>
+            <span className="text-ink-500 dark:text-ink-400">建立者：</span>
             <span className="text-ink-800 font-medium">{data.founder}</span>
           </div>
         )}
         <div>
-          <span className="text-ink-500">都城：</span>
+          <span className="text-ink-500 dark:text-ink-400">都城：</span>
           <span className="text-ink-800 font-medium">{data.capital}</span>
         </div>
         <div>
-          <span className="text-ink-500">时长：</span>
+          <span className="text-ink-500 dark:text-ink-400">时长：</span>
           <span className="text-ink-800 font-medium">{data.duration}</span>
         </div>
         {data.fallReason && (
           <div>
-            <span className="text-ink-500">灭亡原因：</span>
+            <span className="text-ink-500 dark:text-ink-400">灭亡原因：</span>
             <span className="text-ink-800 font-medium">{data.fallReason}</span>
           </div>
         )}
       </div>
       {data.legacy && (
-        <p className="text-sm text-ink-700 border-t border-ink-100 pt-3">
-          <span className="font-semibold text-ink-700">影响：</span>{data.legacy}
+        <p className="text-sm text-ink-700 dark:text-ink-300 border-t border-ink-100 dark:border-ink-700 pt-3">
+          <span className="font-semibold text-ink-700 dark:text-ink-300">影响：</span>{data.legacy}
         </p>
       )}
     </div>
@@ -158,7 +158,7 @@ function KnowledgeDetail({ data }: { data: FrontendKnowledge }) {
           </span>
         )}
         {data.dynasty && (
-          <span className="text-sm px-2 py-1 bg-ink-100 rounded-full text-ink-600">
+          <span className="text-sm px-2 py-1 bg-ink-100 dark:bg-ink-800 rounded-full text-ink-600 dark:text-ink-300">
             {data.dynasty}
           </span>
         )}
@@ -167,17 +167,17 @@ function KnowledgeDetail({ data }: { data: FrontendKnowledge }) {
         <p className="text-ink-800 leading-relaxed">{data.description}</p>
       )}
       {data.fulltext && (
-        <p className="text-sm text-ink-700 leading-relaxed border-l-2 border-accent/30 pl-3">
+        <p className="text-sm text-ink-700 dark:text-ink-300 leading-relaxed border-l-2 border-accent/30 pl-3">
           {data.fulltext}
         </p>
       )}
       {data.meta && (
-        <p className="text-xs text-ink-400">备注：{data.meta}</p>
+        <p className="text-xs text-ink-400 dark:text-ink-500 dark:text-ink-400">备注：{data.meta}</p>
       )}
       {data.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 pt-2">
           {data.tags.map((tag) => (
-            <span key={tag} className="text-xs px-2 py-1 bg-ink-50 rounded-full text-ink-400">
+            <span key={tag} className="text-xs px-2 py-1 bg-ink-50 dark:bg-ink-800 rounded-full text-ink-400 dark:text-ink-500 dark:text-ink-400">
               #{tag}
             </span>
           ))}
@@ -270,7 +270,7 @@ function Recommendations({ type, data }: { type: string | null; data: FrontendEv
   };
 
   return (
-    <div className="mt-6 pt-4 border-t border-ink-300 bg-ink-100/80 -mx-6 px-6 py-4 rounded-b-2xl">
+    <div className="mt-6 pt-4 border-t border-ink-300 dark:border-ink-600 bg-ink-100 dark:bg-ink-800/80 -mx-6 px-6 py-4 rounded-b-2xl">
       <h4 className="text-sm font-bold text-ink-900 mb-3 flex items-center gap-2">
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -280,7 +280,7 @@ function Recommendations({ type, data }: { type: string | null; data: FrontendEv
       {loading ? (
         <div className="flex gap-2 flex-wrap">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-8 w-24 bg-ink-100 rounded-full animate-pulse" />
+            <div key={i} className="h-8 w-24 bg-ink-100 dark:bg-ink-800 rounded-full animate-pulse" />
           ))}
         </div>
       ) : (
@@ -407,7 +407,7 @@ export default function DetailModal() {
         <DrawerHandle />
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-ink-200">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-ink-200 dark:border-ink-700">
           <div className="flex items-center gap-3">
             <span className="text-sm px-2 py-0.5 bg-accent/10 rounded-full text-accent">
               {typeLabels[type] || type}
@@ -421,10 +421,10 @@ export default function DetailModal() {
           </div>
           <button
             onClick={closeDetail}
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-ink-100 transition-colors flex-shrink-0"
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-ink-100 dark:bg-ink-800 transition-colors flex-shrink-0"
             aria-label="关闭"
           >
-            <svg className="w-5 h-5 text-ink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-ink-500 dark:text-ink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>

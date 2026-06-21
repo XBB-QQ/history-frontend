@@ -4,6 +4,7 @@ import type { EventItem } from '@/types';
 import { fetchTimelineEvents } from '@/services/api';
 import SectionHeader from '@/components/common/SectionHeader';
 import Timeline from '@/components/timeline/Timeline';
+import { CardSkeleton } from '@/components/common/Skeleton';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 
 function TimelinePage() {
@@ -32,7 +33,7 @@ function TimelinePage() {
           />
         </RevealOnScroll>
         <RevealOnScroll direction="up" delay={200}>
-          <Timeline events={events as any} loading={loading} />
+          {loading ? <CardSkeleton count={6} /> : <Timeline events={events as any} loading={loading} />}
         </RevealOnScroll>
         <RevealOnScroll direction="fade" delay={400}>
           <div className="text-center mt-12">
