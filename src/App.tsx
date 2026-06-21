@@ -7,10 +7,11 @@ import KnowledgePage from './pages/KnowledgePage';
 import NotFoundPage from './pages/NotFoundPage';
 import Navbar from './components/layout/Navbar';
 import DetailModal from './components/detail/DetailModal';
+import BackgroundLayer from './components/background/BackgroundLayer';
 
 function App() {
   return (
-    <>
+    <BackgroundLayer>
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -21,7 +22,7 @@ function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <DetailModal />
-    </>
+    </BackgroundLayer>
   );
 }
 
