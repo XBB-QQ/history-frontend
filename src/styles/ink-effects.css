@@ -1,0 +1,75 @@
+/* 五千年史馆 — 水墨效果 */
+
+/* 宣纸纹理背景 */
+.bg-paper {
+  background-color: var(--color-rice);
+  background-image: url('/assets/paper-texture.png');
+  background-repeat: repeat;
+  background-size: 200px;
+}
+
+/* 水墨渐变分隔线 */
+.ink-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-ink-300), transparent);
+  margin: var(--space-3xl) 0;
+}
+
+/* 淡入动画 */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 印章样式 */
+.seal-stamp {
+  display: inline-block;
+  border: 3px solid var(--color-accent);
+  color: var(--color-accent);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  transform: rotate(-3deg);
+}
+
+/* 卷轴效果 */
+.scroll-edge {
+  position: relative;
+}
+
+.scroll-edge::before,
+.scroll-edge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  background: linear-gradient(90deg, var(--color-ink-200), var(--color-ink-100));
+}
+
+.scroll-edge::before { left: -12px; border-radius: 4px 0 0 4px; }
+.scroll-edge::after { right: -12px; border-radius: 0 4px 4px 0; }
+
+/* 墨迹效果 */
+.ink-splash {
+  position: relative;
+}
+
+.ink-splash::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, var(--color-ink-200) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0.5;
+}

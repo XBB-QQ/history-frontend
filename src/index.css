@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import './styles/tokens.css';
+@import './styles/ink-effects.css';
+@import './styles/animations.css';
+
+@layer base {
+  body {
+    @apply bg-rice text-ink-900 font-serif antialiased;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-accent text-white font-bold rounded-lg
+           hover:bg-red-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 border-2 border-ink-700 text-ink-700 font-bold rounded-lg
+           hover:bg-ink-700 hover:text-rice transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-ink-700;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold text-center mb-4 tracking-widest;
+  }
+
+  .section-label {
+    @apply text-sm tracking-[0.3em] text-ink-400 uppercase text-center block mb-2;
+  }
+
+  .section-desc {
+    @apply text-center text-ink-500 max-w-2xl mx-auto mb-8;
+  }
+}

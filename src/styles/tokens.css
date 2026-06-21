@@ -1,0 +1,72 @@
+/* 五千年史馆 — 设计令牌 (Design Tokens) */
+
+:root {
+  /* 颜色 */
+  --color-ink-50: #f7f7f5;
+  --color-ink-100: #eeede8;
+  --color-ink-200: #ddd9cf;
+  --color-ink-300: #c8c0ae;
+  --color-ink-400: #b0a48e;
+  --color-ink-500: #968872;
+  --color-ink-600: #7a6c57;
+  --color-ink-700: #635746;
+  --color-ink-800: #534a3d;
+  --color-ink-900: #484037;
+  --color-ink-950: #27231e;
+
+  --color-rice: #f5f0e8;
+  --color-gold: #b8941d;
+  --color-accent: #c23b22;
+  --color-indigo: #2e5a88;
+  --color-dark-green: #3a5f5a;
+  --color-plum: #8b4570;
+
+  /* 朝代颜色 */
+  --dynasty-xia: #c23b22;
+  --dynasty-shang: #b8941d;
+  --dynasty-zhou: #2e5a88;
+  --dynasty-qin: #8b4570;
+  --dynasty-han: #3a5f5a;
+  --dynasty-sanguo: #635746;
+  --dynasty-jin: #968872;
+  --dynasty-sui: #c8c0ae;
+  --dynasty-tang: #c23b22;
+  --dynasty-song: #2e5a88;
+  --dynasty-yuan: #b8941d;
+  --dynasty-ming: #3a5f5a;
+  --dynasty-qing: #8b4570;
+  --dynasty-modern: #c23b22;
+
+  /* 字体 */
+  --font-serif: 'Noto Serif SC', 'Source Han Serif SC', 'STSong', 'SimSun', serif;
+  --font-sans: 'Noto Sans SC', 'Source Han Sans SC', 'Microsoft YaHei', sans-serif;
+
+  /* 间距 */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* 圆角 */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+
+  /* 过渡 */
+  --transition-fast: 150ms ease;
+  --transition-normal: 300ms ease;
+  --transition-slow: 600ms ease;
+}
+
+/* 深色模式 */
+[data-theme="dark"] {
+  --color-rice: #27231e;
+  --color-ink-900: #f5f0e8;
+  --color-ink-100: #ddd9cf;
+  background-color: var(--color-rice);
+}
