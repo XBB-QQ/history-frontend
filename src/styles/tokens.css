@@ -63,10 +63,19 @@
   --transition-slow: 600ms ease;
 }
 
-/* 深色模式 */
+/* 深色模式 — 完整主题变量 */
 [data-theme="dark"] {
-  --color-rice: #27231e;
-  --color-ink-900: #f5f0e8;
-  --color-ink-100: #ddd9cf;
+  --color-rice: #1a1714;
+  --color-ink-50: #27231e;
+  --color-ink-100: #332e28;
+  --color-ink-200: #484037;
+  --color-ink-300: #534a3d;
+  --color-ink-400: #635746;
+  --color-ink-500: #7a6c57;
+  --color-ink-600: #968872;
+  --color-ink-700: #b0a48e;
+  --color-ink-800: #c8c0ae;
+  --color-ink-900: #ddd9cf;
+  --color-ink-950: #eeede8;
   background-color: var(--color-rice);
 }

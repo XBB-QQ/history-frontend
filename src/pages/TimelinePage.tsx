@@ -22,7 +22,7 @@ function TimelinePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-paper pt-20 pb-12 px-4">
+    <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
       <div className="max-w-5xl mx-auto">
         <RevealOnScroll direction="fade">
           <SectionHeader

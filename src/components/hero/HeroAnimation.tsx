@@ -149,7 +149,7 @@ function HeroCard({
       }`}
       style={{ transitionDelay: isVisible ? `${delay}ms` : '0ms' }}
     >
-      <div className="bg-white/60 backdrop-blur-sm rounded-xl p-8 border border-ink-200 hover:border-accent transition-all duration-300 hover:shadow-lg">
+      <div className="bg-white/60 dark:bg-ink-900/60 backdrop-blur-sm rounded-xl p-8 border border-ink-200 dark:border-ink-700 hover:border-accent dark:hover:border-accent transition-all duration-300 hover:shadow-lg">
         <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
           {card.icon}
         </div>

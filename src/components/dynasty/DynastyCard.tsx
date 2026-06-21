@@ -10,7 +10,7 @@ export default function DynastyCard({ dynasty }: DynastyCardProps) {
 
   return (
     <div
-      className="bg-white/60 rounded-xl p-6 border border-ink-200 hover:border-accent hover:shadow-md transition-all duration-300 cursor-pointer"
+      className="bg-white/60 dark:bg-ink-900/60 rounded-xl p-6 border border-ink-200 dark:border-ink-700 hover:border-accent hover:shadow-md dark:hover:border-accent transition-all duration-300 cursor-pointer"
       onClick={() => openDetail('dynasty', dynasty.id ? Number(dynasty.id) : 0, dynasty)}
     >
       <div className="text-3xl font-black mb-2">{dynasty.name}</div>

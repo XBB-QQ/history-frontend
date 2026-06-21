@@ -1,11 +1,9 @@
 // 历史地图模块 — SVG 地图可视化组件
 
 import { useMemo } from 'react';
-import type { MapRegion, DynastyMapData } from '@/types/map';
-import { mapRegions, chinaOutlinePath, nanhaiBoxPath } from '@/data/map-data';
+import { mapRegions, chinaOutlinePath } from '@/data/map-data';
 
 interface MapSVGProps {
-  regions: MapRegion[];
   highlightedRegionIds: Set<string>;
   capitalPos: [number, number] | null;
   capitalName: string;

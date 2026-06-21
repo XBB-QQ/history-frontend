@@ -4,10 +4,12 @@ import TimelinePage from './pages/TimelinePage';
 import DynastiesPage from './pages/DynastiesPage';
 import PersonsPage from './pages/PersonsPage';
 import KnowledgePage from './pages/KnowledgePage';
+import MapPage from './pages/MapPage';
 import NotFoundPage from './pages/NotFoundPage';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ScrollProgress from './components/common/ScrollProgress';
+import SearchModal from './components/common/SearchModal';
 import DetailModal from './components/detail/DetailModal';
 import BackgroundLayer from './components/background/BackgroundLayer';
 
@@ -22,9 +24,11 @@ function App() {
         <Route path="/dynasties" element={<DynastiesPage />} />
         <Route path="/persons" element={<PersonsPage />} />
         <Route path="/knowledge" element={<KnowledgePage />} />
+        <Route path="/map" element={<MapPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
+      <SearchModal />
       <DetailModal />
     </BackgroundLayer>
   );

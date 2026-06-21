@@ -49,7 +49,7 @@ export const mapRegions: MapRegion[] = [
     name: '西藏',
     path: polyPath([[78, 36], [92, 36], [97, 28], [88, 28]]),
     center: [86, 32],
-    aliases: '青藏高原',
+    aliases: ['青藏高原', '吐蕃'],
   },
   // 青海
   {
@@ -111,7 +111,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'henan',
     name: '河南',
-    path: rectPath(110, 32, [116, 36]),
+    path: rectPath(110, 32, 116, 36),
     center: [113, 34],
     aliases: ['豫', '中原', '河南省'],
   },
@@ -119,7 +119,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'shandong',
     name: '山东',
-    path: rectPath(115, 35, [122, 38]),
+    path: rectPath(115, 35, 122, 38),
     center: [118, 36],
     aliases: ['鲁', '山东省'],
   },
@@ -127,7 +127,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'jiangsu',
     name: '江苏',
-    path: rectPath(117, 31, [121, 35]),
+    path: rectPath(117, 31, 121, 35),
     center: [119, 33],
     aliases: ['苏', '江淮', '江苏省'],
   },
@@ -135,7 +135,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'zhejiang',
     name: '浙江',
-    path: rectPath(118, 27, [123, 31]),
+    path: rectPath(118, 27, 123, 31),
     center: [120, 29],
     aliases: ['浙', '江浙', '浙江省'],
   },
@@ -143,7 +143,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'anhui',
     name: '安徽',
-    path: rectPath(115, 29, [119, 34]),
+    path: rectPath(115, 29, 119, 34),
     center: [117, 32],
     aliases: ['皖', '安徽省'],
   },
@@ -151,7 +151,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'hunan',
     name: '湖南',
-    path: rectPath(109, 25, [114, 30]),
+    path: rectPath(109, 25, 114, 30),
     center: [112, 28],
     aliases: ['湘', '湖南省'],
   },
@@ -159,7 +159,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'hubei',
     name: '湖北',
-    path: rectPath(109, 30, [115, 33]),
+    path: rectPath(109, 30, 115, 33),
     center: [112, 31],
     aliases: ['鄂', '湖北省'],
   },
@@ -167,7 +167,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'jiangxi',
     name: '江西',
-    path: rectPath(114, 24, [118, 30]),
+    path: rectPath(114, 24, 118, 30),
     center: [116, 27],
     aliases: ['赣', '江西省'],
   },
@@ -175,7 +175,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'fujian',
     name: '福建',
-    path: rectPath(116, 24, [120, 28]),
+    path: rectPath(116, 24, 120, 28),
     center: [118, 26],
     aliases: ['闽', '福建省'],
   },
@@ -183,7 +183,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'guangdong',
     name: '广东',
-    path: rectPath(110, 20, [117, 25]),
+    path: rectPath(110, 20, 117, 25),
     center: [113, 23],
     aliases: ['粤', '广东省', '岭南'],
   },
@@ -191,7 +191,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'guangxi',
     name: '广西',
-    path: rectPath(105, 21, [111, 26]),
+    path: rectPath(105, 21, 111, 26),
     center: [108, 24],
     aliases: ['桂', '广西'],
   },
@@ -199,7 +199,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'guizhou',
     name: '贵州',
-    path: rectPath(104, 24, [109, 29]),
+    path: rectPath(104, 24, 109, 29),
     center: [107, 27],
     aliases: ['黔', '贵州省'],
   },
@@ -207,7 +207,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'yunnan',
     name: '云南',
-    path: rectPath(98, 21, [106, 29]),
+    path: rectPath(98, 21, 106, 29),
     center: [102, 25],
     aliases: ['滇', '云南省'],
   },
@@ -215,7 +215,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'liaoning',
     name: '辽宁',
-    path: rectPath(119, 39, [125, 43]),
+    path: rectPath(119, 39, 125, 43),
     center: [122, 41],
     aliases: ['辽', '奉天', '辽宁省'],
   },
@@ -223,7 +223,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'jilin',
     name: '吉林',
-    path: rectPath(122, 42, [131, 46]),
+    path: rectPath(122, 42, 131, 46),
     center: [126, 44],
     aliases: ['吉', '吉林省'],
   },
@@ -231,7 +231,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'heilongjiang',
     name: '黑龙江',
-    path: rectPath(121, 45, [135, 54]),
+    path: rectPath(121, 45, 135, 54),
     center: [128, 49],
     aliases: ['黑', '黑龙江省'],
   },
@@ -239,7 +239,7 @@ export const mapRegions: MapRegion[] = [
   {
     id: 'taiwan',
     name: '台湾',
-    path: rectPath(120, 22, [122, 25]),
+    path: rectPath(120, 22, 122, 25),
     center: [121, 23],
     aliases: ['台', '台湾省'],
   },
@@ -301,7 +301,7 @@ export const dynastyMapData: DynastyMapData[] = [
   },
   {
     dynastyName: '宋',
-    regionIds: ['henan', 'shanxi', 'hebei', 'shandong', 'sichuan', 'hubei', 'hunan', 'jiangxi', 'fujian', 'guangdong', 'guangxi', 'jiangsu', 'anhui', 'zhejiang', 'guiyang'],
+    regionIds: ['henan', 'shanxi', 'hebei', 'shandong', 'sichuan', 'hubei', 'hunan', 'jiangxi', 'fujian', 'guangdong', 'guangxi', 'jiangsu', 'anhui', 'zhejiang', 'guizhou'],
     period: '960年—1279年',
     capitalPos: [114, 34],
     capitalName: '开封/临安',
@@ -336,7 +336,7 @@ export const dynastyMapData: DynastyMapData[] = [
 /** 南海诸岛示意框 */
 export function nanhaiBoxPath(): string {
   // 右下角小框
-  return rectPath(108, 8, [117, 20]);
+  return rectPath(108, 8, 117, 20);
 }
 
 /** 完整地图背景轮廓 */

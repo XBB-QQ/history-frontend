@@ -10,7 +10,7 @@ export default function TimelineEvent({ event }: TimelineEventProps) {
 
   return (
     <div
-      className="bg-white/60 backdrop-blur-sm rounded-xl p-6 border border-ink-200 hover:shadow-md hover:border-accent/50 transition-all duration-300 cursor-pointer"
+      className="bg-white/60 dark:bg-ink-900/60 backdrop-blur-sm rounded-xl p-6 border border-ink-200 dark:border-ink-700 hover:shadow-md hover:border-accent/50 dark:hover:border-accent/50 transition-all duration-300 cursor-pointer"
       onClick={() => openDetail('event', event.id ? Number(event.id) : 0, event)}
     >
       <div className="flex items-start gap-4">

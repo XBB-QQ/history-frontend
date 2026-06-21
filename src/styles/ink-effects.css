@@ -8,6 +8,11 @@
   background-size: 200px;
 }
 
+[data-theme="dark"] .bg-paper {
+  background-color: var(--color-ink-950);
+  background-image: none;
+}
+
 /* 水墨渐变分隔线 */
 .ink-divider {
   height: 2px;

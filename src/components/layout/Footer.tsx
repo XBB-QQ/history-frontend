@@ -27,7 +27,7 @@ export default function Footer() {
       </button>
 
       {/* 页脚 */}
-      <footer className="border-t border-ink-200 bg-rice/80 backdrop-blur-sm">
+      <footer className="border-t border-ink-200 bg-rice/80 dark:bg-ink-950/80 backdrop-blur-sm">
         <div className="max-w-5xl mx-auto px-6 py-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
             {/* 品牌 */}
@@ -52,6 +52,7 @@ export default function Footer() {
                 <li><a href="/dynasties" className="hover:text-accent transition-colors">朝代更迭</a></li>
                 <li><a href="/persons" className="hover:text-accent transition-colors">人物志</a></li>
                 <li><a href="/knowledge" className="hover:text-accent transition-colors">史海钩沉</a></li>
+                <li><a href="/map" className="hover:text-accent transition-colors">历史地图</a></li>
               </ul>
             </div>
 
