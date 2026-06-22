@@ -8,6 +8,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { theme, initialized, toggleTheme } = useThemeStore();
   const openSearch = useSearchStore((s) => s.openSearch);
+  const favoriteCount = useFavoriteStore((s) => s.favorites.length);
 
   // 初始化时同步主题到 DOM
   useEffect(() => {
@@ -35,6 +36,7 @@ export default function Navbar() {
     { label: '人物', path: '/persons' },
     { label: '史海钩沉', path: '/knowledge' },
     { label: '地图', path: '/map' },
+    { label: '收藏', path: '/favorites' },
   ];
 
   const isActive = (path: string) => {
@@ -58,13 +60,18 @@ export default function Navbar() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`text-sm tracking-wide transition-colors ${
+                className={`text-sm tracking-wide transition-colors flex items-center gap-1 ${
                   isActive(item.path)
                     ? 'text-accent font-bold'
                     : 'text-ink-600 dark:text-ink-400 hover:text-ink-900 dark:hover:text-ink-200'
                 }`}
               >
                 {item.label}
+                {item.path === '/favorites' && favoriteCount > 0 && (
+                  <span className="text-xs px-1.5 py-0.5 rounded-full bg-accent/10 text-accent font-bold">
+                    {favoriteCount}
+                  </span>
+                )}
               </Link>
             ))}
           </div>

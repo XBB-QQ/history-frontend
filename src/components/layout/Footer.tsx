@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import ExportDropdown from '@/components/export/ExportDropdown';
 
 export default function Footer() {
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -53,6 +54,7 @@ export default function Footer() {
                 <li><a href="/persons" className="hover:text-accent transition-colors">人物志</a></li>
                 <li><a href="/knowledge" className="hover:text-accent transition-colors">史海钩沉</a></li>
                 <li><a href="/map" className="hover:text-accent transition-colors">历史地图</a></li>
+                <li><a href="/favorites" className="hover:text-accent transition-colors">我的收藏</a></li>
               </ul>
             </div>
 
@@ -66,6 +68,11 @@ export default function Footer() {
                 <li>Spring Boot 后端</li>
               </ul>
             </div>
+          </div>
+
+          {/* 工具栏 */}
+          <div className="mt-6 flex items-center justify-center gap-4 text-xs">
+            <ExportDropdown />
           </div>
 
           {/* 底部版权 */}

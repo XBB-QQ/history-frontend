@@ -463,3 +463,78 @@ export async function searchKnowledge(query: string): Promise<FrontendKnowledge[
 
 export type DetailType = 'event' | 'person' | 'dynasty' | 'knowledge';
 
+// ──────────────────────────────────────────────
+// 收藏相关 API
+// ──────────────────────────────────────────────
+
+export interface FavoriteEntry {
+  id: number;
+  userId: string;
+  resourceType: 'event' | 'person' | 'dynasty' | 'knowledge';
+  resourceId: number;
+  title: string;
+  pinned: boolean;
+  createdAt: string;
+}
+
+export async function fetchFavorites(): Promise<FavoriteEntry[]> {
+  const data = await fetchJSON<FavoriteEntry[]>(`${BASE_URL}/favorites`);
+  return data;
+}
+
+export async function addFavorite(entry: { resourceType: string; resourceId: number; title: string }): Promise<FavoriteEntry> {
+  return await fetchJSON<FavoriteEntry>(`${BASE_URL}/favorites`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(entry),
+  });
+}
+
+export async function removeFavorite(resourceId: number): Promise<void> {
+  await fetch(`${BASE_URL}/favorites/${resourceId}`, { method: 'DELETE' });
+}
+
+export async function togglePinFavorite(resourceId: number): Promise<FavoriteEntry> {
+  return await fetchJSON<FavoriteEntry>(`${BASE_URL}/favorites/${resourceId}/pin`, {
+    method: 'PATCH',
+  });
+}
+
+// ──────────────────────────────────────────────
+// 地图相关 API
+// ──────────────────────────────────────────────
+
+export interface MapRegionDTO {
+  id: string;
+  name: string;
+  path: string;
+  centerX: number;
+  centerY: number;
+  aliases: string[];
+}
+
+export interface DynastyMapDTO {
+  dynastyName: string;
+  regionIds: string[];
+  period: string;
+  capitalLng: number;
+  capitalLat: number;
+  capitalName: string;
+}
+
+export async function fetchMapRegions(): Promise<MapRegionDTO[]> {
+  return await fetchJSON<MapRegionDTO[]>(`${BASE_URL}/map/regions`);
+}
+
+export async function fetchDynastyMap(dynastyName: string): Promise<DynastyMapDTO | null> {
+  try {
+    return await fetchJSON<DynastyMapDTO>(`${BASE_URL}/map/dynasty/${encodeURIComponent(dynastyName)}`);
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchAllDynastyMaps(): Promise<DynastyMapDTO[]> {
+  return await fetchJSON<DynastyMapDTO[]>(`${BASE_URL}/map/dynasties`);
+}
+

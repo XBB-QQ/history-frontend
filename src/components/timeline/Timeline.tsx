@@ -1,3 +1,4 @@
+import React, { memo } from 'react';
 import type { EventItem } from '@/types';
 import TimelineEvent from './TimelineEvent';
 import { CardSkeleton } from '@/components/common/Skeleton';
@@ -7,7 +8,7 @@ interface TimelineProps {
   loading: boolean;
 }
 
-export default function Timeline({ events, loading }: TimelineProps) {
+const Timeline = memo(function Timeline({ events, loading }: TimelineProps) {
   if (loading) {
     return <CardSkeleton count={6} />;
   }
@@ -28,4 +29,6 @@ export default function Timeline({ events, loading }: TimelineProps) {
       ))}
     </div>
   );
-}
+});
+
+export default Timeline;

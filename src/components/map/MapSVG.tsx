@@ -1,6 +1,6 @@
 // 历史地图模块 — SVG 地图可视化组件
 
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { mapRegions, chinaOutlinePath } from '@/data/map-data';
 
 interface MapSVGProps {
@@ -35,7 +35,7 @@ function getDynastyColor(name: string): string {
   return colorMap[name] || '#C41E3A';
 }
 
-export default function MapSVG({
+export default React.memo(function MapSVG({
   highlightedRegionIds,
   capitalPos,
   capitalName,
@@ -154,3 +154,4 @@ export default function MapSVG({
     </svg>
   );
 }
+);
