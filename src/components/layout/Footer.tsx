@@ -38,7 +38,7 @@ export default function Footer() {
                 </div>
                 <span className="font-bold tracking-widest">五千年史馆</span>
               </div>
-              <p className="text-ink-400">
+              <p className="text-ink-400 dark:text-ink-500 dark:text-ink-400">
                 以史为鉴，可知兴替。<br />
                 探索中华文明五千年辉煌历史。
               </p>
@@ -46,8 +46,8 @@ export default function Footer() {
 
             {/* 导航 */}
             <div>
-              <h4 className="font-bold text-ink-700 mb-3">快速导航</h4>
-              <ul className="space-y-2 text-ink-500">
+              <h4 className="font-bold text-ink-700 dark:text-ink-300 mb-3">快速导航</h4>
+              <ul className="space-y-2 text-ink-500 dark:text-ink-400">
                 <li><a href="/timeline" className="hover:text-accent transition-colors">时间轴</a></li>
                 <li><a href="/dynasties" className="hover:text-accent transition-colors">朝代更迭</a></li>
                 <li><a href="/persons" className="hover:text-accent transition-colors">人物志</a></li>
@@ -58,8 +58,8 @@ export default function Footer() {
 
             {/* 技术 */}
             <div>
-              <h4 className="font-bold text-ink-700 mb-3">技术栈</h4>
-              <ul className="space-y-2 text-ink-500">
+              <h4 className="font-bold text-ink-700 dark:text-ink-300 mb-3">技术栈</h4>
+              <ul className="space-y-2 text-ink-500 dark:text-ink-400">
                 <li>React + TypeScript</li>
                 <li>Tailwind CSS</li>
                 <li>Zustand 状态管理</li>
@@ -69,7 +69,7 @@ export default function Footer() {
           </div>
 
           {/* 底部版权 */}
-          <div className="mt-8 pt-4 border-t border-ink-100 text-center text-ink-300 text-xs">
+          <div className="mt-8 pt-4 border-t border-ink-100 dark:border-ink-800 text-center text-ink-300 text-xs">
             <p>五千年史馆 v0.1.0 — 仅供学习演示用途</p>
           </div>
         </div>

@@ -61,7 +61,7 @@ export default function Navbar() {
                 className={`text-sm tracking-wide transition-colors ${
                   isActive(item.path)
                     ? 'text-accent font-bold'
-                    : 'text-ink-600 hover:text-ink-900'
+                    : 'text-ink-600 dark:text-ink-400 hover:text-ink-900 dark:hover:text-ink-200'
                 }`}
               >
                 {item.label}
@@ -72,7 +72,7 @@ export default function Navbar() {
           {/* 搜索按钮 */}
           <button
             onClick={openSearch}
-            className="text-ink-600 p-2 hover:text-ink-900 transition-colors flex items-center gap-1.5"
+            className="text-ink-600 dark:text-ink-400 p-2 hover:text-ink-900 dark:hover:text-ink-200 transition-colors flex items-center gap-1.5"
             aria-label="搜索"
             title="搜索 (Ctrl+K)"
           >
@@ -87,7 +87,7 @@ export default function Navbar() {
           {/* 主题切换按钮 */}
           <button
             onClick={toggleTheme}
-            className="text-ink-600 p-2 hover:text-ink-900 transition-colors"
+            className="text-ink-600 dark:text-ink-400 p-2 hover:text-ink-900 dark:hover:text-ink-200 transition-colors"
             aria-label="切换主题"
             title={theme === 'dark' ? '切换为浅色模式' : '切换为深色模式'}
           >
@@ -106,7 +106,7 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden text-ink-600 p-2"
+            className="md:hidden text-ink-600 dark:text-ink-400 p-2"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="菜单"
           >

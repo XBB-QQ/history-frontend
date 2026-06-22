@@ -147,12 +147,12 @@ export default function MapPage() {
             {/* 朝代时间线选择器 */}
             <RevealOnScroll direction="left" delay={100}>
               <div className="bg-white/60 dark:bg-ink-900/60 rounded-2xl shadow-lg p-4 border border-ink-100 dark:border-ink-700 max-h-[400px] overflow-y-auto">
-                <h4 className="text-xs font-bold text-ink-400 uppercase tracking-wider mb-3 sticky top-0 bg-white/90 py-2 -mt-2">
+                <h4 className="text-xs font-bold text-ink-400 dark:text-ink-500 uppercase tracking-wider mb-3 sticky top-0 bg-white/90 dark:bg-ink-800/90 py-2 -mt-2">
                   朝代年表
                 </h4>
                 <div className="space-y-1 relative">
                   {/* 连接线 */}
-                  <div className="absolute left-3.5 top-2 bottom-2 w-px bg-ink-200" />
+                  <div className="absolute left-3.5 top-2 bottom-2 w-px bg-ink-200 dark:bg-ink-700" />
                   {sortedDynasties.map((d) => {
                     const isSelected = d.dynastyName === selectedDynasty;
                     const color = getDynastyColor(d.dynastyName);
@@ -161,7 +161,7 @@ export default function MapPage() {
                         key={d.dynastyName}
                         onClick={() => setSelectedDynasty(d.dynastyName)}
                         className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-300 relative flex items-center gap-3
-                          ${isSelected ? 'bg-ink-100 shadow-sm' : 'hover:bg-ink-50'}`}
+                          ${isSelected ? 'bg-ink-100 dark:bg-ink-800 shadow-sm' : 'hover:bg-ink-50 dark:hover:bg-ink-800/50'}`}
                       >
                         {/* 时间点 */}
                         <span
@@ -173,7 +173,7 @@ export default function MapPage() {
                           }}
                         />
                         <div className="flex-1 min-w-0">
-                          <div className={`font-bold ${isSelected ? 'text-ink-900' : 'text-ink-600'}`}>
+                          <div className={`font-bold ${isSelected ? 'text-ink-900 dark:text-ink-100' : 'text-ink-600 dark:text-ink-400'}`}>
                             {d.dynastyName}
                           </div>
                           <div className="text-xs text-ink-400 truncate">{d.period}</div>

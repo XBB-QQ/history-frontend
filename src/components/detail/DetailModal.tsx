@@ -310,7 +310,7 @@ function Recommendations({ type, data }: { type: string | null; data: FrontendEv
 function DrawerHandle() {
   return (
     <div className="flex justify-center pt-2 pb-1 md:hidden">
-      <div className="w-10 h-1 rounded-full bg-ink-300" />
+      <div className="w-10 h-1 rounded-full bg-ink-300 dark:bg-ink-600" />
     </div>
   );
 }

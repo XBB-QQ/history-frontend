@@ -25,8 +25,8 @@
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 border-2 border-ink-700 text-ink-700 font-bold rounded-lg
-           hover:bg-ink-700 hover:text-rice transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-ink-700;
+    @apply inline-flex items-center justify-center px-6 py-3 border-2 border-ink-700 dark:border-ink-300 text-ink-700 dark:text-ink-300 font-bold rounded-lg
+           hover:bg-ink-700 hover:text-rice dark:hover:bg-ink-700 dark:hover:text-ink-950 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-ink-700;
   }
 
   .section-title {
