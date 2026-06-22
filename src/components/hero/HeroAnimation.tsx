@@ -65,8 +65,8 @@ function HeroContent({ phase }: { phase: number }) {
       >
         <div className="relative">
           <div
-            className="border-4 border-red-700 text-red-700 rounded-lg inline-flex items-center justify-center
-                       font-black bg-red-700/5 shadow-lg"
+            className="border-4 border-red-700 dark:border-red-500 text-red-700 dark:text-red-500 rounded-lg inline-flex items-center justify-center
+                       font-black bg-red-700 dark:bg-red-600/5 shadow-lg"
             style={{
               width: phase >= 2 ? '80px' : '0px',
               height: phase >= 2 ? '80px' : '0px',
@@ -82,7 +82,7 @@ function HeroContent({ phase }: { phase: number }) {
           {/* 印章震动波纹 */}
           {phase >= 2 && (
             <div
-              className="absolute inset-0 border-2 border-red-700/30 rounded-lg"
+              className="absolute inset-0 border-2 border-red-700 dark:border-red-500/30 rounded-lg"
               style={{
                 animation: 'sealPulse 1s ease-out forwards',
                 animationDelay: '0.5s',

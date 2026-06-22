@@ -94,7 +94,7 @@ export default function MapSVG({
               fillOpacity={isHighlighted ? 0.35 : 0.05}
               stroke={isHighlighted ? dynastyColor : 'currentColor'}
               strokeWidth={isHighlighted ? 2 : 0.5}
-              className={`transition-all duration-700 ${isHighlighted ? 'text-ink-700' : 'text-ink-200'}`}
+              className={`transition-all duration-700 ${isHighlighted ? 'text-ink-700 dark:text-ink-300' : 'text-ink-200 dark:text-ink-600'}`}
             />
             {/* 区域名称标注（仅高亮区域显示） */}
             {isHighlighted && (
@@ -103,7 +103,7 @@ export default function MapSVG({
                 y={lngLatToXY(region.center[0], region.center[1]).y}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                className="text-ink-800 font-bold"
+                className="text-ink-800 dark:text-ink-200 font-bold"
                 fontSize="11"
                 fill="currentColor"
                 opacity="0.8"

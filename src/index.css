@@ -13,6 +13,10 @@
     padding: 0;
   }
 
+  [data-theme="dark"] body {
+    @apply bg-ink-950 text-ink-100;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif;
   }
@@ -34,10 +38,10 @@
   }
 
   .section-label {
-    @apply text-sm tracking-[0.3em] text-ink-400 uppercase text-center block mb-2;
+    @apply text-sm tracking-[0.3em] text-ink-400 dark:text-ink-500 uppercase text-center block mb-2;
   }
 
   .section-desc {
-    @apply text-center text-ink-500 max-w-2xl mx-auto mb-8;
+    @apply text-center text-ink-500 dark:text-ink-400 max-w-2xl mx-auto mb-8;
   }
 }

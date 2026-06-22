@@ -33,7 +33,7 @@ export default function Footer() {
             {/* 品牌 */}
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <div className="border-2 border-red-700 text-red-700 rounded w-7 h-7 flex items-center justify-center font-bold text-xs">
+                <div className="border-2 border-red-700 dark:border-red-500 text-red-700 dark:text-red-500 rounded w-7 h-7 flex items-center justify-center font-bold text-xs">
                   史
                 </div>
                 <span className="font-bold tracking-widest">五千年史馆</span>
