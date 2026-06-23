@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDetailStore } from '@/store/detailStore';
 import { useFavoriteStore } from '@/store/favoriteStore';
-import { useNavigate } from 'react-router-dom';
+import { useUserStore } from '@/store/userStore';
+import { useNavigate, useLocation } from 'react-router-dom';
 import type {
   FrontendEvent,
   FrontendPerson,
@@ -9,6 +10,8 @@ import type {
   FrontendKnowledge,
 } from '@/services/api';
 import { fetchTimelineEvents, fetchAllPersons, fetchDynasties, fetchKnowledgeCards } from '@/services/api';
+import ShareDialog from '@/components/share/ShareDialog';
+import CommentSection from '@/components/comments/CommentSection';
 
 // ──────────────────────────────────────────────
 // 各类型详情子组件
@@ -308,9 +311,15 @@ function Recommendations({ type, data }: { type: string | null; data: FrontendEv
 function FavoriteButton({ type, id, title }: { type: string; id: string; title: string }) {
   const isFav = useFavoriteStore((s) => s.isFavorite(id));
   const toggle = useFavoriteStore((s) => s.toggleFavorite);
+  const { isAuthenticated } = useUserStore();
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!isAuthenticated) {
+      alert('请先登录后再收藏');
+      window.location.href = '/login';
+      return;
+    }
     toggle({ type: type as 'event' | 'person' | 'dynasty' | 'knowledge', id, title });
   };
 
@@ -376,6 +385,7 @@ function useSwipeDown(onSwipeDown: () => void) {
 export default function DetailModal() {
   const { isOpen, type, data, closeDetail } = useDetailStore();
   const overlayRef = useRef<HTMLDivElement>(null);
+  const [showShare, setShowShare] = useState(false);
 
   // ESC 关闭
   useEffect(() => {
@@ -456,6 +466,16 @@ export default function DetailModal() {
             {data && (
               <FavoriteButton type={type} id={String(data.id)} title={(data as FrontendEvent | FrontendPerson | FrontendDynasty | FrontendKnowledge).title || (data as FrontendPerson).name || ''} />
             )}
+            {/* 分享按钮 */}
+            <button
+              onClick={() => setShowShare(true)}
+              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-ink-100 dark:bg-ink-800 transition-colors"
+              aria-label="分享"
+            >
+              <svg className="w-5 h-5 text-ink-500 dark:text-ink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+            </button>
             <button
               onClick={closeDetail}
               className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-ink-100 dark:bg-ink-800 transition-colors"
@@ -474,11 +494,27 @@ export default function DetailModal() {
 
           {/* 相关推荐 */}
           <Recommendations type={type} data={data} />
+
+          {/* 评论区 */}
+          {data && (
+            <CommentSection
+              resourceId={String(data.id)}
+              resourceType={type}
+            />
+          )}
         </div>
 
         {/* 移动端底部安全区 */}
         <div className="h-6 md:hidden" />
       </div>
+
+      {/* 分享弹窗 */}
+      <ShareDialog
+        isOpen={showShare}
+        onClose={() => setShowShare(false)}
+        title={type === 'event' ? (data as FrontendEvent)?.title : type === 'person' ? (data as FrontendPerson)?.name : type === 'dynasty' ? (data as FrontendDynasty)?.name : (data as FrontendKnowledge)?.title}
+        url={window.location.href}
+      />
     </div>
   );
 }
