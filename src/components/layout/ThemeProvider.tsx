@@ -4,6 +4,8 @@ import { getDynastyColor, getDynastyColorDark } from '@/data/themes';
 /**
  * 朝代主题上下文
  * 根据当前选中的朝代动态改变页面配色和粒子效果
+ * 注：文化场景皮肤系统由 sceneStore 独立管理，与朝代主题正交
+ *     场景控制全局色调和字体；朝代主题控制粒子/按钮强调色
  */
 
 interface ThemeContextValue {

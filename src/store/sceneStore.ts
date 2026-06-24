@@ -1,0 +1,135 @@
+/**
+ * 场景状态管理
+ * @see history-museum/design/001-cultural-scene-system.md §5.3
+ */
+
+import { create } from 'zustand';
+import type { CulturalScene, SceneId, ScenePreference } from '@/types/scene';
+import { SCENE_CONFIGS, DEFAULT_SCENE } from '@/data/scenes';
+import { loadSceneFonts } from '@/utils/fontLoader';
+
+const STORAGE_KEY = 'history-museum-scene';
+
+interface SceneStore {
+  /** 当前场景 ID */
+  currentScene: SceneId;
+  /** 当前场景完整配置 */
+  sceneConfig: CulturalScene;
+  /** 字体加载中 */
+  isLoadingFont: boolean;
+  /** 氛围音效开关 */
+  ambientSound: boolean;
+  /** 内容联动自动切换 */
+  autoSwitchByContent: boolean;
+
+  /** 切换场景 */
+  setScene: (id: SceneId) => Promise<void>;
+  /** 切换音效 */
+  toggleAmbient: () => void;
+  /** 设置自动切换 */
+  setAutoSwitch: (enabled: boolean) => void;
+  /** 从 localStorage 恢复偏好 */
+  hydrateFromStorage: () => void;
+}
+
+/** 应用场景主题到 document.documentElement */
+function applySceneTheme(scene: CulturalScene): void {
+  const root = document.documentElement;
+  Object.entries(scene.theme).forEach(([key, value]) => {
+    if (value) {
+      root.style.setProperty(key, value);
+    } else {
+      root.style.removeProperty(key);
+    }
+  });
+  root.setAttribute('data-scene', scene.id);
+}
+
+/** 读取偏好 */
+function readPreference(): ScenePreference | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as ScenePreference;
+  } catch {
+    return null;
+  }
+}
+
+/** 写入偏好 */
+function writePreference(pref: ScenePreference): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(pref));
+  } catch {
+    // ignore
+  }
+}
+
+export const useSceneStore = create<SceneStore>((set, get) => ({
+  currentScene: DEFAULT_SCENE,
+  sceneConfig: SCENE_CONFIGS[DEFAULT_SCENE],
+  isLoadingFont: false,
+  ambientSound: false,
+  autoSwitchByContent: false,
+
+  setScene: async (id: SceneId) => {
+    const scene = SCENE_CONFIGS[id];
+    if (!scene) return;
+
+    set({ isLoadingFont: true });
+
+    // 字体加载（不阻塞主题应用，但字体就绪后再完成 loading）
+    loadSceneFonts(id).finally(() => {
+      set({ isLoadingFont: false });
+    });
+
+    // 立即应用主题 CSS 变量
+    applySceneTheme(scene);
+
+    // 更新状态
+    set({
+      currentScene: id,
+      sceneConfig: scene,
+    });
+
+    // 持久化
+    const pref: ScenePreference = {
+      current: id,
+      ambientSound: get().ambientSound,
+      autoSwitchByContent: get().autoSwitchByContent,
+    };
+    writePreference(pref);
+  },
+
+  toggleAmbient: () => {
+    const next = !get().ambientSound;
+    set({ ambientSound: next });
+    const pref = readPreference();
+    if (pref) {
+      pref.ambientSound = next;
+      writePreference(pref);
+    }
+  },
+
+  setAutoSwitch: (enabled: boolean) => {
+    set({ autoSwitchByContent: enabled });
+    const pref = readPreference();
+    if (pref) {
+      pref.autoSwitchByContent = enabled;
+      writePreference(pref);
+    }
+  },
+
+  hydrateFromStorage: () => {
+    const pref = readPreference();
+    if (!pref) return;
+    const scene = SCENE_CONFIGS[pref.current] || SCENE_CONFIGS[DEFAULT_SCENE];
+    applySceneTheme(scene);
+    set({
+      currentScene: scene.id,
+      sceneConfig: scene,
+      ambientSound: pref.ambientSound,
+      autoSwitchByContent: pref.autoSwitchByContent,
+    });
+  },
+}));

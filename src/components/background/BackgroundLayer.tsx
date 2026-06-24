@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import InkParticles from './InkParticles';
 import MountainMist from './MountainMist';
+import { useSceneStore } from '@/store/sceneStore';
 
 interface BackgroundLayerProps {
   children: ReactNode;
@@ -11,13 +12,24 @@ interface BackgroundLayerProps {
 /**
  * 全局背景层
  * 组合水墨粒子 + 山水云雾，作为所有页面的统一背景
+ * 响应文化场景皮肤系统，动态应用场景背景
  */
 export default function BackgroundLayer({
   children,
   showParticles = true,
 }: BackgroundLayerProps) {
+  const { sceneConfig } = useSceneStore();
+
   return (
-    <div className="relative min-h-screen">
+    <div
+      className="relative min-h-screen scene-bg"
+      data-scene={sceneConfig.id}
+      style={{
+        backgroundColor: 'var(--color-paper)',
+        backgroundImage: 'var(--bg-pattern)',
+        transition: 'background-color 800ms ease, background-image 800ms ease',
+      }}
+    >
       {/* 背景效果层 */}
       {showParticles && <InkParticles count={20} />}
       <MountainMist />

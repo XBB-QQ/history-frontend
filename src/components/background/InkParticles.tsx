@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useTheme } from '@/components/layout/ThemeProvider';
 import { useTimeTravelStore } from '@/store/timeTravelStore';
+import { useSceneStore } from '@/store/sceneStore';
 
 interface Particle {
   x: number;
@@ -19,9 +20,9 @@ interface InkParticlesProps {
 }
 
 /**
- * 水墨粒子背景效果
- * 模拟宣纸上飘散的墨粒，部分粒子携带淡化的汉字
- * 粒子颜色会根据当前朝代主题动态变化
+ * 粒子背景效果
+ * 默认模拟宣纸上飘散的墨粒，部分粒子携带淡化的汉字
+ * 根据当前文化场景动态调整：粒子颜色、字符集、大小、透明度
  */
 export default function InkParticles({
   count: baseCount = 30,
@@ -29,19 +30,42 @@ export default function InkParticles({
 }: InkParticlesProps) {
   const { primaryColor, isDefault } = useTheme();
   const ttActive = useTimeTravelStore((s) => s.active);
+  const { sceneConfig } = useSceneStore();
   // 时间旅行激活时增加粒子密度
   const count = ttActive ? baseCount * 2 : baseCount;
-  const particleColor = isDefault ? '#27231e' : primaryColor;
+
+  // 场景配置的粒子颜色优先；否则用朝代主题色；否则默认墨色
+  const sceneParticleColor = sceneConfig.particleConfig?.color;
+  const particleColor =
+    sceneParticleColor || (isDefault ? '#27231e' : primaryColor);
+
+  // 场景字符集
+  const sceneChars = sceneConfig.particleConfig?.chars;
+  const inkChars =
+    sceneChars || '天地玄黄宇宙洪荒日月盈昃辰宿列张寒来暑往秋收冬藏';
+  const charProbability = sceneConfig.particleConfig?.charProbability ?? 0.3;
+  const radiusRange = sceneConfig.particleConfig?.radiusRange || [1, 3.5];
+  const opacityRange = sceneConfig.particleConfig?.opacityRange || [0.15, 0.4];
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const animFrameRef = useRef<number>(0);
   const colorRef = useRef(particleColor);
-  const inkChars = '天地玄黄宇宙洪荒日月盈昃辰宿列张寒来暑往秋收冬藏';
+  const charsRef = useRef(inkChars);
+  const charProbRef = useRef(charProbability);
+  const radiusRangeRef = useRef(radiusRange);
+  const opacityRangeRef = useRef(opacityRange);
 
-  // 保持 colorRef 与当前主题同步
+  // 同步 ref
   useEffect(() => {
     colorRef.current = particleColor;
   }, [particleColor]);
+  useEffect(() => {
+    charsRef.current = inkChars;
+    charProbRef.current = charProbability;
+    radiusRangeRef.current = radiusRange;
+    opacityRangeRef.current = opacityRange;
+  }, [inkChars, charProbability, radiusRange, opacityRange]);
 
   const spawnParticle = useCallback((_w: number, _h: number): Particle => {
     const fromEdge = Math.random() > 0.5;
@@ -60,16 +84,19 @@ export default function InkParticles({
       y = Math.random() * window.innerHeight;
     }
 
-    const hasChar = Math.random() > 0.7;
+    const hasChar = Math.random() < charProbRef.current;
+    const [rMin, rMax] = radiusRangeRef.current;
+    const [oMin, oMax] = opacityRangeRef.current;
+    const chars = charsRef.current;
     return {
       x,
       y,
       vx: (Math.random() - 0.5) * 0.3,
       vy: -Math.random() * 0.5 - 0.1,
-      radius: hasChar ? 10 + Math.random() * 6 : 1 + Math.random() * 2.5,
-      opacity: hasChar ? 0.06 + Math.random() * 0.08 : 0.15 + Math.random() * 0.25,
+      radius: hasChar ? rMin + 8 + Math.random() * (rMax + 4) : rMin + Math.random() * (rMax - rMin),
+      opacity: hasChar ? oMin * 0.5 + Math.random() * (oMax - oMin) * 0.5 : oMin + Math.random() * (oMax - oMin),
       decay: 0.0002 + Math.random() * 0.0003,
-      char: hasChar ? inkChars[Math.floor(Math.random() * inkChars.length)] : undefined,
+      char: hasChar ? chars[Math.floor(Math.random() * chars.length)] : undefined,
     };
   }, []);
 
@@ -105,6 +132,7 @@ export default function InkParticles({
       ctx.clearRect(0, 0, w, h);
       const currentColor = colorRef.current;
       const particles = particlesRef.current;
+      const headingFont = sceneConfig.theme['--font-heading'] || "'Noto Serif SC', serif";
 
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
@@ -123,7 +151,7 @@ export default function InkParticles({
           ctx.save();
           ctx.globalAlpha = p.opacity * 0.6;
           ctx.fillStyle = currentColor;
-          ctx.font = `${p.radius * 2}px 'Noto Serif SC', serif`;
+          ctx.font = `${p.radius * 2}px ${headingFont}`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillText(p.char, p.x, p.y);
@@ -148,7 +176,7 @@ export default function InkParticles({
       window.removeEventListener('resize', resize);
       cancelAnimationFrame(animFrameRef.current);
     };
-  }, [count, spawnParticle]);
+  }, [count, spawnParticle, sceneConfig]);
 
   // 检查 prefers-reduced-motion
   useEffect(() => {

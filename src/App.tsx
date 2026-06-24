@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 const TimelinePage = lazy(() => import('./pages/TimelinePage'));
@@ -31,21 +31,38 @@ import ScrollProgress from './components/common/ScrollProgress';
 import SearchModal from './components/common/SearchModal';
 import DetailModal from './components/detail/DetailModal';
 import BackgroundLayer from './components/background/BackgroundLayer';
+import SceneSwitcher from './components/scene/SceneSwitcher';
+import SceneTransition from './components/scene/SceneTransition';
+import { useSceneStore } from './store/sceneStore';
+import { preloadAllSceneFonts } from './utils/fontLoader';
 
 function App() {
+  const hydrateFromStorage = useSceneStore((s) => s.hydrateFromStorage);
+
+  // 启动时恢复场景偏好 + 后台预加载所有字体
+  useEffect(() => {
+    hydrateFromStorage();
+    // 延迟预加载，不阻塞首屏
+    const timer = setTimeout(() => preloadAllSceneFonts(), 3000);
+    return () => clearTimeout(timer);
+  }, [hydrateFromStorage]);
+
   return (
     <BackgroundLayer>
       <ScrollProgress />
       <ScrollToTop />
       <Navbar />
-      <Suspense fallback={
-        <div className="min-h-screen flex items-center justify-center bg-paper dark:bg-ink-950">
-          <div className="text-center">
-            <div className="text-4xl mb-2 animate-pulse">📜</div>
-            <p className="text-ink-400 dark:text-ink-500">加载中...</p>
+      <SceneTransition />
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center bg-paper dark:bg-ink-950">
+            <div className="text-center">
+              <div className="text-4xl mb-2 animate-pulse">📜</div>
+              <p className="text-ink-400 dark:text-ink-500">加载中...</p>
+            </div>
           </div>
-        </div>
-      }>
+        }
+      >
         <Routes>
           {/* 前台路由 */}
           <Route path="/" element={<HomePage />} />
@@ -84,6 +101,7 @@ function App() {
       <Footer />
       <SearchModal />
       <DetailModal />
+      <SceneSwitcher />
     </BackgroundLayer>
   );
 }
