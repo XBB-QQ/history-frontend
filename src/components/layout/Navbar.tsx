@@ -39,6 +39,7 @@ export default function Navbar() {
     { label: '朝代', path: '/dynasties' },
     { label: '人物', path: '/persons' },
     { label: '史海钩沉', path: '/knowledge' },
+    { label: '中外', path: '/world-compare' },
     { label: '地图', path: '/map' },
     { label: '收藏', path: '/favorites' },
     { label: '挑战', path: '/leaderboard' },
