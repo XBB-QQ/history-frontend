@@ -1,4 +1,5 @@
-import { Routes, Route, lazy, Suspense } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 const TimelinePage = lazy(() => import('./pages/TimelinePage'));
 const DynastiesPage = lazy(() => import('./pages/DynastiesPage'));
