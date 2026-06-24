@@ -13,7 +13,7 @@ export default function SceneSwitcher() {
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const { currentScene, setScene, isLoadingFont, ambientSound, toggleAmbient } =
+  const { currentScene, setScene, isLoadingFont, ambientSound, toggleAmbient, autoSwitchByContent, setAutoSwitch } =
     useSceneStore();
 
   // 点击外部关闭
@@ -125,7 +125,7 @@ export default function SceneSwitcher() {
             })}
           </div>
 
-          {/* 底部：音效开关 */}
+          {/* 底部：音效开关 + 朝代联动开关 */}
           <div className="border-t border-ink-200 dark:border-ink-700">
             <label className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors">
               <span className="text-sm text-ink-700 dark:text-ink-300 flex items-center gap-2">
@@ -136,6 +136,23 @@ export default function SceneSwitcher() {
                 type="checkbox"
                 checked={ambientSound}
                 onChange={toggleAmbient}
+                className="w-4 h-4 accent-accent"
+              />
+            </label>
+            <label className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors border-t border-ink-100 dark:border-ink-800">
+              <span className="text-sm text-ink-700 dark:text-ink-300 flex items-center gap-2">
+                <span aria-hidden>🏛️</span>
+                <div className="flex flex-col">
+                  <span>朝代主题联动</span>
+                  <span className="text-xs text-ink-400 dark:text-ink-500">
+                    浏览朝代时自动切换场景
+                  </span>
+                </div>
+              </span>
+              <input
+                type="checkbox"
+                checked={autoSwitchByContent}
+                onChange={(e) => setAutoSwitch(e.target.checked)}
                 className="w-4 h-4 accent-accent"
               />
             </label>

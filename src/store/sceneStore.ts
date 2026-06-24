@@ -7,6 +7,7 @@ import { create } from 'zustand';
 import type { CulturalScene, SceneId, ScenePreference } from '@/types/scene';
 import { SCENE_CONFIGS, DEFAULT_SCENE } from '@/data/scenes';
 import { loadSceneFonts } from '@/utils/fontLoader';
+import { getSceneByDynasty } from '@/data/dynastySceneMap';
 
 const STORAGE_KEY = 'history-museum-scene';
 
@@ -19,11 +20,17 @@ interface SceneStore {
   isLoadingFont: boolean;
   /** 氛围音效开关 */
   ambientSound: boolean;
-  /** 内容联动自动切换 */
+  /** 内容联动自动切换（hover 朝代时自动切换场景） */
   autoSwitchByContent: boolean;
+  /** 自动切换前的场景（用于恢复） */
+  previousScene: SceneId | null;
 
-  /** 切换场景 */
+  /** 手动切换场景 */
   setScene: (id: SceneId) => Promise<void>;
+  /** 根据朝代自动切换场景（受 autoSwitchByContent 控制） */
+  setSceneByDynasty: (dynastyName: string) => Promise<void>;
+  /** 恢复到自动切换前的场景 */
+  restoreScene: () => Promise<void>;
   /** 切换音效 */
   toggleAmbient: () => void;
   /** 设置自动切换 */
@@ -71,6 +78,7 @@ export const useSceneStore = create<SceneStore>((set, get) => ({
   isLoadingFont: false,
   ambientSound: false,
   autoSwitchByContent: false,
+  previousScene: null,
 
   setScene: async (id: SceneId) => {
     const scene = SCENE_CONFIGS[id];
@@ -90,6 +98,7 @@ export const useSceneStore = create<SceneStore>((set, get) => ({
     set({
       currentScene: id,
       sceneConfig: scene,
+      previousScene: null, // 手动切换清空 previousScene
     });
 
     // 持久化
@@ -99,6 +108,52 @@ export const useSceneStore = create<SceneStore>((set, get) => ({
       autoSwitchByContent: get().autoSwitchByContent,
     };
     writePreference(pref);
+  },
+
+  setSceneByDynasty: async (dynastyName: string) => {
+    // 只在开启自动切换时生效
+    if (!get().autoSwitchByContent) return;
+
+    const targetScene = getSceneByDynasty(dynastyName);
+    const currentScene = get().currentScene;
+
+    // 相同场景不切换
+    if (targetScene === currentScene) return;
+
+    // 保存当前场景作为 previousScene
+    set({ previousScene: currentScene });
+
+    // 应用场景（不持久化，只是临时切换）
+    const scene = SCENE_CONFIGS[targetScene];
+    if (!scene) return;
+
+    set({ isLoadingFont: true });
+    loadSceneFonts(targetScene).finally(() => {
+      set({ isLoadingFont: false });
+    });
+
+    applySceneTheme(scene);
+    set({
+      currentScene: targetScene,
+      sceneConfig: scene,
+    });
+  },
+
+  restoreScene: async () => {
+    if (!get().autoSwitchByContent) return;
+
+    const prev = get().previousScene;
+    if (!prev) return;
+
+    const scene = SCENE_CONFIGS[prev];
+    if (!scene) return;
+
+    applySceneTheme(scene);
+    set({
+      currentScene: prev,
+      sceneConfig: scene,
+      previousScene: null,
+    });
   },
 
   toggleAmbient: () => {
@@ -117,6 +172,13 @@ export const useSceneStore = create<SceneStore>((set, get) => ({
     if (pref) {
       pref.autoSwitchByContent = enabled;
       writePreference(pref);
+    } else {
+      // 没有历史偏好时创建一个
+      writePreference({
+        current: get().currentScene,
+        ambientSound: get().ambientSound,
+        autoSwitchByContent: enabled,
+      });
     }
   },
 

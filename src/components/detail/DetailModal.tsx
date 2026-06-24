@@ -13,6 +13,7 @@ import { fetchTimelineEvents, fetchAllPersons, fetchDynasties, fetchKnowledgeCar
 import ShareDialog from '@/components/share/ShareDialog';
 import CommentSection from '@/components/comments/CommentSection';
 import RelationshipGraph from '@/components/person/RelationshipGraph';
+import ClassicalTextPanel from '@/components/detail/ClassicalTextPanel';
 
 // ──────────────────────────────────────────────
 // 各类型详情子组件
@@ -42,6 +43,14 @@ function EventDetail({ data }: { data: FrontendEvent }) {
         <p className="text-sm text-ink-700 dark:text-ink-300 leading-relaxed border-l-2 border-accent/30 pl-3">
           {data.fulltext}
         </p>
+      )}
+      {/* 史书原文引用 */}
+      {data.classicalText && (
+        <ClassicalTextPanel
+          classicalText={data.classicalText}
+          classicalSource={data.classicalSource}
+          modernTranslation={data.modernTranslation}
+        />
       )}
       {data.impact && (
         <div>

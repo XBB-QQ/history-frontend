@@ -1,5 +1,6 @@
 import { useTheme } from '@/components/layout/ThemeProvider';
 import { useDetailStore } from '@/store/detailStore';
+import { useSceneStore } from '@/store/sceneStore';
 import type { DynastyItem } from '@/types';
 import { getDynastyColor, getDynastyColorDark } from '@/data/themes';
 
@@ -10,16 +11,21 @@ interface DynastyCardProps {
 export default function DynastyCard({ dynasty }: DynastyCardProps) {
   const { setDynasty } = useTheme();
   const openDetail = useDetailStore((s) => s.openDetail);
+  const { setSceneByDynasty, restoreScene } = useSceneStore();
 
   const color = getDynastyColor(dynasty.name);
   const colorDark = getDynastyColorDark(dynasty.name);
 
   const handleHover = () => {
     setDynasty(dynasty.name);
+    // 联动场景皮肤（受 autoSwitchByContent 控制）
+    setSceneByDynasty(dynasty.name);
   };
 
   const handleLeave = () => {
     setDynasty(null);
+    // 恢复原场景
+    restoreScene();
   };
 
   return (

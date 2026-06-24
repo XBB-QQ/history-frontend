@@ -24,6 +24,12 @@ interface BackendEventDTO {
   tags: string[];
   relatedEvents: string[];
   relatedPersons: string[];
+  /** 史书原文片段（古文） */
+  classicalText?: string | null;
+  /** 史书出处（如《史记·秦始皇本纪》） */
+  classicalSource?: string | null;
+  /** 白话译文 */
+  modernTranslation?: string | null;
 }
 
 interface BackendPersonDTO {
@@ -106,6 +112,12 @@ export interface FrontendEvent {
   relatedPersons: string[];
   source: string;
   crawlDate: string;
+  /** 史书原文片段（古文） */
+  classicalText?: string;
+  /** 史书出处（如《史记·秦始皇本纪》） */
+  classicalSource?: string;
+  /** 白话译文 */
+  modernTranslation?: string;
 }
 
 export interface FrontendPerson {
@@ -212,6 +224,9 @@ function adaptEvent(dto: BackendEventDTO): FrontendEvent {
     relatedPersons: dto.relatedPersons,
     source: '',
     crawlDate: '',
+    classicalText: dto.classicalText ?? undefined,
+    classicalSource: dto.classicalSource ?? undefined,
+    modernTranslation: dto.modernTranslation ?? undefined,
   };
 }
 
