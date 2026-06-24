@@ -9,6 +9,7 @@ interface UserState {
   setToken: (token: string) => void;
   logout: () => void;
   init: () => void;
+  updateQuizScore: (points: number) => void;
 }
 
 export const useUserStore = create<UserState>((set, get) => ({
@@ -35,6 +36,20 @@ export const useUserStore = create<UserState>((set, get) => ({
         isAuthenticated: true,
       });
     }
+  },
+
+  updateQuizScore: (points) => {
+    set((state) => {
+      if (!state.user) return state;
+      return {
+        user: {
+          ...state.user,
+          score: (state.user.score || 0) + points,
+          quizzesAnswered: (state.user.quizzesAnswered || 0) + 1,
+          quizzesCorrect: (state.user.quizzesCorrect || 0) + (points > 0 ? 1 : 0),
+        },
+      };
+    });
   },
 }));
 

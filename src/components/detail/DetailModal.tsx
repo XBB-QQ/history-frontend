@@ -12,6 +12,7 @@ import type {
 import { fetchTimelineEvents, fetchAllPersons, fetchDynasties, fetchKnowledgeCards } from '@/services/api';
 import ShareDialog from '@/components/share/ShareDialog';
 import CommentSection from '@/components/comments/CommentSection';
+import RelationshipGraph from '@/components/person/RelationshipGraph';
 
 // ──────────────────────────────────────────────
 // 各类型详情子组件
@@ -20,7 +21,7 @@ import CommentSection from '@/components/comments/CommentSection';
 function EventDetail({ data }: { data: FrontendEvent }) {
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-wrap">
         <span className="text-lg font-bold text-accent">{data.yearDisplay}</span>
         {data.dynasty && (
           <span className="text-sm px-2 py-1 bg-ink-100 dark:bg-ink-800 rounded-full text-ink-600 dark:text-ink-300">
@@ -30,12 +31,31 @@ function EventDetail({ data }: { data: FrontendEvent }) {
         <span className="text-sm px-2 py-1 bg-ink-100 dark:bg-ink-800 rounded-full text-ink-600 dark:text-ink-300">
           {data.category}
         </span>
+        {data.significance && (
+          <span className="text-xs px-2 py-1 bg-amber-100 dark:bg-amber-900/30 rounded-full text-amber-700 dark:text-amber-400">
+            重要度: {'⭐'.repeat(data.significance)}
+          </span>
+        )}
       </div>
       <p className="text-ink-800 leading-relaxed">{data.description}</p>
       {data.fulltext && (
         <p className="text-sm text-ink-700 dark:text-ink-300 leading-relaxed border-l-2 border-accent/30 pl-3">
           {data.fulltext}
         </p>
+      )}
+      {data.impact && (
+        <div>
+          <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1">历史影响</h4>
+          <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">{data.impact}</p>
+        </div>
+      )}
+      {data.relatedArticles && data.relatedArticles.length > 0 && (
+        <div>
+          <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1">相关文章</h4>
+          <ul className="text-sm text-ink-600 dark:text-ink-400 list-disc list-inside space-y-0.5">
+            {data.relatedArticles.map((a, i) => <li key={i}>{a}</li>)}
+          </ul>
+        </div>
       )}
       {data.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 pt-2">
@@ -51,48 +71,102 @@ function EventDetail({ data }: { data: FrontendEvent }) {
 }
 
 function PersonDetail({ data }: { data: FrontendPerson }) {
-  const yearsText = data.years
-    .map((y) => (y !== null ? y : '?'))
-    .filter((_, i, arr) => i === 0 || arr[i - 1] !== _)
-    .join(' — ');
+  const { id, uid } = useDetailStore();
+  const [activeTab, setActiveTab] = useState<'info' | 'relations'>('info');
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-3 flex-wrap">
-        <span className="text-sm px-2 py-1 bg-ink-100 dark:bg-ink-800 rounded-full text-ink-600 dark:text-ink-300">
-          {data.dynasty || '未知朝代'}
-        </span>
-        {data.gender === 'female' && (
-          <span className="text-xs px-2 py-1 bg-pink-100 rounded-full text-pink-600">女</span>
-        )}
-        {data.courtesyName && (
-          <span className="text-sm text-ink-400 dark:text-ink-500 dark:text-ink-400">字 {data.courtesyName}</span>
-        )}
+      {/* 标签页切换 */}
+      <div className="flex gap-4 border-b border-ink-200 dark:border-ink-700">
+        <button
+          onClick={() => setActiveTab('info')}
+          className={`pb-2 text-sm font-bold transition-colors ${
+            activeTab === 'info'
+              ? 'text-accent border-b-2 border-accent'
+              : 'text-ink-500 dark:text-ink-400 hover:text-ink-700 dark:hover:text-ink-300'
+          }`}
+        >
+          基本信息
+        </button>
+        <button
+          onClick={() => setActiveTab('relations')}
+          className={`pb-2 text-sm font-bold transition-colors ${
+            activeTab === 'relations'
+              ? 'text-accent border-b-2 border-accent'
+              : 'text-ink-500 dark:text-ink-400 hover:text-ink-700 dark:hover:text-ink-300'
+          }`}
+        >
+          关系图谱
+        </button>
       </div>
-      {data.quote && (
-        <blockquote className="text-lg font-medium text-ink-800 italic border-l-2 border-accent/30 pl-3">
-          "{data.quote}"
-        </blockquote>
-      )}
-      {data.bio && (
-        <p className="text-ink-800 leading-relaxed">{data.bio}</p>
-      )}
-      {data.roles.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {data.roles.map((role) => (
-            <span key={role} className="text-xs px-2 py-1 bg-ink-50 dark:bg-ink-800 rounded-full text-ink-400 dark:text-ink-500 dark:text-ink-400">
-              {role}
+
+      {activeTab === 'info' && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="text-sm px-2 py-1 bg-ink-100 dark:bg-ink-800 rounded-full text-ink-600 dark:text-ink-300">
+              {data.dynasty || '未知朝代'}
             </span>
-          ))}
+            {data.gender === 'female' && (
+              <span className="text-xs px-2 py-1 bg-pink-100 rounded-full text-pink-600">女</span>
+            )}
+            {data.courtesyName && (
+              <span className="text-sm text-ink-400 dark:text-ink-500 dark:text-ink-400">字 {data.courtesyName}</span>
+            )}
+            {data.birthPlace && (
+              <span className="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400">
+                📍 生于 {data.birthPlace}
+              </span>
+            )}
+            {data.deathPlace && (
+              <span className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-gray-600 dark:text-gray-400">
+                🕊 卒于 {data.deathPlace}
+              </span>
+            )}
+          </div>
+          {data.quote && (
+            <blockquote className="text-lg font-medium text-ink-800 italic border-l-2 border-accent/30 pl-3">
+              "{data.quote}"
+            </blockquote>
+          )}
+          {data.bio && (
+            <p className="text-ink-800 leading-relaxed">{data.bio}</p>
+          )}
+          {data.roles.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {data.roles.map((role) => (
+                <span key={role} className="text-xs px-2 py-1 bg-ink-50 dark:bg-ink-800 rounded-full text-ink-400 dark:text-ink-500 dark:text-ink-400">
+                  {role}
+                </span>
+              ))}
+            </div>
+          )}
+          {data.achievements && (
+            <div>
+              <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1">主要成就</h4>
+              <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">{data.achievements}</p>
+            </div>
+          )}
+          {data.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 pt-2">
+              {data.tags.map((tag) => (
+                <span key={tag} className="text-xs px-2 py-1 bg-ink-50 dark:bg-ink-800 rounded-full text-ink-400 dark:text-ink-500 dark:text-ink-400">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       )}
-      {data.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2 pt-2">
-          {data.tags.map((tag) => (
-            <span key={tag} className="text-xs px-2 py-1 bg-ink-50 dark:bg-ink-800 rounded-full text-ink-400 dark:text-ink-500 dark:text-ink-400">
-              #{tag}
-            </span>
-          ))}
+
+      {activeTab === 'relations' && (
+        <div className="py-2">
+          {id && uid ? (
+            <RelationshipGraph personId={id} personName={data.name} personUid={uid} />
+          ) : (
+            <div className="text-center py-10 text-ink-400">
+              无法获取人物信息，关系图谱不可用
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -142,7 +216,31 @@ function DynastyDetail({ data }: { data: FrontendDynasty }) {
             <span className="text-ink-800 font-medium">{data.fallReason}</span>
           </div>
         )}
+        {data.populationPeak && (
+          <div>
+            <span className="text-ink-500 dark:text-ink-400">人口峰值：</span>
+            <span className="text-ink-800 font-medium">{data.populationPeak}</span>
+          </div>
+        )}
+        {data.gdpEstimate && (
+          <div>
+            <span className="text-ink-500 dark:text-ink-400">GDP 估算：</span>
+            <span className="text-ink-800 font-medium">{data.gdpEstimate}</span>
+          </div>
+        )}
       </div>
+      {data.culturalHighlights && (
+        <div>
+          <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1">文化亮点</h4>
+          <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">{data.culturalHighlights}</p>
+        </div>
+      )}
+      {data.majorTradeRoutes && (
+        <div>
+          <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1">主要贸易路线</h4>
+          <p className="text-sm text-ink-600 dark:text-ink-400">{data.majorTradeRoutes}</p>
+        </div>
+      )}
       {data.legacy && (
         <p className="text-sm text-ink-700 dark:text-ink-300 border-t border-ink-100 dark:border-ink-700 pt-3">
           <span className="font-semibold text-ink-700 dark:text-ink-300">影响：</span>{data.legacy}
@@ -241,11 +339,19 @@ function Recommendations({ type, data }: { type: string | null; data: FrontendEv
           const knowledgeData = data as FrontendKnowledge;
           const allKnowledge = await fetchKnowledgeCards();
           allItems = allKnowledge.map((k: any) => ({ id: Number(k.id), title: k.title }));
+          // 推荐同标签的知识卡片
+          if (knowledgeData.tags.length > 0) {
+            filterField = 'tags';
+            filterValue = knowledgeData.tags[0];
+          }
         }
 
         // 过滤掉当前项，如果有筛选条件则只保留匹配的
         let filtered = allItems.filter((item) => {
           if (!filterField) return true;
+          if (filterField === 'tags') {
+            return (item as any).tags?.includes(filterValue);
+          }
           return item[filterField as keyof typeof item] === filterValue;
         });
 
@@ -514,6 +620,7 @@ export default function DetailModal() {
         onClose={() => setShowShare(false)}
         title={type === 'event' ? (data as FrontendEvent)?.title : type === 'person' ? (data as FrontendPerson)?.name : type === 'dynasty' ? (data as FrontendDynasty)?.name : (data as FrontendKnowledge)?.title}
         url={window.location.href}
+        description={type === 'event' ? (data as FrontendEvent)?.description : type === 'person' ? (data as FrontendPerson)?.bio : type === 'dynasty' ? (data as FrontendDynasty)?.description : (data as FrontendKnowledge)?.description}
       />
     </div>
   );

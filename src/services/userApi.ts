@@ -33,6 +33,9 @@ export interface UserDTO {
   bio?: string;
   createdAt: string;
   lastLoginAt?: string;
+  score?: number;
+  quizzesAnswered?: number;
+  quizzesCorrect?: number;
 }
 
 /** 登录响应 */

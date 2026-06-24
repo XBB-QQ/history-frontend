@@ -1,4 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react';
+import { useTheme } from '@/components/layout/ThemeProvider';
+import { useTimeTravelStore } from '@/store/timeTravelStore';
 
 interface Particle {
   x: number;
@@ -19,36 +21,43 @@ interface InkParticlesProps {
 /**
  * 水墨粒子背景效果
  * 模拟宣纸上飘散的墨粒，部分粒子携带淡化的汉字
+ * 粒子颜色会根据当前朝代主题动态变化
  */
 export default function InkParticles({
-  count = 30,
+  count: baseCount = 30,
   className = '',
 }: InkParticlesProps) {
+  const { primaryColor, isDefault } = useTheme();
+  const ttActive = useTimeTravelStore((s) => s.active);
+  // 时间旅行激活时增加粒子密度
+  const count = ttActive ? baseCount * 2 : baseCount;
+  const particleColor = isDefault ? '#27231e' : primaryColor;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const animFrameRef = useRef<number>(0);
-  const lastSpawnRef = useRef<number>(0);
-
-  // 用于粒子效果的汉字库
+  const colorRef = useRef(particleColor);
   const inkChars = '天地玄黄宇宙洪荒日月盈昃辰宿列张寒来暑往秋收冬藏';
 
-  const spawnParticle = useCallback((w: number, h: number): Particle => {
+  // 保持 colorRef 与当前主题同步
+  useEffect(() => {
+    colorRef.current = particleColor;
+  }, [particleColor]);
+
+  const spawnParticle = useCallback((_w: number, _h: number): Particle => {
     const fromEdge = Math.random() > 0.5;
     let x: number, y: number;
 
     if (fromEdge) {
-      // 从边缘生成
       if (Math.random() > 0.5) {
-        x = Math.random() * w;
-        y = Math.random() > 0.5 ? -10 : h + 10;
+        x = Math.random() * window.innerWidth;
+        y = Math.random() > 0.5 ? -10 : window.innerHeight + 10;
       } else {
-        x = Math.random() > 0.5 ? -10 : w + 10;
-        y = Math.random() * h;
+        x = Math.random() > 0.5 ? -10 : window.innerWidth + 10;
+        y = Math.random() * window.innerHeight;
       }
     } else {
-      // 从随机位置生成
-      x = Math.random() * w;
-      y = Math.random() * h;
+      x = Math.random() * window.innerWidth;
+      y = Math.random() * window.innerHeight;
     }
 
     const hasChar = Math.random() > 0.7;
@@ -56,7 +65,7 @@ export default function InkParticles({
       x,
       y,
       vx: (Math.random() - 0.5) * 0.3,
-      vy: -Math.random() * 0.5 - 0.1, // 微微向上飘
+      vy: -Math.random() * 0.5 - 0.1,
       radius: hasChar ? 10 + Math.random() * 6 : 1 + Math.random() * 2.5,
       opacity: hasChar ? 0.06 + Math.random() * 0.08 : 0.15 + Math.random() * 0.25,
       decay: 0.0002 + Math.random() * 0.0003,
@@ -71,7 +80,6 @@ export default function InkParticles({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // 设置高分辨率 Canvas
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
       canvas.width = window.innerWidth * dpr;
@@ -88,28 +96,23 @@ export default function InkParticles({
     const h = window.innerHeight;
     for (let i = 0; i < count; i++) {
       const p = spawnParticle(w, h);
-      // 随机分布在屏幕上
       p.x = Math.random() * w;
       p.y = Math.random() * h;
       particlesRef.current.push(p);
     }
 
-    const animate = (timestamp: number) => {
+    const animate = () => {
       ctx.clearRect(0, 0, w, h);
-
+      const currentColor = colorRef.current;
       const particles = particlesRef.current;
 
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
-
-        // 更新位置
         p.x += p.vx;
         p.y += p.vy;
         p.opacity -= p.decay;
 
-        // 边界检测 + 衰减
         if (p.opacity <= 0 || p.x < -50 || p.x > w + 50 || p.y < -50 || p.y > h + 50) {
-          // 重生
           particles.splice(i, 1);
           const newP = spawnParticle(w, h);
           particles.push(newP);
@@ -117,22 +120,20 @@ export default function InkParticles({
         }
 
         if (p.char) {
-          // 绘制汉字粒子
           ctx.save();
-          ctx.globalAlpha = p.opacity;
-          ctx.fillStyle = '#484037';
+          ctx.globalAlpha = p.opacity * 0.6;
+          ctx.fillStyle = currentColor;
           ctx.font = `${p.radius * 2}px 'Noto Serif SC', serif`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillText(p.char, p.x, p.y);
           ctx.restore();
         } else {
-          // 绘制墨点粒子
           ctx.save();
           ctx.globalAlpha = p.opacity;
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          ctx.fillStyle = '#27231e';
+          ctx.fillStyle = currentColor;
           ctx.fill();
           ctx.restore();
         }
@@ -153,7 +154,6 @@ export default function InkParticles({
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (mediaQuery.matches) {
-      // 用户偏好减少动画，隐藏 Canvas
       canvasRef.current?.classList.add('!hidden');
     }
   }, []);

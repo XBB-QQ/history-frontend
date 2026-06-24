@@ -7,6 +7,9 @@ const PersonsPage = lazy(() => import('./pages/PersonsPage'));
 const KnowledgePage = lazy(() => import('./pages/KnowledgePage'));
 const MapPage = lazy(() => import('./pages/MapPage'));
 const FavoritesPage = lazy(() => import('./pages/FavoritesPage'));
+const LeaderboardPage = lazy(() => import('./pages/LeaderboardPage'));
+const ComparePage = lazy(() => import('./pages/ComparePage'));
+const LearningPage = lazy(() => import('./pages/LearningPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'));
@@ -23,6 +26,7 @@ import KnowledgeEditor from './pages/admin/KnowledgeEditor';
 
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+import ScrollToTop from './components/common/ScrollToTop';
 import ScrollProgress from './components/common/ScrollProgress';
 import SearchModal from './components/common/SearchModal';
 import DetailModal from './components/detail/DetailModal';
@@ -32,6 +36,7 @@ function App() {
   return (
     <BackgroundLayer>
       <ScrollProgress />
+      <ScrollToTop />
       <Navbar />
       <Suspense fallback={
         <div className="min-h-screen flex items-center justify-center bg-paper dark:bg-ink-950">
@@ -50,6 +55,9 @@ function App() {
           <Route path="/knowledge" element={<KnowledgePage />} />
           <Route path="/map" element={<MapPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
+          <Route path="/compare" element={<ComparePage />} />
+          <Route path="/learning" element={<LearningPage />} />
 
           {/* 用户路由 */}
           <Route path="/login" element={<LoginPage />} />

@@ -41,6 +41,9 @@ export default function Navbar() {
     { label: '史海钩沉', path: '/knowledge' },
     { label: '地图', path: '/map' },
     { label: '收藏', path: '/favorites' },
+    { label: '挑战', path: '/leaderboard' },
+    { label: '对比', path: '/compare' },
+    { label: '学习', path: '/learning' },
   ];
 
   const isActive = (path: string) => {

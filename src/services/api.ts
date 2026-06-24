@@ -18,6 +18,9 @@ interface BackendEventDTO {
   dynastyName: string | null;
   description: string;
   fulltext: string;
+  impact: string | null;
+  significance: number | null;
+  relatedArticles: string[];
   tags: string[];
   relatedEvents: string[];
   relatedPersons: string[];
@@ -38,6 +41,10 @@ interface BackendPersonDTO {
   tags: string[];
   relatedEvents: string[];
   relatedPersons: string[];
+  birthPlace: string | null;
+  deathPlace: string | null;
+  achievements: string | null;
+  relationships: string | null;
 }
 
 interface BackendDynastyDTO {
@@ -56,6 +63,10 @@ interface BackendDynastyDTO {
   description: string;
   fallReason: string;
   legacy: string;
+  populationPeak: string | null;
+  gdpEstimate: string | null;
+  majorTradeRoutes: string | null;
+  culturalHighlights: string | null;
 }
 
 interface BackendKnowledgeDTO {
@@ -87,6 +98,9 @@ export interface FrontendEvent {
   dynasty: string;
   description: string;
   fulltext: string;
+  impact: string;
+  significance: number;
+  relatedArticles: string[];
   tags: string[];
   relatedEvents: string[];
   relatedPersons: string[];
@@ -96,9 +110,13 @@ export interface FrontendEvent {
 
 export interface FrontendPerson {
   id: string;
+  uid: string;
   name: string;
   courtesyName: string;
   dynasty: string;
+  birthPlace: string;
+  deathPlace: string;
+  achievements: string;
   years: [number | null, number | null];
   yearsDisplay: string;
   gender: 'male' | 'female' | 'unknown';
@@ -127,6 +145,10 @@ export interface FrontendDynasty {
   description: string;
   fallReason: string;
   legacy: string;
+  populationPeak: string;
+  gdpEstimate: string;
+  majorTradeRoutes: string;
+  culturalHighlights: string;
   relatedEvents: string[];
   relatedPersons: string[];
   source: string;
@@ -182,6 +204,9 @@ function adaptEvent(dto: BackendEventDTO): FrontendEvent {
     dynasty: dto.dynastyName ?? '',
     description: dto.description,
     fulltext: dto.fulltext,
+    impact: dto.impact ?? '',
+    significance: dto.significance ?? 3,
+    relatedArticles: dto.relatedArticles ?? [],
     tags: dto.tags,
     relatedEvents: dto.relatedEvents,
     relatedPersons: dto.relatedPersons,
@@ -200,9 +225,13 @@ function adaptPerson(dto: BackendPersonDTO): FrontendPerson {
 
   return {
     id: String(dto.id),
+    uid: dto.uid,
     name: dto.name,
     courtesyName: dto.courtesyName,
     dynasty: dto.dynastyName ?? '',
+    birthPlace: dto.birthPlace ?? '',
+    deathPlace: dto.deathPlace ?? '',
+    achievements: dto.achievements ?? '',
     years,
     yearsDisplay: dto.yearsDisplay,
     gender: adaptGender(dto.gender),
@@ -233,6 +262,10 @@ function adaptDynasty(dto: BackendDynastyDTO): FrontendDynasty {
     description: dto.description,
     fallReason: dto.fallReason,
     legacy: dto.legacy,
+    populationPeak: dto.populationPeak ?? '',
+    gdpEstimate: dto.gdpEstimate ?? '',
+    majorTradeRoutes: dto.majorTradeRoutes ?? '',
+    culturalHighlights: dto.culturalHighlights ?? '',
     relatedEvents: [],
     relatedPersons: [],
     source: '',
@@ -536,5 +569,162 @@ export async function fetchDynastyMap(dynastyName: string): Promise<DynastyMapDT
 
 export async function fetchAllDynastyMaps(): Promise<DynastyMapDTO[]> {
   return await fetchJSON<DynastyMapDTO[]>(`${BASE_URL}/map/dynasties`);
+}
+
+// ──────────────────────────────────────────────
+// 历史上的今天 & 每日推荐
+// ──────────────────────────────────────────────
+
+export interface TodayEvent {
+  id: number;
+  uid: string;
+  title: string;
+  year: number;
+  yearDisplay: string;
+  yearPrecision: string;
+  category: string;
+  dynastyName: string | null;
+  description: string;
+  fulltext: string;
+  tags: string[];
+  relatedEvents: string[];
+  relatedPersons: string[];
+}
+
+/** 获取今天的历史事件 */
+export async function fetchTodayEvents(): Promise<TodayEvent[]> {
+  const data = await fetchJSON<TodayEvent[]>(`${BASE_URL.replace('/api/v1', '/api/public')}/today`);
+  return data;
+}
+
+/** 获取每日推荐事件 */
+export async function fetchDailyRecommend(): Promise<{ found: boolean; event: TodayEvent }> {
+  const data = await fetchJSON<{ found: boolean; event: TodayEvent }>(`${BASE_URL.replace('/api/v1', '/api/public')}/daily-recommend`);
+  return data;
+}
+
+// ──────────────────────────────────────────────
+// 人物关系图谱
+// ──────────────────────────────────────────────
+
+export interface RelationshipEntry {
+  targetUid: string;
+  relation: string;
+  label: string;
+}
+
+/** 获取人物关系链 */
+export async function fetchPersonRelationships(id: number): Promise<RelationshipEntry[]> {
+  const data = await fetchJSON<RelationshipEntry[]>(`${BASE_URL}/persons/${id}/relationships`);
+  return data;
+}
+
+// ──────────────────────────────────────────────
+// 问答挑战
+// ──────────────────────────────────────────────
+
+export interface QuizQuestion {
+  id: number;
+  question: string;
+  options: string[];
+  correctIndex: number;
+  difficulty: 'easy' | 'medium' | 'hard';
+  dynasty: string | null;
+  eventId: string | null;
+  personId: string | null;
+  explanation: string | null;
+  category: string | null;
+}
+
+export interface QuizResult {
+  correct: boolean;
+  pointsEarned: number;
+  question: QuizQuestion;
+  explanation: string | null;
+}
+
+/** 获取每日题目 */
+export async function fetchDailyQuiz(): Promise<QuizQuestion> {
+  const data = await fetchJSON<QuizQuestion>(`${BASE_URL}/quiz/daily`);
+  return data;
+}
+
+/** 提交答案 */
+export async function submitQuizAnswer(questionId: number, selectedIndex: number): Promise<QuizResult> {
+  const data = await fetchJSON<QuizResult>(`${BASE_URL}/quiz/answer`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ questionId, selectedIndex }),
+  });
+  return data;
+}
+
+/** 获取随机题目 */
+export async function fetchRandomQuiz(page = 0, size = 10): Promise<{ content: QuizQuestion[]; total: number }> {
+  const data = await fetchJSON<{ content: QuizQuestion[]; totalElements: number }>(
+    `${BASE_URL}/quiz/random?page=${page}&size=${size}`
+  );
+  return {
+    content: data.content,
+    total: data.totalElements,
+  };
+}
+
+/** 获取排行榜 */
+export async function fetchQuizLeaderboard(page = 0, size = 20): Promise<{ content: LeaderboardEntry[]; total: number }> {
+  const data = await fetchJSON<{ content: LeaderboardEntry[]; totalElements: number }>(
+    `${BASE_URL}/quiz/ranking?page=${page}&size=${size}`
+  );
+  return {
+    content: data.content,
+    total: data.totalElements,
+  };
+}
+
+export interface LeaderboardEntry {
+  id: number;
+  username: string;
+  nickname: string;
+  score: number;
+  quizzesAnswered: number;
+  quizzesCorrect: number;
+}
+
+// ──────────────────────────────────────────────
+// 人物对比
+// ──────────────────────────────────────────────
+
+export async function fetchPersonCompare(id1: number, id2: number): Promise<BackendPersonDTO[]> {
+  const data = await fetchJSON<{ persons: BackendPersonDTO[] }>(
+    `${BASE_URL}/persons/compare?id1=${id1}&id2=${id2}`
+  );
+  return data.persons;
+}
+
+// ──────────────────────────────────────────────
+// 跨实体关联查询
+// ──────────────────────────────────────────────
+
+export interface DynastyDetailsResponse {
+  dynasty: BackendDynastyDTO;
+  events: BackendEventDTO[];
+  persons: BackendPersonDTO[];
+  knowledgeCards: BackendKnowledgeDTO[];
+}
+
+export interface EventRelatedResponse {
+  event: BackendEventDTO;
+  relatedPersons: BackendPersonDTO[];
+  relatedKnowledge: BackendKnowledgeDTO[];
+}
+
+/** 获取朝代详情（含关联事件、人物、知识卡片） */
+export async function fetchDynastyDetails(id: number): Promise<DynastyDetailsResponse> {
+  return await fetchJSON<DynastyDetailsResponse>(`${BASE_URL}/dynasties/${id}/details`);
+}
+
+/** 获取事件关联数据 */
+export async function fetchEventRelated(id: number): Promise<EventRelatedResponse> {
+  return await fetchJSON<EventRelatedResponse>(`${BASE_URL}/events/${id}/related`);
 }
 
