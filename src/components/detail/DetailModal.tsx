@@ -380,8 +380,8 @@ function Recommendations({ type, data }: { type: string | null; data: FrontendEv
   };
 
   return (
-    <div className="mt-6 pt-4 border-t border-ink-300 dark:border-ink-600 bg-ink-100 dark:bg-ink-800/80 -mx-6 px-6 py-4 rounded-b-2xl">
-      <h4 className="text-sm font-bold text-ink-900 mb-3 flex items-center gap-2">
+    <div className="mt-8 pt-4 border-t border-ink-200 dark:border-ink-600 bg-ink-50 dark:bg-ink-800/50 -mx-6 px-6 py-4 rounded-b-2xl">
+      <h4 className="text-sm font-bold text-ink-800 dark:text-ink-200 mb-3 flex items-center gap-2">
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
         </svg>
@@ -608,6 +608,12 @@ export default function DetailModal() {
               resourceType={type}
             />
           )}
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 py-3 border-t border-ink-200 dark:border-ink-700 bg-ink-50/50 dark:bg-ink-950/50 flex items-center justify-between text-xs text-ink-400">
+          <span>双击关闭弹窗</span>
+          <span>五千年史馆</span>
         </div>
 
         {/* 移动端底部安全区 */}
