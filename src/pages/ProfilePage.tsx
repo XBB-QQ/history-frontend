@@ -154,6 +154,12 @@ export default function ProfilePage() {
             >
               我的收藏
             </Link>
+            <Link
+              to="/profile-report"
+              className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg transition-all text-center"
+            >
+              🎭 我的历史画像
+            </Link>
           </div>
 
           {success && (
