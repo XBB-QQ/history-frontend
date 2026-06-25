@@ -93,7 +93,7 @@ export default function DynastyFoodPage() {
           </p>
 
           <div className="p-4 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50/30 dark:bg-amber-900/20">
-            <h4 className="text-sm font-bold text-amber-700 dark:text-amber-300 mb-2">📜 历史注记</h4>
+            <h4 className="text-sm font-bold text-amber-700 dark:text-amber-300 mb-2">历史注记</h4>
             <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed italic">
               {dish.historicalNote}
             </p>

@@ -102,7 +102,7 @@ function SkyEventDetail({ event, onBack }: { event: SkyEvent; onBack: () => void
 
       {/* 历史记载 */}
       <div className="p-4 rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50/30 dark:bg-amber-900/20">
-        <h3 className="text-sm font-bold text-amber-700 dark:text-amber-300 mb-2">📜 史书记载</h3>
+        <h3 className="text-sm font-bold text-amber-700 dark:text-amber-300 mb-2">史书记载</h3>
         <p className="text-sm text-ink-700 dark:text-ink-300 leading-relaxed italic">
           {event.historicalRecord}
         </p>

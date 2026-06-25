@@ -57,7 +57,7 @@ export default function RagQaPage() {
           <SectionHeader
             label="AI HISTORY Q&A"
             title="历史智慧问答"
-            description="用自然语言提问，AI 基于史料数据为你解答 — 支持因果分析、对比、推演"
+            description="问任何问题，从史料中寻找答案"
           />
         </RevealOnScroll>
 
@@ -79,7 +79,7 @@ export default function RagQaPage() {
                 disabled={loading || !question.trim()}
                 className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
-                {loading ? '思考中…' : '提问'}
+                {loading ? '查找中…' : '提问'}
               </button>
             </div>
 
@@ -117,8 +117,8 @@ export default function RagQaPage() {
                     <span className="text-accent text-lg">🤖</span>
                   </div>
                   <div>
-                    <div className="font-bold text-ink-900 dark:text-ink-100">五千年史馆 · AI 顾问</div>
-                    <div className="text-xs text-ink-500 dark:text-ink-400">基于 GLM-4-Flash + 史料检索增强</div>
+                    <div className="font-bold text-ink-900 dark:text-ink-100">史馆答问</div>
+                    <div className="text-xs text-ink-500 dark:text-ink-400">基于史料检索，非凭空作答</div>
                   </div>
                 </div>
 
@@ -136,7 +136,7 @@ export default function RagQaPage() {
                 <div className="space-y-3">
                   {/* 匹配度 */}
                   <div className="flex items-center gap-2 text-sm text-ink-500 dark:text-ink-400">
-                    <span>📊 史料匹配度：</span>
+                    <span>史料匹配度：</span>
                     <div className="flex-1 h-2 rounded-full bg-ink-200 dark:bg-ink-700 max-w-xs">
                       <div
                         className="h-full rounded-full bg-accent"

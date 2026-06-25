@@ -46,7 +46,7 @@ function TimelinePage() {
           <SectionHeader
             label="TIMELINE"
             title="时间轴"
-            description="探索五千年历史长河中的重大事件"
+            description="从炎黄到清末，五千年大事一览"
           />
         </RevealOnScroll>
 

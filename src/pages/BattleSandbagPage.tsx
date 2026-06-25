@@ -51,7 +51,7 @@ export default function BattleSandbagPage() {
           <SectionHeader
             label="BATTLE SIMULATOR"
             title="战役推演沙盘"
-            description="选择战役和战术，看不同决策如何改变战局 — 你的决策 vs 历史实际"
+            description="调兵遣将，运筹帷幄，看你的决策能否改变战局"
           />
         </RevealOnScroll>
 
@@ -174,7 +174,7 @@ export default function BattleSandbagPage() {
                 disabled={!selectedTactic}
                 className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg disabled:opacity-50 transition-all"
               >
-                ⚔️ 开战！
+                ⚔️ 开战
               </button>
               <button onClick={() => setPhase('select')} className="px-6 py-3 rounded-lg border-2 border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-300 font-bold hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors">
                 返回选择

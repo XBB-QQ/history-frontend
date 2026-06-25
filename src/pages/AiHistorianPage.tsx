@@ -57,7 +57,7 @@ export default function AiHistorianPage() {
           <SectionHeader
             label="AI HISTORIAN"
             title="AI 史官评语"
-            description="你的史官为你撰写专属评语 — 正史体、稗官体、谥议体三种风格"
+            description="以史官之笔，为你写一段列传"
           />
         </RevealOnScroll>
 
@@ -119,7 +119,7 @@ export default function AiHistorianPage() {
               disabled={loading}
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-accent to-amber-600 text-white font-bold text-lg hover:shadow-xl disabled:opacity-50 transition-all"
             >
-              {loading ? '史官正在书写…' : '🖊️ 请史官为我作评'}
+              {loading ? '撰写中…' : '为我作评'}
             </button>
           </div>
         </RevealOnScroll>

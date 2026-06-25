@@ -36,7 +36,7 @@ function KnowledgePage() {
           <SectionHeader
             label="KNOWLEDGE"
             title="史海钩沉"
-            description="知识卡片，深入理解文明脉络"
+            description="丝绸之路、四大发明、科举制度，逐一细说"
           />
         </RevealOnScroll>
 

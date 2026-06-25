@@ -114,7 +114,7 @@ export default function DebatePage() {
           {/* 投票统计 */}
           {myVote && (
             <div className="p-4 rounded-xl border border-ink-200 dark:border-ink-700">
-              <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3">📊 投票统计</h3>
+              <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3">投票统计</h3>
               <div className="flex items-center gap-4 mb-2">
                 <div className="flex-1">
                   <div className="flex items-center justify-between text-xs mb-1">

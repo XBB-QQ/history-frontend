@@ -38,7 +38,7 @@ export default function MultiPerspectivePage() {
           <SectionHeader
             label="ROSHOMON"
             title="多视角叙事"
-            description="同一事件，不同立场看到不同的真相 — 切换视角，发现历史的多面性"
+            description="同一件事，三个人三种说法，历史没有唯一真相"
           />
         </RevealOnScroll>
 

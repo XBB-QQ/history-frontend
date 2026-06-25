@@ -102,7 +102,7 @@ export default function CrossDebatePage() {
           <SectionHeader
             label="CROSS-TIME DEBATE"
             title="跨时空辩论场"
-            description="让历史人物面对面辩论 — 孔子 vs 秦始皇，法治还是礼治？"
+            description="孔子遇上秦始皇，礼治还是法治，且看谁说得过谁"
           />
         </RevealOnScroll>
 
@@ -317,7 +317,7 @@ export default function CrossDebatePage() {
             {/* 史官评语 */}
             {conclusion && (
               <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
-                <h3 className="text-sm font-bold text-accent mb-3 tracking-widest">📜 史官评语</h3>
+                <h3 className="text-sm font-bold text-accent mb-3 tracking-widest">史官评语</h3>
                 <p className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line">{conclusion}</p>
               </div>
             )}

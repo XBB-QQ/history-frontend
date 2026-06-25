@@ -42,6 +42,9 @@ const DynastyEconomyPage = lazy(() => import('./pages/DynastyEconomyPage'));
 const BattleSandbagPage = lazy(() => import('./pages/BattleSandbagPage'));
 const InkAnimationPage = lazy(() => import('./pages/InkAnimationPage'));
 const TerritoryMapPage = lazy(() => import('./pages/TerritoryMapPage'));
+const MigrationMapPage = lazy(() => import('./pages/MigrationMapPage'));
+const SoundMuseumPage = lazy(() => import('./pages/SoundMuseumPage'));
+const ContributionPage = lazy(() => import('./pages/ContributionPage'));
 
 // 后台管理页面（不用 lazy，避免 SSR 问题）
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -140,6 +143,9 @@ function App() {
           <Route path="/battle" element={<BattleSandbagPage />} />
           <Route path="/ink-animation" element={<InkAnimationPage />} />
           <Route path="/territory" element={<TerritoryMapPage />} />
+          <Route path="/migration" element={<MigrationMapPage />} />
+          <Route path="/sound-museum" element={<SoundMuseumPage />} />
+          <Route path="/contribution" element={<ContributionPage />} />
 
           {/* 后台管理路由 */}
           <Route path="/admin/login" element={<AdminLoginPage />} />

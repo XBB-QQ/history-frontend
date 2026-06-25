@@ -57,7 +57,7 @@ function KnowledgeGraphPage() {
           <SectionHeader
             label="KNOWLEDGE GRAPH"
             title="全局知识图谱"
-            description="朝代 · 事件 · 人物 · 知识卡片 — 万千节点，一张图谱，看懂历史脉络"
+            description="一张网，把朝代、人物、事件全连起来"
           />
         </RevealOnScroll>
 

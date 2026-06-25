@@ -98,7 +98,7 @@ export default function InkAnimationPage() {
           <SectionHeader
             label="INK ANIMATION"
             title="水墨动画短片"
-            description="30秒水墨风格历史事件动画叙事 — SVG + CSS 动画演绎"
+            description="水墨晕染，笔走龙蛇，三十秒重温一个历史瞬间"
           />
         </RevealOnScroll>
 
@@ -290,7 +290,7 @@ export default function InkAnimationPage() {
 
             {/* 历史背景 */}
             <div className="p-4 bg-accent/5 dark:bg-accent/10 rounded-lg border-l-4 border-accent">
-              <h4 className="text-xs font-bold text-accent mb-1 tracking-widest">📜 历史背景</h4>
+              <h4 className="text-xs font-bold text-accent mb-1 tracking-widest">历史背景</h4>
               <p className="text-sm text-ink-800 dark:text-ink-200">{animation.background}</p>
             </div>
           </div>

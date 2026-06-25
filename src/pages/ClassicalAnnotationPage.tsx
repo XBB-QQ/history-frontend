@@ -71,7 +71,7 @@ export default function ClassicalAnnotationPage() {
           <SectionHeader
             label="CLASSICAL ANNOTATION"
             title="古文注解"
-            description="输入古文，获取词义注解和白话翻译 — 词典检索 + AI 智能注解"
+            description="逐字注解古文，读懂每一句史书原文"
           />
         </RevealOnScroll>
 

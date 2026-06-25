@@ -97,7 +97,7 @@ export default function K12PathPage() {
 
           {/* 章节测试题 */}
           <div className="p-4 rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50/30 dark:bg-amber-900/20">
-            <h3 className="text-sm font-bold text-amber-700 dark:text-amber-300 mb-3">📝 章节测试题</h3>
+            <h3 className="text-sm font-bold text-amber-700 dark:text-amber-300 mb-3">章节测试题</h3>
             <p className="text-sm font-bold text-ink-800 dark:text-ink-200 mb-3">{chapter.quiz.question}</p>
             <div className="space-y-2 mb-3">
               {chapter.quiz.options.map((opt, i) => (
