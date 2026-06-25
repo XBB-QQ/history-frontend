@@ -1,12 +1,16 @@
 /**
- * 决策结果展示
+ * 决策结果展示 — 含分享卡片 & 决策树入口
  */
 
+import { useState } from 'react';
 import type { Choice, Scenario } from '@/types/scenario';
+import OutcomeTree from '@/components/simulator/OutcomeTree';
+import ShareCard from '@/components/simulator/ShareCard';
 
 interface ResultViewProps {
   scenario: Scenario;
   choice: Choice;
+  onBranchSwitch?: (choice: Choice) => void;
 }
 
 const OUTCOME_LABELS: Record<string, { label: string; emoji: string; color: string }> = {
@@ -15,8 +19,9 @@ const OUTCOME_LABELS: Record<string, { label: string; emoji: string; color: stri
   failed: { label: '失败结局', emoji: '💀', color: 'text-gray-600 dark:text-gray-400 border-gray-500' },
 };
 
-export default function ResultView({ scenario, choice }: ResultViewProps) {
+export default function ResultView({ scenario, choice, onBranchSwitch }: ResultViewProps) {
   const outcome = OUTCOME_LABELS[choice.outcome];
+  const [showTree, setShowTree] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -96,6 +101,39 @@ export default function ResultView({ scenario, choice }: ResultViewProps) {
         <p className="text-ink-800 dark:text-ink-200 leading-loose italic">
           {scenario.lesson}
         </p>
+      </div>
+
+      {/* 决策树切换 */}
+      <div className="text-center">
+        <button
+          onClick={() => setShowTree(!showTree)}
+          className={`px-5 py-2 rounded-lg font-bold text-sm transition-all ${
+            showTree
+              ? 'bg-accent text-white shadow-lg'
+              : 'bg-ink-100 dark:bg-ink-800 text-ink-700 dark:text-ink-300 hover:bg-accent hover:text-white'
+          }`}
+        >
+          {showTree ? '🌳 收起决策树' : '🌳 查看所有分支'}
+        </button>
+      </div>
+
+      {/* 决策树 */}
+      {showTree && (
+        <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
+          <OutcomeTree
+            scenario={scenario}
+            selectedChoice={choice}
+            onChoiceClick={onBranchSwitch}
+          />
+        </div>
+      )}
+
+      {/* 分享卡片 */}
+      <div className="p-4 bg-ink-50/50 dark:bg-ink-900/30 rounded-lg border border-ink-200 dark:border-ink-700">
+        <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest text-center">
+          📤 分享你的决策
+        </h3>
+        <ShareCard scenario={scenario} choice={choice} />
       </div>
     </div>
   );

@@ -88,6 +88,10 @@ function SimulatorPage() {
     setSelectedChoice(null);
   }
 
+  function handleBranchSwitch(choice: Choice) {
+    setSelectedChoice(choice);
+  }
+
   const avgPlausibility = stats.total > 0
     ? Math.round(stats.plausibilitySum / stats.total)
     : 0;
@@ -256,7 +260,7 @@ function SimulatorPage() {
         {state === 'result' && scenario && selectedChoice && (
           <RevealOnScroll direction="fade">
             <div className="mt-8 space-y-6">
-              <ResultView scenario={scenario} choice={selectedChoice} />
+              <ResultView scenario={scenario} choice={selectedChoice} onBranchSwitch={handleBranchSwitch} />
 
               {/* 操作按钮 */}
               <div className="flex flex-wrap gap-3 justify-center pt-4">

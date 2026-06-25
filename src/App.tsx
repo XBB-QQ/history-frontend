@@ -33,6 +33,15 @@ const CalendarConverterPage = lazy(() => import('./pages/CalendarConverterPage')
 const ClimatePage = lazy(() => import('./pages/ClimatePage'));
 const PodcastPage = lazy(() => import('./pages/PodcastPage'));
 const K12PathPage = lazy(() => import('./pages/K12PathPage'));
+const RagQaPage = lazy(() => import('./pages/RagQaPage'));
+const CrossDebatePage = lazy(() => import('./pages/CrossDebatePage'));
+const AiHistorianPage = lazy(() => import('./pages/AiHistorianPage'));
+const MultiPerspectivePage = lazy(() => import('./pages/MultiPerspectivePage'));
+const ClassicalAnnotationPage = lazy(() => import('./pages/ClassicalAnnotationPage'));
+const DynastyEconomyPage = lazy(() => import('./pages/DynastyEconomyPage'));
+const BattleSandbagPage = lazy(() => import('./pages/BattleSandbagPage'));
+const InkAnimationPage = lazy(() => import('./pages/InkAnimationPage'));
+const TerritoryMapPage = lazy(() => import('./pages/TerritoryMapPage'));
 
 // 后台管理页面（不用 lazy，避免 SSR 问题）
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -122,6 +131,15 @@ function App() {
           <Route path="/climate" element={<ClimatePage />} />
           <Route path="/podcast" element={<PodcastPage />} />
           <Route path="/k12" element={<K12PathPage />} />
+          <Route path="/rag-qa" element={<RagQaPage />} />
+          <Route path="/cross-debate" element={<CrossDebatePage />} />
+          <Route path="/ai-historian" element={<AiHistorianPage />} />
+          <Route path="/multi-perspective" element={<MultiPerspectivePage />} />
+          <Route path="/classical-annotation" element={<ClassicalAnnotationPage />} />
+          <Route path="/dynasty-economy" element={<DynastyEconomyPage />} />
+          <Route path="/battle" element={<BattleSandbagPage />} />
+          <Route path="/ink-animation" element={<InkAnimationPage />} />
+          <Route path="/territory" element={<TerritoryMapPage />} />
 
           {/* 后台管理路由 */}
           <Route path="/admin/login" element={<AdminLoginPage />} />
