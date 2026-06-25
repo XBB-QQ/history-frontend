@@ -16,9 +16,10 @@ export interface LlmConfig {
 }
 
 const DEFAULT_CONFIG: LlmConfig = {
-  apiKey: '',
-  baseUrl: 'https://open.bigmodel.cn/api/paas/v4',
-  model: 'glm-4-flash',
+  // 优先用 localStorage，回退到 .env 的 VITE_ 变量（仅本地开发用）
+  apiKey: import.meta.env.VITE_SF_API_KEY || '',
+  baseUrl: import.meta.env.VITE_SF_BASE_URL || 'https://open.bigmodel.cn/api/paas/v4',
+  model: import.meta.env.VITE_SF_MODEL || 'glm-4-flash',
 };
 
 /** 获取 LLM 配置（从 localStorage） */
