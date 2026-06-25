@@ -25,6 +25,12 @@ const SkyEventPage = lazy(() => import('./pages/SkyEventPage'));
 const CausalChainPage = lazy(() => import('./pages/CausalChainPage'));
 const LearningPathPage = lazy(() => import('./pages/LearningPathPage'));
 const DebatePage = lazy(() => import('./pages/DebatePage'));
+const TechTreePage = lazy(() => import('./pages/TechTreePage'));
+const CharEvolutionPage = lazy(() => import('./pages/CharEvolutionPage'));
+const DynastyFoodPage = lazy(() => import('./pages/DynastyFoodPage'));
+const DynastyComparePage = lazy(() => import('./pages/DynastyComparePage'));
+const CalendarConverterPage = lazy(() => import('./pages/CalendarConverterPage'));
+const ClimatePage = lazy(() => import('./pages/ClimatePage'));
 
 // 后台管理页面（不用 lazy，避免 SSR 问题）
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -106,6 +112,12 @@ function App() {
           <Route path="/causal-chain" element={<CausalChainPage />} />
           <Route path="/learning-path" element={<LearningPathPage />} />
           <Route path="/debate" element={<DebatePage />} />
+          <Route path="/tech-tree" element={<TechTreePage />} />
+          <Route path="/char-evolution" element={<CharEvolutionPage />} />
+          <Route path="/dynasty-food" element={<DynastyFoodPage />} />
+          <Route path="/dynasty-compare" element={<DynastyComparePage />} />
+          <Route path="/calendar" element={<CalendarConverterPage />} />
+          <Route path="/climate" element={<ClimatePage />} />
 
           {/* 后台管理路由 */}
           <Route path="/admin/login" element={<AdminLoginPage />} />
