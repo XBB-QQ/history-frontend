@@ -293,7 +293,7 @@ export const CATEGORY_STYLE = {
 };
 
 export const IMPORTANCE_STYLE = {
-  world-changing: { label: '改变世界', icon: '🌍', size: 28 },
+  'world-changing': { label: '改变世界', icon: '🌍', size: 28 },
   major: { label: '重大发明', icon: '⭐', size: 22 },
   significant: { label: '重要发明', icon: '💡', size: 18 },
   regional: { label: '区域影响', icon: '📍', size: 14 },
