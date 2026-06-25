@@ -31,6 +31,8 @@ const DynastyFoodPage = lazy(() => import('./pages/DynastyFoodPage'));
 const DynastyComparePage = lazy(() => import('./pages/DynastyComparePage'));
 const CalendarConverterPage = lazy(() => import('./pages/CalendarConverterPage'));
 const ClimatePage = lazy(() => import('./pages/ClimatePage'));
+const PodcastPage = lazy(() => import('./pages/PodcastPage'));
+const K12PathPage = lazy(() => import('./pages/K12PathPage'));
 
 // 后台管理页面（不用 lazy，避免 SSR 问题）
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -118,6 +120,8 @@ function App() {
           <Route path="/dynasty-compare" element={<DynastyComparePage />} />
           <Route path="/calendar" element={<CalendarConverterPage />} />
           <Route path="/climate" element={<ClimatePage />} />
+          <Route path="/podcast" element={<PodcastPage />} />
+          <Route path="/k12" element={<K12PathPage />} />
 
           {/* 后台管理路由 */}
           <Route path="/admin/login" element={<AdminLoginPage />} />

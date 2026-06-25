@@ -55,6 +55,8 @@ export default function Navbar() {
     { label: '雷达', path: '/dynasty-compare' },
     { label: '日历', path: '/calendar' },
     { label: '气候', path: '/climate' },
+    { label: '播客', path: '/podcast' },
+    { label: '课本', path: '/k12' },
     { label: '地图', path: '/map' },
     { label: '收藏', path: '/favorites' },
     { label: '挑战', path: '/leaderboard' },
