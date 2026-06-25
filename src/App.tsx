@@ -21,6 +21,8 @@ const DialogPage = lazy(() => import('./pages/DialogPage'));
 const KnowledgeGraphPage = lazy(() => import('./pages/KnowledgeGraphPage'));
 const CardsPage = lazy(() => import('./pages/CardsPage'));
 const DynastyCardPage = lazy(() => import('./pages/DynastyCardPage'));
+const SkyEventPage = lazy(() => import('./pages/SkyEventPage'));
+const CausalChainPage = lazy(() => import('./pages/CausalChainPage'));
 
 // 后台管理页面（不用 lazy，避免 SSR 问题）
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -98,6 +100,8 @@ function App() {
           <Route path="/knowledge-graph" element={<KnowledgeGraphPage />} />
           <Route path="/cards" element={<CardsPage />} />
           <Route path="/dynasty-card" element={<DynastyCardPage />} />
+          <Route path="/sky-events" element={<SkyEventPage />} />
+          <Route path="/causal-chain" element={<CausalChainPage />} />
 
           {/* 后台管理路由 */}
           <Route path="/admin/login" element={<AdminLoginPage />} />

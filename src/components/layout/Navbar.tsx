@@ -45,6 +45,8 @@ export default function Navbar() {
     { label: '图谱', path: '/knowledge-graph' },
     { label: '卡牌', path: '/cards' },
     { label: '名片', path: '/dynasty-card' },
+    { label: '天象', path: '/sky-events' },
+    { label: '因果', path: '/causal-chain' },
     { label: '地图', path: '/map' },
     { label: '收藏', path: '/favorites' },
     { label: '挑战', path: '/leaderboard' },
