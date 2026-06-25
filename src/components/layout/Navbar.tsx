@@ -44,6 +44,7 @@ export default function Navbar() {
     { label: '对话', path: '/dialog' },
     { label: '图谱', path: '/knowledge-graph' },
     { label: '卡牌', path: '/cards' },
+    { label: '名片', path: '/dynasty-card' },
     { label: '地图', path: '/map' },
     { label: '收藏', path: '/favorites' },
     { label: '挑战', path: '/leaderboard' },

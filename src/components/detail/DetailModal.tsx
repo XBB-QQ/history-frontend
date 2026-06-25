@@ -14,6 +14,7 @@ import ShareDialog from '@/components/share/ShareDialog';
 import CommentSection from '@/components/comments/CommentSection';
 import RelationshipGraph from '@/components/person/RelationshipGraph';
 import ClassicalTextPanel from '@/components/detail/ClassicalTextPanel';
+import VoiceHistorian from '@/components/detail/VoiceHistorian';
 
 // ──────────────────────────────────────────────
 // 各类型详情子组件
@@ -52,6 +53,8 @@ function EventDetail({ data }: { data: FrontendEvent }) {
           modernTranslation={data.modernTranslation}
         />
       )}
+      {/* 语音史官 */}
+      <VoiceHistorian event={data} />
       {data.impact && (
         <div>
           <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1">历史影响</h4>

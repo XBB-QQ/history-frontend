@@ -20,6 +20,7 @@ const SimulatorPage = lazy(() => import('./pages/SimulatorPage'));
 const DialogPage = lazy(() => import('./pages/DialogPage'));
 const KnowledgeGraphPage = lazy(() => import('./pages/KnowledgeGraphPage'));
 const CardsPage = lazy(() => import('./pages/CardsPage'));
+const DynastyCardPage = lazy(() => import('./pages/DynastyCardPage'));
 
 // 后台管理页面（不用 lazy，避免 SSR 问题）
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -50,6 +51,10 @@ function App() {
     hydrateFromStorage();
     // 延迟预加载，不阻塞首屏
     const timer = setTimeout(() => preloadAllSceneFonts(), 3000);
+    // 注册 Service Worker (PWA)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
     return () => clearTimeout(timer);
   }, [hydrateFromStorage]);
 
@@ -92,6 +97,7 @@ function App() {
           <Route path="/dialog" element={<DialogPage />} />
           <Route path="/knowledge-graph" element={<KnowledgeGraphPage />} />
           <Route path="/cards" element={<CardsPage />} />
+          <Route path="/dynasty-card" element={<DynastyCardPage />} />
 
           {/* 后台管理路由 */}
           <Route path="/admin/login" element={<AdminLoginPage />} />
