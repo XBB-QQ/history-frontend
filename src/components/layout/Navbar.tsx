@@ -42,6 +42,8 @@ export default function Navbar() {
     { label: '中外', path: '/world-compare' },
     { label: '抉择', path: '/simulator' },
     { label: '对话', path: '/dialog' },
+    { label: '图谱', path: '/knowledge-graph' },
+    { label: '卡牌', path: '/cards' },
     { label: '地图', path: '/map' },
     { label: '收藏', path: '/favorites' },
     { label: '挑战', path: '/leaderboard' },

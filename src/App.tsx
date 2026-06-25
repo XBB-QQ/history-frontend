@@ -18,6 +18,8 @@ const ProfileReportPage = lazy(() => import('./pages/ProfileReportPage'));
 const WorldComparePage = lazy(() => import('./pages/WorldComparePage'));
 const SimulatorPage = lazy(() => import('./pages/SimulatorPage'));
 const DialogPage = lazy(() => import('./pages/DialogPage'));
+const KnowledgeGraphPage = lazy(() => import('./pages/KnowledgeGraphPage'));
+const CardsPage = lazy(() => import('./pages/CardsPage'));
 
 // 后台管理页面（不用 lazy，避免 SSR 问题）
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -88,6 +90,8 @@ function App() {
           <Route path="/world-compare" element={<WorldComparePage />} />
           <Route path="/simulator" element={<SimulatorPage />} />
           <Route path="/dialog" element={<DialogPage />} />
+          <Route path="/knowledge-graph" element={<KnowledgeGraphPage />} />
+          <Route path="/cards" element={<CardsPage />} />
 
           {/* 后台管理路由 */}
           <Route path="/admin/login" element={<AdminLoginPage />} />
