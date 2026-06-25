@@ -5,6 +5,7 @@ import { useSearchStore } from '@/store/searchStore';
 import { useFavoriteStore } from '@/store/favoriteStore';
 import { useUserStore } from '@/store/userStore';
 import type { UserDTO } from '@/services/userApi';
+import LlmConfigPanel from '@/components/common/LlmConfigPanel';
 
 export default function Navbar() {
   const location = useLocation();
@@ -124,6 +125,9 @@ export default function Navbar() {
               ⌘K
             </kbd>
           </button>
+
+          {/* AI 配置按钮 */}
+          <LlmConfigPanel />
 
           {/* 主题切换按钮 */}
           <button

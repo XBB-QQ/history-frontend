@@ -1,11 +1,15 @@
 /**
- * LLM API 客户端 — 硅基流动 SiliconFlow + GLM-4-Flash
+ * LLM API 客户端 — 智谱 AI GLM-4-Flash
  * @see history-museum/design/002-innovation-brainstorm.md §2 RAG 问答
+ *
+ * ⚠️ 安全：API Key 从 localStorage 运行时读取，不使用 VITE_ 前缀（避免暴露在构建产物中）
  */
 
-const BASE_URL = import.meta.env.VITE_SF_BASE_URL || 'https://api.siliconflow.cn/v1';
-const API_KEY = import.meta.env.VITE_SF_API_KEY || '';
-const MODEL = import.meta.env.VITE_SF_MODEL || 'THUDM/glm-4-flash';
+import { getLlmConfig, hasApiKey } from '@/utils/llmConfig';
+
+function getConfig() {
+  return getLlmConfig();
+}
 
 export interface LLMMessage {
   role: 'system' | 'user' | 'assistant';
@@ -26,17 +30,22 @@ export async function callLLM(
   messages: LLMMessage[],
   options: LLMOptions = {},
 ): Promise<string> {
+  const config = getConfig();
+  if (!hasApiKey()) {
+    throw new Error('请先配置 API Key — 点击页面右上角"⚙️ 配置"按钮');
+  }
+
   const {
-    model = MODEL,
+    model = config.model,
     maxTokens = 2048,
     temperature = 0.7,
   } = options;
 
-  const res = await fetch(`${BASE_URL}/chat/completions`, {
+  const res = await fetch(`${config.baseUrl}/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${API_KEY}`,
+      'Authorization': `Bearer ${config.apiKey}`,
     },
     body: JSON.stringify({
       model,
@@ -62,17 +71,22 @@ export async function callLLMStream(
   messages: LLMMessage[],
   options: LLMOptions = {},
 ): Promise<ReadableStream<string>> {
+  const config = getConfig();
+  if (!hasApiKey()) {
+    throw new Error('请先配置 API Key — 点击页面右上角"⚙️ 配置"按钮');
+  }
+
   const {
-    model = MODEL,
+    model = config.model,
     maxTokens = 2048,
     temperature = 0.7,
   } = options;
 
-  const res = await fetch(`${BASE_URL}/chat/completions`, {
+  const res = await fetch(`${config.baseUrl}/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${API_KEY}`,
+      'Authorization': `Bearer ${config.apiKey}`,
     },
     body: JSON.stringify({
       model,
