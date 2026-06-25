@@ -74,9 +74,12 @@ export default function DynastyComparePage() {
               <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="#d4c5a9" strokeWidth="1" />
             ))}
             {/* 同心圆 */}
-            {[20, 40, 60, 80, 100].map pct => (
+            {[20, 40, 60, 80, 100].map(pct => (
               <polygon key={pct}
-                points={dimensions.map((_, i) => getPoint(i, pct).map(p => `${p.x},${p.y}`).toString()).join(' ')}
+                points={dimensions.map((_, i) => {
+                  const p = getPoint(i, pct);
+                  return `${p.x},${p.y}`;
+                }).join(' ')}
                 fill="none" stroke="#d4c5a9" strokeWidth="0.5"
               />
             ))}
