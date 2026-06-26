@@ -103,7 +103,7 @@ export default function ContributionPage() {
           <SectionHeader
             label="CROWDSOURCE"
             title="协作知识贡献"
-            description="发现错误？想补充内容？提交你的修订"
+            description="发现内容有误？提交你的修订"
           />
         </RevealOnScroll>
 

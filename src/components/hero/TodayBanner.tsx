@@ -30,7 +30,7 @@ export default function TodayBanner() {
       <div className="bg-gradient-to-br from-ink-50 to-accent/5 dark:from-ink-900/80 dark:to-accent/10 rounded-2xl shadow-lg border border-ink-200 dark:border-ink-700 overflow-hidden">
         {/* 头部 */}
         <div className="bg-gradient-to-r from-accent/10 to-transparent dark:from-accent/20 px-6 py-4 flex items-center gap-3">
-          <span className="text-2xl">📅</span>
+          <span className="text-lg text-ink-400 dark:text-ink-500">▤</span>
           <div>
             <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100">
               历史上的今天

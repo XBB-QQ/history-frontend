@@ -155,7 +155,7 @@ export default function DynastyEconomyPage() {
           <SectionHeader
             label="DYNASTY ECONOMY"
             title="朝代经济沙盘"
-            description="调税率、定军费，看你的朝代能撑几代"
+            description="模拟朝代经济管理"
           />
         </RevealOnScroll>
 

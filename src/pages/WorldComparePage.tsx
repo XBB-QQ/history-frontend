@@ -17,7 +17,7 @@ function WorldComparePage() {
           <SectionHeader
             label="WORLD COMPARE"
             title="中外时间轴对照"
-            description="同一时期，世界在发生什么？以全球视野重看中国历史"
+            description="中外对照"
           />
         </RevealOnScroll>
 

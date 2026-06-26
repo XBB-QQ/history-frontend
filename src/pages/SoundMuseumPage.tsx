@@ -78,7 +78,7 @@ export default function SoundMuseumPage() {
           <SectionHeader
             label="SOUND MUSEUM"
             title="历史声音博物馆"
-            description="钟磬齐鸣，丝竹悠扬，重听千年前的声音"
+            description="历史声音复原"
           />
         </RevealOnScroll>
 

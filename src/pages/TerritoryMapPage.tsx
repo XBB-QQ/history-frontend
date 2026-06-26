@@ -50,7 +50,7 @@ export default function TerritoryMapPage() {
           <SectionHeader
             label="DYNASTY TERRITORY"
             title="疆域动态地图"
-            description="拖动时间轴，看版图如何扩张又收缩"
+            description="朝代疆域变化"
           />
         </RevealOnScroll>
 

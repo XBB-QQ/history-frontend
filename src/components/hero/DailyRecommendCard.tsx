@@ -77,7 +77,7 @@ export default function DailyRecommendCard() {
       {/* 头部 */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span className="text-xl">✨</span>
+          <span className="text-lg text-ink-400 dark:text-ink-500">◇</span>
           <h3 className="text-base font-bold text-ink-900 dark:text-ink-100">
             今日推荐
           </h3>

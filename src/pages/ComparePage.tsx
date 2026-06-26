@@ -58,7 +58,7 @@ function ComparePage() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <span className="text-4xl mb-4 block">⚖️</span>
+          <span className="text-4xl mb-4 block text-ink-300 dark:text-ink-600">⚖</span>
           <h1 className="text-3xl font-black text-ink-900 dark:text-ink-100">人物对比</h1>
           <p className="text-sm text-ink-500 mt-2">选择两位历史人物进行对比</p>
         </div>

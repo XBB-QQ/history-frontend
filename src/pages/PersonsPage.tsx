@@ -30,7 +30,7 @@ function PersonsPage() {
             <SectionHeader
               label="PERSONS"
               title="人物志"
-              description="五十位历史人物，各领风骚数百年"
+              description="人物列表"
             />
           </RevealOnScroll>
           <GridSkeleton count={8} />

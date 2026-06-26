@@ -103,7 +103,7 @@ function SimulatorPage() {
           <SectionHeader
             label="DECISION SIMULATOR"
             title="历史决策模拟器"
-            description="如果你是李世民，你会怎么选？穿越到关键历史时刻，做决定，看后果"
+            description="在关键历史时刻做出选择，看看会发生什么"
           />
         </RevealOnScroll>
 

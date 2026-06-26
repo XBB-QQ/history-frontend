@@ -57,7 +57,7 @@ export default function RagQaPage() {
           <SectionHeader
             label="AI HISTORY Q&A"
             title="历史智慧问答"
-            description="问任何问题，从史料中寻找答案"
+            description="基于史料回答历史问题"
           />
         </RevealOnScroll>
 

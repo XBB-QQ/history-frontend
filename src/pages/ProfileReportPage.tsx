@@ -49,7 +49,7 @@ function ProfileReportPage() {
           <SectionHeader
             label="PROFILE REPORT"
             title="我的历史画像"
-            description="基于你的浏览、收藏、答题行为，生成专属历史人物画像"
+            description="根据你的浏览和答题记录生成画像"
           />
         </RevealOnScroll>
 

@@ -57,7 +57,7 @@ export default function AiHistorianPage() {
           <SectionHeader
             label="AI HISTORIAN"
             title="AI 史官评语"
-            description="以史官之笔，为你写一段列传"
+            description="AI 生成的人物传记"
           />
         </RevealOnScroll>
 

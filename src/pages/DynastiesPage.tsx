@@ -30,7 +30,7 @@ function DynastiesPage() {
             <SectionHeader
               label="DYNASTIES"
               title="历代朝代"
-              description="纵观中国主要朝代，感受历史脉动"
+              description="历代朝代"
             />
           </RevealOnScroll>
           <GridSkeleton count={8} />
@@ -49,7 +49,7 @@ function DynastiesPage() {
           <SectionHeader
             label="DYNASTIES"
             title="历代朝代"
-            description="纵观中国主要朝代，感受历史脉动"
+            description="历代朝代"
           />
         </RevealOnScroll>
         <RevealOnScroll direction="up" delay={200}>

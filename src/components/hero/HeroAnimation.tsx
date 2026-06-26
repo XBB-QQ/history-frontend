@@ -98,7 +98,7 @@ function HeroContent({ phase }: { phase: number }) {
           phase >= 3 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}
       >
-        以史为鉴 · 可知兴替
+        以史为鉴
       </p>
 
       {/* 阶段 4: 入口卡片 */}
@@ -112,10 +112,10 @@ function HeroContent({ phase }: { phase: number }) {
 // ──────────────────────────────────────────────
 
 const CARDS = [
-  { to: '/timeline', icon: '📅', title: '时间轴', desc: '从炎黄到现代，一览五千年大事' },
-  { to: '/dynasties', icon: '🏚️', title: '朝代更迭', desc: '十三王朝兴衰，见证历史沧桑' },
-  { to: '/persons', icon: '👤', title: '人物志', desc: '五十位历史人物，各领风骚数百年' },
-  { to: '/knowledge', icon: '📚', title: '史海钩沉', desc: '知识卡片，深入理解文明脉络' },
+  { to: '/timeline', icon: 'line', title: '时间轴', desc: '从炎黄到清末的大事记' },
+  { to: '/dynasties', icon: 'line', title: '朝代更迭', desc: '十三王朝的兴衰' },
+  { to: '/persons', icon: 'line', title: '人物志', desc: '五十个人物的故事' },
+  { to: '/knowledge', icon: 'line', title: '史海钩沉', desc: '制度、发明、文化' },
 ];
 
 function EntryCards({ phase }: { phase: number }) {
@@ -150,8 +150,10 @@ function HeroCard({
       style={{ transitionDelay: isVisible ? `${delay}ms` : '0ms' }}
     >
       <div className="bg-white/60 dark:bg-ink-900/60 backdrop-blur-sm rounded-xl p-8 border border-ink-200 dark:border-ink-700 hover:border-accent dark:hover:border-accent transition-all duration-300 hover:shadow-lg">
-        <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
-          {card.icon}
+        <div className="w-12 h-12 mb-4 rounded-lg border border-ink-300 dark:border-ink-600 flex items-center justify-center text-ink-500 dark:text-ink-400 group-hover:border-accent group-hover:text-accent transition-colors">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
         </div>
         <h3 className="text-xl font-bold mb-2 group-hover:text-accent transition-colors">
           {card.title}

@@ -28,13 +28,13 @@ function HomePage() {
           onClick={() => setShowQuiz(true)}
           className="w-full bg-gradient-to-r from-amber-500/10 to-red-500/10 dark:from-amber-500/5 dark:to-red-500/5 rounded-2xl border border-amber-200/50 dark:border-amber-700/50 p-4 flex items-center gap-4 hover:shadow-lg transition-all cursor-pointer group"
         >
-          <span className="text-3xl flex-shrink-0">🏆</span>
+          <span className="text-lg text-ink-400 dark:text-ink-500 flex-shrink-0">◆</span>
           <div className="flex-1 text-left">
             <h3 className="font-bold text-ink-900 dark:text-ink-100 group-hover:text-accent transition-colors">
               每日历史挑战
             </h3>
             <p className="text-xs text-ink-500 dark:text-ink-400">
-              回答一道历史问答题，赢取积分，登上排行榜
+              每天一道历史题，答对加分
             </p>
           </div>
           <svg className="w-5 h-5 text-ink-400 group-hover:text-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -126,12 +126,12 @@ function PersonDetail({ data }: { data: FrontendPerson }) {
             )}
             {data.birthPlace && (
               <span className="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400">
-                📍 生于 {data.birthPlace}
+                生于 {data.birthPlace}
               </span>
             )}
             {data.deathPlace && (
               <span className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-gray-600 dark:text-gray-400">
-                🕊 卒于 {data.deathPlace}
+                卒于 {data.deathPlace}
               </span>
             )}
           </div>

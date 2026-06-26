@@ -31,7 +31,7 @@ export default function ClassicalTextPanel({
       <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <span className="text-lg" aria-hidden>
-            📜
+            ▤
           </span>
           <h4 className="font-bold text-ink-900 dark:text-ink-100 text-sm tracking-wider">
             史书记载

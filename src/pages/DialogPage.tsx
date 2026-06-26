@@ -84,7 +84,7 @@ function DialogPage() {
           <SectionHeader
             label="AI DIALOG"
             title="与历史人物对话"
-            description="跨越千年，与先贤论道。和孔子谈仁，与李白论诗，听诸葛讲兵法"
+            description="和历史人物对话"
           />
         </RevealOnScroll>
 

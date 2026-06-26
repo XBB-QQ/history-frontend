@@ -109,7 +109,7 @@ function CardsPage() {
           <SectionHeader
             label="CARD COLLECTION"
             title="历史人物卡牌"
-            description="收集千古风流人物，组建你的历史梦之队"
+            description="人物卡牌收集"
           />
         </RevealOnScroll>
 

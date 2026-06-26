@@ -98,7 +98,7 @@ export default function InkAnimationPage() {
           <SectionHeader
             label="INK ANIMATION"
             title="水墨动画短片"
-            description="水墨晕染，笔走龙蛇，三十秒重温一个历史瞬间"
+            description="水墨风格的动画短片"
           />
         </RevealOnScroll>
 

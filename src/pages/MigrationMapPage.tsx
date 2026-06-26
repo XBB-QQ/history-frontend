@@ -70,7 +70,7 @@ export default function MigrationMapPage() {
           <SectionHeader
             label="MIGRATION MAP"
             title="历史人口迁徙图"
-            description="衣冠南渡，湖广填川，闯关东下南洋，看人口如何流动"
+            description="历史人口迁徙"
           />
         </RevealOnScroll>
 

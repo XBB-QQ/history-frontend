@@ -102,7 +102,7 @@ export default function CrossDebatePage() {
           <SectionHeader
             label="CROSS-TIME DEBATE"
             title="跨时空辩论场"
-            description="孔子遇上秦始皇，礼治还是法治，且看谁说得过谁"
+            description="不同时代的人怎么想同一件事"
           />
         </RevealOnScroll>
 

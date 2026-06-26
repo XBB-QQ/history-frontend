@@ -51,7 +51,7 @@ export default function BattleSandbagPage() {
           <SectionHeader
             label="BATTLE SIMULATOR"
             title="战役推演沙盘"
-            description="调兵遣将，运筹帷幄，看你的决策能否改变战局"
+            description="用兵棋推演重现经典战役"
           />
         </RevealOnScroll>
 
