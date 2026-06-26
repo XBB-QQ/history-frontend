@@ -201,11 +201,11 @@ export default function DynastyEconomyPage() {
             {/* 状态面板 */}
             <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700 space-y-3">
               <StatBar label="💰 国库" value={currentTurn.treasury} max={1000} color="bg-amber-500" />
-              <StatBar label="❤️ 民心" value={currentTurn.morale} max={100} color="bg-green-500" />
+              <StatBar label="心 民心" value={currentTurn.morale} max={100} color="bg-green-500" />
               <StatBar label="🛡️ 边防" value={currentTurn.defense} max={100} color="bg-blue-500" />
-              <StatBar label="🎨 文化" value={currentTurn.culture} max={100} color="bg-purple-500" />
+              <StatBar label="文 文化" value={currentTurn.culture} max={100} color="bg-purple-500" />
               <div className="flex items-center gap-2 pt-1">
-                <span className="text-sm font-bold text-ink-700 dark:text-ink-300 w-20">👥 人口</span>
+                <span className="text-sm font-bold text-ink-700 dark:text-ink-300 w-20">民 人口</span>
                 <span className="text-lg font-bold text-ink-900 dark:text-ink-100">{currentTurn.population}万</span>
               </div>
             </div>
@@ -213,7 +213,7 @@ export default function DynastyEconomyPage() {
             {/* 政策调节 */}
             <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
               <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-                ⚖️ 本回合政策
+                策 本回合政策
               </h3>
               <div className="space-y-4">
                 <div>
@@ -266,7 +266,7 @@ export default function DynastyEconomyPage() {
             {pendingEvent && (
               <div className="p-5 bg-red-50/60 dark:bg-red-900/10 rounded-xl border-l-4 border-red-500">
                 <h3 className="text-sm font-bold text-red-700 dark:text-red-400 mb-2 tracking-widest">
-                  ⚠️ 历史事件：{pendingEvent.title}
+                  警 历史事件：{pendingEvent.title}
                 </h3>
                 <p className="text-ink-800 dark:text-ink-200 mb-3">{pendingEvent.description}</p>
 
@@ -308,7 +308,7 @@ export default function DynastyEconomyPage() {
             {history.length > 1 && (
               <div className="p-4 bg-ink-50/50 dark:bg-ink-900/30 rounded-lg border border-ink-200 dark:border-ink-700">
                 <h4 className="text-xs font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                  📊 国运走势
+                  势 国运走势
                 </h4>
                 <div className="grid grid-cols-4 gap-2 text-xs">
                   <div className="font-bold text-ink-500">回合</div>
@@ -364,9 +364,9 @@ export default function DynastyEconomyPage() {
             {/* 最终状态 */}
             <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700 space-y-3">
               <StatBar label="💰 国库" value={currentTurn.treasury} max={1000} color="bg-amber-500" />
-              <StatBar label="❤️ 民心" value={currentTurn.morale} max={100} color="bg-green-500" />
+              <StatBar label="心 民心" value={currentTurn.morale} max={100} color="bg-green-500" />
               <StatBar label="🛡️ 边防" value={currentTurn.defense} max={100} color="bg-blue-500" />
-              <StatBar label="🎨 文化" value={currentTurn.culture} max={100} color="bg-purple-500" />
+              <StatBar label="文 文化" value={currentTurn.culture} max={100} color="bg-purple-500" />
               <div className="text-center mt-2">
                 <span className="text-sm text-ink-500">人口：</span>
                 <span className="font-bold text-ink-900 dark:text-ink-100">{currentTurn.population}万</span>
@@ -385,7 +385,7 @@ export default function DynastyEconomyPage() {
             {/* 历史结局对比 */}
             <div className="p-5 bg-amber-50/60 dark:bg-amber-900/10 rounded-lg border-l-4 border-amber-500">
               <h3 className="text-sm font-bold text-amber-700 dark:text-amber-400 mb-2 tracking-widest">
-                📜 真实历史结局
+                史 真实历史结局
               </h3>
               <p className="text-ink-800 dark:text-ink-200 leading-loose">{template.historicalOutcome}</p>
             </div>

@@ -35,7 +35,7 @@ function EventDetail({ data }: { data: FrontendEvent }) {
         </span>
         {data.significance && (
           <span className="text-xs px-2 py-1 bg-amber-100 dark:bg-amber-900/30 rounded-full text-amber-700 dark:text-amber-400">
-            重要度: {'⭐'.repeat(data.significance)}
+            重要度: {'星'.repeat(data.significance)}
           </span>
         )}
       </div>

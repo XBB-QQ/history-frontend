@@ -73,7 +73,7 @@ export default function VoiceHistorian({ event }: VoiceHistorianProps) {
       {/* 标题栏 */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2 text-sm font-bold text-ink-700 dark:text-ink-300">
-          <span aria-hidden>🎙️</span>
+          <span aria-hidden>录</span>
           <span>语音史官</span>
           <span className="text-xs text-ink-400">— {VOICE_STYLES[style].label}风格</span>
         </div>
@@ -119,17 +119,17 @@ export default function VoiceHistorian({ event }: VoiceHistorianProps) {
         >
           {playing && !paused ? (
             <>
-              <span aria-hidden>⏸️</span>
+              <span aria-hidden>停</span>
               暂停
             </>
           ) : paused ? (
             <>
-              <span aria-hidden>▶️</span>
+              <span aria-hidden>播</span>
               继续
             </>
           ) : (
             <>
-              <span aria-hidden>🎙️</span>
+              <span aria-hidden>录</span>
               开始朗读
             </>
           )}
@@ -139,7 +139,7 @@ export default function VoiceHistorian({ event }: VoiceHistorianProps) {
             onClick={handleStop}
             className="px-4 py-2 rounded-lg border border-ink-200 dark:border-ink-700 text-ink-600 dark:text-ink-400 font-bold hover:bg-ink-100 dark:hover:bg-ink-800 transition-colors"
           >
-            ⏹️ 停止
+            止 停止
           </button>
         )}
       </div>

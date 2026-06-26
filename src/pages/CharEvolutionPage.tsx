@@ -33,7 +33,7 @@ export default function CharEvolutionPage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            ✍️ 汉字演变动画器
+            演 汉字演变动画器
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
             从甲骨文到楷书 — 看一个汉字三千年的变形之旅
@@ -123,7 +123,7 @@ export default function CharEvolutionPage() {
                 : 'bg-accent text-white hover:shadow-lg'
             }`}
           >
-            {isAnimating ? '▶ 播放中...' : '🎬 自动演变'}
+            {isAnimating ? '播 播放中...' : '演 自动演变'}
           </button>
           <button
             onClick={() => { setActiveStage(evolution.stages.length - 1); setIsAnimating(false); }}

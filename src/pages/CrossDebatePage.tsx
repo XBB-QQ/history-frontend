@@ -122,12 +122,12 @@ export default function CrossDebatePage() {
                   >
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
-                        <span className="text-2xl">{pro?.emoji || '👤'}</span>
+                        <span className="text-2xl">{pro?.emoji || '人'}</span>
                         <span className="text-sm font-bold text-accent">{pro?.name || '正方'}</span>
                       </div>
-                      <span className="text-lg font-bold text-ink-400">⚔️</span>
+                      <span className="text-lg font-bold text-ink-400">战</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-2xl">{con?.emoji || '👤'}</span>
+                        <span className="text-2xl">{con?.emoji || '人'}</span>
                         <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{con?.name || '反方'}</span>
                       </div>
                     </div>
@@ -162,7 +162,7 @@ export default function CrossDebatePage() {
                     <div className="text-sm font-bold text-accent">{proFigure.name}</div>
                     <div className="text-xs text-ink-400">{topic.proSide.label}</div>
                   </div>
-                  <div className="text-2xl text-ink-400 font-bold">⚔️</div>
+                  <div className="text-2xl text-ink-400 font-bold">战</div>
                   <div className="text-center">
                     <div className="text-3xl mb-1">{conFigure.emoji}</div>
                     <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{conFigure.name}</div>
@@ -189,7 +189,7 @@ export default function CrossDebatePage() {
                     onClick={() => setProVotes(v => v + 1)}
                     className="mt-2 text-xs text-accent hover:underline"
                   >
-                    👍 有道理 ({proVotes})
+                    赞 有道理 ({proVotes})
                   </button>
                 </div>
                 {/* 反方 */}
@@ -203,7 +203,7 @@ export default function CrossDebatePage() {
                     onClick={() => setConVotes(v => v + 1)}
                     className="mt-2 text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
                   >
-                    👍 有道理 ({conVotes})
+                    赞 有道理 ({conVotes})
                   </button>
                 </div>
               </div>
@@ -212,7 +212,7 @@ export default function CrossDebatePage() {
             {/* Loading */}
             {loading && (
               <div className="text-center py-4">
-                <div className="inline-block animate-pulse text-2xl">⚖️</div>
+                <div className="inline-block animate-pulse text-2xl">辩</div>
                 <div className="text-sm text-ink-500 mt-1">辩手正在思考…</div>
               </div>
             )}
@@ -222,7 +222,7 @@ export default function CrossDebatePage() {
             {/* 用户提问 */}
             {!loading && rounds.length > 0 && (
               <div className="p-4 bg-ink-50 dark:bg-ink-900 rounded-lg border border-ink-200 dark:border-ink-700">
-                <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">💬 向辩手提问</h4>
+                <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">问 向辩手提问</h4>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -266,7 +266,7 @@ export default function CrossDebatePage() {
                   onClick={nextRound}
                   className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg transition-all"
                 >
-                  {rounds.length >= 3 ? '📜 出结论' : `第 ${rounds.length + 1} 轮 →`}
+                  {rounds.length >= 3 ? '史 出结论' : `第 ${rounds.length + 1} 轮 →`}
                 </button>
                 <button
                   onClick={() => { setPhase('select'); setRounds([]); }}
@@ -293,7 +293,7 @@ export default function CrossDebatePage() {
                   <div className="text-lg font-bold text-accent">{proFigure?.name}</div>
                   <div className="text-3xl font-bold text-accent">{proVotes}</div>
                 </div>
-                <div className="text-4xl text-ink-300">⚖️</div>
+                <div className="text-4xl text-ink-300">辩</div>
                 <div>
                   <div className="text-2xl">{conFigure?.emoji}</div>
                   <div className="text-lg font-bold text-indigo-600 dark:text-indigo-400">{conFigure?.name}</div>
@@ -325,7 +325,7 @@ export default function CrossDebatePage() {
             {/* 专家观点 */}
             <div className="p-5 bg-amber-50/60 dark:bg-amber-900/10 rounded-lg border-l-4 border-amber-500">
               <h3 className="text-sm font-bold text-amber-700 dark:text-amber-400 mb-2 tracking-widest">
-                💡 学术观点
+                注 学术观点
               </h3>
               <p className="text-ink-800 dark:text-ink-200 leading-loose">{topic.expertView}</p>
             </div>

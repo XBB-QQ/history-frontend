@@ -244,7 +244,7 @@ export default function InkAnimationPage() {
             {/* 播放控制 */}
             <div className="flex items-center gap-3 justify-center">
               <button onClick={togglePlay} className="px-4 py-2 rounded-lg bg-accent text-white font-bold text-sm hover:shadow-lg transition-all">
-                {isPlaying ? '⏸ 暂停' : '▶ 播放'}
+                {isPlaying ? '停 暂停' : '播 播放'}
               </button>
               <button onClick={restart} className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-700 dark:text-ink-300 font-bold text-sm transition-all">
                 🔁 重播
@@ -257,7 +257,7 @@ export default function InkAnimationPage() {
             {/* 分镜脚本 */}
             <div className="p-4 bg-ink-50/50 dark:bg-ink-900/30 rounded-lg border border-ink-200 dark:border-ink-700">
               <h4 className="text-xs font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                🎬 分镜脚本
+                演 分镜脚本
               </h4>
               <div className="flex gap-1">
                 {animation.scenes.map(s => (
@@ -279,7 +279,7 @@ export default function InkAnimationPage() {
             {/* 旁白全文 */}
             <div className="p-4 bg-white/70 dark:bg-ink-900/70 rounded-lg border border-ink-200 dark:border-ink-700">
               <h4 className="text-xs font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                📖 旁白全文
+                旁 旁白全文
               </h4>
               <p className="text-sm text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line font-serif"
                 style={{ fontFamily: 'var(--font-heading), serif' }}

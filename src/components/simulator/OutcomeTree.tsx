@@ -11,9 +11,9 @@ interface OutcomeTreeProps {
 }
 
 const OUTCOME_STYLE: Record<string, { color: string; bg: string; label: string; emoji: string }> = {
-  historical: { color: '#d97706', bg: '#fef3c7', label: '与史一致', emoji: '📜' },
-  alternate:  { color: '#4f46e5', bg: '#e0e7ff', label: '平行推演', emoji: '🔮' },
-  failed:     { color: '#6b7280', bg: '#f3f4f6', label: '失败结局', emoji: '💀' },
+  historical: { color: '#d97706', bg: '#fef3c7', label: '与史一致', emoji: '史' },
+  alternate:  { color: '#4f46e5', bg: '#e0e7ff', label: '平行推演', emoji: '推' },
+  failed:     { color: '#6b7280', bg: '#f3f4f6', label: '失败结局', emoji: '败' },
 };
 
 export default function OutcomeTree({ scenario, selectedChoice, onChoiceClick }: OutcomeTreeProps) {
@@ -44,7 +44,7 @@ export default function OutcomeTree({ scenario, selectedChoice, onChoiceClick }:
           className="fill-ink-800 dark:fill-ink-200 font-bold"
           fontSize={14}
         >
-          🌳 决策分支全景
+          树 决策分支全景
         </text>
 
         {/* Root node */}
@@ -130,7 +130,7 @@ export default function OutcomeTree({ scenario, selectedChoice, onChoiceClick }:
                 fontWeight="bold"
               >
                 {String.fromCharCode(65 + idx)}
-              </circle>
+              </text>
 
               {/* Choice text */}
               <text

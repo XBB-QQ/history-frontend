@@ -23,10 +23,10 @@ export default function ShareDialog({ isOpen, onClose, title, url, description }
   };
 
   const shareLinks = [
-    { name: '微信', color: 'bg-green-500', icon: '💬' },
-    { name: '微博', color: 'bg-red-500', icon: '📢' },
-    { name: 'QQ', color: 'bg-blue-500', icon: '🐧' },
-    { name: '复制链接', color: 'bg-ink-500', icon: '🔗' },
+    { name: '微信', color: 'bg-green-500', icon: '消息' },
+    { name: '微博', color: 'bg-red-500', icon: '微博' },
+    { name: 'QQ', color: 'bg-blue-500', icon: 'QQ' },
+    { name: '复制链接', color: 'bg-ink-500', icon: '链接' },
   ];
 
   return (

@@ -3,9 +3,9 @@ import { SKY_EVENTS } from '@/data/skyEvents';
 import type { SkyEvent } from '@/data/skyEvents';
 
 const CREDIBILITY_MAP = {
-  high: { label: '高可信度', color: 'text-green-600 bg-green-100', icon: '✅' },
-  medium: { label: '中等可信度', color: 'text-yellow-600 bg-yellow-100', icon: '⚠️' },
-  low: { label: '推测性', color: 'text-red-600 bg-red-100', icon: '🔮' },
+  high: { label: '高可信度', color: 'text-green-600 bg-green-100', icon: '确' },
+  medium: { label: '中等可信度', color: 'text-yellow-600 bg-yellow-100', icon: '注' },
+  low: { label: '推测性', color: 'text-red-600 bg-red-100', icon: '推' },
 };
 
 export default function SkyEventPage() {
@@ -20,7 +20,7 @@ export default function SkyEventPage() {
         {/* 页面标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            🔮 历史天象推算
+            推 历史天象推算
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
             天文反推历史关键时刻 — 当年的天象与天气，验证史书记载
@@ -82,7 +82,7 @@ function SkyEventDetail({ event, onBack }: { event: SkyEvent; onBack: () => void
       {/* 标题 */}
       <div className="flex items-center gap-4">
         <h2 className="text-2xl font-serif font-bold text-ink-900 dark:text-ink-100">
-          🔮 {event.eventTitle}
+          推 {event.eventTitle}
         </h2>
         <span className="text-sm text-ink-400">
           {event.year < 0 ? `前${Math.abs(event.year)}年` : `${event.year}年`}
@@ -94,7 +94,7 @@ function SkyEventDetail({ event, onBack }: { event: SkyEvent; onBack: () => void
 
       {/* 天象描述 */}
       <div className="p-4 rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50/30 dark:bg-blue-900/20">
-        <h3 className="text-sm font-bold text-blue-700 dark:text-blue-300 mb-2">☀️ 天象推算</h3>
+        <h3 className="text-sm font-bold text-blue-700 dark:text-blue-300 mb-2">天 天象推算</h3>
         <p className="text-sm text-ink-700 dark:text-ink-300 leading-relaxed">
           {event.astronomicalDescription}
         </p>
@@ -110,7 +110,7 @@ function SkyEventDetail({ event, onBack }: { event: SkyEvent; onBack: () => void
 
       {/* 天气推算 */}
       <div className="p-4 rounded-xl border border-green-200 dark:border-green-800 bg-green-50/30 dark:bg-green-900/20">
-        <h3 className="text-sm font-bold text-green-700 dark:text-green-300 mb-2">🌤️ 天气/气候推算</h3>
+        <h3 className="text-sm font-bold text-green-700 dark:text-green-300 mb-2">气 天气/气候推算</h3>
         <p className="text-sm text-ink-700 dark:text-ink-300 leading-relaxed">
           {event.weatherEstimate}
         </p>
@@ -118,7 +118,7 @@ function SkyEventDetail({ event, onBack }: { event: SkyEvent; onBack: () => void
 
       {/* 验证结论 */}
       <div className="p-4 rounded-xl border border-accent/30 bg-accent/10 dark:bg-accent/5">
-        <h3 className="text-sm font-bold text-accent mb-2">✅ 验证结论</h3>
+        <h3 className="text-sm font-bold text-accent mb-2">确 验证结论</h3>
         <p className="text-sm text-ink-700 dark:text-ink-300 leading-relaxed">
           {event.verification}
         </p>

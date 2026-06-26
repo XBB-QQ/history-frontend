@@ -15,10 +15,10 @@ const typeLabels: Record<FavoriteType, string> = {
 };
 
 const typeIcons: Record<FavoriteType, string> = {
-  event: '📅',
-  person: '👤',
-  dynasty: '🏚️',
-  knowledge: '📚',
+  event: '事',
+  person: '人',
+  dynasty: '朝',
+  knowledge: '知',
 };
 
 const typeColors: Record<FavoriteType, string> = {
@@ -89,7 +89,7 @@ export default function FavoritesPage() {
         {sortedFavorites.length === 0 ? (
           <RevealOnScroll direction="scale">
             <div className="text-center py-20">
-              <div className="text-6xl mb-4">📜</div>
+              <div className="text-6xl mb-4">史</div>
               <p className="text-ink-400 text-lg mb-2">还没有收藏任何内容</p>
               <p className="text-ink-300 text-sm">点击详情弹窗中的收藏按钮，即可收藏感兴趣的内容</p>
             </div>

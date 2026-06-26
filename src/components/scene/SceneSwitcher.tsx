@@ -59,7 +59,7 @@ export default function SceneSwitcher() {
         title="切换文化场景"
         style={{ fontSize: '20px' }}
       >
-        <span aria-hidden>🎨</span>
+        <span aria-hidden>景</span>
         {isLoadingFont && (
           <span className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-pulse" />
         )}
@@ -76,7 +76,7 @@ export default function SceneSwitcher() {
           {/* 头部 */}
           <div className="px-4 py-3 border-b border-ink-200 dark:border-ink-700 bg-ink-50/50 dark:bg-ink-800/50">
             <h3 className="font-bold text-ink-900 dark:text-ink-100 flex items-center gap-2">
-              <span aria-hidden>🎨</span>
+              <span aria-hidden>景</span>
               <span>文化场景</span>
             </h3>
             <p className="text-xs text-ink-500 dark:text-ink-400 mt-0.5">
@@ -129,7 +129,7 @@ export default function SceneSwitcher() {
           <div className="border-t border-ink-200 dark:border-ink-700">
             <label className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors">
               <span className="text-sm text-ink-700 dark:text-ink-300 flex items-center gap-2">
-                <span aria-hidden>{ambientSound ? '🔊' : '🔇'}</span>
+                <span aria-hidden>{ambientSound ? '音' : '🔇'}</span>
                 <span>氛围音效</span>
               </span>
               <input
@@ -141,7 +141,7 @@ export default function SceneSwitcher() {
             </label>
             <label className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors border-t border-ink-100 dark:border-ink-800">
               <span className="text-sm text-ink-700 dark:text-ink-300 flex items-center gap-2">
-                <span aria-hidden>🏛️</span>
+                <span aria-hidden>殿</span>
                 <div className="flex flex-col">
                   <span>朝代主题联动</span>
                   <span className="text-xs text-ink-400 dark:text-ink-500">

@@ -92,7 +92,7 @@ function App() {
         fallback={
           <div className="min-h-screen flex items-center justify-center bg-paper dark:bg-ink-950">
             <div className="text-center">
-              <div className="text-4xl mb-2 animate-pulse">📜</div>
+              <div className="text-4xl mb-2 animate-pulse">史</div>
               <p className="text-ink-400 dark:text-ink-500">加载中...</p>
             </div>
           </div>

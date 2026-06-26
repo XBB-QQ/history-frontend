@@ -30,7 +30,7 @@ function AdminLoginPage() {
     <div className="min-h-screen bg-ink-950 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="text-5xl mb-4">📜</div>
+          <div className="text-5xl mb-4">史</div>
           <h1 className="text-2xl font-bold text-ink-100 mb-2">五千年史馆 · 后台管理</h1>
           <p className="text-ink-500 text-sm">请登录以继续</p>
         </div>

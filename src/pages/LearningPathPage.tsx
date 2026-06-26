@@ -18,7 +18,7 @@ export default function LearningPathPage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            📚 学习路径
+            学 学习路径
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
             系统化历史课程 — 从入门到深入，循序渐进学历史
@@ -103,7 +103,7 @@ export default function LearningPathPage() {
 
             {/* 学习要点 */}
             <div className="p-4 rounded-xl border border-accent/30 bg-accent/10 dark:bg-accent/5">
-              <h3 className="text-sm font-bold text-accent mb-3">📌 学习要点</h3>
+              <h3 className="text-sm font-bold text-accent mb-3">要 学习要点</h3>
               <ul className="space-y-2">
                 {dayData.keyPoints.map((point, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-ink-700 dark:text-ink-300">
@@ -117,7 +117,7 @@ export default function LearningPathPage() {
             {/* 关联内容 */}
             {(dayData.events.length > 0 || dayData.persons.length > 0 || dayData.dynasties.length > 0) && (
               <div className="p-4 rounded-xl border border-ink-200 dark:border-ink-700 bg-ink-50/30 dark:bg-ink-800/20">
-                <h3 className="text-sm font-bold text-ink-600 dark:text-ink-400 mb-2">🔗 关联内容</h3>
+                <h3 className="text-sm font-bold text-ink-600 dark:text-ink-400 mb-2">关 关联内容</h3>
                 <div className="flex flex-wrap gap-2">
                   {dayData.dynasties.map(d => (
                     <span key={d} className="px-2 py-1 rounded bg-amber-100 text-amber-700 text-xs font-bold">
@@ -135,7 +135,7 @@ export default function LearningPathPage() {
 
             {/* 思考题 */}
             <div className="p-4 rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50/30 dark:bg-amber-900/20">
-              <h3 className="text-sm font-bold text-amber-700 dark:text-amber-300 mb-2">💡 思考题</h3>
+              <h3 className="text-sm font-bold text-amber-700 dark:text-amber-300 mb-2">思 思考题</h3>
               <p className="text-sm text-ink-700 dark:text-ink-300 italic">{dayData.question}</p>
             </div>
 

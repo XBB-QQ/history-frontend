@@ -16,7 +16,7 @@ export default function K12PathPage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            📖 课程对齐 · 跟着课本学历史
+            课 课程对齐 · 跟着课本学历史
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
             对标人教版教材大纲，知识点直接映射到平台内容
@@ -70,7 +70,7 @@ export default function K12PathPage() {
 
           {/* 知识点 */}
           <div className="p-4 rounded-xl border border-accent/30 bg-accent/10 dark:bg-accent/5">
-            <h3 className="text-sm font-bold text-accent mb-3">📌 核心知识点</h3>
+            <h3 className="text-sm font-bold text-accent mb-3">要 核心知识点</h3>
             <ul className="space-y-2">
               {chapter.keyPoints.map((pt, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-ink-700 dark:text-ink-300">
@@ -83,7 +83,7 @@ export default function K12PathPage() {
           {/* 关联平台内容 */}
           {(chapter.relatedDynasties.length > 0 || chapter.relatedEvents.length > 0) && (
             <div className="p-4 rounded-xl border border-ink-200 dark:border-ink-700 bg-ink-50/30 dark:bg-ink-800/20">
-              <h3 className="text-sm font-bold text-ink-600 dark:text-ink-400 mb-2">🔗 平台关联内容</h3>
+              <h3 className="text-sm font-bold text-ink-600 dark:text-ink-400 mb-2">链 平台关联内容</h3>
               <div className="flex flex-wrap gap-2">
                 {chapter.relatedDynasties.map(d => (
                   <span key={d} className="px-2 py-1 rounded bg-amber-100 text-amber-700 text-xs font-bold">{d}朝</span>
@@ -120,7 +120,7 @@ export default function K12PathPage() {
             {quizAnswer !== null && (
               <div className="p-3 rounded-lg bg-ink-50 dark:bg-ink-800 text-sm text-ink-700 dark:text-ink-300">
                 <span className="font-bold">
-                  {quizAnswer === chapter.quiz.answer ? '✅ 正确！' : '❌ 错误。'}
+                  {quizAnswer === chapter.quiz.answer ? '对 正确！' : '错 错误。'}
                 </span>
                 {chapter.quiz.explanation}
               </div>

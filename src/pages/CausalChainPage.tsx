@@ -31,7 +31,7 @@ export default function CausalChainPage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            🔗 历史因果链
+            链 历史因果链
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
             事件不是孤立的 — 每个历史转折都有前因后果，追根溯源看兴替
@@ -93,7 +93,7 @@ export default function CausalChainPage() {
             {/* 当前事件 */}
             <div className="p-4 rounded-xl border-2 border-accent bg-accent/10 dark:bg-accent/5 text-center">
               <span className="text-lg font-serif font-bold text-accent">
-                📍 {allEvents.find(([id]) => id === selectedEvent)?.[1] || selectedEvent}
+                事 {allEvents.find(([id]) => id === selectedEvent)?.[1] || selectedEvent}
               </span>
             </div>
 

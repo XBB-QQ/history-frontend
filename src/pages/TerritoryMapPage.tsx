@@ -214,7 +214,7 @@ export default function TerritoryMapPage() {
         {activeEvents.length > 0 && (
           <div className="mt-4 p-4 bg-amber-50/60 dark:bg-amber-900/10 rounded-lg border-l-4 border-amber-500">
             <h4 className="text-xs font-bold text-amber-700 dark:text-amber-400 mb-2 tracking-widest">
-              📜 近期疆域事件
+              史 近期疆域事件
             </h4>
             <div className="space-y-1">
               {activeEvents.map(e => (

@@ -80,7 +80,7 @@ export default function QuizDialog({ isOpen, onClose }: { isOpen: boolean; onClo
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-ink-200 dark:border-ink-700">
           <div className="flex items-center gap-2">
-            <span className="text-lg">🏆</span>
+            <span className="text-lg">◆</span>
             <h2 className="text-lg font-bold">每日挑战</h2>
           </div>
           <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-ink-100 dark:hover:bg-ink-800 text-ink-400">
@@ -182,7 +182,7 @@ export default function QuizDialog({ isOpen, onClose }: { isOpen: boolean; onClo
               {result && (
                 <div className={`rounded-xl p-4 ${result.correct ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'}`}>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-2xl">{result.correct ? '🎉' : '😢'}</span>
+                    <span className="text-2xl">{result.correct ? '✓' : '✗'}</span>
                     <span className={`font-bold ${result.correct ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}`}>
                       {result.correct ? '回答正确！' : '回答错误'}
                     </span>

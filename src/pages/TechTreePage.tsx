@@ -45,7 +45,7 @@ export default function TechTreePage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            🌳 中国发明科技树
+            技 中国发明科技树
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
             从造纸到火药，从丝绸到指南针 — 看中国发明如何改变世界
@@ -84,7 +84,7 @@ export default function TechTreePage() {
           {layers.map((layer, layerIdx) => (
             <div key={layerIdx}>
               <div className="text-xs font-bold text-ink-400 dark:text-ink-500 mb-3 text-center">
-                {layerIdx === 0 ? '🌱 基础发明' : layerIdx === 1 ? '🌿 派生发明' : '🌳 终端发明'}
+                {layerIdx === 0 ? '基 基础发明' : layerIdx === 1 ? '派 派生发明' : '技 终端发明'}
               </div>
               <div className="flex flex-wrap gap-3 justify-center">
                 {layer.map(inv => {

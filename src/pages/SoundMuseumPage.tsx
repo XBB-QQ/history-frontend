@@ -85,7 +85,7 @@ export default function SoundMuseumPage() {
         {/* 提示 */}
         <RevealOnScroll direction="up" delay={200}>
           <div className="mt-8 p-4 bg-amber-50/60 dark:bg-amber-900/10 rounded-lg border-l-4 border-amber-500 text-sm text-ink-700 dark:text-ink-300">
-            💡 点击下方按钮，聆听千年前的声音。
+            注 点击下方按钮，聆听千年前的声音。
           </div>
         </RevealOnScroll>
 
@@ -93,7 +93,7 @@ export default function SoundMuseumPage() {
         <RevealOnScroll direction="up" delay={300}>
           <div className="mt-6 p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
             <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-              🎵 基础音效
+              音 基础音效
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {SOUND_PRESETS.map(preset => (
@@ -134,7 +134,7 @@ export default function SoundMuseumPage() {
                 onClick={playMelody}
                 className="px-3 py-1 rounded-lg bg-accent text-white text-xs font-bold hover:shadow-lg transition-all"
               >
-                ▶ 播放旋律
+                播 播放旋律
               </button>
             </div>
             <div className="flex gap-2 justify-center">
@@ -163,7 +163,7 @@ export default function SoundMuseumPage() {
         <RevealOnScroll direction="up">
           <div className="mt-4 p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
             <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-              🏛️ 朝代声景
+              朝 朝代声景
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {DYNASTY_SOUNDSCAPES.map(d => (
@@ -186,7 +186,7 @@ export default function SoundMuseumPage() {
                     })}
                   </div>
                   {activeDynasty === d.dynasty && (
-                    <div className="mt-2 text-xs text-accent font-bold animate-pulse">🔊 播放中…</div>
+                    <div className="mt-2 text-xs text-accent font-bold animate-pulse">音 播放中…</div>
                   )}
                 </button>
               ))}
@@ -198,14 +198,14 @@ export default function SoundMuseumPage() {
         <RevealOnScroll direction="up">
           <div className="mt-4 p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
             <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-              🎬 场景音效
+              演 场景音效
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <button
                 onClick={playWarScene}
                 className="p-4 rounded-xl bg-gradient-to-br from-red-500/10 to-amber-500/10 border border-red-500/30 hover:shadow-lg transition-all"
               >
-                <div className="text-3xl mb-1">⚔️</div>
+                <div className="text-3xl mb-1">战</div>
                 <div className="font-bold text-ink-900 dark:text-ink-100">战场场景</div>
                 <div className="text-xs text-ink-500">连续鼓点 + 钟声</div>
               </button>
@@ -213,7 +213,7 @@ export default function SoundMuseumPage() {
                 onClick={() => playNoise('rain', 8)}
                 className="p-4 rounded-xl bg-gradient-to-br from-blue-500/10 to-green-500/10 border border-blue-500/30 hover:shadow-lg transition-all"
               >
-                <div className="text-3xl mb-1">🌧️</div>
+                <div className="text-3xl mb-1">雨</div>
                 <div className="font-bold text-ink-900 dark:text-ink-100">江南烟雨</div>
                 <div className="text-xs text-ink-500">8秒雨声白噪</div>
               </button>

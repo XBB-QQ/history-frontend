@@ -184,7 +184,7 @@ export default function MultiPerspectivePage() {
                   {/* 叙事 */}
                   <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-lg border border-ink-200 dark:border-ink-700">
                     <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                      📖 视角叙事
+                      叙 视角叙事
                     </h3>
                     <p className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line">
                       {p.narrative}
@@ -194,20 +194,20 @@ export default function MultiPerspectivePage() {
                   {/* 独有信息 */}
                   <div className="p-4 bg-amber-50/60 dark:bg-amber-900/10 rounded-lg border-l-4 border-amber-500">
                     <h3 className="text-sm font-bold text-amber-700 dark:text-amber-400 mb-2 tracking-widest">
-                      🔍 独有视角信息
+                      查 独有视角信息
                     </h3>
                     <p className="text-ink-800 dark:text-ink-200 text-sm leading-relaxed">
                       {p.exclusiveInfo}
                     </p>
                     <div className="text-xs text-ink-400 mt-1">
-                      ⚠️ 此信息仅 {p.figureName} 视角可见，其他视角无法得知
+                      注 此信息仅 {p.figureName} 视角可见，其他视角无法得知
                     </div>
                   </div>
 
                   {/* 评价 */}
                   <div className={`p-4 rounded-lg ${faction.bg} border ${faction.border}`}>
                     <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                      💬 评价
+                      评 评价
                     </h3>
                     <p className={`font-bold ${faction.text}`}>{p.judgment}</p>
                   </div>
@@ -218,7 +218,7 @@ export default function MultiPerspectivePage() {
             {/* 矛盾对比 */}
             <div className="p-5 bg-indigo-50/60 dark:bg-indigo-900/10 rounded-lg border-l-4 border-indigo-500">
               <h3 className="text-sm font-bold text-indigo-700 dark:text-indigo-400 mb-3 tracking-widest">
-                ⚖️ 视角矛盾点
+                矛 视角矛盾点
               </h3>
               <div className="space-y-3">
                 {selectedEvent.contradictions.map((c, idx) => (
@@ -232,7 +232,7 @@ export default function MultiPerspectivePage() {
             {/* 历史教训 */}
             <div className="p-5 bg-gradient-to-br from-amber-500/10 to-accent/10 dark:from-amber-700/15 dark:to-accent/15 rounded-lg">
               <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                💡 历史启示
+                启 历史启示
               </h3>
               <p className="text-ink-800 dark:text-ink-200 leading-loose italic">
                 {selectedEvent.lesson}

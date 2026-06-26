@@ -27,7 +27,7 @@ function WorldComparePage() {
             <span className="text-accent text-lg">🇨🇳 中国</span>
           </div>
           <div className="p-3 bg-indigo-500/10 dark:bg-indigo-700/20 rounded-t-lg border-b-2 border-indigo-500">
-            <span className="text-indigo-600 dark:text-indigo-400 text-lg">🌍 世界</span>
+            <span className="text-indigo-600 dark:text-indigo-400 text-lg">世 世界</span>
           </div>
         </div>
 

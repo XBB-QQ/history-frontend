@@ -14,9 +14,9 @@ interface ResultViewProps {
 }
 
 const OUTCOME_LABELS: Record<string, { label: string; emoji: string; color: string }> = {
-  historical: { label: '与历史一致', emoji: '📜', color: 'text-accent border-accent' },
-  alternate: { label: '平行推演', emoji: '🔮', color: 'text-indigo-600 dark:text-indigo-400 border-indigo-500' },
-  failed: { label: '失败结局', emoji: '💀', color: 'text-gray-600 dark:text-gray-400 border-gray-500' },
+  historical: { label: '与历史一致', emoji: '史', color: 'text-accent border-accent' },
+  alternate: { label: '平行推演', emoji: '推', color: 'text-indigo-600 dark:text-indigo-400 border-indigo-500' },
+  failed: { label: '失败结局', emoji: '败', color: 'text-gray-600 dark:text-gray-400 border-gray-500' },
 };
 
 export default function ResultView({ scenario, choice, onBranchSwitch }: ResultViewProps) {
@@ -51,7 +51,7 @@ export default function ResultView({ scenario, choice, onBranchSwitch }: ResultV
       {/* 结果 */}
       <div className="p-5 bg-gradient-to-br from-ink-50/80 to-amber-50/40 dark:from-ink-900/80 dark:to-amber-900/10 rounded-lg border-l-4 border-ink-400 dark:border-ink-600">
         <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-          📖 结局
+          局 结局
         </h3>
         <p className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line">
           {choice.result}
@@ -62,7 +62,7 @@ export default function ResultView({ scenario, choice, onBranchSwitch }: ResultV
       {choice.alternateTimeline && (
         <div className="p-5 bg-indigo-50/60 dark:bg-indigo-900/10 rounded-lg border-l-4 border-indigo-500">
           <h3 className="text-sm font-bold text-indigo-700 dark:text-indigo-400 mb-2 tracking-widest">
-            🔮 平行推演
+            推 平行推演
           </h3>
           <p className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line">
             {choice.alternateTimeline}
@@ -86,7 +86,7 @@ export default function ResultView({ scenario, choice, onBranchSwitch }: ResultV
       {/* 真实历史 */}
       <div className="p-5 bg-accent/5 dark:bg-accent/10 rounded-lg border-l-4 border-accent">
         <h3 className="text-sm font-bold text-accent mb-2 tracking-widest">
-          📜 真实历史
+          史 真实历史
         </h3>
         <p className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line">
           {scenario.historicalResult}
@@ -96,7 +96,7 @@ export default function ResultView({ scenario, choice, onBranchSwitch }: ResultV
       {/* 历史教训 */}
       <div className="p-5 bg-gradient-to-br from-amber-500/10 to-accent/10 dark:from-amber-700/15 dark:to-accent/15 rounded-lg">
         <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-          💡 历史教训
+          注 历史教训
         </h3>
         <p className="text-ink-800 dark:text-ink-200 leading-loose italic">
           {scenario.lesson}
@@ -113,7 +113,7 @@ export default function ResultView({ scenario, choice, onBranchSwitch }: ResultV
               : 'bg-ink-100 dark:bg-ink-800 text-ink-700 dark:text-ink-300 hover:bg-accent hover:text-white'
           }`}
         >
-          {showTree ? '🌳 收起决策树' : '🌳 查看所有分支'}
+          {showTree ? '树 收起决策树' : '树 查看所有分支'}
         </button>
       </div>
 

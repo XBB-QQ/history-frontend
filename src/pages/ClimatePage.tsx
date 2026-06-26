@@ -28,7 +28,7 @@ export default function ClimatePage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            🌡️ 历史气候变迁
+            候 历史气候变迁
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
             基于竺可桢研究 — 五千年温度曲线与历史兴衰的因果关联
@@ -91,7 +91,7 @@ export default function ClimatePage() {
               <span className={`px-3 py-1 rounded-lg text-sm font-bold ${
                 period.temperatureDelta > 0 ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'
               }`}>
-                {period.temperatureDelta > 0 ? '🔥 温暖期' : '❄️ 寒冷期'}
+                {period.temperatureDelta > 0 ? '暖 温暖期' : '寒 寒冷期'}
                 ({period.temperatureDelta > 0 ? '+' : ''}{period.temperatureDelta}°C)
               </span>
               <span className="text-sm text-ink-400">

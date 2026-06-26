@@ -11,10 +11,10 @@ import { submitContribution, getMyContributions, type Contribution, type Contrib
 import { useUserStore } from '@/store/userStore';
 
 const TYPE_LABELS: Record<string, { label: string; emoji: string; desc: string }> = {
-  event:       { label: '事件补充', emoji: '📜', desc: '补充历史事件内容' },
-  person:      { label: '人物补充', emoji: '👤', desc: '补充历史人物资料' },
-  dynasty:     { label: '朝代补充', emoji: '🏛️', desc: '补充朝代信息' },
-  knowledge:   { label: '知识卡片', emoji: '💡', desc: '新增知识卡片' },
+  event:       { label: '事件补充', emoji: '事', desc: '补充历史事件内容' },
+  person:      { label: '人物补充', emoji: '人', desc: '补充历史人物资料' },
+  dynasty:     { label: '朝代补充', emoji: '朝', desc: '补充朝代信息' },
+  knowledge:   { label: '知识卡片', emoji: '知', desc: '新增知识卡片' },
   correction:  { label: '内容纠错', emoji: '✏️', desc: '纠正错误内容' },
 };
 

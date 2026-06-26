@@ -30,7 +30,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     id: 'ai',
     label: 'AI 智能',
-    emoji: '🤖',
+    emoji: '智',
     items: [
       { label: '问答', path: '/rag-qa' },
       { label: '跨时空辩论', path: '/cross-debate' },
@@ -55,7 +55,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     id: 'viz',
     label: '可视化',
-    emoji: '📊',
+    emoji: '视',
     items: [
       { label: '知识图谱', path: '/knowledge-graph' },
       { label: '因果链', path: '/causal-chain' },
@@ -70,7 +70,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     id: 'culture',
     label: '文化',
-    emoji: '🎨',
+    emoji: '景',
     items: [
       { label: '科技树', path: '/tech-tree' },
       { label: '汉字演变', path: '/char-evolution' },
@@ -85,7 +85,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     id: 'learn',
     label: '学习',
-    emoji: '📚',
+    emoji: '知',
     items: [
       { label: '课程路径', path: '/learning-path' },
       { label: '课本对齐', path: '/k12' },

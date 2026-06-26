@@ -30,7 +30,7 @@ export default function DynastyCardPage() {
         {/* 页面标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            🏛️ 朝代名片
+            殿 朝代名片
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
             学完一个朝代，生成专属名片，分享你的历史足迹
@@ -62,7 +62,7 @@ export default function DynastyCardPage() {
               onClick={() => setShowCard(true)}
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-accent to-amber-600 text-white font-bold text-lg hover:shadow-xl transition-all"
             >
-              生成名片 ✨
+              生成名片 生
             </button>
           </div>
         ) : (

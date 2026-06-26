@@ -84,13 +84,13 @@ export default function ClassicalAnnotationPage() {
                 onClick={() => setMode('dict')}
                 className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${mode === 'dict' ? 'bg-accent text-white' : 'bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400'}`}
               >
-                📖 词典检索
+                典 词典检索
               </button>
               <button
                 onClick={() => setMode('llm')}
                 className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${mode === 'llm' ? 'bg-accent text-white' : 'bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400'}`}
               >
-                🤖 AI 注解
+                机 AI 注解
               </button>
             </div>
 
@@ -106,7 +106,7 @@ export default function ClassicalAnnotationPage() {
             {annotatedWords.length > 0 && (
               <div className="mt-3">
                 <div className="text-xs text-ink-500 dark:text-ink-400 mb-1">
-                  🔍 检测到古汉语词汇（悬浮查看）：
+                  查 检测到古汉语词汇（悬浮查看）：
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {annotatedWords.map(e => (
@@ -138,7 +138,7 @@ export default function ClassicalAnnotationPage() {
                   onClick={handleDictSearch}
                   className="px-6 py-2 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg transition-all"
                 >
-                  📖 查词典
+                  典 查词典
                 </button>
               )}
               {mode === 'llm' && (
@@ -147,7 +147,7 @@ export default function ClassicalAnnotationPage() {
                   disabled={loading}
                   className="px-6 py-2 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg disabled:opacity-50 transition-all"
                 >
-                  {loading ? '注解中…' : '🤖 AI 注解'}
+                  {loading ? '注解中…' : '机 AI 注解'}
                 </button>
               )}
               <button
@@ -184,7 +184,7 @@ export default function ClassicalAnnotationPage() {
                   )}
                   {e.allusion && (
                     <div className="text-sm text-amber-600 dark:text-amber-400 bg-amber-50/40 dark:bg-amber-900/10 rounded px-2 py-1">
-                      📖 {e.allusion}
+                      典 {e.allusion}
                     </div>
                   )}
                 </div>
@@ -198,7 +198,7 @@ export default function ClassicalAnnotationPage() {
           <RevealOnScroll direction="fade">
             <div className="mt-6 p-6 bg-gradient-to-br from-white/80 to-accent/5 dark:from-ink-900/80 dark:to-accent/10 rounded-xl border border-ink-200 dark:border-ink-700 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-accent text-lg">🤖</span>
+                <span className="text-accent text-lg">机</span>
                 <span className="font-bold text-ink-900 dark:text-ink-100">AI 古文注解</span>
                 <span className="text-xs text-ink-400">基于 GLM-4-Flash</span>
               </div>
@@ -213,7 +213,7 @@ export default function ClassicalAnnotationPage() {
         <RevealOnScroll direction="up" delay={400}>
           <div className="mt-8 p-4 bg-ink-50/50 dark:bg-ink-900/30 rounded-lg border border-ink-200 dark:border-ink-700">
             <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-              📚 古汉语词典速览
+              览 古汉语词典速览
             </h3>
             <div className="flex flex-wrap gap-2">
               {CLASSICAL_DICT.slice(0, 20).map(e => (

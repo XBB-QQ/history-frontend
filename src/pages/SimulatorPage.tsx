@@ -117,13 +117,13 @@ function SimulatorPage() {
                 </span>
                 <span className="hidden md:inline text-ink-400">|</span>
                 <span>
-                  📜 与史一致 <b className="text-accent">{stats.correct}</b>
+                  史 与史一致 <b className="text-accent">{stats.correct}</b>
                 </span>
                 <span>
-                  🔮 平行推演 <b className="text-indigo-600 dark:text-indigo-400">{stats.alternate}</b>
+                  推 平行推演 <b className="text-indigo-600 dark:text-indigo-400">{stats.alternate}</b>
                 </span>
                 <span>
-                  💀 失败 <b className="text-gray-600 dark:text-gray-400">{stats.failed}</b>
+                  败 失败 <b className="text-gray-600 dark:text-gray-400">{stats.failed}</b>
                 </span>
               </div>
               <span>
@@ -209,7 +209,7 @@ function SimulatorPage() {
               {/* 抉择描述 */}
               <div className="p-5 bg-amber-50/60 dark:bg-amber-900/10 rounded-lg border-l-4 border-accent">
                 <h3 className="text-sm font-bold text-accent mb-2 tracking-widest">
-                  ⚔️ 你的抉择
+                  择 你的抉择
                 </h3>
                 <p className="text-ink-800 dark:text-ink-200 leading-relaxed whitespace-pre-line">
                   {scenario.dilemma}
@@ -282,7 +282,7 @@ function SimulatorPage() {
                     to="/"
                     className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg transition-all"
                   >
-                    🎉 全部完成，返回首页
+                    完 全部完成，返回首页
                   </Link>
                 )}
                 <button

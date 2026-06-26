@@ -59,7 +59,7 @@ function CardDetail({ card, collected, bonds }: { card: PersonCard; collected: b
       <p className="text-xs text-ink-600 dark:text-ink-400 mb-3">{card.bio}</p>
       {bonds.length > 0 && (
         <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded text-xs text-amber-700 dark:text-amber-400">
-          ⚡ 羁绊激活：{bonds.join(', ')}
+          抽 羁绊激活：{bonds.join(', ')}
           {card.bondEffect && <div className="mt-1">{card.bondEffect}</div>}
         </div>
       )}
@@ -163,10 +163,10 @@ function CardsPage() {
           <RevealOnScroll direction="fade">
             <div className="mt-6 p-6 bg-white/70 dark:bg-ink-900/70 rounded-xl border-2 border-accent/30">
               <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-4 text-center">
-                {isDrawing ? '⚡ 抽卡中...' : `🎉 获得 ${drawResults.length} 张卡牌`}
+                {isDrawing ? '抽 抽卡中...' : `得 获得 ${drawResults.length} 张卡牌`}
               </h3>
               {isDrawing ? (
-                <div className="text-center text-4xl animate-pulse">📦</div>
+                <div className="text-center text-4xl animate-pulse">包</div>
               ) : (
                 <div className={`grid gap-3 ${drawResults.length === 1 ? 'grid-cols-1 max-w-xs mx-auto' : 'grid-cols-2 md:grid-cols-5'}`}>
                   {drawResults.map((card, i) => {
@@ -266,7 +266,7 @@ function CardsPage() {
         </RevealOnScroll>
 
         <div className="mt-6 p-3 bg-amber-50/50 dark:bg-amber-900/10 rounded-lg text-xs text-ink-500 dark:text-ink-400">
-          💡 每日答题/签到可获得积分。SSR 概率 3%，SR 12%，R 25%，N 60%。重复获得卡牌按稀有度返还积分。
+          注 每日答题/签到可获得积分。SSR 概率 3%，SR 12%，R 25%，N 60%。重复获得卡牌按稀有度返还积分。
         </div>
       </div>
     </div>

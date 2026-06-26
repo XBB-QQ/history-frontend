@@ -42,7 +42,7 @@ export default function PodcastPage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            🎙️ 听历史 · 播客导览
+            录 听历史 · 播客导览
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
             像听播客一样"听历史" — 说书人风格朗读，章节标记跳转
@@ -101,7 +101,7 @@ export default function PodcastPage() {
                   onClick={handlePlay}
                   className="w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center text-lg hover:shadow-lg transition-all"
                 >
-                  {playing ? '⏸' : '▶'}
+                  {playing ? '停' : '播'}
                 </button>
                 <div className="flex-1">
                   <div className="w-full h-2 rounded-full bg-ink-200 dark:bg-ink-700">
@@ -129,7 +129,7 @@ export default function PodcastPage() {
 
           {/* 全文阅读 */}
           <div className="mt-6 p-4 rounded-xl border border-ink-200 dark:border-ink-700 bg-ink-50/30 dark:bg-ink-800/20">
-            <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3">📖 全文阅读</h3>
+            <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3">阅 全文阅读</h3>
             <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
               {episode.narrationText}
             </p>

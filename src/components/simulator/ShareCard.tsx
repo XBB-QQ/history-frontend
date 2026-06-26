@@ -11,9 +11,9 @@ interface ShareCardProps {
 }
 
 const OUTCOME_TAG: Record<string, { label: string; emoji: string }> = {
-  historical: { label: '与史一致', emoji: '📜' },
-  alternate:  { label: '平行推演', emoji: '🔮' },
-  failed:     { label: '失败结局', emoji: '💀' },
+  historical: { label: '与史一致', emoji: '史' },
+  alternate:  { label: '平行推演', emoji: '推' },
+  failed:     { label: '失败结局', emoji: '败' },
 };
 
 function buildShareText(scenario: Scenario, choice: Choice): string {
@@ -27,7 +27,7 @@ function buildShareText(scenario: Scenario, choice: Choice): string {
     choice.plausibility !== undefined ? `可信度：${choice.plausibility}/100` : '',
     `—`,
     choice.result.slice(0, 80) + (choice.result.length > 80 ? '…' : ''),
-    `🔗 五千年史馆 — 如果你是${scenario.role}，你会怎么选？`,
+    `链 五千年史馆 — 如果你是${scenario.role}，你会怎么选？`,
   ].filter(Boolean).join('\n');
 }
 
@@ -100,7 +100,7 @@ export default function ShareCard({ scenario, choice }: ShareCardProps) {
           onClick={() => setShowPreview(!showPreview)}
           className="px-4 py-2 rounded-lg font-bold text-sm bg-ink-100 dark:bg-ink-800 text-ink-700 dark:text-ink-300 hover:bg-ink-200 dark:hover:bg-ink-700 transition-all"
         >
-          {showPreview ? '隐藏卡片' : '👁 预览卡片'}
+          {showPreview ? '隐藏卡片' : '预 预览卡片'}
         </button>
       </div>
 
@@ -121,7 +121,7 @@ export default function ShareCard({ scenario, choice }: ShareCardProps) {
           {/* 顶部标签 */}
           <div className="relative px-6 pt-5 pb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-amber-400 text-lg">🏛</span>
+              <span className="text-amber-400 text-lg">殿</span>
               <span className="text-amber-300/80 text-xs font-bold tracking-widest">五千年史馆</span>
             </div>
             <div className="text-xs text-amber-200/60">历史决策模拟器</div>

@@ -34,7 +34,7 @@ export default function DynastyComparePage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            📊 朝代雷达对比
+            比 朝代雷达对比
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
             选两个朝代，8 维度雷达图对比谁更强

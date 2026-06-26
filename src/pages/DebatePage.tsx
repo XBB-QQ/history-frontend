@@ -20,7 +20,7 @@ export default function DebatePage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            ⚖️ 历史辩论场
+            辩 历史辩论场
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
             历史没有标准答案 — 站队投票，思考你的史观
@@ -57,7 +57,7 @@ export default function DebatePage() {
               ))}
             </div>
             <h2 className="text-xl font-serif font-bold text-ink-900 dark:text-ink-100 mb-2">
-              ⚖️ {topic.title}
+              辩 {topic.title}
             </h2>
             <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
               {topic.description}

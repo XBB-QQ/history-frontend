@@ -225,7 +225,7 @@ function DialogPage() {
         {/* 提示 */}
         {!selectedFigure && (
           <div className="mt-8 p-4 bg-amber-50/50 dark:bg-amber-900/10 rounded-lg border border-amber-200/50 dark:border-amber-700/30 text-sm text-ink-600 dark:text-ink-400 text-center">
-            💡 当前为规则版回复，后续将接入 LLM 实现真正智能对话。可尝试询问人物专长话题（如问孔子"仁"、问李白"诗"）获得更好体验。
+            注 当前为规则版回复，后续将接入 LLM 实现真正智能对话。可尝试询问人物专长话题（如问孔子"仁"、问李白"诗"）获得更好体验。
           </div>
         )}
       </div>

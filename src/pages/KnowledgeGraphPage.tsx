@@ -97,7 +97,7 @@ function KnowledgeGraphPage() {
             <div id="graph-container" className="bg-white/40 dark:bg-ink-900/40 rounded-xl border border-ink-200 dark:border-ink-700 overflow-hidden">
               <div className="p-3 border-b border-ink-200 dark:border-ink-700 flex items-center justify-between text-sm">
                 <span className="text-ink-600 dark:text-ink-400">
-                  💡 拖拽节点可重新布局，点击查看详情
+                  注 拖拽节点可重新布局，点击查看详情
                   {highlightType && (
                     <span className="ml-2 text-accent">筛选: {NODE_STYLES[highlightType].label}</span>
                   )}
@@ -124,7 +124,7 @@ function KnowledgeGraphPage() {
               <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-3">节点详情</h3>
               {!selectedNode ? (
                 <div className="text-center py-8 text-ink-400 dark:text-ink-500 text-sm">
-                  <div className="text-4xl mb-2">👆</div>
+                  <div className="text-4xl mb-2">拖</div>
                   点击图谱节点查看详情
                 </div>
               ) : (

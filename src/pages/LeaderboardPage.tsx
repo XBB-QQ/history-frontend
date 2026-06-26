@@ -31,7 +31,7 @@ function LeaderboardPage() {
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-24 pb-12 px-4">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
-          <span className="text-4xl mb-4 block">🏆</span>
+          <span className="text-4xl mb-4 block">榜</span>
           <h1 className="text-3xl font-black text-ink-900 dark:text-ink-100">积分排行榜</h1>
           <p className="text-sm text-ink-500 mt-2">快来答题挑战，登上历史巅峰！</p>
         </div>

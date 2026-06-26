@@ -142,7 +142,7 @@ export default function TimeTravelBar() {
           {/* 标题行 */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-lg">⏳</span>
+              <span className="text-lg">◇</span>
               <h3 className="text-base font-black text-ink-900 dark:text-ink-100">时间旅行</h3>
             </div>
             <button

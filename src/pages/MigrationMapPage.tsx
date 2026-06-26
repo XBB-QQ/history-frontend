@@ -85,7 +85,7 @@ export default function MigrationMapPage() {
                   : 'bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400 hover:bg-accent hover:text-white'
               }`}
             >
-              {showAll ? '📊 全部显示中' : '📊 显示全部'}
+              {showAll ? '显 全部显示中' : '显 显示全部'}
             </button>
             {MIGRATION_EVENTS.map(e => {
               const typeColor = MIGRATION_TYPE_LABELS[e.type].color;
@@ -273,7 +273,7 @@ export default function MigrationMapPage() {
               {/* 描述 */}
               <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-lg border border-ink-200 dark:border-ink-700">
                 <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                  📖 事件详情
+                  详 事件详情
                 </h3>
                 <p className="text-ink-800 dark:text-ink-200 leading-loose">
                   {selectedEvent.description}
@@ -283,7 +283,7 @@ export default function MigrationMapPage() {
               {/* 原因 */}
               <div className="p-4 bg-red-500/5 dark:bg-red-700/10 rounded-lg border-l-4 border-red-500">
                 <h3 className="text-sm font-bold text-red-700 dark:text-red-400 mb-1 tracking-widest">
-                  ⚠️ 迁徙原因
+                  注 迁徙原因
                 </h3>
                 <p className="text-ink-800 dark:text-ink-200 text-sm">{selectedEvent.cause}</p>
               </div>
@@ -291,7 +291,7 @@ export default function MigrationMapPage() {
               {/* 影响 */}
               <div className="p-4 bg-green-500/5 dark:bg-green-700/10 rounded-lg border-l-4 border-green-500">
                 <h3 className="text-sm font-bold text-green-700 dark:text-green-400 mb-1 tracking-widest">
-                  ✨ 历史影响
+                  响 历史影响
                 </h3>
                 <p className="text-ink-800 dark:text-ink-200 text-sm leading-relaxed">{selectedEvent.impact}</p>
               </div>
@@ -299,7 +299,7 @@ export default function MigrationMapPage() {
               {/* 路线详情 */}
               <div className="p-4 bg-ink-50/50 dark:bg-ink-900/30 rounded-lg border border-ink-200 dark:border-ink-700">
                 <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                  🗺️ 迁徙路线
+                  图 迁徙路线
                 </h3>
                 <div className="space-y-2">
                   {selectedEvent.routes.map((route, idx) => (

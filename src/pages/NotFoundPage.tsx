@@ -2,12 +2,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 const pages = [
-  { path: '/timeline', label: '时间轴', icon: '📅' },
-  { path: '/dynasties', label: '历代朝代', icon: '🏛️' },
-  { path: '/persons', label: '人物志', icon: '👤' },
-  { path: '/knowledge', label: '史海钩沉', icon: '📚' },
-  { path: '/map', label: '历史地图', icon: '🗺️' },
-  { path: '/favorites', label: '我的收藏', icon: '⭐' },
+  { path: '/timeline', label: '时间轴', icon: '事' },
+  { path: '/dynasties', label: '历代朝代', icon: '朝' },
+  { path: '/persons', label: '人物志', icon: '人' },
+  { path: '/knowledge', label: '史海钩沉', icon: '知' },
+  { path: '/map', label: '历史地图', icon: '图' },
+  { path: '/favorites', label: '我的收藏', icon: '藏' },
 ];
 
 function NotFoundPage() {
@@ -34,7 +34,7 @@ function NotFoundPage() {
       <div className="max-w-2xl w-full text-center">
         {/* 动画卷轴 */}
         <div className="relative mb-8">
-          <div className="text-8xl md:text-9xl animate-bounce">📜</div>
+          <div className="text-8xl md:text-9xl animate-bounce">史</div>
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-24 h-24 rounded-full bg-accent/10 dark:bg-accent/20 animate-ping" />
           </div>

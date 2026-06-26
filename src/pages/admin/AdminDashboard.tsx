@@ -22,10 +22,10 @@ export default function AdminDashboard() {
   }, []);
 
   const cards = [
-    { label: '事件', count: stats.events, icon: '📅', color: 'from-red-500 to-red-700', path: '/admin/events' },
-    { label: '人物', count: stats.persons, icon: '👤', color: 'from-blue-500 to-blue-700', path: '/admin/persons' },
-    { label: '朝代', count: stats.dynasties, icon: '🏛️', color: 'from-green-500 to-green-700', path: '/admin/dynasties' },
-    { label: '知识卡片', count: stats.knowledge, icon: '📚', color: 'from-purple-500 to-purple-700', path: '/admin/knowledge' },
+    { label: '事件', count: stats.events, icon: '事', color: 'from-red-500 to-red-700', path: '/admin/events' },
+    { label: '人物', count: stats.persons, icon: '人', color: 'from-blue-500 to-blue-700', path: '/admin/persons' },
+    { label: '朝代', count: stats.dynasties, icon: '朝', color: 'from-green-500 to-green-700', path: '/admin/dynasties' },
+    { label: '知识卡片', count: stats.knowledge, icon: '知', color: 'from-purple-500 to-purple-700', path: '/admin/knowledge' },
   ];
 
   return (

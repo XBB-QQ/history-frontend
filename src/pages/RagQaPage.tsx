@@ -102,7 +102,7 @@ export default function RagQaPage() {
         {/* 错误提示 */}
         {error && (
           <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400">
-            ❌ {error}
+            错 {error}
           </div>
         )}
 
@@ -114,7 +114,7 @@ export default function RagQaPage() {
               <div className="p-6 bg-gradient-to-br from-white/80 to-accent/5 dark:from-ink-900/80 dark:to-accent/10 rounded-xl border border-ink-200 dark:border-ink-700 shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-8 h-8 rounded-full bg-accent/10 dark:bg-accent/20 flex items-center justify-center">
-                    <span className="text-accent text-lg">🤖</span>
+                    <span className="text-accent text-lg">机</span>
                   </div>
                   <div>
                     <div className="font-bold text-ink-900 dark:text-ink-100">史馆答问</div>
@@ -150,7 +150,7 @@ export default function RagQaPage() {
                   {answer.sources.events.length > 0 && (
                     <div className="p-4 bg-white/50 dark:bg-ink-900/50 rounded-lg border border-ink-200 dark:border-ink-700">
                       <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                        📜 引用事件
+                        史 引用事件
                       </h4>
                       <div className="space-y-2">
                         {answer.sources.events.map(e => (
@@ -176,7 +176,7 @@ export default function RagQaPage() {
                   {answer.sources.persons.length > 0 && (
                     <div className="p-4 bg-white/50 dark:bg-ink-900/50 rounded-lg border border-ink-200 dark:border-ink-700">
                       <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                        👤 引用人物
+                        人 引用人物
                       </h4>
                       <div className="space-y-2">
                         {answer.sources.persons.map(p => (
@@ -202,7 +202,7 @@ export default function RagQaPage() {
                   {answer.sources.dynasties.length > 0 && (
                     <div className="p-4 bg-white/50 dark:bg-ink-900/50 rounded-lg border border-ink-200 dark:border-ink-700">
                       <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                        🏛️ 引用朝代
+                        朝 引用朝代
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {answer.sources.dynasties.map(d => (

@@ -2,11 +2,11 @@ import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAdminStore } from '@/store/adminStore';
 
 const menuItems = [
-  { label: '仪表盘', path: '/admin', icon: '📊' },
-  { label: '事件管理', path: '/admin/events', icon: '📅' },
-  { label: '人物管理', path: '/admin/persons', icon: '👤' },
-  { label: '朝代管理', path: '/admin/dynasties', icon: '🏛️' },
-  { label: '知识卡片', path: '/admin/knowledge', icon: '📚' },
+  { label: '仪表盘', path: '/admin', icon: '盘' },
+  { label: '事件管理', path: '/admin/events', icon: '事' },
+  { label: '人物管理', path: '/admin/persons', icon: '人' },
+  { label: '朝代管理', path: '/admin/dynasties', icon: '朝' },
+  { label: '知识卡片', path: '/admin/knowledge', icon: '知' },
 ];
 
 export default function AdminLayout() {
@@ -25,7 +25,7 @@ export default function AdminLayout() {
       <aside className="w-56 bg-ink-900 border-r border-ink-800 flex flex-col">
         <div className="p-4 border-b border-ink-800">
           <Link to="/" className="flex items-center gap-2 mb-1">
-            <span className="text-2xl">📜</span>
+            <span className="text-2xl">史</span>
             <span className="text-white font-bold text-sm">五千年史馆</span>
           </Link>
           <span className="text-xs text-ink-500">管理后台</span>
@@ -56,7 +56,7 @@ export default function AdminLayout() {
             to="/"
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-ink-400 hover:bg-ink-800 hover:text-ink-200 transition-colors"
           >
-            <span>🌐</span>
+            <span>语</span>
             返回前台
           </Link>
           <button

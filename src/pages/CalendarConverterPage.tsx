@@ -11,7 +11,7 @@ export default function CalendarConverterPage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            📅 历史日历转换器
+            历 历史日历转换器
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
             输入公历年份 → 干支纪年 + 生肖 + 在位皇帝年号
@@ -105,7 +105,7 @@ export default function CalendarConverterPage() {
 
         {/* 知识小贴士 */}
         <div className="mt-8 p-5 rounded-xl border border-ink-200 dark:border-ink-700 bg-ink-50/30 dark:bg-ink-800/20">
-          <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3">💡 知识小贴士</h3>
+          <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3">注 知识小贴士</h3>
           <ul className="space-y-2 text-sm text-ink-600 dark:text-ink-400">
             <li>• <strong>干支纪年</strong>：以天干（甲乙丙丁戊己庚辛壬癸）+ 地支（子丑寅卯辰巳午未申酉戌亥）组合，60年一循环</li>
             <li>• <strong>年号</strong>：皇帝自行命名，一个皇帝可以有多个年号（如汉武帝有11个），明代以后一帝一年号</li>

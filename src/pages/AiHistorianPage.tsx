@@ -10,9 +10,9 @@ import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { generateHistorianComment, buildUserPortraitFromStorage, type HistorianComment, type UserPortrait } from '@/utils/aiHistorian';
 
 const STYLE_LABELS = [
-  { key: 'formal', label: '正史体', emoji: '📜', desc: '模仿《史记》列传风格，文言文评价' },
-  { key: 'anecdotal', label: '稗官体', emoji: '📖', desc: '民间说书风格，通俗有趣' },
-  { key: 'eulogy', label: '谥议体', emoji: '🏛', desc: '古代谥号评定格式，正式庄重' },
+  { key: 'formal', label: '正史体', emoji: '史', desc: '模仿《史记》列传风格，文言文评价' },
+  { key: 'anecdotal', label: '稗官体', emoji: '传', desc: '民间说书风格，通俗有趣' },
+  { key: 'eulogy', label: '谥议体', emoji: '评', desc: '古代谥号评定格式，正式庄重' },
 ] as const;
 
 export default function AiHistorianPage() {
@@ -66,7 +66,7 @@ export default function AiHistorianPage() {
           <RevealOnScroll direction="up" delay={200}>
             <div className="mt-8 p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
               <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-                📊 你的历史画像
+                像 你的历史画像
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
                 <div>
@@ -127,7 +127,7 @@ export default function AiHistorianPage() {
         {/* 错误 */}
         {error && (
           <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400">
-            ❌ {error}
+            错 {error}
           </div>
         )}
 
@@ -171,7 +171,7 @@ export default function AiHistorianPage() {
               {/* 学习建议 */}
               {comment.suggestion && (
                 <div className="p-4 bg-accent/5 dark:bg-accent/10 rounded-lg border-l-4 border-accent text-center">
-                  <div className="text-xs text-accent tracking-widest mb-1">💡 史官建议</div>
+                  <div className="text-xs text-accent tracking-widest mb-1">注 史官建议</div>
                   <div className="text-ink-900 dark:text-ink-100 font-bold">{comment.suggestion}</div>
                 </div>
               )}

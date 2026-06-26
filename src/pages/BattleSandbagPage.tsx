@@ -12,9 +12,9 @@ import { BATTLE_LIST, calculateBattle, type BattleTemplate, type TacticalOption,
 type Phase = 'select' | 'deploy' | 'result';
 
 const TERRAIN_LABELS: Record<string, { emoji: string; label: string }> = {
-  river: { emoji: '🌊', label: '水战' },
-  mountain: { emoji: '🌲', label: '山地' },
-  plain: { emoji: '🌾', label: '平原' },
+  river: { emoji: '水', label: '水战' },
+  mountain: { emoji: '山', label: '山地' },
+  plain: { emoji: '原', label: '平原' },
   city: { emoji: '🏯', label: '城战' },
 };
 
@@ -80,7 +80,7 @@ export default function BattleSandbagPage() {
                     <p className="text-sm text-ink-600 dark:text-ink-400">{b.description}</p>
                     <div className="mt-2 flex gap-4 text-xs">
                       <span className="text-green-600">🛡️ {b.redForce.name} ({b.redForce.commander})</span>
-                      <span className="text-red-600">⚔️ {b.blueForce.name} ({b.blueForce.commander})</span>
+                      <span className="text-red-600">战 {b.blueForce.name} ({b.blueForce.commander})</span>
                     </div>
                   </button>
                 );
@@ -121,7 +121,7 @@ export default function BattleSandbagPage() {
               {/* 蓝方 */}
               <div className="p-4 bg-red-500/10 dark:bg-red-700/10 rounded-lg border-l-4 border-red-500">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-lg font-bold text-red-700 dark:text-red-400">⚔️ {battle.blueForce.name}</span>
+                  <span className="text-lg font-bold text-red-700 dark:text-red-400">战 {battle.blueForce.name}</span>
                 </div>
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between"><span>统帅</span><span className="font-bold">{battle.blueForce.commander}</span></div>
@@ -137,7 +137,7 @@ export default function BattleSandbagPage() {
             {/* 战术选择 */}
             <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
               <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-                ⚖️ 选择战术
+                战 选择战术
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {battle.tactics.map(t => (
@@ -174,7 +174,7 @@ export default function BattleSandbagPage() {
                 disabled={!selectedTactic}
                 className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg disabled:opacity-50 transition-all"
               >
-                ⚔️ 开战
+                战 开战
               </button>
               <button onClick={() => setPhase('select')} className="px-6 py-3 rounded-lg border-2 border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-300 font-bold hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors">
                 返回选择
@@ -189,7 +189,7 @@ export default function BattleSandbagPage() {
             {/* 结局 */}
             <div className={`p-6 rounded-xl ${OUTCOME_STYLES[result.outcome].bg} text-center`}>
               <div className="text-4xl mb-2">
-                {result.outcome === 'victory' ? '🏆' : result.outcome === 'defeat' ? '💀' : '⚖️'}
+                {result.outcome === 'victory' ? '胜' : result.outcome === 'defeat' ? '败' : '战'}
               </div>
               <h2 className={`text-xl font-bold ${OUTCOME_STYLES[result.outcome].text}`}>
                 {OUTCOME_STYLES[result.outcome].label}！
@@ -200,7 +200,7 @@ export default function BattleSandbagPage() {
             {/* 战力对比图 */}
             <div className="p-4 bg-ink-50/50 dark:bg-ink-900/30 rounded-lg border border-ink-200 dark:border-ink-700">
               <h4 className="text-xs font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-                📊 战力对比
+                力 战力对比
               </h4>
               <div className="flex items-center gap-4">
                 <div className="text-right">
@@ -223,7 +223,7 @@ export default function BattleSandbagPage() {
             {/* 你 vs 历史 */}
             <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
               <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-                📜 你的决策 vs 历史实际
+                史 你的决策 vs 历史实际
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="p-3 bg-accent/10 rounded-lg">
@@ -242,7 +242,7 @@ export default function BattleSandbagPage() {
             {/* 历史教训 */}
             <div className="p-5 bg-gradient-to-br from-amber-500/10 to-accent/10 dark:from-amber-700/15 dark:to-accent/15 rounded-lg">
               <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                💡 历史教训
+                注 历史教训
               </h3>
               <p className="text-ink-800 dark:text-ink-200 leading-loose italic">{battle.lesson}</p>
             </div>

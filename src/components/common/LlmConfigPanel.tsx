@@ -46,14 +46,14 @@ export default function LlmConfigPanel() {
         >
           <div className="w-full max-w-md p-6 bg-white dark:bg-ink-900 rounded-xl shadow-xl border border-ink-200 dark:border-ink-700">
             <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-1">
-              🤖 AI 功能配置
+              机 AI 功能配置
             </h3>
             <p className="text-sm text-ink-500 dark:text-ink-400 mb-4">
               五千年史馆的 AI 功能（问答/辩论/史官/注解）需要智谱 AI 的免费 API Key。
               <br />
               <a href="https://open.bigmodel.cn/usercenter/apikeys" target="_blank" rel="noopener noreferrer"
                 className="text-accent hover:underline">
-                👉 点击这里免费申请 →
+                点 点击这里免费申请 →
               </a>
             </p>
 
@@ -70,7 +70,7 @@ export default function LlmConfigPanel() {
                   className="w-full px-3 py-2 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-600 text-ink-900 dark:text-ink-100 focus:border-accent outline-none text-sm"
                 />
                 <div className="text-xs text-ink-400 mt-1">
-                  ⚠️ Key 仅存储在浏览器本地(localStorage)，不会上传到任何服务器
+                  注 Key 仅存储在浏览器本地(localStorage)，不会上传到任何服务器
                 </div>
               </div>
 
