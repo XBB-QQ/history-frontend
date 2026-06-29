@@ -8,14 +8,14 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useUserStore } from '@/store/userStore';
 import { useFavoriteStore } from '@/store/favoriteStore';
-import { computeProfile } from '@/utils/profileReport';
+import { computeProfile } from '@/features/profileReport';
 import {
   PERSONALITY_MATCHES,
   DIMENSION_LABELS,
   DIMENSION_DESCRIPTIONS,
   NEWCOMER_PERSONALITY,
   type PersonalityMatch,
-} from '@/data/personalityMatches';
+} from '@/data/core/personalityMatches';
 import DimensionRadar from '@/components/profile/DimensionRadar';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';

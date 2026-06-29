@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { DYNASTY_FOODS } from '@/data/dynastyFood';
-import type { FoodItem } from '@/data/dynastyFood';
+import { DYNASTY_FOODS } from '@/data/features/dynastyFood';
+import type { FoodItem } from '@/data/features/dynastyFood';
 
 export default function DynastyFoodPage() {
   const [selectedDynasty, setSelectedDynasty] = useState<string>('tang');

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CLIMATE_PERIODS, generateClimateTimeSeries } from '@/data/climateHistory';
+import { CLIMATE_PERIODS, generateClimateTimeSeries } from '@/data/features/climateHistory';
 
 export default function ClimatePage() {
   const [selectedPeriod, setSelectedPeriod] = useState<number>(0);

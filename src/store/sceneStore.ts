@@ -5,9 +5,9 @@
 
 import { create } from 'zustand';
 import type { CulturalScene, SceneId, ScenePreference } from '@/types/scene';
-import { SCENE_CONFIGS, DEFAULT_SCENE } from '@/data/scenes';
+import { SCENE_CONFIGS, DEFAULT_SCENE } from '@/data/themes/scenes';
 import { loadSceneFonts } from '@/utils/fontLoader';
-import { getSceneByDynasty } from '@/data/dynastySceneMap';
+import { getSceneByDynasty } from '@/data/themes/dynastySceneMap';
 
 const STORAGE_KEY = 'history-museum-scene';
 

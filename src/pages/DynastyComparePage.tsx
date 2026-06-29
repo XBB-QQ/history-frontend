@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
-import { DYNASTY_METRICS, METRIC_LABELS } from '@/data/dynastyCompare';
-import type { DynastyMetrics } from '@/data/dynastyCompare';
+import { DYNASTY_METRICS, METRIC_LABELS } from '@/data/features/dynastyCompare';
+import type { DynastyMetrics } from '@/data/features/dynastyCompare';
 
 export default function DynastyComparePage() {
   const [leftId, setLeftId] = useState<string>('tang');

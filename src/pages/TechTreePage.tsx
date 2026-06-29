@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
-import { INVENTIONS, CATEGORY_STYLE, IMPORTANCE_STYLE } from '@/data/techTree';
-import type { InventionNode } from '@/data/techTree';
+import { INVENTIONS, CATEGORY_STYLE, IMPORTANCE_STYLE } from '@/data/features/techTree';
+import type { InventionNode } from '@/data/features/techTree';
 
 export default function TechTreePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');

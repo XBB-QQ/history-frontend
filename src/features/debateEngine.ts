@@ -4,9 +4,9 @@
  */
 
 import { callLLM, type LLMMessage } from '@/utils/llmClient';
-import { getFigureById } from '@/data/figures';
-import type { DebateTopic } from '@/data/debateTopics';
-import type { DebateFigurePair } from '@/data/debateFigures';
+import { getFigureById } from '@/data/scenarios/figures';
+import type { DebateTopic } from '@/data/scenarios/debateTopics';
+import type { DebateFigurePair } from '@/data/scenarios/debateFigures';
 
 export interface DebateRound {
   round: number;

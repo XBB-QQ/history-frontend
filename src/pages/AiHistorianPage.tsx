@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { generateHistorianComment, buildUserPortraitFromStorage, type HistorianComment, type UserPortrait } from '@/utils/aiHistorian';
+import { generateHistorianComment, buildUserPortraitFromStorage, type HistorianComment, type UserPortrait } from '@/features/aiHistorian';
 
 const STYLE_LABELS = [
   { key: 'formal', label: '正史体', emoji: '史', desc: '模仿《史记》列传风格，文言文评价' },

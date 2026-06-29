@@ -11,7 +11,7 @@ import {
   SOUND_PRESETS, PENTATONIC_SCALE, DYNASTY_SOUNDSCAPES,
   playNote, playDrum, playBell, playNoise,
   type SoundType, type SoundPreset,
-} from '@/utils/historicalSound';
+} from '@/features/historicalSound';
 
 export default function SoundMuseumPage() {
   const [activeSound, setActiveSound] = useState<SoundType | null>(null);

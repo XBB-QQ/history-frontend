@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
-import { CAUSAL_CHAINS, findCausalChain, traceCausalRoot } from '@/data/causalChains';
-import type { CausalLink } from '@/data/causalChains';
+import { CAUSAL_CHAINS, findCausalChain, traceCausalRoot } from '@/data/features/causalChains';
+import type { CausalLink } from '@/data/features/causalChains';
 
 const STRENGTH_STYLE = {
   direct: { label: '直接因果', color: 'border-red-400 bg-red-50 text-red-700', line: '#c44536' },

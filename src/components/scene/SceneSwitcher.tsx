@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useSceneStore } from '@/store/sceneStore';
-import { SCENE_LIST } from '@/data/scenes';
+import { SCENE_LIST } from '@/data/themes/scenes';
 import type { SceneId } from '@/types/scene';
 
 export default function SceneSwitcher() {

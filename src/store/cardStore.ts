@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { CardCollection, CardRarity, CollectedCard, PersonCard } from '@/types/card';
 import { RARITY_CONFIG } from '@/types/card';
-import { PERSON_CARDS, getCardById } from '@/data/personCards';
+import { PERSON_CARDS, getCardById } from '@/data/games/personCards';
 
 const STORAGE_KEY = 'history-museum-cards';
 

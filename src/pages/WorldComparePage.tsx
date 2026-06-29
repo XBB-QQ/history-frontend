@@ -5,7 +5,7 @@
  */
 
 import { Link } from 'react-router-dom';
-import { WORLD_HISTORY } from '@/data/worldHistory';
+import { WORLD_HISTORY } from '@/data/themes/worldHistory';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 

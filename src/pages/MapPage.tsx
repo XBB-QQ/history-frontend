@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import MapSVG from '@/components/map/MapSVG';
-import { dynastyMapData } from '@/data/map-data';
+import { dynastyMapData } from '@/data/core/map-data';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 
 /** 朝代信息卡片 */

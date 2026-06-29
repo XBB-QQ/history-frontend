@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import { PODCAST_EPISODES, CATEGORY_ICON } from '@/data/podcastList';
-import { speakText, stopSpeaking, isVoiceSupported } from '@/utils/voiceHistorian';
-import type { PodcastEpisode } from '@/data/podcastList';
+import { PODCAST_EPISODES, CATEGORY_ICON } from '@/data/features/podcastList';
+import { speakText, stopSpeaking, isVoiceSupported } from '@/features/voiceHistorian';
+import type { PodcastEpisode } from '@/data/features/podcastList';
 
 export default function PodcastPage() {
   const [selectedId, setSelectedId] = useState<string>(PODCAST_EPISODES[0].id);

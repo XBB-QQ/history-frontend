@@ -1,7 +1,7 @@
 // 历史地图模块 — SVG 地图可视化组件
 
 import React, { useMemo } from 'react';
-import { mapRegions, chinaOutlinePath } from '@/data/map-data';
+import { mapRegions, chinaOutlinePath } from '@/data/core/map-data';
 
 interface MapSVGProps {
   highlightedRegionIds: Set<string>;

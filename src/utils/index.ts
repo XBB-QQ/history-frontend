@@ -2,25 +2,25 @@ import type { EventItem, PersonItem, DynastyItem, KnowledgeCardItem } from '@/ty
 
 /** 从 JSON 数据加载事件 */
 export async function loadEvents(): Promise<EventItem[]> {
-  const mod = await import('@/data/events.json');
+  const mod = await import('@/data/core/events.json');
   return mod.default as EventItem[];
 }
 
 /** 从 JSON 数据加载人物 */
 export async function loadPersons(): Promise<PersonItem[]> {
-  const mod = await import('@/data/persons.json');
+  const mod = await import('@/data/core/persons.json');
   return mod.default as PersonItem[];
 }
 
 /** 从 JSON 数据加载朝代 */
 export async function loadDynasties(): Promise<DynastyItem[]> {
-  const mod = await import('@/data/dynasties.json');
+  const mod = await import('@/data/core/dynasties.json');
   return mod.default as DynastyItem[];
 }
 
 /** 从 JSON 数据加载知识卡片 */
 export async function loadKnowledgeCards(): Promise<KnowledgeCardItem[]> {
-  const mod = await import('@/data/knowledge-cards.json');
+  const mod = await import('@/data/core/knowledge-cards.json');
   return mod.default as KnowledgeCardItem[];
 }
 

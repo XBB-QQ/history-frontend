@@ -9,7 +9,7 @@ import {
   VoiceStyle,
   VOICE_STYLES,
   buildEventNarration,
-} from '@/utils/voiceHistorian';
+} from '@/features/voiceHistorian';
 
 interface VoiceHistorianProps {
   event: {

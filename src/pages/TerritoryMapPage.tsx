@@ -7,7 +7,7 @@ import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { DYNASTY_TERRITORIES, TIMELINE_YEARS, getTerritoryAtYear, type DynastyTerritory } from '@/data/dynastyTerritory';
+import { DYNASTY_TERRITORIES, TIMELINE_YEARS, getTerritoryAtYear, type DynastyTerritory } from '@/data/features/dynastyTerritory';
 
 function formatYear(y: number): string {
   return y < 0 ? `公元前${Math.abs(y)}年` : `公元${y}年`;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { LEARNING_PATHS, DIFFICULTY_STYLE } from '@/data/learningPaths';
-import type { LearningPath, PathDay } from '@/data/learningPaths';
+import { LEARNING_PATHS, DIFFICULTY_STYLE } from '@/data/features/learningPaths';
+import type { LearningPath, PathDay } from '@/data/features/learningPaths';
 
 export default function LearningPathPage() {
   const [selectedPath, setSelectedPath] = useState<string>(LEARNING_PATHS[0].id);

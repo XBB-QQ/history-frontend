@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { MULTI_PERSPECTIVE_EVENTS, type MultiPerspectiveEvent, type Perspective } from '@/data/multiPerspectives';
+import { MULTI_PERSPECTIVE_EVENTS, type MultiPerspectiveEvent, type Perspective } from '@/data/features/multiPerspectives';
 
 type ViewMode = 'overview' | 'single';
 

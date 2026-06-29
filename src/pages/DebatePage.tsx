@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { DEBATE_TOPICS } from '@/data/debateTopics';
-import type { DebateTopic } from '@/data/debateTopics';
+import { DEBATE_TOPICS } from '@/data/scenarios/debateTopics';
+import type { DebateTopic } from '@/data/scenarios/debateTopics';
 
 export default function DebatePage() {
   const [selectedId, setSelectedId] = useState<string>(DEBATE_TOPICS[0].id);

@@ -6,7 +6,7 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useCardStore } from '@/store/cardStore';
-import { PERSON_CARDS, getCardById } from '@/data/personCards';
+import { PERSON_CARDS, getCardById } from '@/data/games/personCards';
 import { RARITY_CONFIG } from '@/types/card';
 import type { PersonCard, CardRarity } from '@/types/card';
 import SectionHeader from '@/components/common/SectionHeader';

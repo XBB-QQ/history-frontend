@@ -2,7 +2,7 @@ import { useTheme } from '@/components/layout/ThemeProvider';
 import { useDetailStore } from '@/store/detailStore';
 import { useSceneStore } from '@/store/sceneStore';
 import type { DynastyItem } from '@/types';
-import { getDynastyColor, getDynastyColorDark } from '@/data/themes';
+import { getDynastyColor, getDynastyColorDark } from '@/data/themes/dynastyThemes';
 
 interface DynastyCardProps {
   dynasty: DynastyItem;

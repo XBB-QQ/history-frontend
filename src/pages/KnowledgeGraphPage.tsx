@@ -5,7 +5,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { buildKnowledgeGraph } from '@/utils/knowledgeGraphBuilder';
+import { buildKnowledgeGraph } from '@/features/knowledgeGraphBuilder';
 import { NODE_STYLES } from '@/types/knowledgeGraph';
 import type { NodeType } from '@/types/knowledgeGraph';
 import KnowledgeGraphView from '@/components/graph/KnowledgeGraphView';

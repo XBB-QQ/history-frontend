@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { BATTLE_LIST, calculateBattle, type BattleTemplate, type TacticalOption, type BattleResult } from '@/data/battleSandbag';
+import { BATTLE_LIST, calculateBattle, type BattleTemplate, type TacticalOption, type BattleResult } from '@/data/features/battleSandbag';
 
 type Phase = 'select' | 'deploy' | 'result';
 

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback } from 'react';
-import { getDynastyColor, getDynastyColorDark } from '@/data/themes';
+import { getDynastyColor, getDynastyColorDark } from '@/data/themes/dynastyThemes';
 
 /**
  * 朝代主题上下文

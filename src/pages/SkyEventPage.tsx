@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { SKY_EVENTS } from '@/data/skyEvents';
-import type { SkyEvent } from '@/data/skyEvents';
+import { SKY_EVENTS } from '@/data/features/skyEvents';
+import type { SkyEvent } from '@/data/features/skyEvents';
 
 const CREDIBILITY_MAP = {
   high: { label: '高可信度', color: 'text-green-600 bg-green-100', icon: '确' },

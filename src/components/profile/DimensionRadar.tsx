@@ -3,8 +3,8 @@
  * SVG 绘制四维度菱形图
  */
 
-import type { DimensionScore } from '@/utils/profileReport';
-import { DIMENSION_LABELS } from '@/data/personalityMatches';
+import type { DimensionScore } from '@/features/profileReport';
+import { DIMENSION_LABELS } from '@/data/core/personalityMatches';
 
 interface DimensionRadarProps {
   dimensions: DimensionScore[];

@@ -7,7 +7,7 @@ import React, { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { DYNASTY_ECONOMIES, type DynastyEconomyTemplate, type TurnState, type SandbagEvent, type SandbagOption } from '@/data/dynastyEconomy';
+import { DYNASTY_ECONOMIES, type DynastyEconomyTemplate, type TurnState, type SandbagEvent, type SandbagOption } from '@/data/features/dynastyEconomy';
 
 type Phase = 'select' | 'playing' | 'ended';
 

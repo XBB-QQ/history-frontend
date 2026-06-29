@@ -4,7 +4,7 @@
  * @see history-museum/design/000-future-roadmap.md §方向五 §5.2
  */
 
-import type { DimensionKey } from '@/data/personalityMatches';
+import type { DimensionKey } from '@/data/core/personalityMatches';
 import type { UserDTO } from '@/services/userApi';
 
 export interface FavoriteEntryLike {

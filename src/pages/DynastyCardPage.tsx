@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DYNASTY_CARD_TEMPLATES } from '@/data/dynastyCards';
-import type { DynastyCardProfile } from '@/data/dynastyCards';
+import { DYNASTY_CARD_TEMPLATES } from '@/data/games/dynastyCards';
+import type { DynastyCardProfile } from '@/data/games/dynastyCards';
 
 export default function DynastyCardPage() {
   const navigate = useNavigate();

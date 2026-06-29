@@ -4,10 +4,10 @@
  * @see history-museum/design/000-future-roadmap.md §方向六 §6.4
  */
 
-import dynastiesData from '@/data/dynasties.json';
-import eventsData from '@/data/events.json';
-import personsData from '@/data/persons.json';
-import knowledgeData from '@/data/knowledge-cards.json';
+import dynastiesData from '@/data/core/dynasties.json';
+import eventsData from '@/data/core/events.json';
+import personsData from '@/data/core/persons.json';
+import knowledgeData from '@/data/core/knowledge-cards.json';
 import type {
   GraphNode,
   GraphLink,

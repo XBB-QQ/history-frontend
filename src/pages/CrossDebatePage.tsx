@@ -7,10 +7,10 @@ import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { DEBATE_TOPICS } from '@/data/debateTopics';
-import { DEBATE_FIGURE_PAIRS } from '@/data/debateFigures';
-import { getFigureById } from '@/data/figures';
-import { generateDebateRound, generateDebateConclusion, askDebateQuestion, type DebateRound } from '@/utils/debateEngine';
+import { DEBATE_TOPICS } from '@/data/scenarios/debateTopics';
+import { DEBATE_FIGURE_PAIRS } from '@/data/scenarios/debateFigures';
+import { getFigureById } from '@/data/scenarios/figures';
+import { generateDebateRound, generateDebateConclusion, askDebateQuestion, type DebateRound } from '@/features/debateEngine';
 
 type Phase = 'select' | 'debating' | 'concluded';
 

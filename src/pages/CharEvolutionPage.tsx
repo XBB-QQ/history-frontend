@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import { CHAR_EVOLUTIONS, getCharEvolution } from '@/data/charEvolution';
-import type { CharEvolution, CharStage } from '@/data/charEvolution';
+import { CHAR_EVOLUTIONS, getCharEvolution } from '@/data/features/charEvolution';
+import type { CharEvolution, CharStage } from '@/data/features/charEvolution';
 
 export default function CharEvolutionPage() {
   const [selectedChar, setSelectedChar] = useState<string>('王');

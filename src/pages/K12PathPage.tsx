@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { K12_PATHS } from '@/data/k12Paths';
-import type { K12Chapter } from '@/data/k12Paths';
+import { K12_PATHS } from '@/data/features/k12Paths';
+import type { K12Chapter } from '@/data/features/k12Paths';
 
 export default function K12PathPage() {
   const [selectedPath, setSelectedPath] = useState<string>(K12_PATHS[0].id);

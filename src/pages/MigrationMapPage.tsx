@@ -7,7 +7,7 @@ import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { MIGRATION_EVENTS, MIGRATION_TYPE_LABELS, type MigrationEvent } from '@/data/migrationData';
+import { MIGRATION_EVENTS, MIGRATION_TYPE_LABELS, type MigrationEvent } from '@/data/features/migrationData';
 
 function formatYear(y: number): string {
   return y < 0 ? `公元前${Math.abs(y)}年` : `公元${y}年`;

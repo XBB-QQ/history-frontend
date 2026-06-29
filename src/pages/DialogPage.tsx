@@ -5,8 +5,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FIGURES, getFigureById } from '@/data/figures';
-import { generateFigureReply, generateGreeting } from '@/utils/figureReply';
+import { FIGURES, getFigureById } from '@/data/scenarios/figures';
+import { generateFigureReply, generateGreeting } from '@/features/figureReply';
 import type { HistoricalFigure, ChatMessage } from '@/types/figure';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';

@@ -7,7 +7,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { INK_ANIMATIONS, type InkAnimation, type InkScene } from '@/data/inkAnimations';
+import { INK_ANIMATIONS, type InkAnimation, type InkScene } from '@/data/features/inkAnimations';
 
 type Phase = 'select' | 'playing' | 'ended';
 

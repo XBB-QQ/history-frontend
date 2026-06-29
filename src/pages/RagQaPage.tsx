@@ -7,7 +7,7 @@ import { useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { askHistoryStream, type RagAnswer } from '@/utils/ragSearch';
+import { askHistoryStream, type RagAnswer } from '@/features/ragSearch';
 
 const SUGGESTIONS = [
   '安史之乱到底怎么影响唐朝经济的？',

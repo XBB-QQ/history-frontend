@@ -7,7 +7,7 @@ import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { searchDict, CLASSICAL_DICT, type DictEntry } from '@/data/classicalDict';
+import { searchDict, CLASSICAL_DICT, type DictEntry } from '@/data/features/classicalDict';
 import { callLLM, type LLMMessage } from '@/utils/llmClient';
 
 type Mode = 'dict' | 'llm';
