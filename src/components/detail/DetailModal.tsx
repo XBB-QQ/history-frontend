@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useDetailStore } from '@/store/detailStore';
 import { useFavoriteStore } from '@/store/favoriteStore';
 import { useUserStore } from '@/store/userStore';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import type {
   FrontendEvent,
   FrontendPerson,
@@ -422,6 +422,7 @@ function Recommendations({ type, data }: { type: string | null; data: FrontendEv
 // ──────────────────────────────────────────────
 
 function FavoriteButton({ type, id, title }: { type: string; id: string; title: string }) {
+  const navigate = useNavigate();
   const isFav = useFavoriteStore((s) => s.isFavorite(id));
   const toggle = useFavoriteStore((s) => s.toggleFavorite);
   const { isAuthenticated } = useUserStore();
