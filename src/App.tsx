@@ -36,6 +36,10 @@ const K12PathPage = lazy(() => import('./pages/K12PathPage'));
 const RagQaPage = lazy(() => import('./pages/RagQaPage'));
 const CrossDebatePage = lazy(() => import('./pages/CrossDebatePage'));
 const AiHistorianPage = lazy(() => import('./pages/AiHistorianPage'));
+const LetterPage = lazy(() => import('./pages/LetterPage'));
+const MomentsPage = lazy(() => import('./pages/MomentsPage'));
+const DailyGreetingPage = lazy(() => import('./pages/DailyGreetingPage'));
+const TimeCapsulePage = lazy(() => import('./pages/TimeCapsulePage'));
 const MultiPerspectivePage = lazy(() => import('./pages/MultiPerspectivePage'));
 const ClassicalAnnotationPage = lazy(() => import('./pages/ClassicalAnnotationPage'));
 const DynastyEconomyPage = lazy(() => import('./pages/DynastyEconomyPage'));
@@ -137,6 +141,10 @@ function App() {
           <Route path="/rag-qa" element={<RagQaPage />} />
           <Route path="/cross-debate" element={<CrossDebatePage />} />
           <Route path="/ai-historian" element={<AiHistorianPage />} />
+          <Route path="/letter" element={<LetterPage />} />
+          <Route path="/moments" element={<MomentsPage />} />
+          <Route path="/greeting" element={<DailyGreetingPage />} />
+          <Route path="/time-capsule" element={<TimeCapsulePage />} />
           <Route path="/multi-perspective" element={<MultiPerspectivePage />} />
           <Route path="/classical-annotation" element={<ClassicalAnnotationPage />} />
           <Route path="/dynasty-economy" element={<DynastyEconomyPage />} />

@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useUserStore } from '@/store/userStore';
 import { getMe, updateUser, type UpdateUserRequest, type UserDTO } from '@/services/userApi';
 import { useFavoriteStore } from '@/store/favoriteStore';
 
 export default function ProfilePage() {
+  const navigate = useNavigate();
   const { user, token, setUser } = useUserStore();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -18,8 +19,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!token) {
-      // 未登录，跳转登录页
-      window.location.href = '/login';
+      navigate('/login');
       return;
     }
     // 刷新用户信息
@@ -35,7 +35,7 @@ export default function ProfilePage() {
     }).catch(() => {
       // Token 失效，清除状态
       useUserStore.getState().logout();
-      window.location.href = '/login';
+      navigate('/login');
     }).finally(() => setLoading(false));
   }, [token]);
 

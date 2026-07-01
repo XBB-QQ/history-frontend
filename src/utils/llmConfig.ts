@@ -1,10 +1,10 @@
 /**
- * LLM 运行时配置 — API Key 不使用 VITE_ 前缀，避免暴露在构建产物中
- * 
+ * LLM 运行时配置 — API Key 仅从 localStorage 读取，绝不嵌入构建产物
+ *
  * 安全策略：
- * 1. API Key 通过 localStorage 手动配置（首次访问时弹出配置面板）
- * 2. 不使用 import.meta.env.VITE_* 存放密钥（这些会被嵌入前端 JS）
- * 3. 用户需自行在智谱 AI 开放平台申请免费 API Key
+ * 1. 用户首次使用时通过 LlmConfigPanel 手动输入 API Key，存入 localStorage
+ * 2. 不使用 import.meta.env.VITE_* 存放密钥（构建时会嵌入前端 JS，任何人可查看）
+ * 3. .env 中的 VITE_* 变量仅用于开发环境本地回退，生产环境必须手动配置
  */
 
 const STORAGE_KEY = 'llm_api_config';
@@ -15,24 +15,24 @@ export interface LlmConfig {
   model: string;
 }
 
-const DEFAULT_CONFIG: LlmConfig = {
-  // 优先用 localStorage，回退到 .env 的 VITE_ 变量（仅本地开发用）
-  apiKey: import.meta.env.VITE_SF_API_KEY || '',
-  baseUrl: import.meta.env.VITE_SF_BASE_URL || 'https://open.bigmodel.cn/api/paas/v4',
-  model: import.meta.env.VITE_SF_MODEL || 'glm-4-flash',
+/** 开发环境本地回退值（生产环境不应使用） */
+const DEV_FALLBACK: LlmConfig = {
+  apiKey: '', // 不再从 .env 读取，避免密钥泄露
+  baseUrl: 'https://open.bigmodel.cn/api/paas/v4',
+  model: 'glm-4-flash',
 };
 
-/** 获取 LLM 配置（从 localStorage） */
+/** 获取 LLM 配置（优先从 localStorage） */
 export function getLlmConfig(): LlmConfig {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored) {
     try {
-      return { ...DEFAULT_CONFIG, ...JSON.parse(stored) };
+      return { ...DEV_FALLBACK, ...JSON.parse(stored) };
     } catch {
-      return DEFAULT_CONFIG;
+      return DEV_FALLBACK;
     }
   }
-  return DEFAULT_CONFIG;
+  return DEV_FALLBACK;
 }
 
 /** 保存 LLM 配置（到 localStorage） */

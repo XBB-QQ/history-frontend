@@ -19,10 +19,10 @@ async function loadData() {
   if (eventsCache && personsCache && dynastiesCache && knowledgeCache) return;
 
   const [ev, ps, dy, kc] = await Promise.all([
-    import('@/data/events.json'),
-    import('@/data/persons.json'),
-    import('@/data/dynasties.json'),
-    import('@/data/knowledge-cards.json'),
+    import('@/data/core/events.json'),
+    import('@/data/core/persons.json'),
+    import('@/data/core/dynasties.json'),
+    import('@/data/core/knowledge-cards.json'),
   ]);
 
   eventsCache = ev.default as EventItem[];
@@ -156,16 +156,16 @@ function buildRagPrompt(question: string, context: RagContext): LLMMessage[] {
   if (context.dynasties.length > 0) {
     contextParts.push('【相关朝代】');
     for (const d of context.dynasties) {
-      contextParts.push(`- ${d.name}朝(${d.period}): ${d.description.slice(0, 200)} 开国者:${d.founder} 都城:${d.capital} 遗产:${d.legacy.slice(0, 100)}`);
+      contextParts.push(`- ${d.name}朝(${d.period}): ${(d.description || '').slice(0, 200)} 开国者:${d.founder || '-'} 都城:${d.capital || '-'} 遗产:${(d.legacy || '').slice(0, 100)}`);
     }
   }
 
   if (context.events.length > 0) {
     contextParts.push('【相关事件】');
     for (const e of context.events) {
-      contextParts.push(`- ${e.title}(${e.yearDisplay}, ${DYNASTY_MAP[e.dynasty] || e.dynasty}朝): ${e.description.slice(0, 150)} 影响:${e.impact.slice(0, 100)}`);
+      contextParts.push(`- ${e.title}(${e.yearDisplay || '-'}, ${DYNASTY_MAP[e.dynasty] || e.dynasty || '-'}朝): ${(e.description || '').slice(0, 150)} 影响:${(e.impact || '').slice(0, 100)}`);
       if (e.classicalText) {
-        contextParts.push(`  史书原文(${e.classicalSource}): ${e.classicalText.slice(0, 120)}`);
+        contextParts.push(`  史书原文(${e.classicalSource || '-'}): ${e.classicalText.slice(0, 120)}`);
       }
     }
   }
@@ -173,14 +173,14 @@ function buildRagPrompt(question: string, context: RagContext): LLMMessage[] {
   if (context.persons.length > 0) {
     contextParts.push('【相关人物】');
     for (const p of context.persons) {
-      contextParts.push(`- ${p.name}(${p.courtesyName}, ${DYNASTY_MAP[p.dynasty] || p.dynasty}朝, ${p.yearsDisplay}): ${p.bio.slice(0, 150)} 成就:${p.achievements.slice(0, 100)}`);
+      contextParts.push(`- ${p.name}(${p.courtesyName || '-'}, ${DYNASTY_MAP[p.dynasty] || p.dynasty || '-'}朝, ${p.yearsDisplay || '-'}): ${(p.bio || '').slice(0, 150)} 成就:${(p.achievements || '').slice(0, 100)}`);
     }
   }
 
   if (context.knowledge.length > 0) {
     contextParts.push('【相关知识】');
     for (const k of context.knowledge) {
-      contextParts.push(`- ${k.title}: ${k.description.slice(0, 150)}`);
+      contextParts.push(`- ${k.title || '-'}: ${(k.description || '').slice(0, 150)}`);
     }
   }
 

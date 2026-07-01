@@ -5,7 +5,7 @@
  * 根据用户浏览行为，用文言文风格生成"你的史官评语"
  */
 
-import { callLLM, type LLMMessage } from '@/utils/llmClient';
+import { callLLM, callLLMStream, readStreamToString, type LLMMessage } from '@/utils/llmClient';
 
 export interface UserPortrait {
   /** 最常浏览的朝代 */
@@ -134,4 +134,63 @@ export function buildUserPortraitFromStorage(): UserPortrait {
     dimensions,
     matchedFigure,
   };
+}
+
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+/**
+ * 与 AI 史官多轮对话（流式）
+ * @param history 之前的对话历史
+ * @param portrait 用户画像（注入 system prompt 保持人格一致性）
+ * @param previousComment 之前生成的史官评语（让史官记得自己说过什么）
+ * @param onChunk 流式回调
+ */
+export async function chatWithHistorian(
+  history: ChatMessage[],
+  portrait: UserPortrait,
+  previousComment: HistorianComment | null,
+  onChunk?: (chunk: string) => void,
+): Promise<string> {
+  const portraitDesc = [
+    `常览朝代：${portrait.topDynasties.join('、')}`,
+    `关注人物：${portrait.topPersons.join('、')}`,
+    portrait.quizAccuracy ? `答题正确率：${portrait.quizAccuracy}%` : '',
+    portrait.matchedFigure ? `最像的历史人物：${portrait.matchedFigure}` : '',
+  ].filter(Boolean).join('；');
+
+  const previousCommentDesc = previousComment
+    ? `\n\n你之前为这位访客撰写的评语：\n- 正史体：${previousComment.formal}\n- 稗官体：${previousComment.anecdotal}\n- 谥议体：${previousComment.eulogy}\n- 建议：${previousComment.suggestion}`
+    : '';
+
+  const systemPrompt = `你是"五千年史馆"的 AI 史官，一位博古通今、持中守正的史学大家。
+
+你的人设：
+- 性格：博学、睿智、略带古风但不迂腐，偶尔幽默
+- 语言：现代白话为主，重要观点可用文言点缀，但要让现代人能懂
+- 立场：客观公正，不偏袒任何朝代，但会基于史实给出独到见解
+- 与访客的关系：你已为这位访客撰写过评语，现在他来追问，你要保持评语中的判断一致性
+
+访客画像：${portraitDesc}${previousCommentDesc}
+
+对话要求：
+- 每次回答控制在 150-300 字
+- 可以反问访客引导深入思考
+- 涉及争议历史时，呈现多元观点
+- 不要重复之前评语的原话，但可以引用其中的判断
+- 不要说"作为AI"之类的自我指涉`;
+
+  const messages: LLMMessage[] = [
+    { role: 'system', content: systemPrompt },
+    ...history.map((m) => ({ role: m.role, content: m.content })),
+  ];
+
+  const stream = await callLLMStream(messages, {
+    maxTokens: 1024,
+    temperature: 0.75,
+  });
+
+  return readStreamToString(stream, onChunk);
 }

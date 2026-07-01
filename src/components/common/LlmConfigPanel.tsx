@@ -36,7 +36,7 @@ export default function LlmConfigPanel() {
         }`}
         title="配置 AI API Key"
       >
-        ⚙️ {hasApiKey() ? 'AI已配置' : '未配置AI'}
+        配 {hasApiKey() ? 'AI已配置' : '未配置AI'}
       </button>
 
       {/* 配置面板 */}

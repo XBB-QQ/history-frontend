@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/store/userStore';
 
 interface Reply {
@@ -53,6 +54,7 @@ export default function CommentSection({ resourceId, resourceType }: CommentSect
   const [newComment, setNewComment] = useState('');
   const [sortBy, setSortBy] = useState<'latest' | 'hot'>('latest');
   const { isAuthenticated, user } = useUserStore();
+  const navigate = useNavigate();
 
   // 排序
   const sortedComments = [...comments].sort((a, b) => {
@@ -64,8 +66,7 @@ export default function CommentSection({ resourceId, resourceType }: CommentSect
   const handleSubmit = () => {
     if (!newComment.trim()) return;
     if (!isAuthenticated) {
-      alert('请先登录后再发表评论');
-      window.location.href = '/login';
+      navigate('/login');
       return;
     }
     const authorName = user?.nickname || user?.username || '匿名';
@@ -115,8 +116,7 @@ export default function CommentSection({ resourceId, resourceType }: CommentSect
   const handleReply = (commentId: number) => {
     if (!replyText.trim()) return;
     if (!isAuthenticated) {
-      alert('请先登录后再回复');
-      window.location.href = '/login';
+      navigate('/login');
       return;
     }
     const authorName = user?.nickname || user?.username || '匿名';
@@ -196,7 +196,7 @@ export default function CommentSection({ resourceId, resourceType }: CommentSect
           </>
         ) : (
           <button
-            onClick={() => { window.location.href = '/login'; }}
+            onClick={() => { navigate('/login'); }}
             className="w-full py-2 rounded-lg border border-ink-200 dark:border-ink-700 text-ink-500 dark:text-ink-400 text-sm hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors"
           >
             登录后发表评论

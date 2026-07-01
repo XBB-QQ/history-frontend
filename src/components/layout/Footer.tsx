@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import ExportDropdown from '@/components/export/ExportDropdown';
 
 export default function Footer() {
@@ -49,12 +50,12 @@ export default function Footer() {
             <div>
               <h4 className="font-bold text-ink-700 dark:text-ink-300 mb-3">快速导航</h4>
               <ul className="space-y-2 text-ink-500 dark:text-ink-400">
-                <li><a href="/timeline" className="hover:text-accent transition-colors">时间轴</a></li>
-                <li><a href="/dynasties" className="hover:text-accent transition-colors">朝代更迭</a></li>
-                <li><a href="/persons" className="hover:text-accent transition-colors">人物志</a></li>
-                <li><a href="/knowledge" className="hover:text-accent transition-colors">史海钩沉</a></li>
-                <li><a href="/map" className="hover:text-accent transition-colors">历史地图</a></li>
-                <li><a href="/favorites" className="hover:text-accent transition-colors">我的收藏</a></li>
+                <li><Link to="/timeline" className="hover:text-accent transition-colors">时间轴</Link></li>
+                <li><Link to="/dynasties" className="hover:text-accent transition-colors">朝代更迭</Link></li>
+                <li><Link to="/persons" className="hover:text-accent transition-colors">人物志</Link></li>
+                <li><Link to="/knowledge" className="hover:text-accent transition-colors">史海钩沉</Link></li>
+                <li><Link to="/map" className="hover:text-accent transition-colors">历史地图</Link></li>
+                <li><Link to="/favorites" className="hover:text-accent transition-colors">我的收藏</Link></li>
               </ul>
             </div>
 

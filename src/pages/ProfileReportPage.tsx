@@ -4,11 +4,13 @@
  * @see history-museum/design/000-future-roadmap.md §方向五 §5.2
  */
 
-import { useMemo } from 'react';
+import { useMemo, useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useUserStore } from '@/store/userStore';
 import { useFavoriteStore } from '@/store/favoriteStore';
 import { computeProfile } from '@/features/profileReport';
+import { generateGeneReportStream } from '@/features/geneReport';
+import { hasApiKey } from '@/utils/llmConfig';
 import {
   PERSONALITY_MATCHES,
   DIMENSION_LABELS,
@@ -19,6 +21,29 @@ import {
 import DimensionRadar from '@/components/profile/DimensionRadar';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+
+/** 轻量 Markdown 渲染（仅处理 ## 标题、**加粗**、段落） */
+function renderMiniMarkdown(text: string) {
+  const lines = text.split('\n');
+  const blocks: JSX.Element[] = [];
+  lines.forEach((line, i) => {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+    if (trimmed.startsWith('### ')) {
+      blocks.push(<h4 key={i} className="text-base font-bold text-accent mt-4 mb-2">{trimmed.slice(4)}</h4>);
+    } else if (trimmed.startsWith('## ')) {
+      blocks.push(<h3 key={i} className="text-lg font-bold text-ink-900 dark:text-ink-100 mt-5 mb-3 border-l-4 border-accent pl-3">{trimmed.slice(3)}</h3>);
+    } else {
+      const parts = trimmed.split(/(\*\*[^*]+\*\*)/g).map((p, j) =>
+        p.startsWith('**') && p.endsWith('**')
+          ? <strong key={j} className="font-bold text-accent">{p.slice(2, -2)}</strong>
+          : <span key={j}>{p}</span>,
+      );
+      blocks.push(<p key={i} className="text-sm text-ink-700 dark:text-ink-300 leading-loose mb-2">{parts}</p>);
+    }
+  });
+  return blocks;
+}
 
 function ProfileReportPage() {
   const user = useUserStore((s) => s.user);
@@ -34,6 +59,39 @@ function ProfileReportPage() {
   const matchedPersonality: PersonalityMatch = report.hasData
     ? PERSONALITY_MATCHES[report.dominantDimension][0]
     : NEWCOMER_PERSONALITY;
+
+  // 基因检测报告状态
+  const [geneReport, setGeneReport] = useState('');
+  const [generating, setGenerating] = useState(false);
+  const [geneError, setGeneError] = useState('');
+  const reportRef = useRef<HTMLDivElement>(null);
+
+  const handleGenerateGene = useCallback(async () => {
+    if (!report.hasData) return;
+    setGenerating(true);
+    setGeneError('');
+    setGeneReport('');
+    try {
+      await generateGeneReportStream(
+        {
+          profile: report,
+          matched: matchedPersonality,
+          username: user?.nickname || user?.username || '史官',
+          favoritesCount: favorites.length,
+        },
+        (chunk) => {
+          setGeneReport((prev) => prev + chunk);
+          reportRef.current?.scrollIntoView({ behavior: 'smooth' });
+        },
+      );
+    } catch (e) {
+      setGeneError(e instanceof Error ? e.message : '生成失败');
+    } finally {
+      setGenerating(false);
+    }
+  }, [report, matchedPersonality, user, favorites.length]);
+
+  const apiReady = hasApiKey();
 
   // 生成日期
   const today = new Date().toLocaleDateString('zh-CN', {
@@ -250,6 +308,79 @@ function ProfileReportPage() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </RevealOnScroll>
+
+            {/* 历史基因检测报告 */}
+            <RevealOnScroll direction="up" delay={700}>
+              <div ref={reportRef} className="mt-6 p-6 bg-gradient-to-br from-accent/5 via-purple-500/5 to-amber-500/5 dark:from-accent/10 dark:via-purple-700/10 dark:to-amber-700/10 rounded-xl border border-accent/30">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-3xl">🧬</span>
+                  <div>
+                    <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">
+                      历史基因检测报告
+                    </h3>
+                    <p className="text-xs text-ink-500 dark:text-ink-400">
+                      AI 深度解读你的历史基因，生成可截图传播的个性化报告
+                    </p>
+                  </div>
+                </div>
+
+                {!apiReady && (
+                  <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800 text-sm text-amber-700 dark:text-amber-400">
+                    ⚙️ 需先配置 LLM API Key — 点击页面右上角"⚙️ 配置"按钮
+                  </div>
+                )}
+
+                {apiReady && !geneReport && !generating && (
+                  <button
+                    onClick={handleGenerateGene}
+                    disabled={!report.hasData}
+                    className="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-purple-600 text-white font-bold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  >
+                    {report.hasData ? '🧬 开始基因检测' : '需要浏览数据后才能检测'}
+                  </button>
+                )}
+
+                {generating && (
+                  <div className="text-center py-4">
+                    <div className="inline-block w-8 h-8 border-3 border-accent border-t-transparent rounded-full animate-spin mb-2" />
+                    <div className="text-sm text-ink-500 dark:text-ink-400">基因测序中…</div>
+                  </div>
+                )}
+
+                {geneError && (
+                  <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-400">
+                    {geneError}
+                  </div>
+                )}
+
+                {geneReport && (
+                  <div className="mt-4 p-4 bg-white/70 dark:bg-ink-900/70 rounded-lg border border-ink-200 dark:border-ink-700">
+                    {renderMiniMarkdown(geneReport)}
+                    {generating && (
+                      <span className="inline-block w-2 h-5 bg-accent animate-pulse ml-1" />
+                    )}
+                    {!generating && (
+                      <div className="mt-4 pt-4 border-t border-ink-200 dark:border-ink-700 flex gap-3 flex-wrap">
+                        <button
+                          onClick={handleGenerateGene}
+                          className="text-xs px-3 py-1.5 rounded-full bg-accent/10 text-accent hover:bg-accent hover:text-white transition-all"
+                        >
+                          🔄 重新检测
+                        </button>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard?.writeText(geneReport);
+                          }}
+                          className="text-xs px-3 py-1.5 rounded-full bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400 hover:bg-ink-200 dark:hover:bg-ink-700 transition-all"
+                        >
+                          📋 复制全文
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </RevealOnScroll>
 

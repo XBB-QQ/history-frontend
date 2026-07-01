@@ -38,7 +38,7 @@ export interface MyContributionsResult {
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
 function getAuthHeaders(): Record<string, string> {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('user_token');
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 

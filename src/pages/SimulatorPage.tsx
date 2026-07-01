@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SCENARIOS } from '@/data/scenarios';
+import { SCENARIOS } from '@/data/scenarios/index';
 import type { Choice } from '@/types/scenario';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';

@@ -319,21 +319,20 @@ function Recommendations({ type, data }: { type: string | null; data: FrontendEv
     if (!type || !data) return;
     setLoading(true);
 
-    // 从当前数据类型推断推荐来源
     const fetchRelated = async () => {
       try {
-        let allItems: { id: number; title: string; dynasty?: string }[] = [];
+        let allItems: { id: number; title: string; dynasty?: string; tags?: string[] }[] = [];
         let filterField = '';
         let filterValue = '';
 
+        // 根据当前类型只拉取对应数据，不拉全量
         if (type === 'event') {
           const eventData = data as FrontendEvent;
           const allEvents = await fetchTimelineEvents();
           allItems = allEvents.map((e: any) => ({ id: Number(e.id), title: e.title, dynasty: e.dynasty }));
-          // 推荐同类别或同朝代的其他事件
           if (eventData.category) {
-            filterField = 'category';
-            filterValue = eventData.category;
+            filterField = 'dynasty'; // 优先按朝代推荐
+            filterValue = eventData.dynasty;
           }
         } else if (type === 'person') {
           const personData = data as FrontendPerson;
@@ -351,27 +350,23 @@ function Recommendations({ type, data }: { type: string | null; data: FrontendEv
           const knowledgeData = data as FrontendKnowledge;
           const allKnowledge = await fetchKnowledgeCards();
           allItems = allKnowledge.map((k: any) => ({ id: Number(k.id), title: k.title }));
-          // 推荐同标签的知识卡片
           if (knowledgeData.tags.length > 0) {
             filterField = 'tags';
             filterValue = knowledgeData.tags[0];
           }
         }
 
-        // 过滤掉当前项，如果有筛选条件则只保留匹配的
         let filtered = allItems.filter((item) => {
           if (!filterField) return true;
           if (filterField === 'tags') {
-            return (item as any).tags?.includes(filterValue);
+            return item.tags?.includes(filterValue);
           }
           return item[filterField as keyof typeof item] === filterValue;
         });
 
-        // 排除当前项
         const currentId = data.id ? Number(data.id) : 0;
         filtered = filtered.filter((item) => item.id !== currentId);
 
-        // 取前 4 个
         setRecommendations(filtered.slice(0, 4));
       } catch {
         // 静默失败
@@ -434,8 +429,7 @@ function FavoriteButton({ type, id, title }: { type: string; id: string; title: 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!isAuthenticated) {
-      alert('请先登录后再收藏');
-      window.location.href = '/login';
+      navigate('/login');
       return;
     }
     toggle({ type: type as 'event' | 'person' | 'dynasty' | 'knowledge', id, title });
