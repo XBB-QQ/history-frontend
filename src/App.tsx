@@ -49,6 +49,8 @@ const TerritoryMapPage = lazy(() => import('./pages/TerritoryMapPage'));
 const MigrationMapPage = lazy(() => import('./pages/MigrationMapPage'));
 const SoundMuseumPage = lazy(() => import('./pages/SoundMuseumPage'));
 const ContributionPage = lazy(() => import('./pages/ContributionPage'));
+const TopicListPage = lazy(() => import('./pages/TopicListPage'));
+const TopicDetailPage = lazy(() => import('./pages/TopicDetailPage'));
 
 // 后台管理页面（不用 lazy，避免 SSR 问题）
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -154,6 +156,8 @@ function App() {
           <Route path="/migration" element={<MigrationMapPage />} />
           <Route path="/sound-museum" element={<SoundMuseumPage />} />
           <Route path="/contribution" element={<ContributionPage />} />
+          <Route path="/topics" element={<TopicListPage />} />
+          <Route path="/topic/:uid" element={<TopicDetailPage />} />
 
           {/* 后台管理路由 */}
           <Route path="/admin/login" element={<AdminLoginPage />} />

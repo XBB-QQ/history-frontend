@@ -96,6 +96,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: '日历转换', path: '/calendar' },
       { label: '学习中心', path: '/learning' },
       { label: '知识贡献', path: '/contribution' },
+      { label: '专题长文', path: '/topics' },
       { label: '人物对比', path: '/compare' },
     ],
   },
