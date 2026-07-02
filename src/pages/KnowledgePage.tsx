@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import type { KnowledgeCardItem } from '@/types';
 import { fetchKnowledgeCards } from '@/services/api';
 import SectionHeader from '@/components/common/SectionHeader';
-import KnowledgeGrid from '@/components/knowledge/KnowledgeGrid';
+import KnowledgeMasonry from '@/components/knowledge/KnowledgeMasonry';
 import TagCloud from '@/components/knowledge/TagCloud';
 import { GridSkeleton } from '@/components/common/Skeleton';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
@@ -26,7 +26,13 @@ function KnowledgePage() {
 
   const filteredCards = useMemo(() => {
     if (!activeTag) return cards;
-    return cards.filter((c) => c.tags.includes(activeTag));
+    // 多标签筛选（逗号分隔）
+    const tags = activeTag.split(',').map(t => t.trim()).filter(Boolean);
+    if (tags.length === 1) {
+      return cards.filter((c) => c.tags.includes(tags[0]));
+    }
+    // AND 模式：所有标签都要有
+    return cards.filter((c) => tags.every(t => c.tags.includes(t)));
   }, [cards, activeTag]);
 
   return (
@@ -50,7 +56,12 @@ function KnowledgePage() {
           <RevealOnScroll direction="fade" delay={150}>
             <div className="text-left mb-4">
               <span className="text-xs text-ink-400">
-                筛选标签：<span className="text-accent font-bold">{activeTag}</span>
+                筛选标签：
+                {activeTag!.split(',').map(t => t.trim()).filter(Boolean).map((t, i) => (
+                  <span key={i} className="text-accent font-bold">
+                    {i > 0 && ' ∩ '}#{t}
+                  </span>
+                ))}
                 <button
                   onClick={() => setActiveTag(null)}
                   className="ml-2 text-ink-400 hover:text-accent transition-colors underline"
@@ -63,7 +74,7 @@ function KnowledgePage() {
         )}
 
         <RevealOnScroll direction="up" delay={200}>
-          {loading ? <GridSkeleton count={8} /> : <KnowledgeGrid cards={filteredCards} />}
+          {loading ? <GridSkeleton count={8} /> : <KnowledgeMasonry cards={filteredCards} />}
         </RevealOnScroll>
 
         {filteredCards.length === 0 && !loading && (

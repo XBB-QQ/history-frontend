@@ -1,7 +1,7 @@
 // 五千年史馆 — API 客户端
 // 调用 Spring Boot 后端 REST API，返回前端类型格式
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
 // ──────────────────────────────────────────────
 // 类型定义（后端 DTO 原始响应）
@@ -608,13 +608,13 @@ export interface TodayEvent {
 
 /** 获取今天的历史事件 */
 export async function fetchTodayEvents(): Promise<TodayEvent[]> {
-  const data = await fetchJSON<TodayEvent[]>(`${BASE_URL.replace('/api/v1', '/api/public')}/today`);
+  const data = await fetchJSON<TodayEvent[]>(`${BASE_URL.replace('/api', '/api/public')}/today`);
   return data;
 }
 
 /** 获取每日推荐事件 */
 export async function fetchDailyRecommend(): Promise<{ found: boolean; event: TodayEvent }> {
-  const data = await fetchJSON<{ found: boolean; event: TodayEvent }>(`${BASE_URL.replace('/api/v1', '/api/public')}/daily-recommend`);
+  const data = await fetchJSON<{ found: boolean; event: TodayEvent }>(`${BASE_URL.replace('/api', '/api/public')}/daily-recommend`);
   return data;
 }
 

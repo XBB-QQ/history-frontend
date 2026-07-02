@@ -1,0 +1,119 @@
+/* CurrencyConverterPage styles */
+
+/* 容器 */
+.converter-container {
+  max-width-6xl mx-auto;
+}
+
+/* 换算器卡片 */
+.converter-card {
+  background: var(--paper, #fffdf5);
+  border: 2px solid var(--ink-200, #e2e8f0);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* 输入字段 */
+.input-field {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  border: 2px solid var(--ink-200, #e2e8f0);
+  border-radius: 10px;
+  background: var(--paper, #fffdf5);
+  color: var(--ink-900, #1e293b);
+  transition: all 0.3s ease;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--accent, #6366f1);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.input-field::placeholder {
+  color: var(--ink-400, #94a3b8);
+}
+
+/* 结果区域 */
+.result-area {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* 价格对比表 */
+.price-table-card {
+  background: var(--paper, #fffdf5);
+  border: 2px solid var(--ink-200, #e2e8f0);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.price-table-card table {
+  border-collapse: collapse;
+}
+
+.price-table-card th,
+.price-table-card td {
+  padding: 0.75rem 1rem;
+}
+
+.price-table-card th {
+  background: var(--ink-50, #f8fafc);
+  color: var(--ink-700, #475569);
+  font-weight: 600;
+  text-align: left;
+}
+
+.price-table-card td {
+  border-bottom: 1px solid var(--ink-100, #f1f5f9);
+  color: var(--ink-600, #475569);
+}
+
+.price-table-card tr:last-child td {
+  border-bottom: none;
+}
+
+.price-table-card tr:hover {
+  background: var(--ink-50, #f8fafc);
+}
+
+/* 信息卡片 */
+.info-card {
+  background: var(--ink-50, #f8fafc);
+  border: 2px solid var(--ink-200, #e2e8f0);
+  border-radius: 16px;
+}
+
+.info-card h2 {
+  color: var(--ink-900, #1e293b);
+}
+
+.info-card h3 {
+  color: var(--ink-800, #334155);
+}
+
+.info-card p {
+  color: var(--ink-600, #475569);
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .converter-card {
+    padding: 1rem;
+  }
+
+  .price-table-card {
+    padding: 1rem;
+  }
+
+  .input-field,
+  .price-table-card th,
+  .price-table-card td {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}

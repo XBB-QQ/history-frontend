@@ -60,7 +60,15 @@
   /* 过渡 */
   --transition-fast: 150ms ease;
   --transition-normal: 300ms ease;
-  --transition-slow: 600ms ease;
+  --transition-slow: 500ms ease;
+  --transition-slower: 800ms ease;
+
+  /* 朝代配色 CSS 变量（运行时注入） */
+  --dynasty-accent: var(--color-accent);
+  --dynasty-paper: var(--color-rice);
+  --dynasty-ink: var(--color-ink-950);
+  --dynasty-border: var(--color-ink-200);
+  --dynasty-gradient: none;
 }
 
 /* 深色模式 — 完整主题变量 */
@@ -78,4 +86,11 @@
   --color-ink-900: #ddd9cf;
   --color-ink-950: #eeede8;
   background-color: var(--color-rice);
+}
+
+/* 深色模式 + 朝代配色 */
+[data-theme="dark"][data-dynasty] {
+  --dynasty-paper: #1a1714;
+  --dynasty-ink: var(--color-ink-100);
+  --dynasty-border: var(--color-ink-700);
 }

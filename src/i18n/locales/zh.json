@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "home": "首页",
+    "timeline": "时间轴",
+    "dynasties": "朝代",
+    "persons": "人物",
+    "knowledge": "史海钩沉",
+    "map": "地图",
+    "favorites": "收藏",
+    "topics": "专题长文",
+    "more": "更多",
+    "search": "搜索"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "出错了",
+    "retry": "重试",
+    "back": "返回",
+    "close": "关闭",
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认",
+    "delete": "删除",
+    "edit": "编辑",
+    "add": "添加",
+    "remove": "移除",
+    "view": "查看",
+    "detail": "详情",
+    "more_info": "更多信息",
+    "no_data": "暂无数据",
+    "page_not_found": "页面未找到"
+  },
+  "home": {
+    "title": "五千年史馆",
+    "subtitle": "探索中华五千年文明",
+    "today_title": "历史上的今天",
+    "recommend_title": "今日推荐",
+    "daily_quiz": "每日历史挑战",
+    "daily_quiz_desc": "每天一道历史题，答对加分"
+  },
+  "dynasties": {
+    "title": "历代朝代",
+    "period": "时期",
+    "founder": "开国",
+    "capital": "都城",
+    "duration": "国祚",
+    "highlights": "亮点",
+    "fall_reason": "灭亡原因",
+    "legacy": "历史遗产"
+  },
+  "learning": {
+    "title": "学习进度",
+    "overall": "总体完成度",
+    "events": "事件",
+    "persons": "人物",
+    "dynasties": "朝代",
+    "knowledge_cards": "知识卡片",
+    "reading_list": "阅读清单",
+    "create_list": "新建清单",
+    "list_name": "清单名称",
+    "description": "描述",
+    "resources": "资源",
+    "no_list": "暂无阅读清单",
+    "create_hint": "点击右上角\"新建清单\"开始规划你的学习计划"
+  },
+  "knowledge": {
+    "title": "史海钩沉",
+    "tags": "标签",
+    "filter_mode": "筛选模式",
+    "single": "单选",
+    "and": "且",
+    "or": "或",
+    "clear": "清除",
+    "all": "全部",
+    "no_card": "该标签下暂无知识卡片"
+  },
+  "time_travel": {
+    "title": "时间旅行",
+    "millennium": "千年",
+    "century": "百年",
+    "decade": "十年",
+    "year": "年",
+    "quick_jump": "快速跳转",
+    "hint": "方向键微调 | 点击精度切换刻度"
+  },
+  "theme": {
+    "light": "浅色模式",
+    "dark": "深色模式",
+    "system": "跟随系统"
+  },
+  "auth": {
+    "login": "登录",
+    "register": "注册",
+    "logout": "退出登录",
+    "username": "用户名",
+    "password": "密码",
+    "nickname": "昵称",
+    "email": "邮箱",
+    "phone": "手机号",
+    "login_success": "登录成功",
+    "register_success": "注册成功",
+    "login_required": "请先登录"
+  },
+  "favorite": {
+    "title": "我的收藏",
+    "added": "已加入收藏",
+    "removed": "已移除收藏",
+    "pinned": "已置顶",
+    "unpinned": "已取消置顶"
+  },
+  "footer": {
+    "about": "关于",
+    "contact": "联系我们",
+    "copyright": "© 2024 五千年史馆"
+  }
+}

@@ -1,9 +1,38 @@
 import { useState, useEffect } from 'react';
-import { useLearningStore, type ReadingListItem } from '@/store/learningStore';
+import { useLearningStore, type ReadingListItem, type ModuleProgress } from '@/store/learningStore';
 import { useUserStore } from '@/store/userStore';
 
+function ProgressBar({ percent, label, icon }: { percent: number; label: string; icon: string }) {
+  const getColor = (p: number) => {
+    if (p >= 75) return 'bg-green-500';
+    if (p >= 40) return 'bg-yellow-500';
+    if (p > 0) return 'bg-orange-400';
+    return 'bg-ink-300 dark:bg-ink-600';
+  };
+
+  return (
+    <div className="bg-white/60 dark:bg-ink-900/60 rounded-xl p-4 border border-ink-200 dark:border-ink-700">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <span className="text-lg">{icon}</span>
+          <span className="font-bold text-ink-900 dark:text-ink-100">{label}</span>
+        </div>
+        <span className="text-sm font-bold text-ink-600 dark:text-ink-400">
+          {percent}%
+        </span>
+      </div>
+      <div className="w-full h-2 bg-ink-100 dark:bg-ink-800 rounded-full overflow-hidden">
+        <div
+          className={`h-full ${getColor(percent)} rounded-full transition-all duration-700 ease-out`}
+          style={{ width: `${percent}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
 function LearningPage() {
-  const { lists, fetchLists, createList, addResource, removeResource } = useLearningStore();
+  const { lists, fetchLists, createList, addResource, removeResource, moduleProgress, fetchProgress } = useLearningStore();
   const { user, isAuthenticated } = useUserStore();
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState('');
@@ -11,8 +40,14 @@ function LearningPage() {
   const [expandedList, setExpandedList] = useState<number | null>(null);
 
   useEffect(() => {
-    if (isAuthenticated) fetchLists();
+    if (!isAuthenticated) return;
+    fetchLists();
+    fetchProgress();
   }, [isAuthenticated]);
+
+  const overallPercent = moduleProgress.length > 0
+    ? Math.round(moduleProgress.reduce((s, m) => s + m.percent, 0) / moduleProgress.length)
+    : 0;
 
   const handleCreate = async () => {
     if (!newName.trim()) return;
@@ -50,6 +85,29 @@ function LearningPage() {
             + 新建清单
           </button>
         </div>
+
+        {/* 总体概览 */}
+        <div className="mb-6 bg-gradient-to-r from-accent/10 to-transparent dark:from-accent/5 rounded-xl p-5 border border-accent/20">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-bold text-ink-700 dark:text-ink-300">总体完成度</span>
+            <span className="text-2xl font-black text-accent">{overallPercent}%</span>
+          </div>
+          <div className="w-full h-3 bg-ink-100 dark:bg-ink-800 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-accent rounded-full transition-all duration-700 ease-out"
+              style={{ width: `${overallPercent}%` }}
+            />
+          </div>
+        </div>
+
+        {/* 模块进度 */}
+        {moduleProgress.length > 0 && (
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            {moduleProgress.map(m => (
+              <ProgressBar key={m.type} percent={m.percent} label={m.label} icon={m.icon} />
+            ))}
+          </div>
+        )}
 
         {/* Create form */}
         {showCreate && (

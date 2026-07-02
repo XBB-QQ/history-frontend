@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "home": "Home",
+    "timeline": "Timeline",
+    "dynasties": "Dynasties",
+    "persons": "Persons",
+    "knowledge": "Knowledge",
+    "map": "Map",
+    "favorites": "Favorites",
+    "topics": "Topics",
+    "more": "More",
+    "search": "Search"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error occurred",
+    "retry": "Retry",
+    "back": "Back",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "remove": "Remove",
+    "view": "View",
+    "detail": "Details",
+    "more_info": "More Info",
+    "no_data": "No data available",
+    "page_not_found": "Page not found"
+  },
+  "home": {
+    "title": "Five Millennium Museum",
+    "subtitle": "Explore 5000 Years of Chinese Civilization",
+    "today_title": "This Day in History",
+    "recommend_title": "Today's Recommendation",
+    "daily_quiz": "Daily History Challenge",
+    "daily_quiz_desc": "One history question per day, earn points"
+  },
+  "dynasties": {
+    "title": "Dynasties",
+    "period": "Period",
+    "founder": "Founder",
+    "capital": "Capital",
+    "duration": "Duration",
+    "highlights": "Highlights",
+    "fall_reason": "Fall Reason",
+    "legacy": "Legacy"
+  },
+  "learning": {
+    "title": "Learning Progress",
+    "overall": "Overall Completion",
+    "events": "Events",
+    "persons": "Persons",
+    "dynasties": "Dynasties",
+    "knowledge_cards": "Knowledge Cards",
+    "reading_list": "Reading List",
+    "create_list": "New List",
+    "list_name": "List Name",
+    "description": "Description",
+    "resources": "Resources",
+    "no_list": "No reading lists yet",
+    "create_hint": "Click 'New List' to start planning your study plan"
+  },
+  "knowledge": {
+    "title": "Knowledge Cards",
+    "tags": "Tags",
+    "filter_mode": "Filter Mode",
+    "single": "Single",
+    "and": "AND",
+    "or": "OR",
+    "clear": "Clear",
+    "all": "All",
+    "no_card": "No knowledge cards for this tag"
+  },
+  "time_travel": {
+    "title": "Time Travel",
+    "millennium": "Millennium",
+    "century": "Century",
+    "decade": "Decade",
+    "year": "Year",
+    "quick_jump": "Quick Jump",
+    "hint": "Arrow keys to adjust | Click precision to change"
+  },
+  "theme": {
+    "light": "Light Mode",
+    "dark": "Dark Mode",
+    "system": "System"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "username": "Username",
+    "password": "Password",
+    "nickname": "Nickname",
+    "email": "Email",
+    "phone": "Phone",
+    "login_success": "Login successful",
+    "register_success": "Registration successful",
+    "login_required": "Please login first"
+  },
+  "favorite": {
+    "title": "My Favorites",
+    "added": "Added to favorites",
+    "removed": "Removed from favorites",
+    "pinned": "Pinned",
+    "unpinned": "Unpinned"
+  },
+  "footer": {
+    "about": "About",
+    "contact": "Contact Us",
+    "copyright": "© 2024 Five Millennium Museum"
+  }
+}

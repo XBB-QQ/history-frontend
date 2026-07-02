@@ -15,7 +15,9 @@
     font-family: var(--font-body, 'Noto Serif SC', serif);
     background-color: var(--color-paper, #f5f0e8);
     color: var(--color-ink, #27231e);
-    transition: background-color 800ms ease, color 800ms ease;
+    transition: background-color var(--transition-slower, 800ms) ease,
+                color var(--transition-slower, 800ms) ease,
+                border-color var(--transition-slow, 500ms) ease;
   }
 
   [data-theme="dark"] body {

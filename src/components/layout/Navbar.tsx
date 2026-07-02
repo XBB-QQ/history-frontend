@@ -4,6 +4,8 @@ import { useThemeStore, applyTheme } from '@/store/themeStore';
 import { useSearchStore } from '@/store/searchStore';
 import { useFavoriteStore } from '@/store/favoriteStore';
 import { useUserStore } from '@/store/userStore';
+import { useI18nStore } from '@/i18n/i18n';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import type { UserDTO } from '@/services/userApi';
 
 /** 导航分组：核心入口直接显示，次要功能收纳到下拉菜单 */
@@ -66,6 +68,8 @@ const NAV_GROUPS: NavGroup[] = [
       { label: '朝代雷达', path: '/dynasty-compare' },
       { label: '疆域地图', path: '/territory' },
       { label: '人口迁徙', path: '/migration' },
+      { label: '寻根问祖', path: '/surname' },
+      { label: '货币换算', path: '/currency' },
       { label: '气候变迁', path: '/climate' },
       { label: '天象推算', path: '/sky-events' },
       { label: '中外对照', path: '/world-compare' },
@@ -79,6 +83,20 @@ const NAV_GROUPS: NavGroup[] = [
       { label: '科技树', path: '/tech-tree' },
       { label: '汉字演变', path: '/char-evolution' },
       { label: '历代食谱', path: '/dynasty-food' },
+      { label: '古代职业', path: '/jobs' },
+      { label: '瘟疫与文明', path: '/plague-history' },
+      { label: '历史审判庭', path: '/historical-trial' },
+      { label: '个人史册', path: '/personal-history' },
+      { label: '科举考试', path: '/examination' },
+      { label: '历史气味博物馆', path: '/scent-museum' },
+      { label: '谥号生成器', path: '/title-generator' },
+      { label: '甲骨文识读', path: '/oracle-game' },
+{ label: '古代交通', path: '/transport-timeline' },
+{ label: '古建筑榫卯', path: '/architecture-mortise' },
+{ label: '跨朝代圆桌', path: '/roundtable' },
+{ label: '历史剧本杀', path: '/script-killer' },
+{ label: '文明兴衰', path: '/entropy-model' },
+{ label: '历史预言板', path: '/future-prediction' },
       { label: '水墨动画', path: '/ink-animation' },
       { label: '声音博物馆', path: '/sound-museum' },
       { label: '历史播客', path: '/podcast' },
@@ -247,6 +265,9 @@ export default function Navbar() {
                 ⌘K
               </kbd>
             </button>
+
+            {/* 语言切换按钮 */}
+            <LanguageSwitcher />
 
             {/* 主题切换按钮 */}
             <button

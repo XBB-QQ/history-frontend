@@ -1,0 +1,261 @@
+/* 姓氏迁徙与族谱地图 - 页面样式 */
+
+/* 搜索框容器 */
+.search-container {
+  max-width-2xl mx-auto;
+  margin: 0 auto 2rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  font-size: 1.1rem;
+  border: 2px solid var(--ink-200, #e2e8f0);
+  border-radius: 12px;
+  background: var(--paper, #fffdf5);
+  color: var(--ink-900, #1e293b);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent, #6366f1);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.search-input::placeholder {
+  color: var(--ink-400, #94a3b8);
+}
+
+/* 姓氏列表 */
+.surname-list {
+  max-width-6xl mx-auto;
+}
+
+/* 首字母分组 */
+.initial-group {
+  margin-bottom: 2rem;
+}
+
+.initial-header {
+  font-size: 1.25rem;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+/* 姓氏网格 */
+.surname-grid {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.surname-grid.grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.surname-grid.grid-cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.surname-grid.grid-cols-6 {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+/* 姓氏卡片 */
+.surname-card {
+  background: var(--paper, #fffdf5);
+  border: 2px solid var(--ink-200, #e2e8f0);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+}
+
+.surname-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.surname-card .text-2xl {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.surname-card .text-xs {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+/* 搜索结果容器 */
+.results-container {
+  max-width-6xl mx-auto;
+}
+
+/* 姓氏详情 */
+.surname-detail {
+  max-width-6xl mx-auto;
+}
+
+/* 详情卡片 */
+.detail-card {
+  background: var(--paper, #fffdf5);
+  border: 2px solid var(--ink-200, #e2e8f0);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* 详情头部 */
+.detail-header {
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.detail-info h2 {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+/* 信息块 */
+.info-block {
+  padding: 1rem;
+}
+
+.info-block h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 郡望堂号卡片 */
+.info-block.grid-cols-1.md\:grid-cols-2 {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .info-block.grid-cols-1.md\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 迁徙地图 */
+.migration-map-section {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.map-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid var(--ink-200, #e2e8f0);
+}
+
+.map-container svg {
+  display: block;
+}
+
+/* 地图节点 */
+.node-dot {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.node-dot:hover {
+  r: 8;
+  stroke-width: 3;
+}
+
+.node-label {
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--ink-900, #1e293b);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.map-legend {
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--ink-600, #475569);
+}
+
+/* 历史名人 */
+.figures-section {
+  margin-top: 2rem;
+}
+
+.figures-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.figures-grid.grid-cols-1.md\:grid-cols-3 {
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .figures-grid.grid-cols-1.md\:grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* 历史名人卡片 */
+.figure-card {
+  padding: 1.25rem;
+  border: 1px solid var(--ink-200, #e2e8f0);
+  border-radius: 10px;
+  background: var(--ink-50, #f8fafc);
+  transition: all 0.3s ease;
+}
+
+.figure-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 响应式调整 */
+@media (max-width: 640px) {
+  .surname-grid.grid-cols-6 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .detail-info h2 {
+    font-size: 1.5rem;
+  }
+
+  .map-container {
+    border-radius: 8px;
+  }
+
+  .figure-card {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .surname-grid.grid-cols-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .surname-card {
+    padding: 0.5rem 0.75rem;
+    min-height: 80px;
+  }
+
+  .surname-card .text-2xl {
+    font-size: 1.5rem;
+  }
+}

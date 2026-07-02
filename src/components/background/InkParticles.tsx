@@ -17,6 +17,8 @@ interface Particle {
 interface InkParticlesProps {
   count?: number;
   className?: string;
+  /** 朝代粒子颜色（覆盖默认） */
+  dynastyColor?: string;
 }
 
 /**
@@ -27,6 +29,7 @@ interface InkParticlesProps {
 export default function InkParticles({
   count: baseCount = 30,
   className = '',
+  dynastyColor,
 }: InkParticlesProps) {
   const { primaryColor, isDefault } = useTheme();
   const ttActive = useTimeTravelStore((s) => s.active);
@@ -34,10 +37,12 @@ export default function InkParticles({
   // 时间旅行激活时增加粒子密度
   const count = ttActive ? baseCount * 2 : baseCount;
 
-  // 场景配置的粒子颜色优先；否则用朝代主题色；否则默认墨色
+  // 场景配置的粒子颜色优先；其次朝代配色；否则用主题色；否则默认墨色
   const sceneParticleColor = sceneConfig.particleConfig?.color;
+  const dynastyParticleColor = dynastyColor
+    || getComputedStyle(document.documentElement).getPropertyValue('--dynasty-particle-color').trim();
   const particleColor =
-    sceneParticleColor || (isDefault ? '#27231e' : primaryColor);
+    sceneParticleColor || dynastyParticleColor || (isDefault ? '#27231e' : primaryColor);
 
   // 场景字符集
   const sceneChars = sceneConfig.particleConfig?.chars;

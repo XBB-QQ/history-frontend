@@ -1,5 +1,6 @@
 import { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useI18nStore } from '@/i18n/i18n';
 import HomePage from './pages/HomePage';
 const TimelinePage = lazy(() => import('./pages/TimelinePage'));
 const DynastiesPage = lazy(() => import('./pages/DynastiesPage'));
@@ -47,10 +48,26 @@ const BattleSandbagPage = lazy(() => import('./pages/BattleSandbagPage'));
 const InkAnimationPage = lazy(() => import('./pages/InkAnimationPage'));
 const TerritoryMapPage = lazy(() => import('./pages/TerritoryMapPage'));
 const MigrationMapPage = lazy(() => import('./pages/MigrationMapPage'));
+const SurnameMapPage = lazy(() => import('./pages/SurnameMapPage'));
+const CurrencyConverterPage = lazy(() => import('./pages/CurrencyConverterPage'));
+const JobsPage = lazy(() => import('./pages/JobsPage'));
+const PlagueHistoryPage = lazy(() => import('./pages/PlagueHistoryPage'));
+const HistoricalTrialPage = lazy(() => import('./pages/HistoricalTrialPage'));
+const PersonalHistoryPage = lazy(() => import('./pages/PersonalHistoryPage'));
+const ImperialExaminationPage = lazy(() => import('./pages/ImperialExaminationPage'));
 const SoundMuseumPage = lazy(() => import('./pages/SoundMuseumPage'));
 const ContributionPage = lazy(() => import('./pages/ContributionPage'));
 const TopicListPage = lazy(() => import('./pages/TopicListPage'));
 const TopicDetailPage = lazy(() => import('./pages/TopicDetailPage'));
+const ScentMuseumPage = lazy(() => import('./pages/ScentMuseumPage'));
+const TitleGeneratorPage = lazy(() => import('./pages/TitleGeneratorPage'));
+const OracleBoneGamePage = lazy(() => import('./pages/OracleBoneGamePage'));
+const TransportTimelinePage = lazy(() => import('./pages/TransportTimelinePage'));
+const ArchitectureMortisePage = lazy(() => import('./pages/ArchitectureMortisePage'));
+const RoundTableConferencePage = lazy(() => import('./pages/RoundTableConferencePage'));
+const ScriptKillerPage = lazy(() => import('./pages/ScriptKillerPage'));
+const EntropyModelPage = lazy(() => import('./pages/EntropyModelPage'));
+const FuturePredictionPage = lazy(() => import('./pages/FuturePredictionPage'));
 
 // 后台管理页面（不用 lazy，避免 SSR 问题）
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -61,6 +78,7 @@ import PersonsEditor from './pages/admin/PersonsEditor';
 import DynastiesEditor from './pages/admin/DynastiesEditor';
 import KnowledgeEditor from './pages/admin/KnowledgeEditor';
 
+import ThemeManager from './components/themes/ThemeManager';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
@@ -79,6 +97,12 @@ function App() {
   // 启动时恢复场景偏好 + 后台预加载所有字体
   useEffect(() => {
     hydrateFromStorage();
+    // 恢复语言偏好
+    const locale = localStorage.getItem('locale') as 'zh' | 'en' | null;
+    if (locale) {
+      useI18nStore.getState().setLocale(locale);
+      document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
+    }
     // 延迟预加载，不阻塞首屏
     const timer = setTimeout(() => preloadAllSceneFonts(), 3000);
     // 注册 Service Worker (PWA)
@@ -93,6 +117,7 @@ function App() {
       <ScrollProgress />
       <ScrollToTop />
       <Navbar />
+      <ThemeManager />
       <SceneTransition />
       <Suspense
         fallback={
@@ -154,10 +179,26 @@ function App() {
           <Route path="/ink-animation" element={<InkAnimationPage />} />
           <Route path="/territory" element={<TerritoryMapPage />} />
           <Route path="/migration" element={<MigrationMapPage />} />
+          <Route path="/surname" element={<SurnameMapPage />} />
+          <Route path="/currency" element={<CurrencyConverterPage />} />
+          <Route path="/jobs" element={<JobsPage />} />
+          <Route path="/plague-history" element={<PlagueHistoryPage />} />
+          <Route path="/historical-trial" element={<HistoricalTrialPage />} />
+          <Route path="/personal-history" element={<PersonalHistoryPage />} />
+          <Route path="/examination" element={<ImperialExaminationPage />} />
           <Route path="/sound-museum" element={<SoundMuseumPage />} />
           <Route path="/contribution" element={<ContributionPage />} />
           <Route path="/topics" element={<TopicListPage />} />
           <Route path="/topic/:uid" element={<TopicDetailPage />} />
+          <Route path="/scent-museum" element={<ScentMuseumPage />} />
+          <Route path="/title-generator" element={<TitleGeneratorPage />} />
+          <Route path="/oracle-game" element={<OracleBoneGamePage />} />
+<Route path="/transport-timeline" element={<TransportTimelinePage />} />
+<Route path="/architecture-mortise" element={<ArchitectureMortisePage />} />
+<Route path="/roundtable" element={<RoundTableConferencePage />} />
+<Route path="/script-killer" element={<ScriptKillerPage />} />
+<Route path="/entropy-model" element={<EntropyModelPage />} />
+<Route path="/future-prediction" element={<FuturePredictionPage />} />
 
           {/* 后台管理路由 */}
           <Route path="/admin/login" element={<AdminLoginPage />} />
