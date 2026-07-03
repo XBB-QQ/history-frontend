@@ -20,8 +20,8 @@ function ComparePage() {
     }).catch(() => setLoading(false));
   }, []);
 
-  const filteredPersons = persons.filter((p) =>
-    p.name.includes(searchTerm) || (p.tags || []).some((t) => t.includes(searchTerm))
+  const filteredPersons = persons.filter((p: any) =>
+    p.name.includes(searchTerm) || (p.tags || []).some((t: string) => t.includes(searchTerm))
   ).slice(0, 10);
 
   const handleSelect = (person: BackendPersonDTO, slot: 1 | 2) => {

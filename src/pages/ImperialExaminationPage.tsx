@@ -25,7 +25,7 @@ export default function ImperialExaminationPage() {
     if (!selectedPaper || answers.length === 0) return 0;
 
     let totalScore = 0;
-    selectedPaper.questions.forEach(question => {
+    selectedPaper.questions.forEach((question: any) => {
       if (answers[question.id] === question.answer) {
         totalScore += question.points;
       }
@@ -196,7 +196,7 @@ export default function ImperialExaminationPage() {
                 {/* 题目选项 */}
                 {currentQuestion.type === 'choice' && currentQuestion.options && (
                   <div className="space-y-3">
-                    {currentQuestion.options.map((option, idx) => (
+                    {currentQuestion.options.map((option: string, idx: number) => (
                       <div
                         key={idx}
                         className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
@@ -383,7 +383,7 @@ export default function ImperialExaminationPage() {
                   答题分析
                 </h3>
 
-                {selectedPaper.questions.map((question, idx) => (
+                {selectedPaper.questions.map((question: any, idx: number) => (
                   <div
                     key={question.id}
                     className={`p-4 rounded-xl ${

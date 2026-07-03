@@ -190,7 +190,7 @@ const RoundTableConferencePage: React.FC = () => {
 
                     {availableParticipants.length > 0 ? (
                       <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
-                        {availableParticipants.map(figure => (
+                        {availableParticipants.map((figure: any) => (
                           <div
                             key={figure.id}
                             className={`p-4 rounded-xl border-2 ${

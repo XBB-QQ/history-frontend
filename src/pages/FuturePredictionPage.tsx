@@ -429,7 +429,7 @@ const FuturePredictionPage: React.FC = () => {
                             </div>
                             <h5 className="font-bold text-gray-800 mb-2">关键变化</h5>
                             <ul className="space-y-1">
-                              {predictionResult.keyChanges.map((change, index) => (
+                              {predictionResult.keyChanges.map((change: string, index: number) => (
                                 <li key={index} className="text-gray-700 text-sm">• {change}</li>
                               ))}
                             </ul>

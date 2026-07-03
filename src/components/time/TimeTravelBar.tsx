@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { useTimeTravelStore, PRECISION_CONFIG, MILESTONE_YEARS } from '@/store/timeTravelStore';
+import { useTimeTravelStore, PRECISION_CONFIG, MILESTONE_YEARS, type TimePrecision } from '@/store/timeTravelStore';
 
 /** 格式化年份显示 */
 function formatYear(year: number): string {

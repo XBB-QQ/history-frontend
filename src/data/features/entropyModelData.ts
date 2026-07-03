@@ -47,6 +47,13 @@ export const CIVILIZATION_STATUS: CivilizationStatus[] = [
     description: '极致复杂，系统高度精密',
     characteristics: ['复杂', '精密', '系统化', '极致组织'],
     historicalExamples: ['封建帝国顶峰', '传统社会成熟期', '传统文明的复杂性']
+  },
+  {
+    level: 6,
+    name: '文明顶峰',
+    description: '秩序达到顶峰，文明极致成熟',
+    characteristics: ['顶峰', '极致', '成熟', '高度发达'],
+    historicalExamples: ['康乾盛世', '传统文明巅峰', '近代前夜']
   }
 ];
 

@@ -12,7 +12,7 @@ export default function TodayBanner() {
 
   useEffect(() => {
     fetchTodayEvents()
-      .then((data) => setEvents(data))
+      .then((data: any) => setEvents(data))
       .catch(() => setError(true))
       .finally(() => setLoading(false));
   }, []);
@@ -43,7 +43,7 @@ export default function TodayBanner() {
 
         {/* 事件列表 */}
         <div className="px-6 pb-6 divide-y divide-ink-100 dark:divide-ink-800">
-          {events.slice(0, 5).map((event) => (
+          {events.slice(0, 5).map((event: any) => (
             <div key={event.id} className="py-3 first:pt-0 last:pb-0">
               <div className="flex items-start gap-3">
                 <span className="text-xs font-mono text-accent dark:text-accent/80 mt-1 flex-shrink-0 w-20 text-right">

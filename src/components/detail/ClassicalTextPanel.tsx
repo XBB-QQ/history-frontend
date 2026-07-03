@@ -50,7 +50,7 @@ export default function ClassicalTextPanel({
               { id: 'parallel' as const, label: '对照' },
               { id: 'classical' as const, label: '古文' },
               { id: 'modern' as const, label: '白话' },
-            ] as const).map((opt) => (
+            ] as const).map((opt: any) => (
               <button
                 key={opt.id}
                 onClick={() => setMode(opt.id)}

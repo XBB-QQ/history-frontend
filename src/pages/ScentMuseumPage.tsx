@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { SectionHeader, RevealOnScroll } from '@/components/common';
+import SectionHeader from '@/components/common/SectionHeader';
+import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { HISTORICAL_SCENTS, SCENTS_BY_DYNASTY, POPULAR_SCENTS, ENERGY_COLORS } from '@/data/features/scentData';
 
 const ScentMuseumPage = () => {
@@ -114,19 +115,20 @@ const ScentMuseumPage = () => {
           <SectionHeader title="🔥 推荐气味" subtitle="精选最具代表性的历史气味" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {POPULAR_SCENTS.map((scent, index) => (
+            {POPULAR_SCENTS.map((scent: any, index: number) => (
               <ScentCard
                 key={scent.id}
                 scent={scent}
                 index={index}
                 onClick={handleScentClick}
+                getEnergyBadge={getEnergyBadge}
               />
             ))}
           </div>
         </div>
       </RevealOnScroll>
 
-      {/* All Scents Section */}
+      {/* Filter Section */}
       <RevealOnScroll>
         <div className="max-w-6xl mx-auto px-4 pb-16">
           <SectionHeader
@@ -141,12 +143,13 @@ const ScentMuseumPage = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredScents.map((scent, index) => (
+              {filteredScents.map((scent: any, index: number) => (
                 <ScentCard
                   key={scent.id}
                   scent={scent}
                   index={index}
                   onClick={handleScentClick}
+                  getEnergyBadge={getEnergyBadge}
                 />
               ))}
             </div>
@@ -159,6 +162,7 @@ const ScentMuseumPage = () => {
         <ScentDetailModal
           scent={selectedScent}
           onClose={closeScentModal}
+          getEnergyBadge={getEnergyBadge}
         />
       )}
     </div>
@@ -169,9 +173,10 @@ interface ScentCardProps {
   scent: any;
   index: number;
   onClick: (scent: any) => void;
+  getEnergyBadge: (energy: string) => { bg: string; text: string; icon: string };
 }
 
-const ScentCard = ({ scent, index, onClick }: ScentCardProps) => {
+const ScentCard = ({ scent, index, onClick, getEnergyBadge }: ScentCardProps) => {
   const energyBadge = getEnergyBadge(scent.energy);
   const gradientClass = ENERGY_COLORS[scent.energy] || ENERGY_COLORS.calm;
 
@@ -243,9 +248,10 @@ const ScentCard = ({ scent, index, onClick }: ScentCardProps) => {
 interface ScentDetailModalProps {
   scent: any;
   onClose: () => void;
+  getEnergyBadge: (energy: string) => { bg: string; text: string; icon: string };
 }
 
-const ScentDetailModal = ({ scent, onClose }: ScentDetailModalProps) => {
+const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalProps) => {
   const energyBadge = getEnergyBadge(scent.energy);
   const gradientClass = ENERGY_COLORS[scent.energy] || ENERGY_COLORS.calm;
 

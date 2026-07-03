@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { SectionHeader, RevealOnScroll } from '@/components/common';
+import SectionHeader from '@/components/common/SectionHeader';
+import RevealOnScroll from '@/components/common/RevealOnScroll';
 import {
   POSTHUMOUS_TITLE_CATEGORIES,
   ERA_TEMPLATES,
@@ -104,7 +105,7 @@ const TitleGeneratorPage = () => {
       lie: '🔥',
       sheng: '👑',
       kang: '🛡️',
-      jing: '🏔️'
+      xuan: '🏔️'
     };
     return icons[id] || '✨';
   };
@@ -239,6 +240,7 @@ const TitleGeneratorPage = () => {
                 key={title.id}
                 title={title}
                 onClick={() => handleTitleClick(title.title)}
+                getCategoryIcon={getCategoryIcon}
               />
             ))}
           </div>
@@ -277,9 +279,10 @@ const TitleGeneratorPage = () => {
 interface TitleCardProps {
   title: any;
   onClick: (title: string) => void;
+  getCategoryIcon: (id: string) => string;
 }
 
-const TitleCard = ({ title, onClick }: TitleCardProps) => {
+const TitleCard = ({ title, onClick, getCategoryIcon }: TitleCardProps) => {
   return (
     <div
       className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-all transform hover:scale-105"

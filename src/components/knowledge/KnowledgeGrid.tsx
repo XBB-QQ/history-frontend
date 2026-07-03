@@ -8,7 +8,7 @@ interface KnowledgeGridProps {
 export default function KnowledgeGrid({ cards }: KnowledgeGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {cards.map((card) => (
+      {cards.map((card: any) => (
         <KnowledgeCard key={card.id} card={card} />
       ))}
     </div>

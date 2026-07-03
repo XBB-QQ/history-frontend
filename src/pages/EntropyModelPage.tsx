@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { SectionHeader } from '../components/common/SectionHeader';
-import { RevealOnScroll } from '../components/common/RevealOnScroll';
+import SectionHeader from '../components/common/SectionHeader';
+import RevealOnScroll from '../components/common/RevealOnScroll';
 import {
   CIVILIZATIONS,
   CIVILIZATION_STATUS,
@@ -67,7 +66,7 @@ const EntropyModelPage: React.FC = () => {
           <RevealOnScroll>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {CIVILIZATIONS.map((civ) => (
-                <motion.button
+                <button
                   key={civ.id}
                   onClick={() => setSelectedCivilization(civ.id)}
                   className={`p-4 rounded-xl shadow-md transition-all duration-300 ${
@@ -75,8 +74,6 @@ const EntropyModelPage: React.FC = () => {
                       ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-lg transform scale-105'
                       : 'bg-white hover:shadow-lg hover:scale-105'
                   }`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                 >
                   <h3 className="font-bold text-lg">{civ.name}</h3>
                   <p className="text-sm opacity-80">{civ.dynasty}</p>
@@ -84,7 +81,7 @@ const EntropyModelPage: React.FC = () => {
                   <div className="mt-2 text-xs">
                     熵值: <span className="font-bold">{civ.entropy}</span>
                   </div>
-                </motion.button>
+                </button>
               ))}
             </div>
           </RevealOnScroll>
@@ -331,7 +328,7 @@ const EntropyModelPage: React.FC = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {PREDICTION_SCENARIOS.map((scenario) => (
-                      <motion.button
+                      <button
                         key={scenario.id}
                         onClick={() => setSelectedScenario(scenario)}
                         className={`p-4 rounded-xl transition-all duration-300 ${
@@ -356,7 +353,7 @@ const EntropyModelPage: React.FC = () => {
                             {scenario.riskLevel}
                           </span>
                         </div>
-                      </motion.button>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -378,7 +375,7 @@ const EntropyModelPage: React.FC = () => {
                     <div className="mb-6">
                       <h3 className="font-bold text-lg text-gray-800 mb-4">影响变量</h3>
                       <div className="space-y-4">
-                        {selectedScenario.variables.map((variable) => (
+                        {selectedScenario.variables.map((variable: any) => (
                           <div key={variable.name}>
                             <div className="flex justify-between text-sm mb-1">
                               <span className="font-medium text-gray-700">{variable.name}</span>
@@ -392,7 +389,7 @@ const EntropyModelPage: React.FC = () => {
                               onChange={(e) => {
                                 const newScenario = {
                                   ...selectedScenario,
-                                  variables: selectedScenario.variables.map(v =>
+                                  variables: selectedScenario.variables.map((v: any) =>
                                     v.name === variable.name ? { ...v, value: Number(e.target.value) } : v
                                   )
                                 };

@@ -32,7 +32,7 @@ interface BackendEventDTO {
   modernTranslation?: string | null;
 }
 
-interface BackendPersonDTO {
+export interface BackendPersonDTO {
   id: number;
   uid: string;
   name: string;
@@ -310,9 +310,10 @@ function adaptKnowledge(dto: BackendKnowledgeDTO): FrontendKnowledge {
 // API 函数
 // ──────────────────────────────────────────────
 
-async function fetchJSON<T>(url: string): Promise<T> {
+async function fetchJSON<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, {
     headers: { 'Accept': 'application/json' },
+    ...init,
   });
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status} ${response.statusText} for ${url}`);

@@ -99,7 +99,7 @@ export const CHARACTER_DATABASE: Character[] = [
       {
         characterId: 'pan-geng-wo',
         characterName: '盘庚',
-        type: 'father',
+        type: 'family',
         description: '严厉的父亲，对他要求极高'
       },
       {
@@ -133,7 +133,7 @@ export const CHARACTER_DATABASE: Character[] = [
       {
         characterId: 'wei-wang-xian-jia',
         characterName: '卫王献嘉',
-        type: 'father',
+        type: 'family',
         description: '严厉地管教他'
       },
       {
@@ -281,7 +281,7 @@ export const CHARACTER_DATABASE: Character[] = [
       {
         characterId: 'wei-wang-xian-jia',
         characterName: '卫王献嘉',
-        type: 'servant',
+        type: 'colleague',
         description: '忠诚地保护他'
       },
       {

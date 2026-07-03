@@ -10,8 +10,6 @@ import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { HISTORICAL_TRIALS, TRIALS_BY_DYNASTY, TRIALS_BY_TYPE, TRIALS_WON, TRIALS_LOST } from '@/data/features/trialData';
 
-import './HistoricalTrialPage.module.css';
-
 export default function HistoricalTrialPage() {
   const [selectedDynasty, setSelectedDynasty] = useState<string>('全部');
   const [selectedType, setSelectedType] = useState<string>('全部');

@@ -185,35 +185,34 @@ export default function CurrencyConverterPage() {
                     {type === 'meat' && (
                       <div className="p-3 rounded-lg bg-accent/10 border border-accent/30">
                         <div className="text-sm text-ink-700 dark:text-ink-300">
-                          💡 你可以购买 {res
-ult.meatAmount.toFixed(2)} 斤猪肉，
-                            <br/>足以制作 {Math.floor(result.meatAmount / 3)} 份红烧肉大餐。
-                          </div>
+                          💡 你可以购买 {result.meatAmount.toFixed(2)} 斤猪肉，
+                          <br/>足以制作 {Math.floor(result.meatAmount / 3)} 份红烧肉大餐。
                         </div>
                       </div>
+                    )}
 
-                      {type === 'wine' && (
-                        <div className="p-3 rounded-lg bg-accent/10 border border-accent/30">
-                          <div className="text-sm text-ink-700 dark:text-ink-300">
-                            💡 你可以购买 {result.wineAmount.toFixed(2)} 斤酒，
-                            <br/>足够招待 {Math.floor(result.wineAmount / 10)} 位客人。
-                          </div>
+                    {type === 'wine' && (
+                      <div className="p-3 rounded-lg bg-accent/10 border border-accent/30">
+                        <div className="text-sm text-ink-700 dark:text-ink-300">
+                          💡 你可以购买 {result.wineAmount.toFixed(2)} 斤酒，
+                          <br/>足够招待 {Math.floor(result.wineAmount / 10)} 位客人。
                         </div>
-                      )}
+                      </div>
+                    )}
 
-                      {type === 'custom' && result && (
-                        <div className="p-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
-                          <div className="text-xs text-ink-500">可购买自定义商品</div>
-                          <div className="text-xl font-bold text-ink-900 dark:text-ink-100">
-                            {result.riceAmount.toFixed(0)} 斤当量
-                          </div>
-                          <div className="text-xs text-ink-500 mt-1">
-                            (基于该朝代大米价格折算)
-                          </div>
+                    {type === 'custom' && (
+                      <div className="p-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
+                        <div className="text-xs text-ink-500">可购买自定义商品</div>
+                        <div className="text-xl font-bold text-ink-900 dark:text-ink-100">
+                          {result.riceAmount.toFixed(0)} 斤当量
                         </div>
-                      )}
-                    </>
-                  ) : (
+                        <div className="text-xs text-ink-500 mt-1">
+                          (基于该朝代大米价格折算)
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
                     <div className="p-8 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 text-center">
                       <div className="text-4xl mb-2">⚠️</div>
                       <div className="text-ink-600 dark:text-ink-400">
@@ -221,7 +220,6 @@ ult.meatAmount.toFixed(2)} 斤猪肉，
                       </div>
                     </div>
                   )}
-                )}
               </div>
             </div>
           </div>

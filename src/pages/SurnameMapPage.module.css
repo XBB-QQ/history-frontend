@@ -2,8 +2,8 @@
 
 /* 搜索框容器 */
 .search-container {
-  max-width-2xl mx-auto;
   margin: 0 auto 2rem;
+  max-width: 48rem;
 }
 
 .search-input {
@@ -30,7 +30,7 @@
 
 /* 姓氏列表 */
 .surname-list {
-  max-width-6xl mx-auto;
+  @apply max-w-6xl mx-auto;
 }
 
 /* 首字母分组 */
@@ -97,12 +97,12 @@
 
 /* 搜索结果容器 */
 .results-container {
-  max-width-6xl mx-auto;
+  @apply max-w-6xl mx-auto;
 }
 
 /* 姓氏详情 */
 .surname-detail {
-  max-width-6xl mx-auto;
+  @apply max-w-6xl mx-auto;
 }
 
 /* 详情卡片 */

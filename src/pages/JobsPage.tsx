@@ -10,8 +10,6 @@ import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { ANCIENT_JOBS, ANCIENT_JOBS_BY_DYNASTY, POPULAR_JOBS, UNCOMMON_JOBS } from '@/data/features/jobsData';
 
-import './JobsPage.module.css';
-
 export default function JobsPage() {
   const [selectedDynasty, setSelectedDynasty] = useState<string>('全部');
   const [selectedStatus, setSelectedStatus] = useState<string>('全部');
@@ -213,7 +211,7 @@ export default function JobsPage() {
                       📋 入职要求
                     </h3>
                     <ul className="space-y-2">
-                      {selectedJob.requirements.map((req, idx) => (
+                      {selectedJob.requirements.map((req: string, idx: number) => (
                         <li key={idx} className="flex items-center gap-2 text-ink-600 dark:text-ink-400">
                           <span className="text-accent">✓</span>
                           <span>{req}</span>
@@ -228,7 +226,7 @@ export default function JobsPage() {
                       🛠️ 所需技能
                     </h3>
                     <div className="flex flex-wrap gap-2">
-                      {selectedJob.skills.map((skill, idx) => (
+                      {selectedJob.skills.map((skill: string, idx: number) => (
                         <span
                           key={idx}
                           className="px-3 py-1 rounded-full text-sm font-medium bg-accent/10 text-accent border border-accent/30"

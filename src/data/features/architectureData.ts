@@ -4,6 +4,7 @@ export interface MortiseTenon {
   name: string;
   category: string;
   dynasty: string;
+  era: string;
   description: string;
   structureType: 'tenon' | 'mortise' | 'mortise-tenon' | 'jin' | 'zhuan';
   visualDiagram?: string;

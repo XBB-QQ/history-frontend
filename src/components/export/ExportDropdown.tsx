@@ -8,9 +8,9 @@ type ExportType = 'events' | 'persons' | 'dynasties' | 'knowledge';
 function toCSV(data: Record<string, unknown>[]): string {
   if (data.length === 0) return '';
   const headers = Object.keys(data[0]);
-  const rows = data.map((row) =>
+  const rows = data.map((row: any) =>
     headers
-      .map((h) => {
+      .map((h: any) => {
         const val = row[h];
         if (val === null || val === undefined) return '';
         const str = String(val);
@@ -151,7 +151,7 @@ export default function ExportDropdown() {
             { key: 'persons' as const, label: '人物志' },
             { key: 'dynasties' as const, label: '朝代数据' },
             { key: 'knowledge' as const, label: '知识卡片' },
-          ].map((item) => (
+          ].map((item: any) => (
             <button
               key={item.key}
               onClick={() => handleExport(item.key)}

@@ -22,7 +22,7 @@ export default function KnowledgeCard({ card }: KnowledgeCardProps) {
       <p className="text-sm text-ink-500 mb-3">{card.description}</p>
       {card.tags.length > 0 && (
         <div className="flex flex-wrap gap-2">
-          {card.tags.map((tag) => (
+          {card.tags.map((tag: any) => (
             <span key={tag} className="text-xs px-2 py-1 bg-ink-50 rounded-full text-ink-400">
               {tag}
             </span>

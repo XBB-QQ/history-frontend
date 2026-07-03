@@ -2,7 +2,7 @@
 
 /* 容器 */
 .converter-container {
-  max-width-6xl mx-auto;
+  @apply max-w-6xl mx-auto;
 }
 
 /* 换算器卡片 */

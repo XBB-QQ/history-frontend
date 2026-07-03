@@ -14,7 +14,7 @@ export default function DailyRecommendCard() {
 
   const load = () => {
     fetchDailyRecommend()
-      .then((data) => {
+      .then((data: any) => {
         if (data.found && data.event) {
           setEvent(data.event);
         }
@@ -118,7 +118,7 @@ export default function DailyRecommendCard() {
       {/* 标签 */}
       {event.tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mt-4">
-          {event.tags.slice(0, 4).map((tag) => (
+          {event.tags.slice(0, 4).map((tag: any) => (
             <span
               key={tag}
               className="text-xs px-2 py-0.5 rounded bg-ink-50 dark:bg-ink-800/50 text-ink-400 dark:text-ink-500"

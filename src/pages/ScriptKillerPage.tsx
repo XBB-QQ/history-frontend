@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   CHARACTER_DATABASE,
   SCRIPTS,
@@ -105,8 +104,8 @@ const ScriptKillerPage: React.FC = () => {
         </RevealOnScroll>
 
         {currentPhase === 'intro' && (
-          <AnimatePresence mode="wait">
-            <motion.div
+          <div className="animate-fade-in">
+            <div
               key="intro"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -167,13 +166,13 @@ const ScriptKillerPage: React.FC = () => {
                   </button>
                 </div>
               </RevealOnScroll>
-            </motion.div>
-          </AnimatePresence>
+            </div>
+          </div>
         )}
 
         {currentPhase === 'character' && (
-          <AnimatePresence mode="wait">
-            <motion.div
+          <div className="animate-fade-in">
+            <div
               key="character"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -296,13 +295,13 @@ const ScriptKillerPage: React.FC = () => {
                   </button>
                 </div>
               </RevealOnScroll>
-            </motion.div>
-          </AnimatePresence>
+            </div>
+          </div>
         )}
 
         {currentPhase === 'clues' && (
-          <AnimatePresence mode="wait">
-            <motion.div
+          <div className="animate-fade-in">
+            <div
               key="clues"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -421,13 +420,13 @@ const ScriptKillerPage: React.FC = () => {
                   </button>
                 </div>
               </RevealOnScroll>
-            </motion.div>
-          </AnimatePresence>
+            </div>
+          </div>
         )}
 
         {currentPhase === 'deduction' && (
-          <AnimatePresence mode="wait">
-            <motion.div
+          <div className="animate-fade-in">
+            <div
               key="deduction"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -515,13 +514,13 @@ const ScriptKillerPage: React.FC = () => {
                   </button>
                 </div>
               </RevealOnScroll>
-            </motion.div>
-          </AnimatePresence>
+            </div>
+          </div>
         )}
 
         {currentPhase === 'reveal' && isRevealed && (
-          <AnimatePresence mode="wait">
-            <motion.div
+          <div className="animate-fade-in">
+            <div
               key="reveal"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -576,8 +575,8 @@ const ScriptKillerPage: React.FC = () => {
                   </button>
                 </div>
               </RevealOnScroll>
-            </motion.div>
-          </AnimatePresence>
+            </div>
+          </div>
         )}
       </div>
     </div>

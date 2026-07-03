@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { MORTISE_TYPES, BUILDING_TYPES, ANCIENT_STRUCTURES, MortiseTenon, BuildingType, AncientStructure } from '../data/features/architectureData';
 import SectionHeader from '../components/common/SectionHeader';
 import RevealOnScroll from '../components/common/RevealOnScroll';
@@ -135,12 +135,8 @@ const ArchitectureMortisePage: React.FC = () => {
 
               <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
                 {filteredMortiseTypes.map((mortise, index) => (
-                  <motion.div
+                  <div
                     key={mortise.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    onClick={() => setSelectedStructure(null)}
                     className={`p-4 rounded-xl cursor-pointer transition-all duration-300 ${
                       mortise.structureType === selectedStructureType
                         ? 'bg-gradient-to-r from-orange-50 to-amber-50 border-2 border-orange-300 shadow-md'
@@ -161,7 +157,7 @@ const ArchitectureMortisePage: React.FC = () => {
                         </span>
                       ))}
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -196,11 +192,8 @@ const ArchitectureMortisePage: React.FC = () => {
 
               <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
                 {filteredStructures.map((structure, index) => (
-                  <motion.div
+                  <div
                     key={structure.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
                     onClick={() => handleStructureClick(structure)}
                     className="p-4 rounded-xl cursor-pointer transition-all duration-300 bg-gray-50 hover:bg-gray-100 border-2 border-transparent hover:border-orange-200"
                   >
@@ -219,7 +212,7 @@ const ArchitectureMortisePage: React.FC = () => {
                         </span>
                       ))}
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -254,14 +247,14 @@ const ArchitectureMortisePage: React.FC = () => {
         </RevealOnScroll>
       </div>
 
-      <AnimatePresence>
+      <div>
         {selectedStructure && (
           <AncientStructureModal
             structure={selectedStructure}
             onClose={handleCloseModal}
           />
         )}
-      </AnimatePresence>
+      </div>
     </div>
   );
 };
@@ -273,9 +266,6 @@ const AncientStructureModal: React.FC<{
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 20 }}
         className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
       >
         <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white p-6 rounded-t-2xl">

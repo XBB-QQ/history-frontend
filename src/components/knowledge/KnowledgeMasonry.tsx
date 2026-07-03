@@ -15,7 +15,7 @@ export default function KnowledgeMasonry({ cards }: KnowledgeMasonryProps) {
   // 3列瀑布流：手机1列、平板2列、桌面3列
   return (
     <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-      {cards.map((card) => (
+      {cards.map((card: any) => (
         <div key={card.id} className="break-inside-avoid">
           <KnowledgeCard card={card} />
         </div>

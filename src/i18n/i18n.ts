@@ -43,10 +43,16 @@ export const useI18nStore = create<I18nState>((set) => ({
     set({ locale });
   },
 
-  t: (key: string, params?: Record<string, string | number>) => {
-    const store = useI18nStore.getState();
-    const dict = store.locale === 'zh' ? zhFlat : enFlat;
-    let value = dict[key] || key; // 找不到就用 key 本身
+  t: (key: string, params?: Record<string, string | number>): string => {
+    let value = key;
+    try {
+      const currentLocale = useI18nStore.getState().locale;
+      const dict = currentLocale === 'zh' ? zhFlat : enFlat;
+      value = dict[key] || key; // 找不到就用 key 本身
+    } catch {
+      // 初始化期间 getState 可能不可用，使用默认字典
+      value = zhFlat[key] || key;
+    }
 
     // 简单参数替换 {{param}}
     if (params) {

@@ -2,8 +2,6 @@
  * 协作式知识贡献 — 前端 API 服务
  */
 
-import { apiGet, apiPost } from './api';
-
 export interface Contribution {
   id: number;
   type: string;        // event / person / dynasty / knowledge / correction

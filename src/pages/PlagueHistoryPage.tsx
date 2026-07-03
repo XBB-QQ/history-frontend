@@ -8,9 +8,7 @@
 import React, { useState, useMemo } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { PLAGUE_EPIDEMICS, PLAGUES_BY_DYNASTY, HIGH_IMPACT_PLAGUES } from '@/data/features/plagueData';
-
-import './PlagueHistoryPage.module.css';
+import { PLAGUE_EPIDEMICS, PLAGUES_BY_DYNASTY, HIGH_IMPACT_PLAGUES, MEDIUM_IMPACT_PLAGUES, LOW_IMPACT_PLAGUES } from '@/data/features/plagueData';
 
 export default function PlagueHistoryPage() {
   const [selectedDynasty, setSelectedDynasty] = useState<string>('全部');

@@ -85,7 +85,7 @@ export default function CommentSection({ resourceId, resourceType }: CommentSect
 
   const handleLike = (commentId: number) => {
     setComments((prev) =>
-      prev.map((c) =>
+      prev.map((c: any) =>
         c.id === commentId
           ? { ...c, liked: !c.liked, likes: c.liked ? c.likes - 1 : c.likes + 1 }
           : c
@@ -95,11 +95,11 @@ export default function CommentSection({ resourceId, resourceType }: CommentSect
 
   const handleReplyLike = (commentId: number, replyId: number) => {
     setComments((prev) =>
-      prev.map((c) =>
+      prev.map((c: any) =>
         c.id === commentId
           ? {
               ...c,
-              replies: (c.replies || []).map((r) =>
+              replies: (c.replies || []).map((r: any) =>
                 r.id === replyId
                   ? { ...r, liked: !r.liked, likes: r.liked ? r.likes - 1 : r.likes + 1 }
                   : r
@@ -129,7 +129,7 @@ export default function CommentSection({ resourceId, resourceType }: CommentSect
       likes: 0,
     };
     setComments((prev) =>
-      prev.map((c) =>
+      prev.map((c: any) =>
         c.id === commentId ? { ...c, replies: [...(c.replies || []), reply] } : c
       )
     );
@@ -211,7 +211,7 @@ export default function CommentSection({ resourceId, resourceType }: CommentSect
             <p>暂无评论，快来抢沙发吧！</p>
           </div>
         ) : (
-          sortedComments.map((c) => (
+          sortedComments.map((c: any) => (
             <div key={c.id} className="flex gap-3 p-3 rounded-xl bg-ink-50 dark:bg-ink-800/50">
               <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-sm flex-shrink-0 text-accent">
                 {c.authorAvatar || c.author.charAt(0)}
@@ -272,7 +272,7 @@ export default function CommentSection({ resourceId, resourceType }: CommentSect
                 {/* 楼中楼回复 */}
                 {c.replies && c.replies.length > 0 && (
                   <div className="mt-2 space-y-2 pl-3 border-l-2 border-ink-200 dark:border-ink-700">
-                    {c.replies.map((r) => (
+                    {c.replies.map((r: any) => (
                       <div key={r.id} className="flex gap-2">
                         <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-xs flex-shrink-0 text-blue-600 dark:text-blue-400">
                           {r.authorAvatar || r.author.charAt(0)}

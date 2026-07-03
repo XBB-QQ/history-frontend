@@ -100,7 +100,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '政治',
     accusation: '昌邑王刘贺荒淫无道，不守礼法',
     defense: '刘贺声称自己被冤枉',
-    verdict: '失败（昌邑王被废）',
+    verdict: '失败',
     consequences: [
       '刘贺被废为海昏侯，享年约30岁',
       '霍光立汉宣帝为帝，朝政大权旁落'
@@ -141,7 +141,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '政治',
     accusation: '董卓残暴无道，废立皇帝，扰乱朝纲',
     defense: '董卓声称自己是在稳定局势',
-    verdict: '胜利（董卓被杀）',
+    verdict: '胜利',
     consequences: [
       '董卓被吕布所杀',
       '汉末乱世加剧',
@@ -162,7 +162,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '军事',
     accusation: '陶谦拒绝曹操的征讨，主张抵抗',
     defense: '陶谦认为徐州百姓不应受苦',
-    verdict: '胜利（陶谦成功抵抗）',
+    verdict: '胜利',
     consequences: [
       '陶谦的抵抗延缓了曹操的步伐',
       '刘备获得徐州，开始建立自己的势力'
@@ -182,7 +182,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '军事',
     accusation: '孙坚在讨伐董卓时自立门户，与袁术对抗',
     defense: '孙坚声称自己只是在为朝廷效力',
-    verdict: '胜利（孙坚成功反叛）',
+    verdict: '胜利',
     consequences: [
       '孙坚建立孙氏势力',
       '后续形成三国吴国'
@@ -202,7 +202,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '政治',
     accusation: '孙皓投降，西晋完成统一',
     defense: '孙皓认为自己已经尽力',
-    verdict: '胜利（西晋胜利）',
+    verdict: '胜利',
     consequences: [
       '西晋完成统一，中国再次进入大一统时期',
       '太康之治开始，社会繁荣'
@@ -222,7 +222,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '政治',
     accusation: '王莽篡夺汉室皇位',
     defense: '王莽声称自己是在为民请命',
-    verdict: '胜利（王莽篡位成功）',
+    verdict: '胜利',
     consequences: [
       '汉朝结束，新朝建立',
       '王莽推行新政策，导致社会动荡',
@@ -243,7 +243,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '军事',
     accusation: '袁绍轻敌，被曹操击败',
     defense: '袁绍认为自己的兵力是曹操的数倍',
-    verdict: '失败（袁绍战败）',
+    verdict: '失败',
     consequences: [
       '袁绍势力衰落',
       '曹操统一北方',
@@ -264,7 +264,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '军事',
     accusation: '夏侯惇在濮阳被吕布俘虏',
     defense: '夏侯惇声称自己是为了保护百姓',
-    verdict: '胜利（夏侯惇成功逃脱）',
+    verdict: '胜利',
     consequences: [
       '夏侯惇失去一只眼睛，但被曹操重用',
       '夏侯惇在军事上更加谨慎'
@@ -284,7 +284,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '政治',
     accusation: '韩信谋反',
     defense: '韩信声称自己从未谋反',
-    verdict: '胜利（韩信被杀）',
+    verdict: '有罪',
     consequences: [
       '韩信被杀，封地为萧何',
       '汉朝统一，刘邦称帝',
@@ -305,7 +305,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '家族',
     accusation: '刘备继承徐州牧职位',
     defense: '刘备声称自己是出于仁义',
-    verdict: '胜利（刘备成功继承）',
+    verdict: '胜利',
     consequences: [
       '刘备获得徐州，开始建立自己的势力',
       '徐州成为刘备的第一个根据地'
@@ -325,7 +325,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '政治',
     accusation: '马秦杀张翼，阻止姜维北伐',
     defense: '马秦声称张翼阻碍了国家大业',
-    verdict: '胜利（马秦成功）',
+    verdict: '胜利',
     consequences: [
       '姜维北伐失败',
       '蜀汉灭亡',
@@ -409,7 +409,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '政治',
     accusation: '韩信谋反',
     defense: '韩信声称自己从未谋反',
-    verdict: '胜利（韩信被杀）',
+    verdict: '有罪',
     consequences: [
       '韩信被杀',
       '刘邦巩固了自己的统治',

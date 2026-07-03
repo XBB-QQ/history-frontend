@@ -26,8 +26,8 @@ export default function TagCloud({ onSelectTag, activeTag }: TagCloudProps) {
 
   useEffect(() => {
     fetch('/api/knowledge/tags')
-      .then((r) => r.json())
-      .then((data) => {
+      .then((r: any) => r.json())
+      .then((data: any) => {
         setTags(data);
         setLoading(false);
       })
@@ -61,7 +61,7 @@ export default function TagCloud({ onSelectTag, activeTag }: TagCloudProps) {
   if (loading) return null;
   if (tags.length === 0) return null;
 
-  const counts = tags.map((t) => t.count);
+  const counts = tags.map((t: any) => t.count);
   const min = Math.min(...counts);
   const max = Math.max(...counts);
 
@@ -112,7 +112,7 @@ export default function TagCloud({ onSelectTag, activeTag }: TagCloudProps) {
         >
           全部
         </button>
-        {tags.map((t) => (
+        {tags.map((t: any) => (
           <button
             key={t.tag}
             onClick={() => toggleTag(t.tag)}

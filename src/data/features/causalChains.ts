@@ -437,7 +437,7 @@ export const CAUSAL_CHAINS: CausalLink[] = [
     causeName: '张居正改革',
     effect: 'ming-temporary-strength',
     effectName: '明朝短暂中兴',
-    description: '张居正推行一条鞭法等改革，使明朝出现"万历中兴'的短暂繁荣',
+    description: '张居正推行一条鞭法等改革，使明朝出现"万历中兴"的短暂繁荣',
     strength: 'direct',
   },
   {

@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { SectionHeader, RevealOnScroll } from '@/components/common';
+import SectionHeader from '@/components/common/SectionHeader';
+import RevealOnScroll from '@/components/common/RevealOnScroll';
 import {
   ORACLE_BONE_CHARS,
   getRandomOracleChars,

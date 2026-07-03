@@ -71,7 +71,7 @@ function EventDetail({ data }: { data: FrontendEvent }) {
       )}
       {data.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 pt-2">
-          {data.tags.map((tag) => (
+          {data.tags.map((tag: any) => (
             <span key={tag} className="text-xs px-2 py-1 bg-ink-50 dark:bg-ink-800 rounded-full text-ink-400 dark:text-ink-500 dark:text-ink-400">
               #{tag}
             </span>
@@ -145,7 +145,7 @@ function PersonDetail({ data }: { data: FrontendPerson }) {
           )}
           {data.roles.length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {data.roles.map((role) => (
+              {data.roles.map((role: any) => (
                 <span key={role} className="text-xs px-2 py-1 bg-ink-50 dark:bg-ink-800 rounded-full text-ink-400 dark:text-ink-500 dark:text-ink-400">
                   {role}
                 </span>
@@ -160,7 +160,7 @@ function PersonDetail({ data }: { data: FrontendPerson }) {
           )}
           {data.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 pt-2">
-              {data.tags.map((tag) => (
+              {data.tags.map((tag: any) => (
                 <span key={tag} className="text-xs px-2 py-1 bg-ink-50 dark:bg-ink-800 rounded-full text-ink-400 dark:text-ink-500 dark:text-ink-400">
                   #{tag}
                 </span>
@@ -290,7 +290,7 @@ function KnowledgeDetail({ data }: { data: FrontendKnowledge }) {
       )}
       {data.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 pt-2">
-          {data.tags.map((tag) => (
+          {data.tags.map((tag: any) => (
             <span key={tag} className="text-xs px-2 py-1 bg-ink-50 dark:bg-ink-800 rounded-full text-ink-400 dark:text-ink-500 dark:text-ink-400">
               #{tag}
             </span>
@@ -356,7 +356,7 @@ function Recommendations({ type, data }: { type: string | null; data: FrontendEv
           }
         }
 
-        let filtered = allItems.filter((item) => {
+        let filtered = allItems.filter((item: any) => {
           if (!filterField) return true;
           if (filterField === 'tags') {
             return item.tags?.includes(filterValue);
@@ -365,7 +365,7 @@ function Recommendations({ type, data }: { type: string | null; data: FrontendEv
         });
 
         const currentId = data.id ? Number(data.id) : 0;
-        filtered = filtered.filter((item) => item.id !== currentId);
+        filtered = filtered.filter((item: any) => item.id !== currentId);
 
         setRecommendations(filtered.slice(0, 4));
       } catch {
@@ -396,13 +396,13 @@ function Recommendations({ type, data }: { type: string | null; data: FrontendEv
       </h4>
       {loading ? (
         <div className="flex gap-2 flex-wrap">
-          {[1, 2, 3].map((i) => (
+          {[1, 2, 3].map((i: any) => (
             <div key={i} className="h-8 w-24 bg-ink-100 dark:bg-ink-800 rounded-full animate-pulse" />
           ))}
         </div>
       ) : (
         <div className="flex flex-wrap gap-2">
-          {recommendations.map((item) => (
+          {recommendations.map((item: any) => (
             <button
               key={item.id}
               onClick={() => handleNavigate(item.id)}
