@@ -2,9 +2,11 @@
  * DailyRecommendCard — L2 组件单元测试
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import DailyRecommendCard from './DailyRecommendCard';
+import { useDetailStore } from '@/store/detailStore';
 
 vi.mock('@/services/api', () => ({
   fetchDailyRecommend: vi.fn().mockResolvedValue({
@@ -25,7 +27,10 @@ vi.mock('@/services/api', () => ({
 }));
 
 vi.mock('@/store/detailStore', () => ({
-  useDetailStore: { getState: () => ({ openDetail: vi.fn() }) },
+  useDetailStore: vi.fn((selector?: (v: any) => any) => {
+    const store = { openDetail: vi.fn() };
+    return selector ? selector(store) : store;
+  }),
 }));
 
 vi.mock('@/data/features/storyQuests', () => ({
@@ -36,51 +41,57 @@ vi.mock('@/store/questStore', () => ({
   useQuestStore: { getState: () => ({ progress: {} }) },
 }));
 
+const renderWithRouter = (ui) => ({
+  ...render(<MemoryRouter>{ui}</MemoryRouter>),
+});
+
 describe('DailyRecommendCard', () => {
+  beforeEach(() => {
+    vi.mocked(useDetailStore).mockImplementation(() => ({ openDetail: vi.fn() }));
+  });
+
   it('渲染今日推荐标题', async () => {
-    render(<DailyRecommendCard />);
+    renderWithRouter(<DailyRecommendCard />);
     expect(await screen.findByText('今日推荐')).toBeTruthy();
   });
 
   it('渲染推荐事件标题', async () => {
-    render(<DailyRecommendCard />);
+    renderWithRouter(<DailyRecommendCard />);
     expect(await screen.findByText('岳飞抗金')).toBeTruthy();
   });
 
   it('渲染事件年份', async () => {
-    render(<DailyRecommendCard />);
+    renderWithRouter(<DailyRecommendCard />);
     expect(await screen.findByText('公元1140年')).toBeTruthy();
   });
 
   it('渲染事件分类', async () => {
-    render(<DailyRecommendCard />);
+    renderWithRouter(<DailyRecommendCard />);
     expect(await screen.findByText('军事')).toBeTruthy();
   });
 
   it('渲染朝代标签', async () => {
-    render(<DailyRecommendCard />);
+    renderWithRouter(<DailyRecommendCard />);
     expect(await screen.findByText('宋')).toBeTruthy();
   });
 
   it('渲染事件描述', async () => {
-    render(<DailyRecommendCard />);
+    renderWithRouter(<DailyRecommendCard />);
     expect(await screen.findByText('岳飞在郾城大捷中击败金军')).toBeTruthy();
   });
 
   it('渲染标签', async () => {
-    render(<DailyRecommendCard />);
+    renderWithRouter(<DailyRecommendCard />);
     expect(await screen.findByText('#抗金')).toBeTruthy();
   });
 
   it('刷新按钮存在', async () => {
-    render(<DailyRecommendCard />);
+    renderWithRouter(<DailyRecommendCard />);
     expect(await screen.findByText('换一条 ↻')).toBeTruthy();
   });
 
   it('加载时显示骨架屏', () => {
-    vi.mocked(require('@/services/api').fetchDailyRecommend).mockResolvedValueOnce({ found: false, event: null } as any);
-    const { container } = render(<DailyRecommendCard />);
-    // 可能显示骨架屏或 null
-    expect(container).toBeTruthy();
+    const { container } = renderWithRouter(<DailyRecommendCard />);
+    expect(container.firstChild).toBeTruthy();
   });
 });

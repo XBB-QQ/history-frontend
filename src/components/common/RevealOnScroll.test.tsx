@@ -6,6 +6,18 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import RevealOnScroll from './RevealOnScroll';
 
+// Mock IntersectionObserver as a class constructor
+class MockIntersectionObserver {
+  observe = () => null;
+  disconnect = () => null;
+  takeRecords = () => [];
+  root = null;
+  rootMargin = '';
+  thresholds = [];
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+vi.stubGlobal('IntersectionObserver', MockIntersectionObserver as any);
+
 describe('RevealOnScroll', () => {
   it('渲染 children', () => {
     render(
@@ -19,7 +31,6 @@ describe('RevealOnScroll', () => {
   it('默认方向为 up', () => {
     const { container } = render(<RevealOnScroll>内容</RevealOnScroll>);
     const div = container.firstChild as HTMLElement;
-    // 未触发时应包含 up 方向的初始类
     expect(div.className).toContain('translate-y-8');
     expect(div.className).toContain('opacity-0');
   });
@@ -52,17 +63,12 @@ describe('RevealOnScroll', () => {
     const mockMatches = vi.fn().mockReturnValue(true);
     vi.spyOn(window, 'matchMedia').mockImplementation((query) => {
       if (query.includes('prefers-reduced-motion')) {
-        return {
-          matches: true,
-          addEventListener: () => {},
-          removeEventListener: () => {},
-        } as any;
+        return { matches: true, addEventListener: () => {}, removeEventListener: () => {} } as any;
       }
       return { matches: false, addEventListener: () => {}, removeEventListener: () => {} } as any;
     });
 
     const { container } = render(<RevealOnScroll>内容</RevealOnScroll>);
-    // reduced-motion 时应该直接显示
     const div = container.firstChild as HTMLElement;
     expect(div.className).not.toContain('opacity-0');
   });

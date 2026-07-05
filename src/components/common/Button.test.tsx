@@ -2,9 +2,8 @@
  * Button — L2 组件单元测试
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import Button from './Button';
 
 describe('Button', () => {
@@ -21,10 +20,10 @@ describe('Button', () => {
     expect(btn!.className).toContain('btn-secondary');
   });
 
-  it('点击触发 onClick', async () => {
+  it('点击触发 onClick', () => {
     const handleClick = vi.fn();
     render(<Button onClick={handleClick}>点击</Button>);
-    await userEvent.click(screen.getByText('点击'));
+    screen.getByText('点击').click();
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 

@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { ThemeProvider, useTheme } from './ThemeProvider';
 
 describe('ThemeProvider', () => {
@@ -39,14 +39,14 @@ describe('ThemeProvider', () => {
     expect(getByTestId('default').textContent).toBe('true');
   });
 
-  it('setDynasty 设置朝代主题', () => {
+  it('setDynasty 设置朝代主题', async () => {
     const TestComponent = () => {
       const { dynasty, setDynasty, primaryColor } = useTheme();
       return (
         <div>
           <span data-testid="dynasty">{dynasty ?? 'null'}</span>
           <span data-testid="color">{primaryColor}</span>
-          <button onClick={() => setDynasty('唐')}>设唐</button>
+          <button onClick={() => act(() => setDynasty('唐'))}>设唐</button>
         </div>
       );
     };
@@ -59,20 +59,22 @@ describe('ThemeProvider', () => {
 
     expect(getByTestId('dynasty').textContent).toBe('null');
 
-    getByText('设唐').click();
+    await act(async () => {
+      getByText('设唐').click();
+    });
 
     expect(getByTestId('dynasty').textContent).toBe('唐');
   });
 
-  it('setDynasty(null) 恢复默认', () => {
+  it('setDynasty(null) 恢复默认', async () => {
     const TestComponent = () => {
       const { dynasty, setDynasty, primaryColor } = useTheme();
       return (
         <div>
           <span data-testid="dynasty">{dynasty ?? 'null'}</span>
           <span data-testid="color">{primaryColor}</span>
-          <button onClick={() => setDynasty('唐')}>设唐</button>
-          <button onClick={() => setDynasty(null)}>重置</button>
+          <button onClick={() => act(() => setDynasty('唐'))}>设唐</button>
+          <button onClick={() => act(() => setDynasty(null))}>重置</button>
         </div>
       );
     };
@@ -83,22 +85,24 @@ describe('ThemeProvider', () => {
       </ThemeProvider>
     );
 
-    getByText('设唐').click();
+    await act(async () => {
+      getByText('设唐').click();
+    });
     expect(getByTestId('dynasty').textContent).toBe('唐');
 
-    getByText('重置').click();
+    await act(async () => {
+      getByText('重置').click();
+    });
     expect(getByTestId('dynasty').textContent).toBe('null');
   });
 
-  it('useTheme 未包裹时报错', () => {
-    // 未包裹时返回默认值，不抛错
+  it('useTheme 未包裹时返回默认值', () => {
     const TestComponent = () => {
       const { dynasty } = useTheme();
       return <span>{dynasty ?? 'null'}</span>;
     };
 
     const { container } = render(<TestComponent />);
-    // 应该返回 context 默认值而非抛错
     expect(container.textContent).toBe('null');
   });
 });

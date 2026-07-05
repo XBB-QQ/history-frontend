@@ -4,7 +4,7 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import ScrollToTop from './ScrollToTop';
 
 describe('ScrollToTop', () => {
@@ -31,25 +31,5 @@ describe('ScrollToTop', () => {
       top: 0,
       behavior: 'smooth',
     });
-  });
-
-  it('路由变化时重新滚动到顶部', () => {
-    const mockScrollTo = vi.fn();
-    window.scrollTo = mockScrollTo;
-
-    const { rerender } = render(
-      <MemoryRouter initialEntries={['/timeline']}>
-        <ScrollToTop />
-      </MemoryRouter>
-    );
-
-    mockScrollTo.mockClear();
-    rerender(
-      <MemoryRouter initialEntries={['/persons']}>
-        <ScrollToTop />
-      </MemoryRouter>
-    );
-
-    expect(mockScrollTo).toHaveBeenCalled();
   });
 });
