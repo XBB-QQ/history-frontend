@@ -13,6 +13,7 @@ export const ruFaDaoTopic: Topic = {
   chapterCount: 5,
   estimatedMinutes: 30,
   tags: ['文化', '儒家', '法家', '道家', '哲学'],
+  relatedEvents: [],
   relatedPersons: ['confucius', 'han-feizi', 'laizi', 'mengzi'],
   chapters: [
     {

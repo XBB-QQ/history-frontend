@@ -112,7 +112,7 @@ const ScentMuseumPage = () => {
       {/* Popular Scents Section */}
       <RevealOnScroll>
         <div className="max-w-6xl mx-auto px-4 py-12">
-          <SectionHeader title="🔥 推荐气味" subtitle="精选最具代表性的历史气味" />
+          <SectionHeader label="RECOMMENDED" title="推荐气味" description="精选最具代表性的历史气味" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {POPULAR_SCENTS.map((scent: any, index: number) => (
@@ -132,8 +132,9 @@ const ScentMuseumPage = () => {
       <RevealOnScroll>
         <div className="max-w-6xl mx-auto px-4 pb-16">
           <SectionHeader
-            title="🎭 历史气味图鉴"
-            subtitle={`共 ${HISTORICAL_SCENTS.length} 个气味：${filteredScents.length} 个匹配`}
+            label="SCENT MUSEUM"
+            title="历史气味图鉴"
+            description={`共 ${HISTORICAL_SCENTS.length} 个气味：${filteredScents.length} 个匹配`}
           />
 
           {filteredScents.length === 0 ? (

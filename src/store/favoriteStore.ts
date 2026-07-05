@@ -15,6 +15,7 @@ export interface FavoriteState {
   addFavorite: (entry: Omit<LocalFavoriteEntry, 'pinned' | 'addedAt'>) => void;
   removeFavorite: (id: string) => void;
   togglePin: (id: string) => void;
+  toggleFavorite: (entry: Omit<LocalFavoriteEntry, 'pinned' | 'addedAt'>) => boolean;
   loadFavorites: () => Promise<void>;
 }
 
@@ -84,6 +85,16 @@ export const useFavoriteStore = create<FavoriteState>((set, get) => ({
       saveFavoritesLocal(updated);
       return { favorites: updated };
     });
+  },
+
+  toggleFavorite: (entry) => {
+    const state = get();
+    if (state.isFavorite(entry.id)) {
+      state.removeFavorite(entry.id);
+      return false;
+    }
+    state.addFavorite(entry);
+    return true;
   },
 
   loadFavorites: async () => {

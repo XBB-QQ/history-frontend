@@ -346,7 +346,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '政治',
     accusation: '姜维请求北伐',
     defense: '姜维声称自己是为了保卫国家',
-    verdict: '失败（姜维北伐失败）',
+    verdict: '失败',
     consequences: [
       '姜维北伐失败',
       '蜀汉灭亡',
@@ -367,7 +367,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '政治',
     accusation: '司马炎取代曹魏建立晋朝',
     defense: '司马炎声称自己是在顺应天命',
-    verdict: '胜利（司马炎成功篡位）',
+    verdict: '胜利',
     consequences: [
       '曹魏灭亡，西晋建立',
       '晋武帝开始统一中国',
@@ -388,7 +388,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '政治',
     accusation: '董卓屠杀官员，控制朝政',
     defense: '董卓声称自己是在平乱',
-    verdict: '胜利（董卓控制朝政）',
+    verdict: '胜利',
     consequences: [
       '董卓控制朝政',
       '东汉政治更加腐败',
@@ -430,7 +430,7 @@ export const HISTORICAL_TRIALS: HistoricalTrial[] = [
     type: '军事',
     accusation: '曹操轻敌，被袁绍击败',
     defense: '曹操声称自己有必胜的把握',
-    verdict: '胜利（曹操反败为胜）',
+    verdict: '胜利',
     consequences: [
       '曹操统一北方',
       '袁绍势力衰落',

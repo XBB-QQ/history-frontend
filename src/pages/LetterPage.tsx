@@ -17,6 +17,7 @@ import {
   type Letter,
 } from '@/features/letterWriter';
 import { hasApiKey } from '@/utils/llmConfig';
+import { usePersonaStore } from '@/store/personaStore';
 
 export default function LetterPage() {
   const [selectedFigure, setSelectedFigure] = useState<HistoricalFigure | null>(null);
@@ -36,7 +37,10 @@ export default function LetterPage() {
     setSending(true);
     setError('');
     setStreamingReply('');
+    // 记录浏览行为到 persona
+    usePersonaStore.getState().recordBrowse('personsViewed', undefined, selectedFigure.name);
     try {
+      const persona = usePersonaStore.getState().persona;
       const reply = await writeLetterToFigure(
         selectedFigure,
         letterContent.trim(),
@@ -44,6 +48,7 @@ export default function LetterPage() {
           setStreamingReply((prev) => prev + chunk);
           replyRef.current?.scrollIntoView({ behavior: 'smooth' });
         },
+        persona || undefined,
       );
       const letter: Letter = {
         id: genLetterId(),

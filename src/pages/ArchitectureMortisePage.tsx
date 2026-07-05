@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { MORTISE_TYPES, BUILDING_TYPES, ANCIENT_STRUCTURES, MortiseTenon, BuildingType, AncientStructure } from '../data/features/architectureData';
 import SectionHeader from '../components/common/SectionHeader';
 import RevealOnScroll from '../components/common/RevealOnScroll';
@@ -9,7 +8,7 @@ const ArchitectureMortisePage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('全部');
   const [selectedDynasty, setSelectedDynasty] = useState<string>('全部');
   const [selectedStructureType, setSelectedStructureType] = useState<string>('全部');
-  const [selectedBuildingType, setSelectedBuildingType] = useState<string>('全部');
+  const [selectedBuildingType, setSelectedBuildingType] = useState<string | BuildingType>('全部');
   const [selectedStructure, setSelectedStructure] = useState<AncientStructure | null>(null);
 
   const categories = useMemo(() => {
@@ -63,10 +62,9 @@ const ArchitectureMortisePage: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <RevealOnScroll>
           <SectionHeader
+            label="ARCHITECTURE"
             title="古建筑榫卯拆解器"
-            subtitle="探索中国古代建筑的智慧结晶，了解榫卯结构的奥秘"
-            icon={<FaBuilding className="w-12 h-12 text-orange-500" />}
-            gradient="from-orange-400 to-amber-500"
+            description="探索中国古代建筑的智慧结晶，了解榫卯结构的奥秘"
           />
         </RevealOnScroll>
 
@@ -184,7 +182,7 @@ const ArchitectureMortisePage: React.FC = () => {
                   {buildingTypeOptions.map(bt => {
                     const type = BUILDING_TYPES.find(b => b.id === bt);
                     return type ? (
-                      <option key={bt} value={bt}>{type.name}</option>
+                      <option key={bt} value={bt as string}>{type.name}</option>
                     ) : null;
                   })}
                 </select>
@@ -265,7 +263,7 @@ const AncientStructureModal: React.FC<{
 }> = ({ structure, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <motion.div
+      <div
         className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
       >
         <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white p-6 rounded-t-2xl">
@@ -312,7 +310,7 @@ const AncientStructureModal: React.FC<{
             <h3 className="text-xl font-bold text-gray-800 mb-3 border-l-4 border-amber-500 pl-3">
               建筑特点
             </h3>
-            <p className="text-gray-700 mb-4">{structure.characteristic}</p>
+            <p className="text-gray-700 mb-4">{structure.highlight}</p>
 
             <h3 className="text-xl font-bold text-gray-800 mb-3 border-l-4 border-amber-600 pl-3">
               游客体验
@@ -335,7 +333,7 @@ const AncientStructureModal: React.FC<{
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

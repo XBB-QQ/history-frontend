@@ -56,9 +56,9 @@ export default function SurnameMapPage() {
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
       {/* 标题区 */}
       <SectionHeader
+        label="SURNAME"
         title="姓氏迁徙与族谱地图"
-        subtitle="探索百家姓的起源、迁徙与名人辈出"
-        emoji="👨‍👩‍👧‍👦"
+        description="探索百家姓的起源、迁徙与名人辈出"
       />
 
       <RevealOnScroll>

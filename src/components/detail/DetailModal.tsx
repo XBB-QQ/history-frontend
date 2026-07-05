@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useDetailStore } from '@/store/detailStore';
 import { useFavoriteStore } from '@/store/favoriteStore';
 import { useUserStore } from '@/store/userStore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import type {
   FrontendEvent,
   FrontendPerson,
@@ -15,6 +15,7 @@ import CommentSection from '@/components/comments/CommentSection';
 import RelationshipGraph from '@/components/person/RelationshipGraph';
 import ClassicalTextPanel from '@/components/detail/ClassicalTextPanel';
 import VoiceHistorian from '@/components/detail/VoiceHistorian';
+import { getDramasByDynasty } from '@/data/media/dramaMapping';
 
 // ──────────────────────────────────────────────
 // 各类型详情子组件
@@ -76,6 +77,98 @@ function EventDetail({ data }: { data: FrontendEvent }) {
               #{tag}
             </span>
           ))}
+        </div>
+      )}
+
+      {/* 相关影视折叠面板（有 dramaMapping 数据时显示） */}
+      {data.dynasty && (
+        <RelatedMediaPanel dynasty={data.dynasty} />
+      )}
+    </div>
+  );
+}
+
+/** 相关影视折叠面板 */
+function RelatedMediaPanel({ dynasty }: { dynasty: string }) {
+  const [open, setOpen] = useState(false);
+  const dramas = getDramasByDynasty(dynasty);
+
+  if (dramas.length === 0) return null;
+
+  return (
+    <div className="mt-4 pt-4 border-t border-ink-200 dark:border-ink-700">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-2 text-sm font-bold text-ink-700 dark:text-ink-300 hover:text-accent transition-colors w-full"
+      >
+        <span className="text-base">🎬</span>
+        <span>相关影视 ({dramas.length})</span>
+        <svg className={`w-4 h-4 transition-transform ${open ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      {open && (
+        <div className="mt-3 space-y-3">
+          {dramas.map((drama) => (
+            <div key={drama.id} className="bg-ink-50 dark:bg-ink-800/50 rounded-lg p-3 border border-ink-200 dark:border-ink-700">
+              <div className="flex items-start gap-2 mb-2">
+                <span className="text-lg flex-shrink-0">🎬</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-bold text-ink-900 dark:text-ink-100 truncate">{drama.title}</span>
+                    <span className="text-xs text-amber-500 font-bold">{drama.doubanRating}分</span>
+                    <span className="text-xs px-1.5 py-0.5 rounded bg-ink-200 dark:bg-ink-700 text-ink-600 dark:text-ink-300">
+                      {drama.year} · {drama.episodes}集
+                    </span>
+                    {drama.priority === 'essential' && (
+                      <span className="text-xs px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+                        必看
+                      </span>
+                    )}
+                  </div>
+                  {drama.cast.length > 0 && (
+                    <p className="text-xs text-ink-500 dark:text-ink-400 mt-0.5">
+                      {drama.cast.join('、')}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* 勘误摘要 */}
+              {drama.factCheckSummaries.length > 0 && (
+                <div className="mt-2 pt-2 border-t border-ink-200 dark:border-ink-700">
+                  <div className="text-xs font-bold text-red-600 dark:text-red-400 mb-1">
+                    📋 影视勘误（{drama.factCheckSummaries.length}条）
+                  </div>
+                  {drama.factCheckSummaries.slice(0, 2).map((fc, idx) => (
+                    <div key={idx} className="text-xs text-ink-600 dark:text-ink-400 space-y-0.5 mb-1 last:mb-0">
+                      <div><span className="text-red-500">✕</span> 剧集：{fc.dramaClaim}</div>
+                      <div><span className="text-green-600 dark:text-green-400">✓</span> 史实：{fc.historicalFact}</div>
+                    </div>
+                  ))}
+                  {drama.factCheckSummaries.length > 2 && (
+                    <Link
+                      to="/media-bridge"
+                      className="text-xs text-accent hover:underline"
+                      onClick={() => setOpen(false)}
+                    >
+                      查看全部勘误 →
+                    </Link>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* 三联入口 */}
+          <Link
+            to="/media-bridge"
+            className="block text-center text-xs px-3 py-2 rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
+            onClick={() => setOpen(false)}
+          >
+            🎧 听书 × 🎬 看剧 × 📚 史馆 → 查看更多
+          </Link>
         </div>
       )}
     </div>
@@ -577,7 +670,7 @@ export default function DetailModal() {
           <div className="flex items-center gap-2 flex-shrink-0">
             {/* 收藏按钮 */}
             {data && (
-              <FavoriteButton type={type} id={String(data.id)} title={(data as FrontendEvent | FrontendPerson | FrontendDynasty | FrontendKnowledge).title || (data as FrontendPerson).name || ''} />
+              <FavoriteButton type={type} id={String(data.id)} title={type === 'event' ? (data as FrontendEvent).title : type === 'person' ? (data as FrontendPerson).name : type === 'dynasty' ? (data as FrontendDynasty).name : (data as FrontendKnowledge).title || ''} />
             )}
             {/* 分享按钮 */}
             <button

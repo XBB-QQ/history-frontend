@@ -387,6 +387,7 @@ export const HISTORICAL_SCENTS: HistoricalScent[] = [
   // 民国时期
   {
     id: 'scent-013',
+    dynasty: '民国',
     name: '老上海的咖啡香',
     era: '民国时期',
     description: '老上海咖啡馆的混合气息，咖啡豆的烘焙香与老洋房的木质气息交织。能感受到民国时期的中西合璧，新旧交替的繁华。',
@@ -413,6 +414,7 @@ export const HISTORICAL_SCENTS: HistoricalScent[] = [
   },
   {
     id: 'scent-014',
+    dynasty: '民国',
     name: '大学图书馆的油墨',
     era: '民国时期',
     description: '大学图书馆的清冷气息，新书油墨、陈旧纸张与读书声的混合。能感受到民国知识分子的理想与追求，在动荡年代坚持学术的精神。',
@@ -441,6 +443,7 @@ export const HISTORICAL_SCENTS: HistoricalScent[] = [
   // 现代历史
   {
     id: 'scent-015',
+    dynasty: '现代',
     name: '红色经典的油墨',
     era: '建国初期',
     description: '50年代的油墨气息，印刷厂新书的味道。代表着新中国文化建设的热情，红色经典书籍散发着理想主义的光芒。',
@@ -467,6 +470,7 @@ export const HISTORICAL_SCENTS: HistoricalScent[] = [
   },
   {
     id: 'scent-016',
+    dynasty: '现代',
     name: '改革开放的春风',
     era: '改革开放初期',
     description: '80年代改革的气息，夹杂着市场经济的萌芽与商业的活力。街头小贩的叫卖，新厂的机器声，交织成中国经济腾飞的序曲。',
@@ -493,6 +497,7 @@ export const HISTORICAL_SCENTS: HistoricalScent[] = [
   },
   {
     id: 'scent-017',
+    dynasty: '现代',
     name: '新时代的早晨',
     era: '21世纪',
     description: '现代都市的清晨气息，混合着早餐的香气、地铁的繁忙与人们的忙碌。代表着新时代的节奏与活力，是当代中国人的真实体验。',

@@ -295,7 +295,7 @@ const OracleBoneGamePage = () => {
       {/* Character Info Section */}
       <RevealOnScroll>
         <div className="max-w-6xl mx-auto px-4 py-12">
-          <SectionHeader title="📖 甲骨文字典" subtitle="所有甲骨文字符的详细信息" />
+          <SectionHeader label="ORACLE" title="甲骨文字典" description="所有甲骨文字符的详细信息" />
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {ORACLE_BONE_CHARS.slice(0, 10).map((char, index) => (

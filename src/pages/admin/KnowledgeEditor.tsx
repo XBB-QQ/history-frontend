@@ -20,7 +20,7 @@ export default function KnowledgeEditor() {
     <EntityEditor
       type="knowledge"
       title="知识卡片管理"
-      listFn={adminGetKnowledge}
+      listFn={adminGetKnowledge as any}
       saveFn={adminSaveKnowledge as any}
       deleteFn={adminDeleteKnowledge as any}
       fields={fields}

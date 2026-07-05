@@ -383,8 +383,8 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     event: event.displayName,
     type: event.type === 'political' ? '政治' : event.type === 'economic' ? '经济' : event.type === 'social' ? '社会' : event.type === 'technological' ? '技术' : '环境',
     region: event.region,
-    impactLevel: event.probability > 90 ? 'high' : event.probability > 60 ? 'medium' : 'low'
-  }))
+    impactLevel: event.probability > 90 ? 'high' : event.probability > 60 ? 'medium' : 'low' as const,
+  })) as TimelineEvent[]
 ];
 
 // 预测情景

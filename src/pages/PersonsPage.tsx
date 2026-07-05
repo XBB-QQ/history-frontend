@@ -14,7 +14,13 @@ function PersonsPage() {
   useEffect(() => {
     fetchAllPersons()
       .then((data) => {
-        setPersons(data);
+        // 按出生年份排序（从古到今）
+        const sorted = [...data].sort((a, b) => {
+          const yearA = a.years?.[0] ?? 9999;
+          const yearB = b.years?.[0] ?? 9999;
+          return yearA - yearB;
+        });
+        setPersons(sorted);
         setLoading(false);
       })
       .catch(() => {
@@ -49,7 +55,7 @@ function PersonsPage() {
           <SectionHeader
             label="PERSONS"
             title="人物志"
-            description="五十位历史人物，各领风骚数百年"
+            description="从先秦到近代，纵览五千年风云人物"
           />
         </RevealOnScroll>
         <RevealOnScroll direction="up" delay={200}>

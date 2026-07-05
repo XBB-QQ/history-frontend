@@ -9,7 +9,8 @@ import {
   getEntropyLevel,
   predictTimeline,
   PREDICTION_SCENARIOS,
-  ENTROPY_LEVELS
+  ENTROPY_LEVELS,
+  type PredictionScenario,
 } from '../data/features/entropyModelData';
 
 const EntropyModelPage: React.FC = () => {
@@ -59,7 +60,7 @@ const EntropyModelPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-100 via-amber-50 to-orange-100 py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <SectionHeader title="文明兴衰熵模型" subtitle="探索历史文明的熵值演化规律" />
+        <SectionHeader label="ENTROPY" title="文明兴衰熵模型" description="探索历史文明的熵值演化规律" />
 
         {/* 文明选择区域 */}
         <div className="mb-8">
@@ -336,8 +337,6 @@ const EntropyModelPage: React.FC = () => {
                             ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-lg transform scale-105'
                             : 'bg-gray-50 hover:shadow-lg hover:scale-105'
                         }`}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
                       >
                         <h3 className="font-bold text-lg mb-2">{scenario.name}</h3>
                         <p className="text-sm opacity-80 mb-3">{scenario.description}</p>

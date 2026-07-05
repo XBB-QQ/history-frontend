@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useUserStore } from '@/store/userStore';
-import { getMe, updateUser, type UpdateUserRequest, type UserDTO } from '@/services/userApi';
-import { useFavoriteStore } from '@/store/favoriteStore';
+import { getMe, updateUser, type UpdateUserRequest } from '@/services/userApi';
+import { usePersonaStore } from '@/store/personaStore';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -160,6 +160,28 @@ export default function ProfilePage() {
             >
               🎭 我的历史画像
             </Link>
+          </div>
+
+          {/* AI 记忆管理 */}
+          <div className="border-t border-ink-200 dark:border-ink-700 pt-6">
+            <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-3">
+              🧠 AI 记忆中枢
+            </h3>
+            <p className="text-xs text-ink-500 dark:text-ink-400 mb-4">
+              AI 会自动记录你在各功能页面的浏览和互动行为，用于生成更个性化的评语。清除后将重置所有 AI 记忆数据。
+            </p>
+            <button
+              onClick={() => {
+                if (window.confirm('确定要清除 AI 记忆吗？这将重置所有跨功能的个性化数据。')) {
+                  usePersonaStore.getState().clearPersona();
+                  setSuccess('AI 记忆已清除');
+                  setTimeout(() => setSuccess(''), 3000);
+                }
+              }}
+              className="px-5 py-2 rounded-lg border-2 border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 font-bold text-sm hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            >
+              🗑️ 清除 AI 记忆
+            </button>
           </div>
 
           {success && (

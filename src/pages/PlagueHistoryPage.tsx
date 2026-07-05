@@ -65,9 +65,9 @@ export default function PlagueHistoryPage() {
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
       <SectionHeader
+        label="PLAGUE"
         title="历史瘟疫与文明"
-        subtitle="了解中国历史上的重大疫情及其对文明的影响"
-        emoji="☠️"
+        description="了解中国历史上的重大疫情及其对文明的影响"
       />
 
       <RevealOnScroll>

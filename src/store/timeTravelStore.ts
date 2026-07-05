@@ -50,8 +50,9 @@ export const useTimeTravelStore = create<TimeTravelState>((set) => ({
 
   setPrecision: (precision) => {
     const config = PRECISION_CONFIG[precision];
+    const currentYear = useTimeTravelStore.getState().year;
     // 切换到新精度时，对齐到该精度的倍数
-    const aligned = Math.round(year / config.step) * config.step;
+    const aligned = Math.round(currentYear / config.step) * config.step;
     set({ precision, year: Math.max(config.range[0], Math.min(config.range[1], aligned)) });
   },
 

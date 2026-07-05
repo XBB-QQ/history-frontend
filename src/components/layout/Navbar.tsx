@@ -19,7 +19,7 @@ interface NavGroup {
 /** 核心导航项（始终显示在顶栏） */
 const PRIMARY_NAV = [
   { label: '首页', path: '/' },
-  { label: '时间轴', path: '/timeline' },
+  { label: '时间轴', path: '/timeline-hub' },
   { label: '朝代', path: '/dynasties' },
   { label: '人物', path: '/persons' },
   { label: '史海钩沉', path: '/knowledge' },
@@ -56,6 +56,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: '人物卡牌', path: '/cards' },
       { label: '朝代名片', path: '/dynasty-card' },
       { label: '答题挑战', path: '/leaderboard' },
+      { label: '信物鉴定', path: '/artifact-quiz' },
     ],
   },
   {
@@ -73,6 +74,12 @@ const NAV_GROUPS: NavGroup[] = [
       { label: '气候变迁', path: '/climate' },
       { label: '天象推算', path: '/sky-events' },
       { label: '中外对照', path: '/world-compare' },
+      { label: '度量衡换算', path: '/measure' },
+      { label: '历史色谱', path: '/color-history' },
+      { label: '奏折生成器', path: '/document-generator' },
+      { label: '影视勘误', path: '/drama-fact-check' },
+      { label: '信物鉴定', path: '/artifact-quiz' },
+      { label: '年度报告', path: '/annual-report' },
     ],
   },
   {
@@ -96,6 +103,7 @@ const NAV_GROUPS: NavGroup[] = [
 { label: '跨朝代圆桌', path: '/roundtable' },
 { label: '历史剧本杀', path: '/script-killer' },
 { label: '文明兴衰', path: '/entropy-model' },
+{ label: '听书看剧', path: '/media-bridge' },
 { label: '历史预言板', path: '/future-prediction' },
       { label: '水墨动画', path: '/ink-animation' },
       { label: '声音博物馆', path: '/sound-museum' },
@@ -111,6 +119,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: '课程路径', path: '/learning-path' },
       { label: '课本对齐', path: '/k12' },
+      { label: '主题研学', path: '/story-quest' },
       { label: '日历转换', path: '/calendar' },
       { label: '学习中心', path: '/learning' },
       { label: '知识贡献', path: '/contribution' },

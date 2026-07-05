@@ -11,6 +11,7 @@ import { DEBATE_TOPICS } from '@/data/scenarios/debateTopics';
 import { DEBATE_FIGURE_PAIRS } from '@/data/scenarios/debateFigures';
 import { getFigureById } from '@/data/scenarios/figures';
 import { generateDebateRound, generateDebateConclusion, askDebateQuestion, type DebateRound } from '@/features/debateEngine';
+import { usePersonaStore } from '@/store/personaStore';
 
 type Phase = 'select' | 'debating' | 'concluded';
 
@@ -58,7 +59,8 @@ export default function CrossDebatePage() {
       // 最多3轮，然后出结论
       setLoading(true);
       try {
-        const conc = await generateDebateConclusion(topic, rounds);
+        const persona = usePersonaStore.getState().persona;
+        const conc = await generateDebateConclusion(topic, rounds, persona || undefined);
         setConclusion(conc);
         setPhase('concluded');
       } catch (e) {
@@ -85,7 +87,8 @@ export default function CrossDebatePage() {
     if (!userQuestion.trim()) return;
     setLoading(true);
     try {
-      const resp = await askDebateQuestion(userQuestion, topic, pair!, rounds, 'both');
+      const persona = usePersonaStore.getState().persona;
+      const resp = await askDebateQuestion(userQuestion, topic, pair!, rounds, 'both', persona || undefined);
       setUserResponses(prev => [...prev, resp]);
       setUserQuestion('');
     } catch (e) {
@@ -186,7 +189,14 @@ export default function CrossDebatePage() {
                   </div>
                   <p className="text-ink-800 dark:text-ink-200 leading-relaxed">{r.proArgument}</p>
                   <button
-                    onClick={() => setProVotes(v => v + 1)}
+                    onClick={() => {
+                      setProVotes(v => v + 1);
+                      usePersonaStore.getState().recordDebate({
+                        topicId: topic.id,
+                        topicName: topic.title,
+                        stance: 'pro',
+                      });
+                    }}
                     className="mt-2 text-xs text-accent hover:underline"
                   >
                     赞 有道理 ({proVotes})
@@ -200,7 +210,14 @@ export default function CrossDebatePage() {
                   </div>
                   <p className="text-ink-800 dark:text-ink-200 leading-relaxed">{r.conArgument}</p>
                   <button
-                    onClick={() => setConVotes(v => v + 1)}
+                    onClick={() => {
+                      setConVotes(v => v + 1);
+                      usePersonaStore.getState().recordDebate({
+                        topicId: topic.id,
+                        topicName: topic.title,
+                        stance: 'con',
+                      });
+                    }}
                     className="mt-2 text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
                   >
                     赞 有道理 ({conVotes})

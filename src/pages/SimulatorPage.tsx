@@ -10,6 +10,7 @@ import type { Choice } from '@/types/scenario';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import ResultView from '@/components/simulator/ResultView';
+import { usePersonaStore } from '@/store/personaStore';
 
 type GameState = 'intro' | 'dilemma' | 'result';
 
@@ -54,6 +55,13 @@ function SimulatorPage() {
   function handleSelect(choice: Choice) {
     setSelectedChoice(choice);
     setState('result');
+    // 记录到 AI 记忆中枢
+    usePersonaStore.getState().recordSimulatorChoice({
+      scenarioId: scenario.id,
+      scenarioName: scenario.title,
+      choice: choice.text,
+      consequence: choice.result,
+    });
     setStats((s) => ({
       total: s.total + 1,
       correct: s.correct + (choice.outcome === 'historical' ? 1 : 0),

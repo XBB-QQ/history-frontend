@@ -6,6 +6,7 @@
 import { callLLMStream, readStreamToString, type LLMMessage } from '@/utils/llmClient';
 import { hasApiKey } from '@/utils/llmConfig';
 import type { HistoricalFigure } from '@/types/figure';
+import type { UserPersona } from '@/types/userPersona';
 
 const STORAGE_KEY = 'time-mailbox-letters';
 
@@ -61,6 +62,7 @@ export async function writeLetterToFigure(
   figure: HistoricalFigure,
   userContent: string,
   onChunk?: (chunk: string) => void,
+  persona?: UserPersona,
 ): Promise<string> {
   if (!hasApiKey()) {
     throw new Error('请先配置 API Key — 点击页面右上角"⚙️ 配置"按钮');
@@ -68,7 +70,11 @@ export async function writeLetterToFigure(
 
   const quotesText = figure.quotes.map((q) => `「${q}」`).join('、');
 
-  const systemPrompt = `你是历史人物 ${figure.name}（${figure.dynasty} · ${figure.role}）。
+  const personaContext = persona
+    ? `\n\n写信人是一位对历史充满热情的访客，其画像：朝代偏好${persona.favoriteDynasties.join('、') || '广泛'}，关注人物${persona.favoritePersons.join('、') || '众多'}`
+    : '';
+
+  const systemPrompt = `你是历史人物 ${figure.name}（${figure.dynasty} · ${figure.role}）。${personaContext}
 
 你的人物资料：
 - 生平：${figure.bio}

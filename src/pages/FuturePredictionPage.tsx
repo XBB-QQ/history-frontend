@@ -1,451 +1,612 @@
-import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+/**
+ * 历史预言板 — LLM 推演增强版
+ * @see ITERATIONS.md #84, #92
+ *
+ * 原有静态预测 + LLM 推演 + 用户预测 localStorage + 预测历史对照
+ */
+
+import { useState, useMemo, useCallback } from 'react';
 import {
   HISTORICAL_EVENTS,
-  TIMELINE_EVENTS,
   PREDICTION_SCENARIOS,
   FUTURE_EVENTS,
-  PredictionScenario,
-  PredictionVariable
-} from '../data/features/futurePredictionData';
-import SectionHeader from '../components/common/SectionHeader';
-import RevealOnScroll from '../components/common/RevealOnScroll';
-import { FaHistory, FaChartLine, FaLightbulb, FaGlobe, FaClock, FaCheckCircle, FaExclamationTriangle, FaBomb, FaRocket, FaBalanceScale, FaBrain } from 'react-icons/fa';
+  type HistoricalEvent,
+  type FutureEvent,
+  type PredictionScenario,
+} from '@/data/features/futurePredictionData';
+import SectionHeader from '@/components/common/SectionHeader';
+import RevealOnScroll from '@/components/common/RevealOnScroll';
+import {
+  forecastFuture,
+  saveUserPrediction,
+  getUserPredictions,
+  updatePredictionResult,
+  getPredictionStats,
+  comparePredictions,
+  type ForecastResult,
+  type UserPrediction,
+} from '@/features/forecastEngine';
+import { usePersonaStore } from '@/store/personaStore';
 
-const FuturePredictionPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'timeline' | 'future' | 'scenario'>('timeline');
-  const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
-  const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
-  const [selectedVariable, setSelectedVariable] = useState<string | null>(null);
-  const [predictionResult, setPredictionResult] = useState<any | null>(null);
-  const [isScenarioRunning, setIsScenarioRunning] = useState(false);
+/* ─── 类型定义 ─── */
+type PageTab = 'timeline' | 'predict' | 'my-predictions' | 'scenario';
 
-  const historicalEvents = useMemo(() => HISTORICAL_EVENTS, []);
-  const timelineEvents = useMemo(() => TIMELINE_EVENTS, []);
-  const futureEvents = useMemo(() => FUTURE_EVENTS, []);
-  const scenarios = useMemo(() => PREDICTION_SCENARIOS, []);
-
-  const selectedEventData = useMemo(() => {
-    return historicalEvents.find(e => e.id === selectedEvent);
-  }, [selectedEvent]);
-
-  const selectedScenarioData = useMemo(() => {
-    return scenarios.find(s => s.id === selectedScenario);
-  }, [selectedScenario]);
-
-  const currentVariable = useMemo(() => {
-    if (!selectedScenarioData || !selectedVariable) return null;
-    return selectedScenarioData.variables.find(v => v.id === selectedVariable);
-  }, [selectedScenarioData, selectedVariable]);
-
-  const runScenario = () => {
-    if (!selectedScenarioData) return;
-    setIsScenarioRunning(true);
-    setPredictionResult(null);
-
-    // 模拟场景运行
-    setTimeout(() => {
-      const result = selectedScenarioData.scenarios[Math.floor(Math.random() * selectedScenarioData.scenarios.length)];
-      setPredictionResult(result);
-      setIsScenarioRunning(false);
-    }, 2000);
+/* ─── 历史事件卡片 ─── */
+function HistoricalEventCard({
+  event,
+  selected,
+  onSelect,
+}: {
+  event: HistoricalEvent;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  const typeColors: Record<string, string> = {
+    political: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+    economic: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+    social: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+    technological: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+    environmental: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 py-8 px-4">
-      <div className="max-w-7xl mx-auto">
+    <button
+      onClick={onSelect}
+      className={`p-4 rounded-xl transition-all text-left ${
+        selected
+          ? 'bg-accent text-white shadow-lg scale-105'
+          : 'bg-ink-50 dark:bg-ink-800 hover:bg-ink-100 dark:hover:bg-ink-700 border border-ink-200 dark:border-ink-700'
+      }`}
+    >
+      <div className="flex items-center justify-between mb-2">
+        <h4 className="font-bold">{event.displayName}</h4>
+        <span className={`text-xs px-2 py-0.5 rounded ${selected ? 'bg-white/20' : typeColors[event.type] || ''}`}>
+          {event.category}
+        </span>
+      </div>
+      <p className="text-sm opacity-80 mb-2">{event.year > 0 ? `${event.year}年` : `${Math.abs(event.year)} BC`}</p>
+      <p className="text-xs opacity-70 line-clamp-2">{event.description}</p>
+    </button>
+  );
+}
+
+/* ─── 未来事件卡片 ─── */
+function FutureEventCard({ event }: { event: FutureEvent }) {
+  const probColor = event.probability > 70 ? 'text-green-600' : event.probability > 40 ? 'text-yellow-600' : 'text-gray-600';
+
+  return (
+    <div className="p-4 rounded-xl bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-700">
+      <div className="flex items-center justify-between mb-2">
+        <h4 className="font-bold text-ink-900 dark:text-ink-100">{event.event}</h4>
+        <span className="text-xs bg-ink-100 dark:bg-ink-800 px-2 py-1 rounded">{event.likelihood}</span>
+      </div>
+      <p className="text-sm text-ink-600 dark:text-ink-400 mb-2">{event.year}年 · {event.type}</p>
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-xs text-ink-500">概率：</span>
+        <div className="flex-1 bg-ink-200 dark:bg-ink-700 rounded-full h-2">
+          <div
+            className={`h-2 rounded-full ${event.probability > 70 ? 'bg-green-500' : event.probability > 40 ? 'bg-yellow-500' : 'bg-gray-500'}`}
+            style={{ width: `${event.probability}%` }}
+          />
+        </div>
+        <span className={`text-xs font-bold ${probColor}`}>{event.probability}%</span>
+      </div>
+      <div className="flex flex-wrap gap-1">
+        {event.factors.slice(0, 3).map((f, i) => (
+          <span key={i} className="text-xs bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400 px-2 py-0.5 rounded">
+            {f}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── 我的预测列表 ─── */
+function MyPredictionsPanel({ predictions }: { predictions: UserPrediction[] }) {
+  const stats = getPredictionStats();
+
+  return (
+    <div className="space-y-6">
+      {/* 统计面板 */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="p-4 rounded-xl bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-700">
+          <div className="text-2xl font-bold text-accent">{stats.total}</div>
+          <div className="text-sm text-ink-500">总预测</div>
+        </div>
+        <div className="p-4 rounded-xl bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-700">
+          <div className="text-2xl font-bold text-green-600">{stats.correct}</div>
+          <div className="text-sm text-ink-500">命中</div>
+        </div>
+        <div className="p-4 rounded-xl bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-700">
+          <div className="text-2xl font-bold text-yellow-600">{stats.partial}</div>
+          <div className="text-sm text-ink-500">部分命中</div>
+        </div>
+        <div className="p-4 rounded-xl bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-700">
+          <div className="text-2xl font-bold text-accent">{stats.accuracy}%</div>
+          <div className="text-sm text-ink-500">准确率</div>
+        </div>
+      </div>
+
+      {/* 预测列表 */}
+      {predictions.length === 0 ? (
+        <div className="text-center py-12 text-ink-400">
+          <span className="text-4xl block mb-2">🔮</span>
+          <p>还没有预测记录，去提交你的第一个预测吧！</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {predictions.map(pred => (
+            <div key={pred.id} className="p-4 rounded-xl bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-700">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-bold text-ink-900 dark:text-ink-100">{pred.scenario}</h4>
+                {pred.result && (
+                  <span className={`text-xs px-2 py-1 rounded ${
+                    pred.result === 'correct' ? 'bg-green-100 text-green-700' :
+                    pred.result === 'partial' ? 'bg-yellow-100 text-yellow-700' :
+                    'bg-red-100 text-red-700'
+                  }`}>
+                    {pred.result === 'correct' ? '✅ 命中' : pred.result === 'partial' ? '⚠️ 部分命中' : '❌ 未命中'}
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-ink-600 dark:text-ink-400 mb-2">{pred.prediction}</p>
+              <div className="flex items-center justify-between text-xs text-ink-500">
+                <span>置信度：{pred.confidence}%</span>
+                <span>{new Date(pred.timestamp).toLocaleDateString()}</span>
+              </div>
+              {!pred.result && (
+                <div className="flex gap-2 mt-3">
+                  <button
+                    onClick={() => updatePredictionResult(pred.id, 'correct')}
+                    className="px-3 py-1 rounded text-xs bg-green-100 text-green-700 hover:bg-green-200"
+                  >
+                    标记命中
+                  </button>
+                  <button
+                    onClick={() => updatePredictionResult(pred.id, 'partial')}
+                    className="px-3 py-1 rounded text-xs bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
+                  >
+                    标记部分命中
+                  </button>
+                  <button
+                    onClick={() => updatePredictionResult(pred.id, 'wrong')}
+                    className="px-3 py-1 rounded text-xs bg-red-100 text-red-700 hover:bg-red-200"
+                  >
+                    标记未命中
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─── 主页面 ─── */
+export default function FuturePredictionPage() {
+  const [activeTab, setActiveTab] = useState<PageTab>('timeline');
+  const [selectedEventIds, setSelectedEventIds] = useState<string[]>([]);
+  const [selectedScenario, setSelectedScenario] = useState<PredictionScenario | null>(null);
+  const [userPredictionInput, setUserPredictionInput] = useState('');
+  const [confidence, setConfidence] = useState(50);
+  const [llmForecast, setLlmForecast] = useState<ForecastResult | null>(null);
+  const [comparison, setComparison] = useState<{ evaluation: string; alignment: string; insight: string } | null>(null);
+  const [isForecasting, setIsForecasting] = useState(false);
+  const [isComparing, setIsComparing] = useState(false);
+
+  const selectedEvents = useMemo(
+    () => HISTORICAL_EVENTS.filter(e => selectedEventIds.includes(e.id)),
+    [selectedEventIds],
+  );
+
+  const myPredictions = useMemo(() => getUserPredictions(), []);
+
+  /* 选择/取消选择事件 */
+  const toggleEvent = useCallback((id: string) => {
+    setSelectedEventIds(prev =>
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id],
+    );
+  }, []);
+
+  /* LLM 推演 */
+  const handleForecast = useCallback(async () => {
+    if (selectedEvents.length === 0) {
+      alert('请至少选择一个历史事件作为参考');
+      return;
+    }
+
+    setIsForecasting(true);
+    try {
+      const persona = usePersonaStore.getState().persona;
+      const scenario = selectedEvents.map(e => `${e.name}(${e.year > 0 ? e.year : Math.abs(e.year)}): ${e.description}`).join('\n');
+      const result = await forecastFuture(scenario, selectedEvents, persona || undefined);
+      setLlmForecast(result);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '推演失败';
+      alert(`LLM 推演失败：${message}`);
+    } finally {
+      setIsForecasting(false);
+    }
+  }, [selectedEvents]);
+
+  /* 保存用户预测 */
+  const handleSavePrediction = useCallback(() => {
+    if (!userPredictionInput.trim()) {
+      alert('请输入你的预测');
+      return;
+    }
+    const scenario = selectedEvents.map(e => e.name).join('、') || '自定义场景';
+    saveUserPrediction({
+      scenario,
+      prediction: userPredictionInput,
+      confidence,
+    });
+    setUserPredictionInput('');
+    setConfidence(50);
+    alert('预测已保存！你可以在"我的预测"中查看。');
+    setActiveTab('my-predictions');
+  }, [userPredictionInput, confidence, selectedEvents]);
+
+  /* 对比预测 */
+  const handleCompare = useCallback(async () => {
+    if (!llmForecast || !userPredictionInput.trim()) return;
+    setIsComparing(true);
+    try {
+      const result = await comparePredictions(userPredictionInput, llmForecast, selectedEvents.map(e => e.name).join('、'));
+      setComparison(result);
+    } catch {
+      // ignore
+    } finally {
+      setIsComparing(false);
+    }
+  }, [llmForecast, userPredictionInput, selectedEvents]);
+
+  /* 重置 */
+  const handleReset = useCallback(() => {
+    setSelectedEventIds([]);
+    setLlmForecast(null);
+    setComparison(null);
+    setUserPredictionInput('');
+    setConfidence(50);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
+      <div className="max-w-6xl mx-auto">
+        {/* 头部 */}
         <RevealOnScroll>
           <SectionHeader
+            label="HISTORICAL FORECAST"
             title="历史预言板"
-            subtitle="回顾历史关键事件，展望未来可能性"
-            icon={<FaHistory className="w-12 h-12 text-cyan-500" />}
-            gradient="from-cyan-500 to-blue-500"
+            description="回顾历史关键事件，展望未来可能性"
           />
         </RevealOnScroll>
 
-        <RevealOnScroll>
-          <div className="flex gap-4 mb-6">
-            <button
-              onClick={() => setActiveTab('timeline')}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${
-                activeTab === 'timeline'
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              <FaChartLine />
-              历史时间线
-            </button>
-            <button
-              onClick={() => setActiveTab('future')}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${
-                activeTab === 'future'
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              <FaLightbulb />
-              未来预测
-            </button>
-            <button
-              onClick={() => setActiveTab('scenario')}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${
-                activeTab === 'scenario'
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg'
-                  : 'bg-white text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              <FaBrain />
-              情景推演
-            </button>
+        {/* Tab 导航 */}
+        <RevealOnScroll delay={100}>
+          <div className="flex gap-2 mt-6 mb-8 overflow-x-auto pb-2">
+            {[
+              { id: 'timeline' as const, label: '历史时间线', emoji: '📜' },
+              { id: 'predict' as const, label: 'LLM 推演', emoji: '🔮' },
+              { id: 'my-predictions' as const, label: '我的预测', emoji: '📊' },
+              { id: 'scenario' as const, label: '情景推演', emoji: '🧬' },
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-accent text-white shadow-lg'
+                    : 'bg-white/70 dark:bg-ink-900/70 text-ink-600 dark:text-ink-400 hover:bg-ink-100 dark:hover:bg-ink-800'
+                }`}
+              >
+                {tab.emoji} {tab.label}
+              </button>
+            ))}
           </div>
         </RevealOnScroll>
 
-        <AnimatePresence mode="wait">
-          {activeTab === 'timeline' && (
-            <motion.div
-              key="timeline"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <RevealOnScroll>
-                <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                    <FaHistory className="text-cyan-500" />
-                    历史关键事件
-                  </h3>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[600px] overflow-y-auto pr-2">
-                    {historicalEvents.map(event => (
-                      <div
-                        key={event.id}
-                        onClick={() => setSelectedEvent(event.id)}
-                        className={`p-4 rounded-xl cursor-pointer transition-all ${
-                          selectedEvent === event.id
-                            ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg transform scale-105'
-                            : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent hover:border-cyan-200'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-bold text-lg">{event.displayName}</h4>
-                          <span className={`text-xs px-2 py-1 rounded ${
-                            event.type === 'political' ? 'bg-red-100 text-red-700' :
-                            event.type === 'economic' ? 'bg-green-100 text-green-700' :
-                            event.type === 'social' ? 'bg-yellow-100 text-yellow-700' :
-                            event.type === 'technological' ? 'bg-purple-100 text-purple-700' :
-                            'bg-blue-100 text-blue-700'
-                          }`}>
-                            {event.type === 'political' ? '政治' : event.type === 'economic' ? '经济' : event.type === 'social' ? '社会' : event.type === 'technological' ? '技术' : '环境'}
-                          </span>
-                        </div>
-                        <p className="text-sm opacity-90 mb-2">{event.year}年</p>
-                        <p className="text-sm opacity-90 mb-3">{event.region}</p>
-                        <p className="text-sm opacity-75 line-clamp-2">{event.description}</p>
-                      </div>
-                    ))}
-                  </div>
+        {/* Tab 1: 历史时间线 */}
+        {activeTab === 'timeline' && (
+          <RevealOnScroll direction="up" delay={200}>
+            <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
+              <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">
+                📜 历史关键事件（点击选择参考事件）
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[600px] overflow-y-auto pr-2">
+                {HISTORICAL_EVENTS.map(event => (
+                  <HistoricalEventCard
+                    key={event.id}
+                    event={event}
+                    selected={selectedEventIds.includes(event.id)}
+                    onSelect={() => toggleEvent(event.id)}
+                  />
+                ))}
+              </div>
+              {selectedEvents.length > 0 && (
+                <div className="mt-4 p-3 rounded-xl bg-accent/10 text-accent font-bold text-sm">
+                  已选 {selectedEvents.length} 个事件 → {selectedEvents.map(e => e.displayName).join('、')}
                 </div>
+              )}
+            </div>
+          </RevealOnScroll>
+        )}
 
-                <AnimatePresence>
-                  {selectedEventData && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      className="bg-white rounded-2xl shadow-lg p-6"
-                    >
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <h3 className="text-2xl font-bold text-gray-800 mb-2">{selectedEventData.displayName}</h3>
-                          <p className="text-gray-600">{selectedEventData.year}年 - {selectedEventData.region}</p>
-                        </div>
-                        <button
-                          onClick={() => setSelectedEvent(null)}
-                          className="text-gray-400 hover:text-gray-600"
-                        >
-                          ✕
-                        </button>
-                      </div>
+        {/* Tab 2: LLM 推演 */}
+        {activeTab === 'predict' && (
+          <RevealOnScroll direction="up" delay={200}>
+            <div className="space-y-6">
+              {/* 未来事件概览 */}
+              <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
+                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">
+                  💡 未来事件预测（AI 评估）
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {FUTURE_EVENTS.map(event => (
+                    <FutureEventCard key={event.id} event={event} />
+                  ))}
+                </div>
+              </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        <div className="bg-cyan-50 rounded-xl p-4">
-                          <p className="text-sm text-cyan-600 mb-1">事件类型</p>
-                          <p className="font-bold text-cyan-800">
-                            {selectedEventData.type === 'political' ? '政治变革' : selectedEventData.type === 'economic' ? '经济变革' : selectedEventData.type === 'social' ? '社会变革' : selectedEventData.type === 'technological' ? '技术革命' : '环境事件'}
-                          </p>
-                        </div>
-                        <div className="bg-blue-50 rounded-xl p-4">
-                          <p className="text-sm text-blue-600 mb-1">发生概率</p>
-                          <p className="font-bold text-blue-800">{selectedEventData.probability}%</p>
-                        </div>
-                        <div className="bg-indigo-50 rounded-xl p-4">
-                          <p className="text-sm text-indigo-600 mb-1">预言者</p>
-                          <p className="font-bold text-indigo-800">{selectedEventData.predictedBy.join(', ')}</p>
-                        </div>
-                      </div>
+              {/* 选择历史事件 + 用户预测 */}
+              <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
+                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">
+                  🔮 基于历史规律推演
+                </h3>
 
-                      <div className="mb-4">
-                        <h4 className="font-bold text-gray-800 mb-2">事件描述</h4>
-                        <p className="text-gray-700">{selectedEventData.description}</p>
-                      </div>
-
-                      <div className="mb-4">
-                        <h4 className="font-bold text-gray-800 mb-2">历史影响</h4>
-                        <p className="text-gray-700">{selectedEventData.impact}</p>
-                      </div>
-
-                      <div>
-                        <h4 className="font-bold text-gray-800 mb-2">主要后果</h4>
-                        <ul className="space-y-1">
-                          {selectedEventData.consequences.map((consequence, index) => (
-                            <li key={index} className="text-gray-700 text-sm">✓ {consequence}</li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      <div className="mt-4 p-4 bg-cyan-50 rounded-xl border border-cyan-200">
-                        <p className="text-sm text-cyan-800">该事件改变了历史的进程，对后世产生了深远影响。</p>
-                      </div>
-                    </motion.div>
+                {/* 已选事件 */}
+                <div className="mb-4">
+                  <p className="text-sm text-ink-500 mb-2">参考历史事件：</p>
+                  {selectedEvents.length === 0 ? (
+                    <p className="text-sm text-ink-400 italic">请先在"历史时间线"中选择参考事件</p>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {selectedEvents.map(e => (
+                        <span key={e.id} className="px-3 py-1 rounded-full bg-accent/10 text-accent text-sm font-bold">
+                          {e.displayName}
+                        </span>
+                      ))}
+                    </div>
                   )}
-                </AnimatePresence>
-              </RevealOnScroll>
-            </motion.div>
-          )}
+                </div>
 
-          {activeTab === 'future' && (
-            <motion.div
-              key="future"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <RevealOnScroll>
-                <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                    <FaLightbulb className="text-cyan-500" />
-                    未来事件预测
-                  </h3>
+                {/* 用户预测输入 */}
+                <div className="mb-4">
+                  <label className="text-sm text-ink-500 mb-2 block">你的预测：</label>
+                  <textarea
+                    value={userPredictionInput}
+                    onChange={(e) => setUserPredictionInput(e.target.value)}
+                    className="input-field w-full h-24"
+                    placeholder="你认为基于这些历史事件，未来会发生什么？"
+                  />
+                </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {futureEvents.map(event => (
-                      <div
-                        key={event.id}
-                        className={`p-4 rounded-xl border-2 ${
-                          event.probability > 70
-                            ? 'border-green-400 bg-green-50'
-                            : event.probability > 40
-                            ? 'border-yellow-400 bg-yellow-50'
-                            : 'border-gray-200 bg-gray-50'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-bold text-gray-800">{event.event}</h4>
-                          <span className={`text-xs px-2 py-1 rounded ${
-                            event.probability > 70 ? 'bg-green-100 text-green-700' :
-                            event.probability > 40 ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-gray-100 text-gray-700'
-                          }`}>
-                            {event.likelihood}
-                          </span>
+                {/* 置信度滑块 */}
+                <div className="mb-6">
+                  <label className="text-sm text-ink-500 mb-2 block">
+                    置信度：{confidence}%
+                  </label>
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={confidence}
+                    onChange={(e) => setConfidence(parseInt(e.target.value))}
+                    className="w-full accent-accent"
+                  />
+                  <div className="flex justify-between text-xs text-ink-400">
+                    <span>不确定</span>
+                    <span>很有信心</span>
+                  </div>
+                </div>
+
+                {/* 操作按钮 */}
+                <div className="flex gap-3 flex-wrap">
+                  <button
+                    onClick={handleForecast}
+                    disabled={isForecasting || selectedEvents.length === 0}
+                    className="px-6 py-2.5 rounded-xl bg-accent text-white font-bold hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isForecasting ? '🔄 推演中...' : '🔮 AI 推演'}
+                  </button>
+                  <button
+                    onClick={handleSavePrediction}
+                    disabled={!userPredictionInput.trim()}
+                    className="px-6 py-2.5 rounded-xl bg-green-500 text-white font-bold hover:bg-green-600 disabled:opacity-50"
+                  >
+                    💾 保存预测
+                  </button>
+                  <button
+                    onClick={handleReset}
+                    className="px-6 py-2.5 rounded-xl bg-ink-100 dark:bg-ink-800 font-bold"
+                  >
+                    🔄 重置
+                  </button>
+                </div>
+              </div>
+
+              {/* LLM 推演结果 */}
+              {llmForecast && (
+                <div className="bg-gradient-to-br from-paper to-ink-50 dark:from-ink-900 dark:to-ink-800 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
+                  <h3 className="text-lg font-bold text-accent mb-4 text-center">🔮 AI 推演结果</h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div className="p-4 rounded-xl bg-white dark:bg-ink-900">
+                      <div className="text-sm text-ink-500 mb-1">推演结论</div>
+                      <p className="text-sm text-ink-700 dark:text-ink-300">{llmForecast.conclusion}</p>
+                    </div>
+                    <div className="p-4 rounded-xl bg-white dark:bg-ink-900">
+                      <div className="text-sm text-ink-500 mb-1">发生概率</div>
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 bg-ink-200 dark:bg-ink-700 rounded-full h-3">
+                          <div
+                            className="h-3 rounded-full bg-accent"
+                            style={{ width: `${llmForecast.probability}%` }}
+                          />
                         </div>
-                        <p className="text-sm text-gray-600 mb-2">{event.year}年</p>
-                        <p className="text-sm text-gray-700 mb-2">{event.type}</p>
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xs text-gray-500">概率：</span>
-                          <div className="flex-1 bg-gray-200 rounded-full h-2">
-                            <div
-                              className="h-2 rounded-full"
-                              style={{
-                                width: `${event.probability}%`,
-                                backgroundColor: event.probability > 70 ? '#22c55e' : event.probability > 40 ? '#f59e0b' : '#6b7280'
-                              }}
-                            />
-                          </div>
-                          <span className="text-xs text-gray-700">{event.probability}%</span>
-                        </div>
-                        <div className="flex flex-wrap gap-1">
-                          {event.factors.slice(0, 2).map(factor => (
-                            <span key={factor} className="text-xs bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded">
-                              {factor}
-                            </span>
-                          ))}
-                        </div>
+                        <span className="text-xl font-bold text-accent">{llmForecast.probability}%</span>
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-2xl shadow-lg p-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <FaClock className="text-cyan-500" />
-                    历史与未来的对话
-                  </h3>
-                  <p className="text-gray-700 mb-4">
-                    历史是过去的预言，未来是现在的延续。通过回顾历史上的关键事件，我们可以更好地理解历史的规律，预测未来的可能性。
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-white rounded-xl p-4">
-                      <h4 className="font-bold text-gray-800 mb-2">历史教训</h4>
-                      <p className="text-sm text-gray-600">历史教会我们避免重复错误，总结经验教训，为未来发展提供指导。</p>
-                    </div>
-                    <div className="bg-white rounded-xl p-4">
-                      <h4 className="font-bold text-gray-800 mb-2">未来启示</h4>
-                      <p className="text-sm text-gray-600">通过分析历史事件的发生原因和影响，我们可以预测类似事件在未来可能发生的时间和概率。</p>
-                    </div>
-                    <div className="bg-white rounded-xl p-4">
-                      <h4 className="font-bold text-gray-800 mb-2">人类责任</h4>
-                      <p className="text-sm text-gray-600">历史是由人类创造的，未来的走向掌握在我们手中，我们的选择将决定历史的走向。</p>
+                      <div className="text-sm text-ink-500 mt-2">时间窗口：{llmForecast.timeWindow}</div>
                     </div>
                   </div>
+
+                  {llmForecast.keyVariables.length > 0 && (
+                    <div className="mb-4">
+                      <h4 className="font-bold text-sm text-ink-700 dark:text-ink-300 mb-2">关键变量</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {llmForecast.keyVariables.map((v, i) => (
+                          <span key={i} className="px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-sm">
+                            {v}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {llmForecast.caveats.length > 0 && (
+                    <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+                      <h4 className="font-bold text-sm text-amber-800 dark:text-amber-400 mb-1">⚠️ 不确定性说明</h4>
+                      <ul className="text-sm text-ink-700 dark:text-ink-300 space-y-1">
+                        {llmForecast.caveats.map((c, i) => (
+                          <li key={i}>• {c}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* 对比按钮 */}
+                  {userPredictionInput && (
+                    <button
+                      onClick={handleCompare}
+                      disabled={isComparing}
+                      className="w-full mt-4 py-3 rounded-xl bg-indigo-500 text-white font-bold hover:bg-indigo-600 disabled:opacity-50"
+                    >
+                      {isComparing ? '🔄 分析中...' : '⚖️ 对比用户预测与 AI 推演'}
+                    </button>
+                  )}
+
+                  {/* 对比结果 */}
+                  {comparison && (
+                    <div className="mt-4 space-y-4">
+                      <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800">
+                        <h4 className="font-bold text-blue-800 dark:text-blue-400 mb-2">📝 评价</h4>
+                        <p className="text-sm text-ink-700 dark:text-ink-300">{comparison.evaluation}</p>
+                      </div>
+                      <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800">
+                        <h4 className="font-bold text-green-800 dark:text-green-400 mb-2">🔗 一致性</h4>
+                        <p className="text-sm text-ink-700 dark:text-ink-300">
+                          {comparison.alignment === 'aligned' ? '✅ 用户预测与 AI 推演一致' :
+                           comparison.alignment === 'divergent' ? '⚠️ 用户预测与 AI 推演存在分歧' :
+                           '💡 用户预测与 AI 推演互补'}
+                        </p>
+                      </div>
+                      {comparison.insight && (
+                        <div className="p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-200 dark:border-purple-800">
+                          <h4 className="font-bold text-purple-800 dark:text-purple-400 mb-2">💎 历史洞察</h4>
+                          <p className="text-sm text-ink-700 dark:text-ink-300 italic">{comparison.insight}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-              </RevealOnScroll>
-            </motion.div>
-          )}
+              )}
+            </div>
+          </RevealOnScroll>
+        )}
 
-          {activeTab === 'scenario' && (
-            <motion.div
-              key="scenario"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <RevealOnScroll>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                  <div className="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                      <FaBrain className="text-cyan-500" />
-                      选择情景
-                    </h3>
+        {/* Tab 3: 我的预测 */}
+        {activeTab === 'my-predictions' && (
+          <RevealOnScroll direction="up" delay={200}>
+            <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
+              <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-6">📊 我的预测历史</h3>
+              <MyPredictionsPanel predictions={myPredictions} />
+            </div>
+          </RevealOnScroll>
+        )}
 
-                    <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
-                      {scenarios.map(scenario => (
-                        <div
-                          key={scenario.id}
-                          onClick={() => setSelectedScenario(scenario.id)}
-                          className={`p-4 rounded-xl cursor-pointer transition-all ${
-                            selectedScenario === scenario.id
-                              ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg'
-                              : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
-                          }`}
-                        >
-                          <h4 className="font-bold">{scenario.title}</h4>
-                          <p className="text-sm opacity-90 mb-2">{scenario.description}</p>
-                          <p className="text-xs opacity-75">起始点：{scenario.startingPoint}</p>
+        {/* Tab 4: 情景推演 */}
+        {activeTab === 'scenario' && (
+          <RevealOnScroll direction="up" delay={200}>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* 场景列表 */}
+              <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
+                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">🧬 预测场景</h3>
+                <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+                  {PREDICTION_SCENARIOS.map(scenario => (
+                    <button
+                      key={scenario.id}
+                      onClick={() => setSelectedScenario(scenario)}
+                      className={`w-full p-4 rounded-xl text-left transition-all ${
+                        selectedScenario?.id === scenario.id
+                          ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg'
+                          : 'bg-ink-50 dark:bg-ink-800 hover:bg-ink-100 dark:hover:bg-ink-700'
+                      }`}
+                    >
+                      <h4 className="font-bold">{scenario.title}</h4>
+                      <p className="text-xs opacity-80 mt-1">{scenario.description}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 场景详情 */}
+              <div className="lg:col-span-2 bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
+                {selectedScenario ? (
+                  <div>
+                    <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-2">{selectedScenario.title}</h3>
+                    <p className="text-sm text-ink-600 dark:text-ink-400 mb-4">{selectedScenario.description}</p>
+                    <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 mb-4">
+                      <h4 className="font-bold text-sm text-ink-700 dark:text-ink-300 mb-1">起始点</h4>
+                      <p className="text-sm text-ink-600 dark:text-ink-400">{selectedScenario.startingPoint}</p>
+                    </div>
+
+                    {/* 变量 */}
+                    <h4 className="font-bold text-ink-900 dark:text-ink-100 mb-3">预测变量</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+                      {selectedScenario.variables.map(variable => (
+                        <div key={variable.id} className="p-3 rounded-xl bg-ink-50 dark:bg-ink-800">
+                          <p className="font-bold text-sm text-ink-900 dark:text-ink-100">{variable.name}</p>
+                          <p className="text-xs text-ink-500 mt-1">{variable.description}</p>
+                          <p className="text-sm text-accent font-bold mt-2">当前值：{variable.currentValue}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* 分支结果 */}
+                    <h4 className="font-bold text-ink-900 dark:text-ink-100 mb-3">可能结果</h4>
+                    <div className="space-y-3">
+                      {selectedScenario.scenarios.map(branch => (
+                        <div key={branch.id} className="p-4 rounded-xl border-2 border-ink-200 dark:border-ink-700">
+                          <div className="flex items-center justify-between mb-2">
+                            <h5 className="font-bold text-ink-900 dark:text-ink-100">{branch.title}</h5>
+                            <span className="text-sm font-bold text-accent">{branch.probability}%</span>
+                          </div>
+                          <p className="text-sm text-ink-600 dark:text-ink-400 mb-2">{branch.outcome}</p>
+                          <div className="flex flex-wrap gap-1">
+                            {branch.keyChanges.map((kc, i) => (
+                              <span key={i} className="text-xs bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400 px-2 py-0.5 rounded">
+                                {kc}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       ))}
                     </div>
                   </div>
-
-                  <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg p-6">
-                    {selectedScenarioData && (
-                      <div>
-                        <h3 className="text-2xl font-bold text-gray-800 mb-4">{selectedScenarioData.title}</h3>
-                        <p className="text-gray-600 mb-4">{selectedScenarioData.description}</p>
-
-                        <div className="mb-4">
-                          <h4 className="font-bold text-gray-800 mb-3">预测变量</h4>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {selectedScenarioData.variables.map(variable => (
-                              <div
-                                key={variable.id}
-                                onClick={() => setSelectedVariable(variable.id)}
-                                className={`p-4 rounded-xl cursor-pointer transition-all ${
-                                  selectedVariable === variable.id
-                                    ? 'bg-cyan-50 border-2 border-cyan-400'
-                                    : 'bg-gray-50 hover:bg-gray-100'
-                                }`}
-                              >
-                                <p className="font-bold text-gray-800 mb-2">{variable.name}</p>
-                                <p className="text-sm text-gray-600 mb-2">{variable.description}</p>
-                                <div className="flex items-center justify-between">
-                                  <span className="text-sm text-gray-500">当前值：{variable.currentValue}</span>
-                                  <span className={`text-xs px-2 py-1 rounded ${
-                                    variable.trend === 'increasing' ? 'bg-red-100 text-red-700' :
-                                    variable.trend === 'decreasing' ? 'bg-green-100 text-green-700' :
-                                    'bg-yellow-100 text-yellow-700'
-                                  }`}>
-                                    {variable.trend === 'increasing' ? '上升' : variable.trend === 'decreasing' ? '下降' : '稳定'}
-                                  </span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {currentVariable && (
-                          <div className="mb-4 p-4 bg-cyan-50 rounded-xl">
-                            <h4 className="font-bold text-gray-800 mb-2">{currentVariable.name}</h4>
-                            <p className="text-sm text-gray-600">{currentVariable.description}</p>
-                          </div>
-                        )}
-
-                        <div className="flex gap-4">
-                          <button
-                            onClick={runScenario}
-                            disabled={isScenarioRunning}
-                            className="px-6 py-3 rounded-xl font-bold text-white transition-all bg-gradient-to-r from-cyan-500 to-blue-500 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            {isScenarioRunning ? '运行中...' : '运行预测'}
-                          </button>
-                          <button
-                            onClick={() => {
-                              setSelectedScenario(null);
-                              setSelectedVariable(null);
-                              setPredictionResult(null);
-                            }}
-                            className="px-6 py-3 rounded-xl font-bold text-white transition-all bg-gray-500 hover:bg-gray-600"
-                          >
-                            重置
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
-                    <AnimatePresence>
-                      {predictionResult && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -20 }}
-                          className="mt-6"
-                        >
-                          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
-                            <h4 className="text-xl font-bold text-green-800 mb-4">{predictionResult.title}</h4>
-                            <p className="text-gray-700 mb-4">{predictionResult.description}</p>
-                            <div className="flex gap-4 mb-4">
-                              <div className="bg-white rounded-lg p-3 flex-1">
-                                <p className="text-sm text-gray-600">预计发生年份</p>
-                                <p className="font-bold text-green-700">{predictionResult.yearsToEvent}年后</p>
-                              </div>
-                              <div className="bg-white rounded-lg p-3 flex-1">
-                                <p className="text-sm text-gray-600">发生概率</p>
-                                <p className="font-bold text-green-700">{predictionResult.probability}%</p>
-                              </div>
-                            </div>
-                            <h5 className="font-bold text-gray-800 mb-2">关键变化</h5>
-                            <ul className="space-y-1">
-                              {predictionResult.keyChanges.map((change: string, index: number) => (
-                                <li key={index} className="text-gray-700 text-sm">• {change}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                ) : (
+                  <div className="text-center text-ink-400 py-20">
+                    <span className="text-4xl block mb-2">🧬</span>
+                    <p>选择一个场景开始推演</p>
                   </div>
-                </div>
-              </RevealOnScroll>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                )}
+              </div>
+            </div>
+          </RevealOnScroll>
+        )}
       </div>
     </div>
   );
-};
-
-export default FuturePredictionPage;
+}

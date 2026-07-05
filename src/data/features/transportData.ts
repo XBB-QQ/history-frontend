@@ -324,3 +324,262 @@ export const sortErasByTimeline = (eras: TransportEra[]): TransportEra[] => {
     return yearA - yearB;
   });
 };
+
+/* ─── 节点图 + 速度系数 ─── */
+
+/** 城市节点 */
+export interface CityNode {
+  id: string;
+  name: string;
+  dynasty: string;
+}
+
+/** 边权重 */
+export interface EdgeWeight {
+  /** 天数 */
+  days: number;
+  /** 距离（公里） */
+  distanceKm: number;
+  /** 该朝代的速度系数（1.0 = 基准） */
+  speedFactor: number;
+}
+
+/** 相邻城市映射 */
+export interface AdjacencyEntry {
+  target: string;
+  weight: EdgeWeight;
+}
+
+/** 图结构 */
+export interface TransportGraph {
+  nodes: CityNode[];
+  adjacency: Record<string, AdjacencyEntry[]>;
+}
+
+/** 路径结果 */
+export interface PathResult {
+  route: string[];
+  totalDays: number;
+  totalDistanceKm: number;
+  speedFactor: number;
+  dynasty: string;
+}
+
+/**
+ * 古代交通图数据
+ * 基于已知路线提取城市节点和边权重
+ */
+export const TRANSPORT_GRAPH: TransportGraph = {
+  nodes: [
+    { id: 'chang-an', name: '长安', dynasty: '汉' },
+    { id: 'luoyang', name: '洛阳', dynasty: '汉' },
+    { id: 'da-yi-shang', name: '大邑商', dynasty: '商' },
+    { id: 'xian-yang', name: '咸阳', dynasty: '秦' },
+    { id: 'tai-yuan', name: '太原', dynasty: '晋' },
+    { id: 'jin-cheng', name: '金城', dynasty: '汉' },
+    { id: 'du-juan', name: '敦煌', dynasty: '汉' },
+    { id: 'li-jiang', name: '楼兰', dynasty: '汉' },
+    { id: 'sa-ma', name: '撒马尔罕', dynasty: '唐' },
+    { id: 'bo-si', name: '波斯', dynasty: '唐' },
+    { id: 'an-tiao', name: '安条克', dynasty: '唐' },
+    { id: 'luo-ma', name: '罗马', dynasty: '汉' },
+    { id: 'bai-tou', name: '北京', dynasty: '清' },
+    { id: 'tian-jin', name: '天津', dynasty: '清' },
+    { id: 'de-zhou', name: '德州', dynasty: '元' },
+    { id: 'ji-nan', name: '济南', dynasty: '元' },
+    { id: 'xu-zhou', name: '徐州', dynasty: '元' },
+    { id: 'yang-zhou', name: '扬州', dynasty: '唐' },
+    { id: 'su-zhou', name: '苏州', dynasty: '宋' },
+    { id: 'hang-zhou', name: '杭州', dynasty: '宋' },
+    { id: 'cheng-du', name: '成都', dynasty: '汉' },
+    { id: 'ya-an', name: '雅安', dynasty: '唐' },
+    { id: 'kang-ding', name: '康定', dynasty: '唐' },
+    { id: 'li-tang', name: '理塘', dynasty: '唐' },
+    { id: 'ba-tang', name: '巴塘', dynasty: '唐' },
+    { id: 'chang-du', name: '昌都', dynasty: '唐' },
+    { id: 'la-sa', name: '拉萨', dynasty: '唐' },
+    { id: 'kun-ming', name: '昆明', dynasty: '元' },
+    { id: 'da-li', name: '大理', dynasty: '元' },
+    { id: 'gui-lin', name: '桂林', dynasty: '秦' },
+    { id: 'guang-zhou', name: '广州', dynasty: '清' },
+    { id: 'xing-an', name: '兴安', dynasty: '秦' },
+    { id: 'shan-hai', name: '山海关', dynasty: '明' },
+    { id: 'juyong', name: '居庸关', dynasty: '明' },
+    { id: 'yan-men', name: '雁门关', dynasty: '汉' },
+    { id: 'jia-yu', name: '嘉峪关', dynasty: '明' },
+    { id: 'han-zhong', name: '汉中', dynasty: '汉' },
+    { id: 'xiang-gan', name: '湘江', dynasty: '秦' },
+    { id: 'li-jiang-gz', name: '漓江', dynasty: '秦' },
+  ],
+  adjacency: {
+    'chang-an': [
+      { target: 'luoyang', weight: { days: 7, distanceKm: 400, speedFactor: 1.0 } },
+      { target: 'du-juan', weight: { days: 15, distanceKm: 1200, speedFactor: 0.8 } },
+      { target: 'han-zhong', weight: { days: 5, distanceKm: 300, speedFactor: 0.7 } },
+      { target: 'xian-yang', weight: { days: 1, distanceKm: 20, speedFactor: 1.0 } },
+    ],
+    'luoyang': [
+      { target: 'chang-an', weight: { days: 7, distanceKm: 400, speedFactor: 1.0 } },
+      { target: 'ji-nan', weight: { days: 5, distanceKm: 400, speedFactor: 1.0 } },
+      { target: 'xu-zhou', weight: { days: 4, distanceKm: 350, speedFactor: 1.0 } },
+    ],
+    'xian-yang': [
+      { target: 'chang-an', weight: { days: 1, distanceKm: 20, speedFactor: 1.0 } },
+      { target: 'tai-yuan', weight: { days: 5, distanceKm: 400, speedFactor: 0.8 } },
+      { target: 'jin-cheng', weight: { days: 4, distanceKm: 350, speedFactor: 0.8 } },
+    ],
+    'du-juan': [
+      { target: 'chang-an', weight: { days: 15, distanceKm: 1200, speedFactor: 0.8 } },
+      { target: 'li-jiang', weight: { days: 10, distanceKm: 800, speedFactor: 0.6 } },
+      { target: 'sa-ma', weight: { days: 20, distanceKm: 1500, speedFactor: 0.5 } },
+    ],
+    'li-jiang': [
+      { target: 'du-juan', weight: { days: 10, distanceKm: 800, speedFactor: 0.6 } },
+      { target: 'sa-ma', weight: { days: 15, distanceKm: 1200, speedFactor: 0.5 } },
+    ],
+    'sa-ma': [
+      { target: 'du-juan', weight: { days: 20, distanceKm: 1500, speedFactor: 0.5 } },
+      { target: 'li-jiang', weight: { days: 15, distanceKm: 1200, speedFactor: 0.5 } },
+      { target: 'bo-si', weight: { days: 15, distanceKm: 1000, speedFactor: 0.5 } },
+    ],
+    'bo-si': [
+      { target: 'sa-ma', weight: { days: 15, distanceKm: 1000, speedFactor: 0.5 } },
+      { target: 'an-tiao', weight: { days: 10, distanceKm: 800, speedFactor: 0.6 } },
+    ],
+    'an-tiao': [
+      { target: 'bo-si', weight: { days: 10, distanceKm: 800, speedFactor: 0.6 } },
+      { target: 'luo-ma', weight: { days: 15, distanceKm: 1200, speedFactor: 0.6 } },
+    ],
+    'luo-ma': [
+      { target: 'an-tiao', weight: { days: 15, distanceKm: 1200, speedFactor: 0.6 } },
+    ],
+    'bai-tou': [
+      { target: 'tian-jin', weight: { days: 1, distanceKm: 150, speedFactor: 1.0 } },
+      { target: 'shan-hai', weight: { days: 2, distanceKm: 300, speedFactor: 0.8 } },
+    ],
+    'tian-jin': [
+      { target: 'bai-tou', weight: { days: 1, distanceKm: 150, speedFactor: 1.0 } },
+      { target: 'de-zhou', weight: { days: 2, distanceKm: 250, speedFactor: 1.0 } },
+    ],
+    'de-zhou': [
+      { target: 'tian-jin', weight: { days: 2, distanceKm: 250, speedFactor: 1.0 } },
+      { target: 'ji-nan', weight: { days: 2, distanceKm: 200, speedFactor: 1.0 } },
+    ],
+    'ji-nan': [
+      { target: 'de-zhou', weight: { days: 2, distanceKm: 200, speedFactor: 1.0 } },
+      { target: 'luoyang', weight: { days: 5, distanceKm: 400, speedFactor: 1.0 } },
+    ],
+    'hang-zhou': [
+      { target: 'su-zhou', weight: { days: 2, distanceKm: 180, speedFactor: 1.0 } },
+    ],
+    'su-zhou': [
+      { target: 'hang-zhou', weight: { days: 2, distanceKm: 180, speedFactor: 1.0 } },
+      { target: 'yang-zhou', weight: { days: 3, distanceKm: 250, speedFactor: 1.0 } },
+    ],
+    'yang-zhou': [
+      { target: 'su-zhou', weight: { days: 3, distanceKm: 250, speedFactor: 1.0 } },
+      { target: 'xu-zhou', weight: { days: 3, distanceKm: 280, speedFactor: 1.0 } },
+    ],
+    'cheng-du': [
+      { target: 'ya-an', weight: { days: 2, distanceKm: 100, speedFactor: 0.5 } },
+      { target: 'han-zhong', weight: { days: 5, distanceKm: 350, speedFactor: 0.5 } },
+    ],
+    'ya-an': [
+      { target: 'cheng-du', weight: { days: 2, distanceKm: 100, speedFactor: 0.5 } },
+      { target: 'kang-ding', weight: { days: 3, distanceKm: 200, speedFactor: 0.4 } },
+    ],
+    'kang-ding': [
+      { target: 'ya-an', weight: { days: 3, distanceKm: 200, speedFactor: 0.4 } },
+      { target: 'li-tang', weight: { days: 4, distanceKm: 250, speedFactor: 0.3 } },
+    ],
+    'li-tang': [
+      { target: 'kang-ding', weight: { days: 4, distanceKm: 250, speedFactor: 0.3 } },
+      { target: 'ba-tang', weight: { days: 3, distanceKm: 200, speedFactor: 0.3 } },
+    ],
+    'ba-tang': [
+      { target: 'li-tang', weight: { days: 3, distanceKm: 200, speedFactor: 0.3 } },
+      { target: 'chang-du', weight: { days: 4, distanceKm: 300, speedFactor: 0.3 } },
+    ],
+    'chang-du': [
+      { target: 'ba-tang', weight: { days: 4, distanceKm: 300, speedFactor: 0.3 } },
+      { target: 'la-sa', weight: { days: 5, distanceKm: 400, speedFactor: 0.3 } },
+    ],
+    'la-sa': [
+      { target: 'chang-du', weight: { days: 5, distanceKm: 400, speedFactor: 0.3 } },
+      { target: 'kun-ming', weight: { days: 10, distanceKm: 800, speedFactor: 0.3 } },
+    ],
+    'kun-ming': [
+      { target: 'la-sa', weight: { days: 10, distanceKm: 800, speedFactor: 0.3 } },
+      { target: 'da-li', weight: { days: 3, distanceKm: 300, speedFactor: 0.5 } },
+    ],
+    'da-li': [
+      { target: 'kun-ming', weight: { days: 3, distanceKm: 300, speedFactor: 0.5 } },
+    ],
+    'gui-lin': [
+      { target: 'xing-an', weight: { days: 1, distanceKm: 30, speedFactor: 1.0 } },
+      { target: 'guang-zhou', weight: { days: 7, distanceKm: 500, speedFactor: 0.8 } },
+    ],
+    'xing-an': [
+      { target: 'gui-lin', weight: { days: 1, distanceKm: 30, speedFactor: 1.0 } },
+      { target: 'li-jiang-gz', weight: { days: 1, distanceKm: 30, speedFactor: 1.0 } },
+    ],
+    'li-jiang-gz': [
+      { target: 'xing-an', weight: { days: 1, distanceKm: 30, speedFactor: 1.0 } },
+      { target: 'guang-zhou', weight: { days: 3, distanceKm: 200, speedFactor: 1.0 } },
+    ],
+    'guang-zhou': [
+      { target: 'gui-lin', weight: { days: 7, distanceKm: 500, speedFactor: 0.8 } },
+      { target: 'li-jiang-gz', weight: { days: 3, distanceKm: 200, speedFactor: 1.0 } },
+    ],
+    'shan-hai': [
+      { target: 'bai-tou', weight: { days: 2, distanceKm: 300, speedFactor: 0.8 } },
+      { target: 'juyong', weight: { days: 2, distanceKm: 250, speedFactor: 0.8 } },
+    ],
+    'juyong': [
+      { target: 'shan-hai', weight: { days: 2, distanceKm: 250, speedFactor: 0.8 } },
+      { target: 'yan-men', weight: { days: 3, distanceKm: 300, speedFactor: 0.7 } },
+    ],
+    'yan-men': [
+      { target: 'juyong', weight: { days: 3, distanceKm: 300, speedFactor: 0.7 } },
+      { target: 'jia-yu', weight: { days: 10, distanceKm: 800, speedFactor: 0.5 } },
+    ],
+    'jia-yu': [
+      { target: 'yan-men', weight: { days: 10, distanceKm: 800, speedFactor: 0.5 } },
+    ],
+    'han-zhong': [
+      { target: 'chang-an', weight: { days: 5, distanceKm: 300, speedFactor: 0.7 } },
+      { target: 'cheng-du', weight: { days: 5, distanceKm: 350, speedFactor: 0.5 } },
+    ],
+    'xu-zhou': [
+      { target: 'luoyang', weight: { days: 4, distanceKm: 350, speedFactor: 1.0 } },
+      { target: 'yang-zhou', weight: { days: 3, distanceKm: 280, speedFactor: 1.0 } },
+    ],
+    'tai-yuan': [
+      { target: 'xian-yang', weight: { days: 5, distanceKm: 400, speedFactor: 0.8 } },
+      { target: 'yan-men', weight: { days: 3, distanceKm: 250, speedFactor: 0.7 } },
+    ],
+    'jin-cheng': [
+      { target: 'xian-yang', weight: { days: 4, distanceKm: 350, speedFactor: 0.8 } },
+      { target: 'jia-yu', weight: { days: 5, distanceKm: 400, speedFactor: 0.5 } },
+    ],
+  },
+};
+
+/** 朝代速度系数映射 */
+export const DYNASTY_SPEED_FACTORS: Record<string, number> = {
+  '商': 0.5,
+  '周': 0.6,
+  '秦': 0.8,
+  '汉': 1.0,
+  '唐': 1.2,
+  '宋': 1.3,
+  '元': 1.4,
+  '明': 1.2,
+  '清': 1.5,
+};
+
+/** 所有城市名称集合（用于输入校验） */
+export const ALL_CITIES = Object.fromEntries(
+  TRANSPORT_GRAPH.nodes.map(n => [n.name, n.id])
+);
+

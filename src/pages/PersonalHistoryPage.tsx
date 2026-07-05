@@ -1,413 +1,651 @@
 /**
- * 个人史册编纂系统
- * @see history-museum/ITERATIONS.md Iteration #77
- *
- * 用户可以记录自己的个人历史、人生大事和传记
+ * 个人史册编纂系统 — 带 LLM 著史功能
+ * @see history-museum/ITERATIONS.md Iteration #77, #90
  */
 
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { EVENT_TYPE_LABELS, EVENT_TYPE_ICONS, EVENT_TYPE_COLORS, EVENT_TYPE_STATS } from '@/data/features/personalHistoryData';
-
+import {
+  EVENT_TYPE_LABELS,
+  EVENT_TYPE_ICONS,
+  EVENT_TYPE_COLORS,
+  EVENT_TYPE_STATS,
+  type LifeEvent,
+  type PersonalHistory,
+} from '@/data/features/personalHistoryData';
+import { generatePersonalBiography, type PersonalBiography } from '@/features/personalHistoryAI';
+import { usePersonaStore } from '@/store/personaStore';
 import './PersonalHistoryPage.module.css';
 
-export default function PersonalHistoryPage() {
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [personalHistory, setPersonalHistory] = useState({
-    id: 'user-1',
-    name: '',
-    gender: 'male' as 'male' | 'female' | 'other',
-    birthDate: '',
-    birthLocation: '',
-    education: { school: '', major: '', degree: '', year: '' },
-    work: { company: '', position: '', industry: '' },
-    biography: '',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  });
-  const [showEventForm, setShowEventForm] = useState(false);
-  const [selectedEventIndex, setSelectedEventIndex] = useState<number | null>(null);
+/* ─── Tab 定义 ─── */
+type TabId = 'edit' | 'biography' | 'ai';
+const TABS: { id: TabId; label: string; emoji: string }[] = [
+  { id: 'edit', label: '编辑个人信息', emoji: '✏️' },
+  { id: 'biography', label: '人生历程', emoji: '📅' },
+  { id: 'ai', label: 'AI 著史', emoji: '🖊️' },
+];
 
-  const lifeEvents = [
-    {
-      id: '1',
-      type: 'education',
-      title: '大学毕业',
-      date: '2012-07-01',
-      location: '北京市',
-      description: '从北京大学计算机系毕业，获得学士学位',
-      tags: ['学习', '毕业', '大学']
-    },
-    {
-      id: '2',
-      type: 'work',
-      title: '加入腾讯',
-      date: '2012-07-15',
-      location: '深圳市',
-      description: '加入腾讯公司，开始软件工程师职业生涯',
-      tags: ['工作', '入职', '腾讯']
-    },
-    {
-      id: '3',
-      type: 'travel',
-      title: '第一次出国',
-      date: '2015-05-20',
-      location: '日本东京',
-      description: '与朋友一起去日本旅游，体验异国文化',
-      tags: ['旅行', '日本', '旅游']
-    }
-  ];
-
-  const [selectedType, setSelectedType] = useState<string>('all');
-
-  const filteredEvents = useMemo(() => {
-    if (selectedType === 'all') {
-      return lifeEvents;
-    }
-    return lifeEvents.filter(event => event.type === selectedType);
-  }, [selectedType]);
-
-  const handleSave = () => {
-    setIsEditMode(false);
-    alert('个人史册已保存！');
-  };
-
-  const handleAddEvent = () => {
-    setShowEventForm(true);
-  };
-
-  const handleEditEvent = (index: number) => {
-    setSelectedEventIndex(index);
-    setShowEventForm(true);
-  };
-
-  const handleDeleteEvent = (index: number) => {
-    if (window.confirm('确定要删除这个事件吗？')) {
-      lifeEvents.splice(index, 1);
-      setSelectedEventIndex(null);
-      setShowEventForm(false);
-    }
-  };
-
+/* ─── 个人信息编辑面板 ─── */
+function EditPanel({
+  history,
+  onChange,
+}: {
+  history: PersonalHistory;
+  onChange: (patch: Partial<PersonalHistory>) => void;
+}) {
   return (
-    <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
-      <SectionHeader
-        title="个人史册编纂系统"
-        subtitle="记录你的人生历程，打造属于你的传记"
-        emoji="📖"
-      />
+    <div className="info-card p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg">
+      <div className="flex items-start gap-6">
+        <div className="text-6xl md:text-7xl">👤</div>
+        <div className="flex-1">
+          <div className="flex items-center gap-4 mb-4">
+            <input
+              type="text"
+              value={history.name}
+              onChange={(e) => onChange({ name: e.target.value })}
+              placeholder="请输入姓名"
+              className="input-field text-2xl font-bold flex-1"
+            />
+            <select
+              value={history.gender}
+              onChange={(e) => onChange({ gender: e.target.value as PersonalHistory['gender'] })}
+              className={`px-3 py-1 rounded-full text-sm font-bold border-0 ${
+                history.gender === 'male' ? 'bg-blue-100 text-blue-800' :
+                history.gender === 'female' ? 'bg-pink-100 text-pink-800' :
+                'bg-gray-100 text-gray-800'
+              }`}
+            >
+              <option value="male">男</option>
+              <option value="female">女</option>
+              <option value="other">其他</option>
+            </select>
+          </div>
 
-      <RevealOnScroll>
-        <div className="personal-history-container max-w-6xl mx-auto">
-          {/* 操作栏 */}
-          <div className="action-bar p-4 md:p-6 rounded-xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg mb-6">
-            <div className="flex flex-wrap gap-4 justify-between items-center">
-              <div className="flex gap-2">
-                <button
-                  className="px-4 py-2 rounded-lg bg-accent text-white font-bold hover:bg-accent/90 transition-colors"
-                  onClick={() => setIsEditMode(true)}
-                >
-                  {isEditMode ? '保存修改' : '编辑个人信息'}
-                </button>
-                <button
-                  className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-900 dark:text-ink-100 font-bold hover:bg-ink-200 dark:hover:bg-ink-700 transition-colors"
-                  onClick={() => alert('个人史册导出成功！')}
-                >
-                  📤 导出
-                </button>
-              </div>
-
-              <div className="flex gap-2">
-                <button
-                  className="px-4 py-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 font-bold hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
-                  onClick={() => handleAddEvent()}
-                >
-                  ➕ 添加事件
-                </button>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div>
+              <div className="text-sm text-ink-500 mb-1">🎂 出生日期</div>
+              <input
+                type="date"
+                value={history.birthDate}
+                onChange={(e) => onChange({ birthDate: e.target.value })}
+                className="input-field"
+              />
+            </div>
+            <div>
+              <div className="text-sm text-ink-500 mb-1">📍 出生地</div>
+              <input
+                type="text"
+                value={history.birthLocation}
+                onChange={(e) => onChange({ birthLocation: e.target.value })}
+                placeholder="例如：北京市"
+                className="input-field"
+              />
             </div>
           </div>
 
-          {/* 基本信息 */}
-          <div className="info-card p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg mb-6">
-            <div className="flex items-start gap-6">
-              <div className="text-6xl md:text-7xl">👤</div>
-              <div className="flex-1">
-                <div className="flex items-center gap-4 mb-4">
-                  <h2 className="text-2xl md:text-3xl font-bold text-ink-900 dark:text-ink-100">
-                    {isEditMode ? (
-                      <input
-                        type="text"
-                        value={personalHistory.name}
-                        onChange={(e) => setPersonalHistory({...personalHistory, name: e.target.value})}
-                        className="input-field text-2xl font-bold"
-                      />
-                    ) : (
-                      personalHistory.name || '未命名'
-                    )}
-                  </h2>
-                  <span className={`px-3 py-1 rounded-full text-sm font-bold ${
-                    personalHistory.gender === 'male' ? 'bg-blue-100 text-blue-800' :
-                    personalHistory.gender === 'female' ? 'bg-pink-100 text-pink-800' :
-                    'bg-gray-100 text-gray-800'
-                  }`}>
-                    {personalHistory.gender === 'male' ? '男' : personalHistory.gender === 'female' ? '女' : '其他'}
-                  </span>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* 教育 */}
+            <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
+              <div className="text-sm text-ink-500 mb-2">🎓 教育背景</div>
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  placeholder="学校"
+                  value={history.education?.school || ''}
+                  onChange={(e) => onChange({ education: { ...history.education, school: e.target.value } })}
+                  className="input-field text-sm w-full"
+                />
+                <input
+                  type="text"
+                  placeholder="专业"
+                  value={history.education?.major || ''}
+                  onChange={(e) => onChange({ education: { ...history.education, major: e.target.value } })}
+                  className="input-field text-sm w-full"
+                />
+                <input
+                  type="text"
+                  placeholder="学位"
+                  value={history.education?.degree || ''}
+                  onChange={(e) => onChange({ education: { ...history.education, degree: e.target.value } })}
+                  className="input-field text-sm w-full"
+                />
+                <input
+                  type="text"
+                  placeholder="毕业年份"
+                  value={history.education?.year || ''}
+                  onChange={(e) => onChange({ education: { ...history.education, year: e.target.value } })}
+                  className="input-field text-sm w-full"
+                />
+              </div>
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <div>
-                    <div className="text-sm text-ink-500 mb-1">🎂 出生日期</div>
-                    <div className="text-lg font-bold text-ink-900 dark:text-ink-100">
-                      {isEditMode ? (
-                        <input
-                          type="date"
-                          value={personalHistory.birthDate}
-                          onChange={(e) => setPersonalHistory({...personalHistory, birthDate: e.target.value})}
-                          className="input-field"
-                        />
-                      ) : (
-                        personalHistory.birthDate || '未填写'
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="text-sm text-ink-500 mb-1">📍 出生地</div>
-                    <div className="text-lg font-bold text-ink-900 dark:text-ink-100">
-                      {isEditMode ? (
-                        <input
-                          type="text"
-                          value={personalHistory.birthLocation}
-                          onChange={(e) => setPersonalHistory({...personalHistory, birthLocation: e.target.value})}
-                          className="input-field"
-                        />
-                      ) : (
-                        personalHistory.birthLocation || '未填写'
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
-                    <div className="text-sm text-ink-500 mb-2">🎓 教育</div>
-                    {isEditMode ? (
-                      <div className="space-y-2">
-                        <input
-                          type="text"
-                          placeholder="学校"
-                          value={personalHistory.education.school}
-                          onChange={(e) => setPersonalHistory({...personalHistory, education: {...personalHistory.education, school: e.target.value}})}
-                          className="input-field text-sm"
-                        />
-                        <input
-                          type="text"
-                          placeholder="专业"
-                          value={personalHistory.education.major}
-                          onChange={(e) => setPersonalHistory({...personalHistory, education: {...personalHistory.education, major: e.target.value}})}
-                          className="input-field text-sm"
-                        />
-                        <input
-                          type="text"
-                          placeholder="学位"
-                          value={personalHistory.education.degree}
-                          onChange={(e) => setPersonalHistory({...personalHistory, education: {...personalHistory.education, degree: e.target.value}})}
-                          className="input-field text-sm"
-                        />
-                        <input
-                          type="text"
-                          placeholder="年份"
-                          value={personalHistory.education.year}
-                          onChange={(e) => setPersonalHistory({...personalHistory, education: {...personalHistory.education, year: e.target.value}})}
-                          className="input-field text-sm"
-                        />
-                      </div>
-                    ) : personalHistory.education.school ? (
-                      <div>
-                        <div className="font-bold text-ink-900 dark:text-ink-100">
-                          {personalHistory.education.school}
-                        </div>
-                        <div className="text-sm text-ink-600 dark:text-ink-400">
-                          {personalHistory.education.major} · {personalHistory.education.degree}
-                        </div>
-                        {personalHistory.education.year && (
-                          <div className="text-xs text-ink-500">
-                            {personalHistory.education.year}年毕业
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="text-sm text-ink-400">未填写</div>
-                    )}
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
-                    <div className="text-sm text-ink-500 mb-2">💼 工作</div>
-                    {isEditMode ? (
-                      <div className="space-y-2">
-                        <input
-                          type="text"
-                          placeholder="公司"
-                          value={personalHistory.work.company}
-                          onChange={(e) => setPersonalHistory({...personalHistory, work: {...personalHistory.work, company: e.target.value}})}
-                          className="input-field text-sm"
-                        />
-                        <input
-                          type="text"
-                          placeholder="职位"
-                          value={personalHistory.work.position}
-                          onChange={(e) => setPersonalHistory({...personalHistory, work: {...personalHistory.work, position: e.target.value}})}
-                          className="input-field text-sm"
-                        />
-                        <input
-                          type="text"
-                          placeholder="行业"
-                          value={personalHistory.work.industry}
-                          onChange={(e) => setPersonalHistory({...personalHistory, work: {...personalHistory.work, industry: e.target.value}})}
-                          className="input-field text-sm"
-                        />
-                      </div>
-                    ) : personalHistory.work.company ? (
-                      <div>
-                        <div className="font-bold text-ink-900 dark:text-ink-100">
-                          {personalHistory.work.company}
-                        </div>
-                        <div className="text-sm text-ink-600 dark:text-ink-400">
-                          {personalHistory.work.position}
-                        </div>
-                        {personalHistory.work.industry && (
-                          <div className="text-xs text-ink-500">
-                            {personalHistory.work.industry}
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="text-sm text-ink-400">未填写</div>
-                    )}
-                  </div>
-                </div>
+            {/* 工作 */}
+            <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
+              <div className="text-sm text-ink-500 mb-2">💼 工作经历</div>
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  placeholder="公司"
+                  value={history.work?.company || ''}
+                  onChange={(e) => onChange({ work: { ...history.work, company: e.target.value } })}
+                  className="input-field text-sm w-full"
+                />
+                <input
+                  type="text"
+                  placeholder="职位"
+                  value={history.work?.position || ''}
+                  onChange={(e) => onChange({ work: { ...history.work, position: e.target.value } })}
+                  className="input-field text-sm w-full"
+                />
+                <input
+                  type="text"
+                  placeholder="行业"
+                  value={history.work?.industry || ''}
+                  onChange={(e) => onChange({ work: { ...history.work, industry: e.target.value } })}
+                  className="input-field text-sm w-full"
+                />
               </div>
             </div>
           </div>
 
           {/* 个人简介 */}
-          <div className="biography-card p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg mb-6">
-            <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-4">
-              📝 个人简介
-            </h3>
-            {isEditMode ? (
-              <textarea
-                value={personalHistory.biography}
-                onChange={(e) => setPersonalHistory({...personalHistory, biography: e.target.value})}
-                className="input-field w-full h-40"
-                placeholder="写下你的个人简介..."
-              />
-            ) : (
-              <p className="text-ink-600 dark:text-ink-400 leading-relaxed">
-                {personalHistory.biography || '还没有填写个人简介...'}
-              </p>
-            )}
-          </div>
-
-          {/* 时间轴事件 */}
-          <div className="timeline-card p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg mb-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">
-                📅 人生历程
-              </h3>
-
-              <div className="flex gap-2">
-                {Object.entries(EVENT_TYPE_STATS).map(([type, stat]) => (
-                  <button
-                    key={type}
-                    className={`px-3 py-1 rounded-full text-sm font-bold transition-colors ${
-                      selectedType === type ? EVENT_TYPE_COLORS[type as keyof typeof EVENT_TYPE_COLORS] : 'bg-ink-100 dark:bg-ink-800 text-ink-900 dark:text-ink-100'
-                    }`}
-                    onClick={() => setSelectedType(type === 'all' ? 'all' : type)}
-                  >
-                    {stat.icon} {stat.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 事件列表 */}
-            <div className="space-y-6">
-              {filteredEvents.map((event, index) => (
-                <div
-                  key={event.id}
-                  className="event-item relative pl-8 pb-8 border-l-2 border-accent/30 last:pb-0"
-                >
-                  {/* 时间轴节点 */}
-                  <div className="absolute -left-[9px] top-0 w-5 h-5 rounded-full bg-accent border-4 border-ink-900 dark:border-ink-50"></div>
-
-                  {/* 事件内容 */}
-                  <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 hover:border-accent/50 transition-colors">
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-center gap-3">
-                        <span className="text-3xl">{EVENT_TYPE_ICONS[event.type]}</span>
-                        <h4 className="text-lg font-bold text-ink-900 dark:text-ink-100">
-                          {event.title}
-                        </h4>
-                      </div>
-                      <span className={`px-2 py-1 rounded text-xs font-bold ${EVENT_TYPE_COLORS[event.type]}`}>
-                        {EVENT_TYPE_LABELS[event.type]}
-                      </span>
-                    </div>
-
-                    <div className="text-sm text-ink-500 mb-2">
-                      📅 {event.date}
-                      {event.location && ` · 📍 ${event.location}`}
-                    </div>
-
-                    <p className="text-ink-600 dark:text-ink-400 mb-3">
-                      {event.description}
-                    </p>
-
-                    <div className="flex flex-wrap gap-1">
-                      {event.tags?.map((tag, idx) => (
-                        <span
-                          key={idx}
-                          className="px-2 py-0.5 rounded text-xs bg-ink-100 dark:bg-ink-700 text-ink-600 dark:text-ink-400"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* 操作按钮 */}
-                  <div className="flex gap-2 mt-2">
-                    <button
-                      className="px-3 py-1 rounded-lg text-sm font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
-                      onClick={() => handleEditEvent(index)}
-                    >
-                      ✏️ 编辑
-                    </button>
-                    <button
-                      className="px-3 py-1 rounded-lg text-sm font-bold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
-                      onClick={() => handleDeleteEvent(index)}
-                    >
-                      🗑️ 删除
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {filteredEvents.length === 0 && (
-              <div className="text-center py-12">
-                <div className="text-4xl mb-2">📝</div>
-                <div className="text-ink-600 dark:text-ink-400">
-                  没有符合条件的里程碑事件
-                </div>
-              </div>
-            )}
+          <div className="mt-6">
+            <div className="text-sm text-ink-500 mb-2">📝 个人简介</div>
+            <textarea
+              value={history.biography || ''}
+              onChange={(e) => onChange({ biography: e.target.value })}
+              className="input-field w-full h-24"
+              placeholder="写下你的个人简介..."
+            />
           </div>
         </div>
-      </RevealOnScroll>
+      </div>
+    </div>
+  );
+}
+
+/* ─── 人生历程时间轴 ─── */
+function TimelinePanel({
+  events,
+  onAddEvent,
+  onDeleteEvent,
+}: {
+  events: LifeEvent[];
+  onAddEvent: (event: LifeEvent) => void;
+  onDeleteEvent: (id: string) => void;
+}) {
+  const [selectedType, setSelectedType] = useState<string>('all');
+  const [showForm, setShowForm] = useState(false);
+  const [newEvent, setNewEvent] = useState<Partial<LifeEvent>>({
+    type: 'other',
+    title: '',
+    date: '',
+    description: '',
+  });
+
+  const filteredEvents = useMemo(() => {
+    const sorted = [...events].sort((a, b) => b.date.localeCompare(a.date));
+    if (selectedType === 'all') return sorted;
+    return sorted.filter(e => e.type === selectedType);
+  }, [events, selectedType]);
+
+  const handleAdd = () => {
+    if (!newEvent.title || !newEvent.date) {
+      alert('请填写标题和日期');
+      return;
+    }
+    onAddEvent({
+      id: Date.now().toString(),
+      type: (newEvent.type || 'other') as LifeEvent['type'],
+      title: newEvent.title,
+      date: newEvent.date,
+      location: newEvent.location || '',
+      description: newEvent.description || '',
+      tags: newEvent.tags || [],
+    } as LifeEvent);
+    setShowForm(false);
+    setNewEvent({ type: 'other', title: '', date: '', description: '' });
+  };
+
+  return (
+    <div className="timeline-card p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">📅 人生历程</h3>
+        <div className="flex gap-2 flex-wrap">
+          {Object.entries(EVENT_TYPE_STATS).map(([type, stat]) => (
+            <button
+              key={type}
+              className={`px-3 py-1 rounded-full text-sm font-bold transition-colors ${
+                selectedType === type ? EVENT_TYPE_COLORS[type as keyof typeof EVENT_TYPE_COLORS] : 'bg-ink-100 dark:bg-ink-800 text-ink-900 dark:text-ink-100'
+              }`}
+              onClick={() => setSelectedType(type)}
+            >
+              {stat.icon} {stat.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 添加事件表单 */}
+      {showForm && (
+        <div className="mb-6 p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
+          <div className="space-y-3">
+            <select
+              value={newEvent.type}
+              onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value as LifeEvent['type'] })}
+              className="input-field text-sm"
+            >
+              {Object.entries(EVENT_TYPE_LABELS).map(([k, v]) => (
+                <option key={k} value={k}>{EVENT_TYPE_ICONS[k as LifeEvent['type']]} {v}</option>
+              ))}
+            </select>
+            <input
+              type="text"
+              placeholder="事件标题"
+              value={newEvent.title}
+              onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+              className="input-field"
+            />
+            <input
+              type="date"
+              value={newEvent.date}
+              onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
+              className="input-field"
+            />
+            <input
+              type="text"
+              placeholder="地点（可选）"
+              value={newEvent.location || ''}
+              onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
+              className="input-field"
+            />
+            <textarea
+              placeholder="事件描述"
+              value={newEvent.description}
+              onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
+              className="input-field h-20"
+            />
+            <div className="flex gap-2">
+              <button onClick={handleAdd} className="px-4 py-2 rounded-lg bg-accent text-white font-bold hover:bg-accent/90">
+                添加
+              </button>
+              <button onClick={() => setShowForm(false)} className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 font-bold">
+                取消
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!showForm && (
+        <button
+          onClick={() => setShowForm(true)}
+          className="w-full mb-6 py-3 rounded-xl border-2 border-dashed border-ink-300 dark:border-ink-600 text-ink-500 dark:text-ink-400 hover:border-accent hover:text-accent transition-colors font-bold"
+        >
+          ➕ 添加新事件
+        </button>
+      )}
+
+      {/* 事件列表 */}
+      <div className="space-y-6">
+        {filteredEvents.map((event) => (
+          <div
+            key={event.id}
+            className="event-item relative pl-8 pb-8 border-l-2 border-accent/30 last:pb-0"
+          >
+            <div className="absolute -left-[9px] top-0 w-5 h-5 rounded-full bg-accent border-4 border-ink-900 dark:border-ink-50" />
+            <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 hover:border-accent/50 transition-colors">
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">{EVENT_TYPE_ICONS[event.type]}</span>
+                  <h4 className="text-lg font-bold text-ink-900 dark:text-ink-100">{event.title}</h4>
+                </div>
+                <span className={`px-2 py-1 rounded text-xs font-bold ${EVENT_TYPE_COLORS[event.type]}`}>
+                  {EVENT_TYPE_LABELS[event.type]}
+                </span>
+              </div>
+              <div className="text-sm text-ink-500 mb-2">
+                📅 {event.date}{event.location ? ` · 📍 ${event.location}` : ''}
+              </div>
+              <p className="text-ink-600 dark:text-ink-400 mb-3">{event.description}</p>
+              {event.tags && event.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {event.tags.map((tag, idx) => (
+                    <span key={idx} className="px-2 py-0.5 rounded text-xs bg-ink-100 dark:bg-ink-700 text-ink-600 dark:text-ink-400">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <div className="flex gap-2 mt-2">
+                <button
+                  onClick={() => onDeleteEvent(event.id)}
+                  className="px-3 py-1 rounded-lg text-sm font-bold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+                >
+                  🗑️ 删除
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {filteredEvents.length === 0 && (
+        <div className="text-center py-12">
+          <div className="text-4xl mb-2">📝</div>
+          <div className="text-ink-600 dark:text-ink-400">还没有记录任何事件，点击上方按钮添加吧！</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─── AI 著史结果展示 ─── */
+function AIBiographyDisplay({ biography }: { biography: PersonalBiography }) {
+  const [showModern, setShowModern] = useState(false);
+
+  if (!biography) return null;
+
+  return (
+    <div className="space-y-6">
+      {/* 关键词标签 */}
+      {biography.keywords.length > 0 && (
+        <div className="flex flex-wrap gap-2 justify-center">
+          {biography.keywords.map((kw, i) => (
+            <span
+              key={i}
+              className="px-4 py-1.5 rounded-full bg-accent/10 text-accent font-bold text-sm"
+            >
+              {kw}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* 正史体传记 */}
+      <div className="p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-gradient-to-br from-paper to-ink-50 dark:from-ink-900 dark:to-ink-800 shadow-lg">
+        <h3 className="text-lg font-bold text-accent mb-4 tracking-widest text-center">
+          【列传】
+        </h3>
+        <div className="prose prose-ink dark:prose-invert max-w-none">
+          <p className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-wrap text-base">
+            {biography.formalBiography}
+          </p>
+        </div>
+      </div>
+
+      {/* 史官评语 */}
+      {biography.historianComment && (
+        <div className="p-6 rounded-2xl border-2 border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20">
+          <h3 className="text-sm font-bold text-amber-700 dark:text-amber-400 mb-2 tracking-widest">
+            【太史公曰】
+          </h3>
+          <p className="text-ink-700 dark:text-ink-300 leading-relaxed italic">
+            {biography.historianComment}
+          </p>
+        </div>
+      )}
+
+      {/* 现代语译切换 */}
+      {biography.modernTranslation && (
+        <div>
+          <button
+            onClick={() => setShowModern(!showModern)}
+            className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-700 dark:text-ink-300 font-bold hover:bg-ink-200 dark:hover:bg-ink-700 transition-colors"
+          >
+            {showModern ? '▲ 收起白话译文' : '▼ 查看现代语译'}
+          </button>
+          {showModern && (
+            <div className="mt-4 p-6 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg">
+              <h3 className="text-sm font-bold text-ink-500 mb-3 tracking-widest">
+                【现代语译】
+              </h3>
+              <p className="text-ink-700 dark:text-ink-300 leading-relaxed whitespace-pre-wrap">
+                {biography.modernTranslation}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 人生阶段 */}
+      {biography.lifeStages.length > 0 && (
+        <div className="p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg">
+          <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-6 tracking-widest text-center">
+            【人生四段】
+          </h3>
+          <div className="space-y-6">
+            {biography.lifeStages.map((stage, i) => (
+              <div key={i} className="relative pl-8 pb-6 border-l-2 border-accent/30 last:pb-0 last:border-0">
+                <div className="absolute -left-[9px] top-0 w-5 h-5 rounded-full bg-accent border-4 border-ink-900 dark:border-ink-50" />
+                <h4 className="font-bold text-accent mb-1">{stage.name}</h4>
+                <div className="text-xs text-ink-500 mb-2">{stage.period}</div>
+                <p className="text-sm text-ink-600 dark:text-ink-400 mb-2 italic">{stage.characteristic}</p>
+                <ul className="text-sm text-ink-700 dark:text-ink-300 space-y-1">
+                  {stage.events.map((e, j) => (
+                    <li key={j}>• {e}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─── 主页面 ─── */
+export default function PersonalHistoryPage() {
+  const [activeTab, setActiveTab] = useState<TabId>('edit');
+
+  // 从 localStorage 读取个人史册数据
+  const [personalHistory, setPersonalHistory] = useState<PersonalHistory>(() => {
+    const stored = localStorage.getItem('personal-history-storage');
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch {
+        // ignore
+      }
+    }
+    // 如果没有存储数据，返回空模板
+    return {
+      id: 'user-1',
+      name: '',
+      gender: 'other' as const,
+      birthDate: '',
+      birthLocation: '',
+      education: {},
+      work: {},
+      lifeEvents: [],
+      biography: '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+  });
+
+  // 更新个人信息
+  const handleUpdateInfo = useCallback((patch: Partial<PersonalHistory>) => {
+    setPersonalHistory(prev => ({
+      ...prev,
+      ...patch,
+      education: { ...prev.education, ...(patch.education || {}) },
+      work: { ...prev.work, ...(patch.work || {}) },
+      updatedAt: new Date().toISOString(),
+    }));
+  }, []);
+
+  // 添加事件
+  const handleAddEvent = useCallback((event: LifeEvent) => {
+    setPersonalHistory(prev => ({
+      ...prev,
+      lifeEvents: [...prev.lifeEvents, event],
+      updatedAt: new Date().toISOString(),
+    }));
+  }, []);
+
+  // 删除事件
+  const handleDeleteEvent = useCallback((id: string) => {
+    if (window.confirm('确定要删除这个事件吗？')) {
+      setPersonalHistory(prev => ({
+        ...prev,
+        lifeEvents: prev.lifeEvents.filter(e => e.id !== id),
+        updatedAt: new Date().toISOString(),
+      }));
+    }
+  }, []);
+
+  // 手动触发 AI 著史
+  const [manualBiography, setManualBiography] = useState<PersonalBiography | null>(null);
+  const [isManualGenerating, setIsManualGenerating] = useState(false);
+
+  const handleGenerateBiography = useCallback(async () => {
+    if (personalHistory.lifeEvents.length === 0) {
+      alert('请先添加一些人生事件，AI 才能为你著史！');
+      return;
+    }
+
+    setIsManualGenerating(true);
+    try {
+      const persona = usePersonaStore.getState().persona;
+      const result = await generatePersonalBiography(personalHistory, persona || undefined);
+      setManualBiography(result);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '生成失败，请稍后重试';
+      alert(`AI 著史失败：${message}`);
+    } finally {
+      setIsManualGenerating(false);
+    }
+  }, [personalHistory]);
+
+  // 记录浏览事件到 persona（当切换到 AI 著史 tab 时）
+  const handleTabChange = useCallback((tab: TabId) => {
+    setActiveTab(tab);
+    if (tab === 'ai') {
+      usePersonaStore.getState().recordBrowse('eventsViewed');
+    }
+  }, [personalHistory.name]);
+
+  // 显示用传记
+  const displayBiography = manualBiography;
+
+  return (
+    <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
+      <div className="max-w-5xl mx-auto">
+        {/* 头部 */}
+        <RevealOnScroll direction="fade">
+          <SectionHeader
+            label="PERSONAL HISTORY"
+            title="个人史册"
+            description="记录你的人生历程，打造属于你的传记"
+          />
+        </RevealOnScroll>
+
+        {/* Tab 导航 */}
+        <RevealOnScroll delay={100}>
+          <div className="flex gap-2 mt-6 mb-8 overflow-x-auto pb-2">
+            {TABS.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => handleTabChange(tab.id)}
+                className={`px-4 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-accent text-white shadow-lg'
+                    : 'bg-white/70 dark:bg-ink-900/70 text-ink-600 dark:text-ink-400 hover:bg-ink-100 dark:hover:bg-ink-800'
+                }`}
+              >
+                {tab.emoji} {tab.label}
+              </button>
+            ))}
+          </div>
+        </RevealOnScroll>
+
+        {/* Tab 内容 */}
+        <RevealOnScroll direction="up" delay={200}>
+          {activeTab === 'edit' && (
+            <EditPanel history={personalHistory} onChange={handleUpdateInfo} />
+          )}
+
+          {activeTab === 'biography' && (
+            <TimelinePanel
+              events={personalHistory.lifeEvents}
+              onAddEvent={handleAddEvent}
+              onDeleteEvent={handleDeleteEvent}
+            />
+          )}
+
+          {activeTab === 'ai' && (
+            <div className="space-y-6">
+              {/* 生成按钮 */}
+              <div className="text-center py-4">
+                {personalHistory.lifeEvents.length === 0 ? (
+                  <div className="p-6 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800">
+                    <div className="text-4xl mb-2">📭</div>
+                    <p className="text-ink-600 dark:text-ink-400 mb-4">
+                      还没有人生事件记录，无法生成传记
+                    </p>
+                    <button
+                      onClick={() => handleTabChange('biography')}
+                      className="px-6 py-2 rounded-lg bg-accent text-white font-bold hover:bg-accent/90"
+                    >
+                      先去添加事件 →
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-sm text-ink-500 dark:text-ink-400 mb-4">
+                      已记录 {personalHistory.lifeEvents.length} 件人生大事，AI 史官将为你编纂古典风格传记
+                    </p>
+                    <button
+                      onClick={handleGenerateBiography}
+                      disabled={isManualGenerating}
+                      className="px-8 py-3 rounded-xl bg-accent text-white font-bold text-lg hover:bg-accent/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                    >
+                      {isManualGenerating ? (
+                        <span className="flex items-center gap-2">
+                          <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                          </svg>
+                          著史中...
+                        </span>
+                      ) : (
+                        '🖊️ AI 著史'
+                      )}
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {/* 加载中骨架屏 */}
+              {(isManualGenerating) && (
+                <div className="p-8 rounded-2xl bg-white dark:bg-ink-900 border-2 border-ink-200 dark:border-ink-700">
+                  <div className="animate-pulse space-y-4">
+                    <div className="h-4 bg-ink-200 dark:bg-ink-700 rounded w-3/4 mx-auto" />
+                    <div className="h-4 bg-ink-200 dark:bg-ink-700 rounded w-full" />
+                    <div className="h-4 bg-ink-200 dark:bg-ink-700 rounded w-5/6" />
+                    <div className="h-4 bg-ink-200 dark:bg-ink-700 rounded w-2/3 mx-auto" />
+                  </div>
+                </div>
+              )}
+
+              {/* 传记结果 */}
+              {displayBiography && !isManualGenerating && (
+                <AIBiographyDisplay biography={displayBiography} />
+              )}
+
+              {/* 无结果提示 */}
+              {!displayBiography && !isManualGenerating && personalHistory.lifeEvents.length > 0 && (
+                <div className="text-center py-8 text-ink-400">
+                  点击"AI 著史"按钮开始生成
+                </div>
+              )}
+            </div>
+          )}
+        </RevealOnScroll>
+      </div>
     </div>
   );
 }

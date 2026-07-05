@@ -21,7 +21,7 @@ export default function PersonsEditor() {
     <EntityEditor
       type="persons"
       title="人物管理"
-      listFn={adminGetPersons}
+      listFn={adminGetPersons as any}
       saveFn={adminSavePerson as any}
       deleteFn={adminDeletePerson as any}
       fields={fields}

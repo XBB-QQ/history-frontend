@@ -16,6 +16,8 @@ import {
   type ChatMessage,
 } from '@/features/aiHistorian';
 import { hasApiKey } from '@/utils/llmConfig';
+import { usePersonaStore } from '@/store/personaStore';
+import { buildPersonaPrompt } from '@/utils/personaBuilder';
 
 const STYLE_LABELS = [
   { key: 'formal', label: '正史体', emoji: '史', desc: '模仿《史记》列传风格，文言文评价' },
@@ -52,7 +54,10 @@ export default function AiHistorianPage() {
     setLoading(true);
     setError('');
     try {
-      const result = await generateHistorianComment(portrait);
+      // 注入 persona 上下文
+      const persona = usePersonaStore.getState().persona;
+      const personaCtx = persona ? buildPersonaPrompt(persona) : undefined;
+      const result = await generateHistorianComment(portrait, personaCtx);
       setComment(result);
       // 重置对话历史
       setChatHistory([]);

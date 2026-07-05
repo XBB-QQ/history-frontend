@@ -15,7 +15,7 @@ function ComparePage() {
 
   useEffect(() => {
     fetchAllPersons().then((data) => {
-      setPersons(data);
+      setPersons(data as never);
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);

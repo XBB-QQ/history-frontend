@@ -1,586 +1,720 @@
-import React, { useState, useMemo } from 'react';
+/**
+ * 历史剧本杀 — 带 AI DM 增强
+ * @see ITERATIONS.md #78, #91
+ *
+ * 原有静态流程 + AI 动态审问 + 线索状态机 + 真相史实对照
+ */
+
+import { useState, useMemo, useCallback } from 'react';
 import {
-  CHARACTER_DATABASE,
   SCRIPTS,
-  MysteryEvent,
-  Clue,
-  Character
-} from '../data/features/scriptKillerData';
-import SectionHeader from '../components/common/SectionHeader';
-import RevealOnScroll from '../components/common/RevealOnScroll';
-import { FaSearch, FaLightbulb, FaHistory, FaUserSecret, FaClipboard, FaFingerprint, FaBrain, FaChevronLeft, FaChevronRight, FaHome } from 'react-icons/fa';
+  type Clue,
+  type Character,
+} from '@/data/features/scriptKillerData';
+import SectionHeader from '@/components/common/SectionHeader';
+import RevealOnScroll from '@/components/common/RevealOnScroll';
+import {
+  interrogateCharacter,
+  getDMHint,
+  compareTruthWithHistory,
+  type DMMessage,
+  type InterrogationResult,
+  type TruthComparison,
+} from '@/features/mysteryDM';
+import { usePersonaStore } from '@/store/personaStore';
 
-const ScriptKillerPage: React.FC = () => {
-  const [selectedScript, setSelectedScript] = useState<string>('shang-mystery');
-  const [currentPhase, setCurrentPhase] = useState<'intro' | 'character' | 'clues' | 'deduction' | 'reveal'>('intro');
-  const [selectedCharacters, setSelectedCharacters] = useState<string[]>([]);
-  const [currentClueIndex, setCurrentClueIndex] = useState(0);
-  const [revealedSecrets, setRevealedSecrets] = useState<Set<string>>(new Set());
-  const [clueCollection, setClueCollection] = useState<Clue[]>([]);
-  const [currentCharacter, setCurrentCharacter] = useState<Character | null>(null);
-  const [testimonyIndex, setTestimonyIndex] = useState(0);
-  const [finalAccusation, setFinalAccusation] = useState<string | null>(null);
-  const [isRevealed, setIsRevealed] = useState(false);
+/* ─── 类型定义 ─── */
+type GamePhase = 'intro' | 'character' | 'clues' | 'interrogate' | 'deduction' | 'reveal';
 
-  const currentScript = useMemo(() => {
-    return SCRIPTS.find(s => s.id === selectedScript);
-  }, [selectedScript]);
+/* ─── 线索卡片 ─── */
+function ClueCard({
+  clue,
+  collected,
+  onCollect,
+}: {
+  clue: string;
+  collected: boolean;
+  onCollect: () => void;
+}) {
+  return (
+    <button
+      onClick={onCollect}
+      disabled={collected}
+      className={`p-4 rounded-xl transition-all text-left ${
+        collected
+          ? 'bg-green-50 dark:bg-green-900/20 border-2 border-green-400 opacity-60'
+          : 'bg-gray-50 dark:bg-ink-800 border-2 border-ink-200 dark:border-ink-700 hover:border-accent hover:shadow-md'
+      }`}
+    >
+      <div className="flex items-center gap-2">
+        <span className="text-xl">{collected ? '✅' : '🔍'}</span>
+        <h4 className="font-bold text-gray-800 dark:text-ink-100">{clue}</h4>
+      </div>
+      <p className="text-sm text-gray-600 dark:text-ink-400 mt-1">
+        {collected ? '已收集' : '点击收集线索'}
+      </p>
+    </button>
+  );
+}
 
-  const mysteryEvent = currentScript?.mysteryEvent;
-  const characters = currentScript?.characters || [];
+/* ─── DM 对话面板 ─── */
+function DMDialoguePanel({
+  character,
+  messages,
+  onSendMessage,
+  onGetHint,
+  isProcessing,
+}: {
+  character: Character;
+  messages: DMMessage[];
+  onSendMessage: (content: string) => void;
+  onGetHint: () => void;
+  isProcessing: boolean;
+}) {
+  const [input, setInput] = useState('');
 
-  const handleCharacterSelect = (characterId: string) => {
-    if (selectedCharacters.includes(characterId)) {
-      setSelectedCharacters(selectedCharacters.filter(id => id !== characterId));
-    } else {
-      setSelectedCharacters([...selectedCharacters, characterId]);
-    }
-  };
-
-  const handleNextPhase = () => {
-    setCurrentPhase(prev => {
-      const phases: any[] = ['intro', 'character', 'clues', 'deduction', 'reveal'];
-      const currentIndex = phases.indexOf(prev);
-      return phases[currentIndex + 1] || prev;
-    });
-  };
-
-  const handlePrevPhase = () => {
-    setCurrentPhase(prev => {
-      const phases: any[] = ['intro', 'character', 'clues', 'deduction', 'reveal'];
-      const currentIndex = phases.indexOf(prev);
-      return phases[currentIndex - 1] || prev;
-    });
-  };
-
-  const handleSelectCharacter = (characterId: string) => {
-    const character = characters.find(c => c.id === characterId);
-    setCurrentCharacter(character);
-    setTestimonyIndex(0);
-  };
-
-  const handleNextTestimony = () => {
-    setTestimonyIndex(prev => Math.min(prev + 1, characters.length - 1));
-  };
-
-  const handlePrevTestimony = () => {
-    setTestimonyIndex(prev => Math.max(prev - 1, 0));
-  };
-
-  const handleRevealSecret = (secret: string) => {
-    setRevealedSecrets(prev => new Set(prev).add(secret));
-  };
-
-  const collectClue = (clue: Clue) => {
-    setClueCollection(prev => [...prev, clue]);
-  };
-
-  const handleAccuse = (characterId: string) => {
-    setFinalAccusation(characterId);
-    setIsRevealed(true);
-  };
-
-  const handleReset = () => {
-    setCurrentPhase('intro');
-    setSelectedCharacters([]);
-    setRevealedSecrets(new Set());
-    setClueCollection([]);
-    setCurrentCharacter(null);
-    setTestimonyIndex(0);
-    setFinalAccusation(null);
-    setIsRevealed(false);
+  const handleSubmit = () => {
+    if (!input.trim()) return;
+    onSendMessage(input.trim());
+    setInput('');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 py-8 px-4">
-      <div className="max-w-7xl mx-auto">
-        <RevealOnScroll>
-          <SectionHeader
-            title="历史剧本杀"
-            subtitle="穿越时空，化身为历史人物，解开神秘的谜团"
-            icon={<FaUserSecret className="w-12 h-12 text-red-500" />}
-            gradient="from-red-500 to-orange-500"
-          />
-        </RevealOnScroll>
-
-        {currentPhase === 'intro' && (
-          <div className="animate-fade-in">
-            <div
-              key="intro"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <RevealOnScroll>
-                <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-4">选择剧本</h3>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto">
-                    {SCRIPTS.map(script => (
-                      <div
-                        key={script.id}
-                        onClick={() => setSelectedScript(script.id)}
-                        className={`p-4 rounded-xl cursor-pointer transition-all ${
-                          selectedScript === script.id
-                            ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg transform scale-105'
-                            : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent hover:border-red-200'
-                        }`}
-                      >
-                        <h4 className="font-bold text-lg mb-2">{script.title}</h4>
-                        <p className="text-sm opacity-90 mb-3">{script.description}</p>
-                        <div className="flex flex-wrap gap-2">
-                          <span className="text-xs bg-white/20 px-2 py-0.5 rounded">玩家数: {script.playerCount}</span>
-                          <span className="text-xs bg-white/20 px-2 py-0.5 rounded">时长: {script.duration}分钟</span>
-                          <span className="text-xs bg-white/20 px-2 py-0.5 rounded">难度: {script.difficulty}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl shadow-lg p-6 text-white">
-                  <h3 className="text-xl font-bold mb-4">游戏规则</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-white/10 backdrop-blur rounded-xl p-4">
-                      <h4 className="font-bold mb-2">角色扮演</h4>
-                      <p className="text-sm opacity-90">选择一个角色，了解你的背景、动机和秘密</p>
-                    </div>
-                    <div className="bg-white/10 backdrop-blur rounded-xl p-4">
-                      <h4 className="font-bold mb-2">收集线索</h4>
-                      <p className="text-sm opacity-90">调查现场，收集关键证据和线索</p>
-                    </div>
-                    <div className="bg-white/10 backdrop-blur rounded-xl p-4">
-                      <h4 className="font-bold mb-2">推理指控</h4>
-                      <p className="text-sm opacity-90">根据线索和动机，找出真正的凶手</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex justify-center mt-6">
-                  <button
-                    onClick={handleNextPhase}
-                    className="px-8 py-3 rounded-xl font-bold text-white transition-all bg-gradient-to-r from-red-500 to-orange-500 hover:shadow-lg transform hover:scale-105"
-                  >
-                    开始游戏
-                  </button>
-                </div>
-              </RevealOnScroll>
+    <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 shadow-lg overflow-hidden">
+      {/* 头部 */}
+      <div className="bg-gradient-to-r from-red-500 to-orange-500 p-4 text-white">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">{character.avatar}</span>
+            <div>
+              <h3 className="font-bold text-lg">{character.displayName}</h3>
+              <p className="text-sm opacity-90">{character.role} · {character.dynasty}</p>
             </div>
           </div>
-        )}
+          <button
+            onClick={onGetHint}
+            className="px-3 py-1.5 rounded-lg bg-white/20 hover:bg-white/30 transition-colors text-sm font-bold"
+          >
+            💡 求提示
+          </button>
+        </div>
+      </div>
 
-        {currentPhase === 'character' && (
-          <div className="animate-fade-in">
-            <div
-              key="character"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <RevealOnScroll>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                  <div className="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                      <FaUsers className="text-red-500" />
-                      选择角色
-                    </h3>
-                    <p className="text-gray-600 mb-4">请选择 2-5 个角色加入游戏</p>
-
-                    <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
-                      {characters.map(character => (
-                        <div
-                          key={character.id}
-                          onClick={() => handleSelectCharacter(character.id)}
-                          className={`p-4 rounded-xl cursor-pointer transition-all ${
-                            selectedCharacters.includes(character.id)
-                              ? 'bg-gradient-to-r from-red-100 to-orange-100 border-2 border-red-400'
-                              : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
-                          }`}
-                        >
-                          <div className="flex items-start gap-3">
-                            <span className="text-3xl">{character.avatar}</span>
-                            <div className="flex-1">
-                              <h4 className="font-bold text-gray-800">{character.displayName}</h4>
-                              <p className="text-sm text-gray-600">{character.role}</p>
-                              <p className="text-xs text-red-600">{character.dynasty}·{character.era}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="mt-4 p-4 bg-red-50 rounded-xl">
-                      <p className="text-sm text-red-800">
-                        已选择 <strong>{selectedCharacters.length}</strong> 个角色
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                      <FaFingerprint className="text-red-500" />
-                      角色档案
-                    </h3>
-
-                    {currentCharacter ? (
-                      <div className="space-y-4">
-                        <div className="flex items-start gap-3">
-                          <span className="text-4xl">{currentCharacter.avatar}</span>
-                          <div>
-                            <h4 className="font-bold text-gray-800 text-lg">{currentCharacter.displayName}</h4>
-                            <p className="text-sm text-gray-600">{currentCharacter.role}</p>
-                            <p className="text-xs text-red-600">{currentCharacter.dynasty}·{currentCharacter.era}</p>
-                          </div>
-                        </div>
-
-                        <div>
-                          <h4 className="font-bold text-gray-800 mb-2">背景：</h4>
-                          <p className="text-gray-700">{currentCharacter.background}</p>
-                        </div>
-
-                        <div>
-                          <h4 className="font-bold text-gray-800 mb-2">动机：</h4>
-                          <ul className="space-y-1">
-                            {currentCharacter.motivations.map((motivation, index) => (
-                              <li key={index} className="text-gray-700 text-sm">• {motivation}</li>
-                            ))}
-                          </ul>
-                        </div>
-
-                        <div>
-                          <h4 className="font-bold text-gray-800 mb-2">关键事件：</h4>
-                          <ul className="space-y-1">
-                            {currentCharacter.keyEvents.map((event, index) => (
-                              <li key={index} className="text-gray-700 text-sm">• {event}</li>
-                            ))}
-                          </ul>
-                        </div>
-
-                        <div>
-                          <h4 className="font-bold text-gray-800 mb-2">技能：</h4>
-                          <div className="flex flex-wrap gap-1">
-                            {currentCharacter.skills.map(skill => (
-                              <span key={skill} className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded">
-                                {skill}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-center text-gray-500 py-12">
-                        <FaUserSecret className="w-20 h-20 mx-auto mb-4 text-gray-300" />
-                        <p>选择一个角色查看详细信息</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex justify-between">
-                  <button
-                    onClick={handlePrevPhase}
-                    className="px-6 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300"
-                  >
-                    <FaChevronLeft className="inline mr-2" />
-                    上一步
-                  </button>
-                  <button
-                    onClick={handleNextPhase}
-                    className="px-6 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl hover:shadow-lg"
-                  >
-                    下一步
-                    <FaChevronRight className="inline ml-2" />
-                  </button>
-                </div>
-              </RevealOnScroll>
-            </div>
+      {/* 对话历史 */}
+      <div className="h-80 overflow-y-auto p-4 space-y-4 bg-ink-50 dark:bg-ink-950">
+        {messages.length === 0 && (
+          <div className="text-center text-gray-500 py-12">
+            <span className="text-4xl block mb-2">🎭</span>
+            <p>向 {character.displayName} 发起审问吧！</p>
+            <p className="text-sm mt-1">尝试询问他的动机、不在场证明或秘密</p>
           </div>
         )}
-
-        {currentPhase === 'clues' && (
-          <div className="animate-fade-in">
+        {messages.map((msg, i) => (
+          <div key={i} className={`flex ${msg.role === 'player' ? 'justify-end' : 'justify-start'}`}>
             <div
-              key="clues"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
+              className={`max-w-[80%] rounded-xl p-3 ${
+                msg.role === 'player'
+                  ? 'bg-accent text-white'
+                  : 'bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700'
+              }`}
             >
-              <RevealOnScroll>
-                <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                      <FaSearch className="text-red-500" />
-                      收集线索
-                    </h3>
-                    <span className="text-sm bg-red-100 text-red-600 px-3 py-1 rounded-full">
-                      已收集 {clueCollection.length} / {mysteryEvent?.keyClues.length || 0} 条线索
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    {mysteryEvent?.keyClues.map((clue, index) => (
-                      <div
-                        key={index}
-                        onClick={() => collectClue(clue as any)}
-                        className={`p-4 rounded-xl cursor-pointer transition-all ${
-                          clueCollection.some(c => c.description === clue)
-                            ? 'bg-gradient-to-r from-green-100 to-emerald-100 border-2 border-green-400'
-                            : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
-                        }`}
-                      >
-                        <h4 className="font-bold text-gray-800 mb-2">{clue}</h4>
-                        <p className="text-sm text-gray-600">
-                          {clueCollection.some(c => c.description === clue) ? '✓ 已收集' : '点击收集'}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-4 mb-6">
-                    <h4 className="font-bold text-gray-800 mb-2">神秘事件背景</h4>
-                    <p className="text-gray-700">{mysteryEvent?.description}</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                  <div className="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                      <FaHistory className="text-red-500" />
-                      时间线
-                    </h3>
-
-                    <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
-                      {mysteryEvent?.timeLine.map((event, index) => {
-                        const character = characters.find(c => c.id === event.characterId);
-                        return (
-                          <div
-                            key={index}
-                            className={`p-3 rounded-lg ${
-                              event.isPlayer ? 'bg-red-50 border-l-4 border-red-400' : 'bg-gray-50'
-                            }`}
-                          >
-                            <p className="text-sm text-red-600 font-bold">{event.time}</p>
-                            <p className="text-sm text-gray-800">{event.description}</p>
-                            {event.location && (
-                              <p className="text-xs text-gray-500">📍 {event.location}</p>
-                            )}
-                            {character && (
-                              <p className="text-xs text-gray-600">👤 {character.displayName}</p>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                      <FaLightbulb className="text-red-500" />
-                      线索分析
-                    </h3>
-
-                    <div className="space-y-4">
-                      {clueCollection.map((clue, index) => (
-                        <div key={index} className="p-4 rounded-xl bg-gray-50">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-xl">🔍</span>
-                            <h4 className="font-bold text-gray-800">{clue.description}</h4>
-                          </div>
-                          <p className="text-sm text-gray-600">{clue.content}</p>
-                        </div>
-                      ))}
-
-                      {clueCollection.length === 0 && (
-                        <div className="text-center text-gray-500 py-12">
-                          <FaSearch className="w-20 h-20 mx-auto mb-4 text-gray-300" />
-                          <p>点击上方线索收集证据</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex justify-between">
-                  <button
-                    onClick={handlePrevPhase}
-                    className="px-6 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300"
-                  >
-                    <FaChevronLeft className="inline mr-2" />
-                    上一步
-                  </button>
-                  <button
-                    onClick={handleNextPhase}
-                    className="px-6 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl hover:shadow-lg"
-                  >
-                    下一步
-                    <FaChevronRight className="inline ml-2" />
-                  </button>
-                </div>
-              </RevealOnScroll>
+              <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
             </div>
           </div>
-        )}
-
-        {currentPhase === 'deduction' && (
-          <div className="animate-fade-in">
-            <div
-              key="deduction"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <RevealOnScroll>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                  <div className="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                      <FaClipboard className="text-red-500" />
-                      受害者与凶手
-                    </h3>
-
-                    {mysteryEvent && (
-                      <div className="space-y-4">
-                        <div className="p-4 rounded-xl bg-gray-50">
-                          <h4 className="font-bold text-gray-800 mb-2">受害者</h4>
-                          <p className="text-gray-700">{mysteryEvent.victim}</p>
-                        </div>
-
-                        <div className="p-4 rounded-xl bg-gray-50">
-                          <h4 className="font-bold text-gray-800 mb-2">凶手（待确认）</h4>
-                          <p className="text-gray-700 italic">? ? ?</p>
-                        </div>
-
-                        <div className="p-4 rounded-xl bg-red-50 border border-red-200">
-                          <h4 className="font-bold text-red-800 mb-2">关键线索</h4>
-                          <ul className="space-y-1">
-                            {mysteryEvent.keyClues.slice(0, 3).map((clue, index) => (
-                              <li key={index} className="text-sm text-gray-700">• {clue}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                      <FaBrain className="text-red-500" />
-                      指控凶手
-                    </h3>
-
-                    <p className="text-gray-600 mb-4">根据你收集的线索和了解的动机，选择你认为的凶手：</p>
-
-                    <div className="space-y-3">
-                      {characters.map(character => (
-                        <button
-                          key={character.id}
-                          onClick={() => handleAccuse(character.id)}
-                          className={`w-full p-4 rounded-xl transition-all text-left ${
-                            finalAccusation === character.id
-                              ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg transform scale-105'
-                              : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
-                          }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="text-3xl">{character.avatar}</span>
-                            <div className="flex-1">
-                              <h4 className="font-bold">{character.displayName}</h4>
-                              <p className="text-sm text-gray-600">{character.role}</p>
-                            </div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex justify-between">
-                  <button
-                    onClick={handlePrevPhase}
-                    className="px-6 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300"
-                  >
-                    <FaChevronLeft className="inline mr-2" />
-                    上一步
-                  </button>
-                  <button
-                    onClick={handleNextPhase}
-                    className="px-6 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl hover:shadow-lg"
-                  >
-                    揭示真相
-                    <FaChevronRight className="inline ml-2" />
-                  </button>
-                </div>
-              </RevealOnScroll>
-            </div>
-          </div>
-        )}
-
-        {currentPhase === 'reveal' && isRevealed && (
-          <div className="animate-fade-in">
-            <div
-              key="reveal"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <RevealOnScroll>
-                <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-                  <div className="text-center mb-6">
-                    <h3 className="text-2xl font-bold text-gray-800 mb-2">{currentScript?.title}</h3>
-                    <p className="text-gray-600">真相揭秘</p>
-                  </div>
-
-                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 mb-6">
-                    <h4 className="font-bold text-green-800 mb-4 flex items-center gap-2">
-                      <FaLightbulb className="text-green-500" />
-                      案件真相
-                    </h4>
-                    <p className="text-gray-700 leading-relaxed">{currentScript?.solution}</p>
-                  </div>
-
-                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 mb-6">
-                    <h4 className="font-bold text-blue-800 mb-4 flex items-center gap-2">
-                      <FaUserSecret className="text-blue-500" />
-                      详细分析
-                    </h4>
-                    <div className="space-y-4">
-                      {mysteryEvent?.keyClues.map((clue, index) => (
-                        <div key={index} className="p-3 rounded-lg bg-white">
-                          <h5 className="font-bold text-gray-800 mb-1">{clue}</h5>
-                          <p className="text-sm text-gray-600">这是关键证据，揭示了案件的真相。</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex justify-center gap-4">
-                  <button
-                    onClick={handleReset}
-                    className="px-6 py-2 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl hover:shadow-lg"
-                  >
-                    <FaHome className="inline mr-2" />
-                    返回主页
-                  </button>
-                  <button
-                    onClick={handleReset}
-                    className="px-6 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl hover:shadow-lg"
-                  >
-                    <FaChevronLeft className="inline mr-2" />
-                    重新开始
-                  </button>
-                </div>
-              </RevealOnScroll>
+        ))}
+        {isProcessing && (
+          <div className="flex justify-start">
+            <div className="bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-xl p-3">
+              <div className="flex gap-1">
+                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              </div>
             </div>
           </div>
         )}
       </div>
+
+      {/* 输入框 */}
+      <div className="p-4 bg-white dark:bg-ink-900 border-t border-ink-200 dark:border-ink-700">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+            placeholder={`向${character.displayName}提问...`}
+            className="flex-1 px-4 py-2 rounded-xl border border-ink-200 dark:border-ink-700 bg-ink-50 dark:bg-ink-800 focus:outline-none focus:ring-2 focus:ring-accent"
+          />
+          <button
+            onClick={handleSubmit}
+            disabled={!input.trim() || isProcessing}
+            className="px-6 py-2 rounded-xl bg-accent text-white font-bold hover:bg-accent/90 disabled:opacity-50"
+          >
+            发送
+          </button>
+        </div>
+      </div>
     </div>
   );
-};
+}
 
-export default ScriptKillerPage;
+/* ─── 审问结果展示 ─── */
+function InterrogationResultDisplay({
+  result,
+  unlockedClues,
+}: {
+  result: InterrogationResult;
+  unlockedClues: string[];
+}) {
+  if (!result.dmComment && !unlockedClues.length) return null;
+
+  return (
+    <div className="space-y-4 mt-4">
+      {result.dmComment && (
+        <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800">
+          <h4 className="font-bold text-amber-800 dark:text-amber-400 mb-2">🎭 DM 评析</h4>
+          <p className="text-sm text-ink-700 dark:text-ink-300">{result.dmComment}</p>
+        </div>
+      )}
+      {unlockedClues.length > 0 && (
+        <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800">
+          <h4 className="font-bold text-green-800 dark:text-green-400 mb-2">🔓 新线索解锁！</h4>
+          <ul className="space-y-1">
+            {unlockedClues.map((clue, i) => (
+              <li key={i} className="text-sm text-ink-700 dark:text-ink-300">• {clue}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {result.hint && (
+        <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800">
+          <h4 className="font-bold text-blue-800 dark:text-blue-400 mb-2">💡 提示</h4>
+          <p className="text-sm text-ink-700 dark:text-ink-300">{result.hint}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─── 主页面 ─── */
+export default function ScriptKillerPage() {
+  const [selectedScriptId, setSelectedScriptId] = useState('shang-mystery');
+  const [phase, setPhase] = useState<GamePhase>('intro');
+  const [selectedCharacters, setSelectedCharacters] = useState<string[]>([]);
+  const [currentCharacter, setCurrentCharacter] = useState<Character | null>(null);
+  const [clueCollection, setClueCollection] = useState<Clue[]>([]);
+  const [dmMessages, setDmMessages] = useState<DMMessage[]>([]);
+  const [lastResult, setLastResult] = useState<InterrogationResult | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [finalAccusation, setFinalAccusation] = useState<string | null>(null);
+  const [truthComparison, setTruthComparison] = useState<TruthComparison | null>(null);
+
+  const currentScript = useMemo(() => SCRIPTS.find(s => s.id === selectedScriptId), [selectedScriptId]);
+  const mysteryEvent = currentScript?.mysteryEvent;
+  const characters = currentScript?.characters || [];
+
+  /* 收集线索 */
+  const collectClue = useCallback((clueText: string) => {
+    if (!currentScript) return;
+    const exists = clueCollection.some(c => c.description === clueText);
+    if (exists) return;
+
+    const newClue: Clue = {
+      id: `clue-${clueText}-${Date.now()}`,
+      location: '现场',
+      characterId: currentScript.characters[0]?.id || '',
+      characterName: currentScript.characters[0]?.displayName || '',
+      type: 'physical',
+      description: clueText,
+      content: `线索：${clueText}`,
+      importance: 3,
+    };
+    setClueCollection(prev => [...prev, newClue]);
+  }, [currentScript, clueCollection]);
+
+  /* AI 审问 */
+  const handleInterrogate = useCallback(async (query: string) => {
+    if (!currentScript || !currentCharacter) return;
+
+    setIsProcessing(true);
+    try {
+      // 添加玩家消息
+      setDmMessages(prev => [...prev, { role: 'player', content: query, timestamp: Date.now() }]);
+
+      // 调用 AI DM
+      const result = await interrogateCharacter(
+        currentScript,
+        currentCharacter.id,
+        clueCollection,
+      );
+      setLastResult(result);
+
+      // 添加 DM 回复
+      const dmReply = result.dmComment
+        ? `[DM评析] ${result.dmComment}\n\n${currentCharacter.testimony}`
+        : currentCharacter.testimony;
+      setDmMessages(prev => [...prev, { role: 'dm', content: dmReply, timestamp: Date.now() }]);
+
+      // 解锁新线索到收集箱
+      if (result.unlockedClues.length > 0) {
+        result.unlockedClues.forEach(clue => collectClue(clue));
+      }
+
+      // 记录到 persona
+      usePersonaStore.getState().recordBrowse('knowledgeViewed');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '审问失败';
+      setDmMessages(prev => [...prev, { role: 'dm', content: `❌ ${message}`, timestamp: Date.now() }]);
+    } finally {
+      setIsProcessing(false);
+    }
+  }, [currentScript, currentCharacter, clueCollection, dmMessages, collectClue]);
+
+  /* 获取提示 */
+  const handleGetHint = useCallback(async () => {
+    if (!currentScript) return;
+    setIsProcessing(true);
+    try {
+      const hint = await getDMHint(currentScript, clueCollection, dmMessages.length + 1);
+      setDmMessages(prev => [...prev, { role: 'dm', content: `💡 [DM提示] ${hint}`, timestamp: Date.now() }]);
+    } catch {
+      // ignore
+    } finally {
+      setIsProcessing(false);
+    }
+  }, [currentScript, clueCollection, dmMessages.length]);
+
+  /* 指控 */
+  const handleAccuse = useCallback((characterId: string) => {
+    setFinalAccusation(characterId);
+  }, []);
+
+  /* 真相对照 */
+  const handleCompareTruth = useCallback(async () => {
+    if (!currentScript || !finalAccusation) return;
+    setIsProcessing(true);
+    try {
+      const accused = characters.find(c => c.id === finalAccusation);
+      const reasoning = `我指控 ${accused?.displayName || '未知'} 是凶手，因为我收集了 ${clueCollection.length} 条线索`;
+      const comparison = await compareTruthWithHistory(currentScript, finalAccusation, reasoning, clueCollection);
+      setTruthComparison(comparison);
+    } catch {
+      // ignore
+    } finally {
+      setIsProcessing(false);
+    }
+  }, [currentScript, finalAccusation, characters, clueCollection]);
+
+  /* 重置 */
+  const handleReset = useCallback(() => {
+    setPhase('intro');
+    setSelectedCharacters([]);
+    setCurrentCharacter(null);
+    setClueCollection([]);
+    setDmMessages([]);
+    setLastResult(null);
+    setFinalAccusation(null);
+    setTruthComparison(null);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
+      <div className="max-w-6xl mx-auto">
+        {/* 头部 */}
+        <RevealOnScroll>
+          <SectionHeader
+            label="HISTORY SCRIPT KILLER"
+            title="历史剧本杀"
+            description="穿越时空，化身历史人物，解开神秘谜团"
+          />
+        </RevealOnScroll>
+
+        {/* Phase 1: 选择剧本 */}
+        {phase === 'intro' && (
+          <RevealOnScroll direction="up" delay={100}>
+            <div className="mt-8 bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 md:p-8 shadow-lg">
+              <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-6">选择剧本</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {SCRIPTS.map(script => (
+                  <button
+                    key={script.id}
+                    onClick={() => { setSelectedScriptId(script.id); }}
+                    className={`p-5 rounded-xl text-left transition-all ${
+                      selectedScriptId === script.id
+                        ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg scale-105'
+                        : 'bg-ink-50 dark:bg-ink-800 hover:bg-ink-100 dark:hover:bg-ink-700 border-2 border-ink-200 dark:border-ink-700'
+                    }`}
+                  >
+                    <h4 className="font-bold text-lg mb-2">{script.title}</h4>
+                    <p className="text-sm opacity-90 mb-3">{script.description}</p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="text-xs bg-white/20 px-2 py-1 rounded">玩家: {script.playerCount}人</span>
+                      <span className="text-xs bg-white/20 px-2 py-1 rounded">时长: {script.duration}分钟</span>
+                      <span className="text-xs bg-white/20 px-2 py-1 rounded">难度: {script.difficulty}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+              <div className="flex justify-center mt-6">
+                <button
+                  onClick={() => setPhase('character')}
+                  className="px-8 py-3 rounded-xl bg-accent text-white font-bold text-lg hover:bg-accent/90 shadow-lg"
+                >
+                  开始游戏 →
+                </button>
+              </div>
+            </div>
+          </RevealOnScroll>
+        )}
+
+        {/* Phase 2: 选择角色 */}
+        {phase === 'character' && currentScript && (
+          <RevealOnScroll direction="up" delay={100}>
+            <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
+                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">选择角色</h3>
+                <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+                  {characters.map(char => (
+                    <button
+                      key={char.id}
+                      onClick={() => {
+                        setCurrentCharacter(char);
+                        setSelectedCharacters(prev =>
+                          prev.includes(char.id) ? prev : [...prev, char.id]
+                        );
+                      }}
+                      className={`w-full p-4 rounded-xl text-left transition-all ${
+                        selectedCharacters.includes(char.id)
+                          ? 'bg-red-50 dark:bg-red-900/20 border-2 border-red-400'
+                          : 'bg-ink-50 dark:bg-ink-800 hover:bg-ink-100 dark:hover:bg-ink-700 border-2 border-transparent'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-3xl">{char.avatar}</span>
+                        <div>
+                          <h4 className="font-bold text-ink-900 dark:text-ink-100">{char.displayName}</h4>
+                          <p className="text-sm text-ink-600 dark:text-ink-400">{char.role}</p>
+                          <p className="text-xs text-red-600 dark:text-red-400">{char.dynasty}·{char.era}</p>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 角色档案 */}
+              <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
+                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">角色档案</h3>
+                {currentCharacter ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-4xl">{currentCharacter.avatar}</span>
+                      <div>
+                        <h4 className="font-bold text-lg text-ink-900 dark:text-ink-100">{currentCharacter.displayName}</h4>
+                        <p className="text-sm text-ink-600 dark:text-ink-400">{currentCharacter.role}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <h5 className="font-bold text-sm text-ink-700 dark:text-ink-300 mb-1">背景</h5>
+                      <p className="text-sm text-ink-600 dark:text-ink-400">{currentCharacter.background}</p>
+                    </div>
+                    <div>
+                      <h5 className="font-bold text-sm text-ink-700 dark:text-ink-300 mb-1">动机</h5>
+                      <ul className="text-sm text-ink-600 dark:text-ink-400 space-y-1">
+                        {currentCharacter.motivations.map((m, i) => (
+                          <li key={i}>• {m}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h5 className="font-bold text-sm text-ink-700 dark:text-ink-300 mb-1">不在场证明</h5>
+                      <p className="text-sm text-ink-600 dark:text-ink-400">{currentCharacter.alibi}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center text-ink-400 py-12">
+                    <span className="text-4xl block mb-2">👤</span>
+                    选择一个角色查看详情
+                  </div>
+                )}
+                <div className="flex justify-between mt-6">
+                  <button
+                    onClick={() => setPhase('intro')}
+                    className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-700 dark:text-ink-300 font-bold"
+                  >
+                    ← 返回
+                  </button>
+                  <button
+                    onClick={() => setPhase('clues')}
+                    className="px-4 py-2 rounded-lg bg-accent text-white font-bold"
+                  >
+                    下一步 →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </RevealOnScroll>
+        )}
+
+        {/* Phase 3: 收集线索 */}
+        {phase === 'clues' && currentScript && mysteryEvent && (
+          <RevealOnScroll direction="up" delay={100}>
+            <div className="mt-8 bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">🔍 收集线索</h3>
+                <span className="text-sm bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 px-3 py-1 rounded-full font-bold">
+                  已收集 {clueCollection.length} / {mysteryEvent.keyClues.length}
+                </span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                {mysteryEvent.keyClues.map((clue, i) => (
+                  <ClueCard
+                    key={i}
+                    clue={clue}
+                    collected={clueCollection.some(c => c.description === clue)}
+                    onCollect={() => collectClue(clue)}
+                  />
+                ))}
+              </div>
+              <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-xl p-4 mb-6">
+                <h4 className="font-bold text-ink-900 dark:text-ink-100 mb-2">案件背景</h4>
+                <p className="text-sm text-ink-700 dark:text-ink-300">{mysteryEvent.description}</p>
+              </div>
+              <div className="flex justify-between">
+                <button
+                  onClick={() => setPhase('character')}
+                  className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 font-bold"
+                >
+                  ← 返回
+                </button>
+                <button
+                  onClick={() => setPhase('interrogate')}
+                  className="px-4 py-2 rounded-lg bg-accent text-white font-bold"
+                >
+                  开始审问 →
+                </button>
+              </div>
+            </div>
+          </RevealOnScroll>
+        )}
+
+        {/* Phase 4: AI 审问 */}
+        {phase === 'interrogate' && currentScript && currentCharacter && (
+          <RevealOnScroll direction="up" delay={100}>
+            <div className="mt-8 space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">
+                  🎭 AI 动态审问 — {currentCharacter.displayName}
+                </h3>
+                <button
+                  onClick={() => setPhase('clues')}
+                  className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 font-bold text-sm"
+                >
+                  ← 返回线索
+                </button>
+              </div>
+
+              <DMDialoguePanel
+                character={currentCharacter}
+                messages={dmMessages}
+                onSendMessage={handleInterrogate}
+                onGetHint={handleGetHint}
+                isProcessing={isProcessing}
+              />
+
+              {lastResult && (
+                <InterrogationResultDisplay
+                  result={lastResult}
+                  unlockedClues={lastResult.unlockedClues}
+                />
+              )}
+
+              {/* 角色切换 */}
+              <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
+                <h4 className="font-bold text-ink-900 dark:text-ink-100 mb-4">选择其他角色审问</h4>
+                <div className="flex flex-wrap gap-3">
+                  {characters.map(char => (
+                    <button
+                      key={char.id}
+                      onClick={() => {
+                        setCurrentCharacter(char);
+                        setDmMessages([]);
+                        setLastResult(null);
+                      }}
+                      className={`px-4 py-2 rounded-xl font-bold transition-all ${
+                        currentCharacter.id === char.id
+                          ? 'bg-accent text-white'
+                          : 'bg-ink-100 dark:bg-ink-800 hover:bg-ink-200 dark:hover:bg-ink-700'
+                      }`}
+                    >
+                      {char.avatar} {char.displayName}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex justify-between mt-6">
+                  <button
+                    onClick={() => setPhase('clues')}
+                    className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 font-bold"
+                  >
+                    ← 返回
+                  </button>
+                  <button
+                    onClick={() => setPhase('deduction')}
+                    className="px-4 py-2 rounded-lg bg-red-500 text-white font-bold"
+                  >
+                    进入推理 →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </RevealOnScroll>
+        )}
+
+        {/* Phase 5: 推理指控 */}
+        {phase === 'deduction' && currentScript && (
+          <RevealOnScroll direction="up" delay={100}>
+            <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* 已收集线索 */}
+              <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
+                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">📋 已收集线索</h3>
+                <div className="space-y-2">
+                  {clueCollection.length === 0 ? (
+                    <p className="text-sm text-ink-400">暂无线索，请先去收集</p>
+                  ) : (
+                    clueCollection.map((clue, i) => (
+                      <div key={i} className="p-3 rounded-lg bg-ink-50 dark:bg-ink-800">
+                        <p className="text-sm font-bold text-ink-900 dark:text-ink-100">{clue.description}</p>
+                        <p className="text-xs text-ink-600 dark:text-ink-400">{clue.content}</p>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* 指控 */}
+              <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
+                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">⚖️ 指控凶手</h3>
+                <p className="text-sm text-ink-600 dark:text-ink-400 mb-4">根据线索和动机，选择你认为的凶手：</p>
+                <div className="space-y-3">
+                  {characters.map(char => (
+                    <button
+                      key={char.id}
+                      onClick={() => handleAccuse(char.id)}
+                      className={`w-full p-4 rounded-xl text-left transition-all ${
+                        finalAccusation === char.id
+                          ? 'bg-red-500 text-white shadow-lg scale-105'
+                          : 'bg-ink-50 dark:bg-ink-800 hover:bg-ink-100 dark:hover:bg-ink-700'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-3xl">{char.avatar}</span>
+                        <div>
+                          <h4 className="font-bold">{char.displayName}</h4>
+                          <p className="text-sm opacity-80">{char.role}</p>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+                {finalAccusation && (
+                  <button
+                    onClick={handleCompareTruth}
+                    disabled={isProcessing}
+                    className="w-full mt-4 py-3 rounded-xl bg-accent text-white font-bold hover:bg-accent/90 disabled:opacity-50"
+                  >
+                    {isProcessing ? '分析中...' : '🔍 揭示真相'}
+                  </button>
+                )}
+                <div className="flex justify-between mt-4">
+                  <button
+                    onClick={() => setPhase('interrogate')}
+                    className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 font-bold text-sm"
+                  >
+                    ← 返回审问
+                  </button>
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 font-bold text-sm"
+                  >
+                    重新开始
+                  </button>
+                </div>
+              </div>
+            </div>
+          </RevealOnScroll>
+        )}
+
+        {/* Phase 6: 真相对照 */}
+        {phase === 'reveal' && truthComparison && currentScript && (
+          <RevealOnScroll direction="up" delay={100}>
+            <div className="mt-8 space-y-6">
+              <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
+                <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-4 text-center">
+                  {currentScript.title} — 真相揭秘
+                </h3>
+
+                {/* 用户指控结果 */}
+                <div className={`p-4 rounded-xl mb-6 ${
+                  finalAccusation === currentScript.mysteryEvent.killer
+                    ? 'bg-green-50 dark:bg-green-900/20 border-2 border-green-400'
+                    : 'bg-red-50 dark:bg-red-900/20 border-2 border-red-400'
+                }`}>
+                  <h4 className="font-bold mb-2">
+                    {finalAccusation === currentScript.mysteryEvent.killer ? '🎉 恭喜！指控正确！' : '❌ 指控错误'}
+                  </h4>
+                  <p className="text-sm">
+                    实际凶手：{currentScript.mysteryEvent.killer || '待揭晓'}
+                  </p>
+                </div>
+
+                {/* AI 评价 */}
+                {truthComparison.evaluation && (
+                  <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800 mb-4">
+                    <h4 className="font-bold text-amber-800 dark:text-amber-400 mb-2">🎭 DM 评价</h4>
+                    <p className="text-sm text-ink-700 dark:text-ink-300">{truthComparison.evaluation}</p>
+                  </div>
+                )}
+
+                {/* 史实对照 */}
+                {truthComparison.historicalFact && (
+                  <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 mb-4">
+                    <h4 className="font-bold text-blue-800 dark:text-blue-400 mb-2">📚 史实对照</h4>
+                    <p className="text-sm text-ink-700 dark:text-ink-300">{truthComparison.historicalFact}</p>
+                  </div>
+                )}
+
+                {/* 遗漏线索 */}
+                {truthComparison.missedClues.length > 0 && (
+                  <div className="p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-200 dark:border-purple-800">
+                    <h4 className="font-bold text-purple-800 dark:text-purple-400 mb-2">💡 你可能遗漏的线索</h4>
+                    <ul className="text-sm space-y-1">
+                      {truthComparison.missedClues.map((clue, i) => (
+                        <li key={i}>• {clue}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-center gap-4">
+                <button
+                  onClick={handleReset}
+                  className="px-6 py-3 rounded-xl bg-ink-100 dark:bg-ink-800 font-bold"
+                >
+                  返回首页
+                </button>
+                <button
+                  onClick={handleReset}
+                  className="px-6 py-3 rounded-xl bg-accent text-white font-bold"
+                >
+                  重新开始
+                </button>
+              </div>
+            </div>
+          </RevealOnScroll>
+        )}
+      </div>
+    </div>
+  );
+}

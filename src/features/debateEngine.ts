@@ -7,6 +7,7 @@ import { callLLM, type LLMMessage } from '@/utils/llmClient';
 import { getFigureById } from '@/data/scenarios/figures';
 import type { DebateTopic } from '@/data/scenarios/debateTopics';
 import type { DebateFigurePair } from '@/data/scenarios/debateFigures';
+import type { UserPersona } from '@/types/userPersona';
 
 export interface DebateRound {
   round: number;
@@ -101,15 +102,20 @@ function buildRoundPrompt(
 export async function generateDebateConclusion(
   topic: DebateTopic,
   rounds: DebateRound[],
+  persona?: UserPersona,
 ): Promise<string> {
   const history = rounds
     .map(r => `第${r.round}轮 正方：${r.proArgument}\n第${r.round}轮 反方：${r.conArgument}`)
     .join('\n\n');
 
+  const personaInjection = persona
+    ? `\n\n--- AI 记忆中枢 ---\n朝代偏好：${persona.favoriteDynasties.join('、') || '无'}\n人物偏好：${persona.favoritePersons.join('、') || '无'}\n性格维度：文治${persona.dimensions.governance}/武功${persona.dimensions.military}/智略${persona.dimensions.wisdom}/博学${persona.dimensions.charisma}`
+    : '';
+
   const messages: LLMMessage[] = [
     {
       role: 'system',
-      content: '你是历史学家，负责为辩论做客观公正的总结评论。',
+      content: `你是历史学家，负责为辩论做客观公正的总结评论。${personaInjection}`,
     },
     {
       role: 'user',
@@ -127,6 +133,7 @@ export async function askDebateQuestion(
   pair: DebateFigurePair,
   rounds: DebateRound[],
   targetSide: 'pro' | 'con' | 'both',
+  persona?: UserPersona,
 ): Promise<{ proResponse?: string; conResponse?: string }> {
   const history = rounds
     .map(r => `正方：${r.proArgument}\n反方：${r.conArgument}`)
@@ -137,13 +144,17 @@ export async function askDebateQuestion(
 
   const promises: Promise<string>[] = [];
 
+  const personaContext = persona
+    ? `\n\n这位提问者是一位对历史充满热情的访客，其画像：朝代偏好${persona.favoriteDynasties.join('、') || '广泛'}，关注人物${persona.favoritePersons.join('、') || '众多'}，性格维度：文治${persona.dimensions.governance}/武功${persona.dimensions.military}/智略${persona.dimensions.wisdom}/博学${persona.dimensions.charisma}`
+    : '';
+
   if (targetSide === 'pro' || targetSide === 'both') {
     promises.push(
       callLLM([
         { role: 'system', content: buildFigurePrompt(pair.proFigureId, pair.proStance, true) },
         {
           role: 'user',
-          content: `辩论话题：${topic.title}\n辩论记录：${history}\n\n观众向你提问：${question}\n\n请以${proFigure?.name || '正方'}的身份回答这个问题，回应观众的关切。`,
+          content: `辩论话题：${topic.title}\n辩论记录：${history}\n\n观众向你提问：${question}${personaContext}\n\n请以${proFigure?.name || '正方'}的身份回答这个问题，回应观众的关切。`,
         },
       ], { maxTokens: 300, temperature: 0.7 }),
     );
@@ -155,7 +166,7 @@ export async function askDebateQuestion(
         { role: 'system', content: buildFigurePrompt(pair.conFigureId, pair.conStance, false) },
         {
           role: 'user',
-          content: `辩论话题：${topic.title}\n辩论记录：${history}\n\n观众向你提问：${question}\n\n请以${conFigure?.name || '反方'}的身份回答这个问题，回应观众的关切。`,
+          content: `辩论话题：${topic.title}\n辩论记录：${history}\n\n观众向你提问：${question}${personaContext}\n\n请以${conFigure?.name || '反方'}的身份回答这个问题，回应观众的关切。`,
         },
       ], { maxTokens: 300, temperature: 0.7 }),
     );

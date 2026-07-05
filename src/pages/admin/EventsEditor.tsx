@@ -21,7 +21,7 @@ export default function EventsEditor() {
     <EntityEditor
       type="events"
       title="事件管理"
-      listFn={adminGetEvents}
+      listFn={adminGetEvents as any}
       saveFn={adminSaveEvent as any}
       deleteFn={adminDeleteEvent as any}
       fields={fields}

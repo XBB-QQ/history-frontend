@@ -12,6 +12,7 @@ import {
   getEraTemplateById,
   calculatePosthumousTitleScore
 } from '@/data/features/titleData';
+import { usePersonaStore } from '@/store/personaStore';
 
 const TitleGeneratorPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -55,6 +56,8 @@ const TitleGeneratorPage = () => {
   }, [selectedTitleInfo]);
 
   const generateRandomTitle = () => {
+    // 记录浏览行为
+    usePersonaStore.getState().recordBrowse('topicsRead');
     const isPosthumous = Math.random() > 0.5;
     const title = isPosthumous
       ? getRandomPosthumousTitle()
@@ -232,7 +235,7 @@ const TitleGeneratorPage = () => {
       {/* Famous Titles Section */}
       <RevealOnScroll>
         <div className="max-w-6xl mx-auto px-4 py-12">
-          <SectionHeader title="🏆 知名谥号" subtitle="历史上的著名谥号" />
+          <SectionHeader label="POSTHUMOUS" title="知名谥号" description="历史上的著名谥号" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {FAMOUS_POSTHUMOUS_TITLES.map((title, index) => (
@@ -250,7 +253,7 @@ const TitleGeneratorPage = () => {
       {/* Era Templates Section */}
       <RevealOnScroll>
         <div className="max-w-6xl mx-auto px-4 pb-16">
-          <SectionHeader title="📅 年号模板" subtitle="古代年号的构成与意义" />
+          <SectionHeader label="ERA" title="年号模板" description="古代年号的构成与意义" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {ERA_TEMPLATES.slice(0, 6).map((template, index) => (

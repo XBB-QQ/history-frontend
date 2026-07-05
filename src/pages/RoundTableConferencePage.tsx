@@ -1,14 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   HISTORICAL_FIGURES,
-  ROUND_TABLE_TOPICS,
-  KNOWLEDGE_TAGS,
-  DYNASTY_GROUPS
+  ROUND_TABLE_TOPICS
 } from '../data/features/roundTableData';
 import SectionHeader from '../components/common/SectionHeader';
 import RevealOnScroll from '../components/common/RevealOnScroll';
-import { FaUsers, FaComments, FaLightbulb, FaHistory, FaGlobe, FaBook } from 'react-icons/fa';
+import { FaUsers, FaComments, FaLightbulb, FaHistory, FaGlobe } from 'react-icons/fa';
 
 const RoundTableConferencePage: React.FC = () => {
   const [selectedTopic, setSelectedTopic] = useState<string>('yin-yang');
@@ -55,10 +52,9 @@ const RoundTableConferencePage: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <RevealOnScroll>
           <SectionHeader
+            label="圆桌会议"
             title="跨朝代圆桌会议"
-            subtitle="穿越时空与历史对话，感受先贤的思想碰撞"
-            icon={<FaUsers className="w-12 h-12 text-purple-500" />}
-            gradient="from-purple-500 to-blue-500"
+            description="穿越时空与历史对话，感受先贤的思想碰撞"
           />
         </RevealOnScroll>
 
@@ -95,15 +91,9 @@ const RoundTableConferencePage: React.FC = () => {
           </div>
         </RevealOnScroll>
 
-        <AnimatePresence mode="wait">
+        <div>
           {currentTopic && (
-            <motion.div
-              key={currentTopic.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
-            >
+            <div>
               <RevealOnScroll>
                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
                   <div className="flex items-start justify-between mb-6">
@@ -224,7 +214,7 @@ const RoundTableConferencePage: React.FC = () => {
                             </div>
 
                             <div className="flex flex-wrap gap-1">
-                              {figure.tags.map(tag => (
+                              {figure.tags.map((tag: string) => (
                                 <span
                                   key={tag}
                                   className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded"
@@ -260,19 +250,17 @@ const RoundTableConferencePage: React.FC = () => {
                   </button>
                 </div>
               </RevealOnScroll>
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
+        </div>
 
-        <AnimatePresence>
-          {showDiscussion && currentTopic && (
+        {showDiscussion && currentTopic && (
             <DiscussionSession
               topic={currentTopic}
               participants={availableParticipants}
               onClose={() => setShowDiscussion(false)}
             />
           )}
-        </AnimatePresence>
       </div>
     </div>
   );
@@ -365,14 +353,10 @@ const DiscussionSession: React.FC<{
                 {discussionPoints.map((point, index) => {
                   const isCurrent = index === currentIndex;
                   const isPast = index < currentIndex;
-                  const isFuture = index > currentIndex;
 
                   return (
-                    <motion.div
+                    <div
                       key={point.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.2 }}
                       className={`p-4 rounded-xl ${
                         point.position === 'left'
                           ? 'bg-gradient-to-r from-purple-50 to-transparent border-l-4 border-purple-400'
@@ -415,7 +399,7 @@ const DiscussionSession: React.FC<{
                           </button>
                         </div>
                       )}
-                    </motion.div>
+                    </div>
                   );
                 })}
               </div>

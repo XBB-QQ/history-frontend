@@ -8,7 +8,7 @@
 import React, { useState, useMemo } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { ANCIENT_JOBS, ANCIENT_JOBS_BY_DYNASTY, POPULAR_JOBS, UNCOMMON_JOBS } from '@/data/features/jobsData';
+import { ANCIENT_JOBS, ANCIENT_JOBS_BY_DYNASTY, POPULAR_JOBS, UNCOMMON_JOBS, type AncientJob } from '@/data/features/jobsData';
 
 export default function JobsPage() {
   const [selectedDynasty, setSelectedDynasty] = useState<string>('全部');
@@ -61,9 +61,9 @@ export default function JobsPage() {
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
       <SectionHeader
+        label="JOBS"
         title="古代职业图鉴"
-        subtitle="穿越时空，了解古代人的生活与职业"
-        emoji="👔"
+        description="穿越时空，了解古代人的生活与职业"
       />
 
       <RevealOnScroll>

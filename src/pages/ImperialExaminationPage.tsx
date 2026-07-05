@@ -8,7 +8,7 @@
 import React, { useState, useMemo } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { EXAM_PAPERS, TYPE_STATS, CATEGORY_STATS } from '@/data/features/examinationData';
+import { EXAM_PAPERS, TYPE_STATS, CATEGORY_STATS, type ExamPaper } from '@/data/features/examinationData';
 
 import './ImperialExaminationPage.module.css';
 
@@ -90,9 +90,9 @@ export default function ImperialExaminationPage() {
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
       <SectionHeader
+        label="EXAMINATION"
         title="科举考试沉浸模拟器"
-        subtitle="穿越回古代，体验科举考试的氛围"
-        emoji="📜"
+        description="穿越回古代，体验科举考试的氛围"
       />
 
       <RevealOnScroll>

@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { useI18nStore } from '@/i18n/i18n';
 import HomePage from './pages/HomePage';
 const TimelinePage = lazy(() => import('./pages/TimelinePage'));
+const TimelineHubPage = lazy(() => import('./pages/TimelineHubPage'));
 const DynastiesPage = lazy(() => import('./pages/DynastiesPage'));
 const PersonsPage = lazy(() => import('./pages/PersonsPage'));
 const KnowledgePage = lazy(() => import('./pages/KnowledgePage'));
@@ -54,9 +55,16 @@ const JobsPage = lazy(() => import('./pages/JobsPage'));
 const PlagueHistoryPage = lazy(() => import('./pages/PlagueHistoryPage'));
 const HistoricalTrialPage = lazy(() => import('./pages/HistoricalTrialPage'));
 const PersonalHistoryPage = lazy(() => import('./pages/PersonalHistoryPage'));
+const MeasureConverterPage = lazy(() => import('./pages/MeasureConverterPage'));
 const ImperialExaminationPage = lazy(() => import('./pages/ImperialExaminationPage'));
 const SoundMuseumPage = lazy(() => import('./pages/SoundMuseumPage'));
 const ContributionPage = lazy(() => import('./pages/ContributionPage'));
+const ColorHistoryPage = lazy(() => import('./pages/ColorHistoryPage'));
+const DocumentGeneratorPage = lazy(() => import('./pages/DocumentGeneratorPage'));
+const DramaFactCheckPage = lazy(() => import('./pages/DramaFactCheckPage'));
+const ArtifactQuizPage = lazy(() => import('./pages/ArtifactQuizPage'));
+const AnnualReportPage = lazy(() => import('./pages/AnnualReportPage'));
+const WidgetDocsPage = lazy(() => import('./pages/WidgetDocsPage'));
 const TopicListPage = lazy(() => import('./pages/TopicListPage'));
 const TopicDetailPage = lazy(() => import('./pages/TopicDetailPage'));
 const ScentMuseumPage = lazy(() => import('./pages/ScentMuseumPage'));
@@ -68,6 +76,8 @@ const RoundTableConferencePage = lazy(() => import('./pages/RoundTableConference
 const ScriptKillerPage = lazy(() => import('./pages/ScriptKillerPage'));
 const EntropyModelPage = lazy(() => import('./pages/EntropyModelPage'));
 const FuturePredictionPage = lazy(() => import('./pages/FuturePredictionPage'));
+const StoryQuestPage = lazy(() => import('./pages/StoryQuestPage'));
+const MediaBridgePage = lazy(() => import('./pages/MediaBridgePage'));
 
 // 后台管理页面（不用 lazy，避免 SSR 问题）
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -133,6 +143,7 @@ function App() {
           {/* 前台路由 */}
           <Route path="/" element={<HomePage />} />
           <Route path="/timeline" element={<TimelinePage />} />
+          <Route path="/timeline-hub" element={<TimelineHubPage />} />
           <Route path="/dynasties" element={<DynastiesPage />} />
           <Route path="/persons" element={<PersonsPage />} />
           <Route path="/knowledge" element={<KnowledgePage />} />
@@ -185,12 +196,19 @@ function App() {
           <Route path="/plague-history" element={<PlagueHistoryPage />} />
           <Route path="/historical-trial" element={<HistoricalTrialPage />} />
           <Route path="/personal-history" element={<PersonalHistoryPage />} />
+          <Route path="/measure" element={<MeasureConverterPage />} />
           <Route path="/examination" element={<ImperialExaminationPage />} />
           <Route path="/sound-museum" element={<SoundMuseumPage />} />
           <Route path="/contribution" element={<ContributionPage />} />
           <Route path="/topics" element={<TopicListPage />} />
           <Route path="/topic/:uid" element={<TopicDetailPage />} />
           <Route path="/scent-museum" element={<ScentMuseumPage />} />
+          <Route path="/color-history" element={<ColorHistoryPage />} />
+          <Route path="/document-generator" element={<DocumentGeneratorPage />} />
+          <Route path="/drama-fact-check" element={<DramaFactCheckPage />} />
+          <Route path="/artifact-quiz" element={<ArtifactQuizPage />} />
+          <Route path="/annual-report" element={<AnnualReportPage />} />
+          <Route path="/docs/widgets" element={<WidgetDocsPage />} />
           <Route path="/title-generator" element={<TitleGeneratorPage />} />
           <Route path="/oracle-game" element={<OracleBoneGamePage />} />
 <Route path="/transport-timeline" element={<TransportTimelinePage />} />
@@ -199,6 +217,8 @@ function App() {
 <Route path="/script-killer" element={<ScriptKillerPage />} />
 <Route path="/entropy-model" element={<EntropyModelPage />} />
 <Route path="/future-prediction" element={<FuturePredictionPage />} />
+          <Route path="/story-quest" element={<StoryQuestPage />} />
+          <Route path="/media-bridge" element={<MediaBridgePage />} />
 
           {/* 后台管理路由 */}
           <Route path="/admin/login" element={<AdminLoginPage />} />

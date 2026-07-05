@@ -41,9 +41,9 @@ export default function CurrencyConverterPage() {
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
       <SectionHeader
+        label="CURRENCY"
         title="货币购买力换算器"
-        subtitle="穿越时空，了解古代货币的实际价值"
-        emoji="💰"
+        description="穿越时空，了解古代货币的实际价值"
       />
 
       <RevealOnScroll>

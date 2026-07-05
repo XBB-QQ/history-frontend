@@ -34,5 +34,5 @@ export function useFilteredByYear(events: EventItem[], persons: PersonItem[]) {
     });
 
     return { events: filteredEvents, persons: filteredPersons };
-  }, [events, persons, year, precision, active, tolerance]);
+  }, [events, persons, year, precision, active]);
 }

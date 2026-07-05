@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { fetchDailyRecommend, type TodayEvent } from '@/services/api';
 import { useDetailStore } from '@/store/detailStore';
+import { getFeaturedRoutes } from '@/data/features/storyQuests';
+import { useQuestStore } from '@/store/questStore';
+import { Link } from 'react-router-dom';
 
 /**
  * 每日推荐卡片
@@ -42,7 +45,6 @@ export default function DailyRecommendCard() {
         title: event.title,
         year: event.year,
         yearDisplay: event.yearDisplay,
-        yearPrecision: 'exact',
         category: event.category,
         dynasty: event.dynastyName ?? '',
         description: event.description,
@@ -50,8 +52,6 @@ export default function DailyRecommendCard() {
         tags: event.tags,
         relatedEvents: event.relatedEvents,
         relatedPersons: event.relatedPersons,
-        source: '',
-        crawlDate: '',
       });
     }
   };
@@ -128,6 +128,43 @@ export default function DailyRecommendCard() {
           ))}
         </div>
       )}
+
+      {/* 今日推荐研学线 */}
+      <div className="mt-5 pt-4 border-t border-ink-100 dark:border-ink-800">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-xs font-bold text-ink-400 dark:text-ink-500 uppercase tracking-wider mb-1">
+              📚 今日推荐研学线
+            </div>
+            {(() => {
+              const featured = getFeaturedRoutes(1)[0];
+              if (!featured) return null;
+              const percent = useQuestStore.getState().progress[featured.id]
+                ? Math.round(
+                    useQuestStore.getState().progress[featured.id].nodeStatuses.filter((n) => n.completed).length /
+                    useQuestStore.getState().progress[featured.id].nodeStatuses.length * 100
+                  )
+                : 0;
+              return (
+                <>
+                  <div className="text-sm font-bold text-ink-900 dark:text-ink-100">
+                    {featured.emoji} {featured.name}
+                  </div>
+                  <div className="text-xs text-ink-500 dark:text-ink-400">
+                    {featured.nodes.length} 个节点 · {percent > 0 ? `${percent}% 已完成` : '尚未开始'}
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+          <Link
+            to="/story-quest"
+            className="text-sm px-4 py-2 rounded-xl bg-accent/10 text-accent hover:bg-accent/20 transition-colors flex-shrink-0 ml-4"
+          >
+            去研学 →
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

@@ -39,7 +39,7 @@ export interface HistorianComment {
 }
 
 /** 生成史官评语 */
-export async function generateHistorianComment(portrait: UserPortrait): Promise<HistorianComment> {
+export async function generateHistorianComment(portrait: UserPortrait, personaContext?: string): Promise<HistorianComment> {
   const portraitDesc = [
     `常览朝代：${portrait.topDynasties.join('、')}`,
     `关注人物：${portrait.topPersons.join('、')}`,
@@ -48,10 +48,15 @@ export async function generateHistorianComment(portrait: UserPortrait): Promise<
     portrait.matchedFigure ? `最像的历史人物：${portrait.matchedFigure}` : '',
   ].filter(Boolean).join('\n');
 
+  // 注入 persona 上下文（AI 记忆中枢）
+  const personaInjection = personaContext
+    ? `\n\n--- AI 记忆中枢 ---\n${personaContext}`
+    : '';
+
   const messages: LLMMessage[] = [
     {
       role: 'system',
-      content: `你是"五千年史馆"的 AI 史官，负责为每位访客撰写个性化评语。
+      content: `你是"五千年史馆"的 AI 史官，负责为每位访客撰写个性化评语。${personaInjection}
 
 你需要用三种风格撰写：
 1. 正史体：模仿《史记》人物列传的风格，用文言文评价此人

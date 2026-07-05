@@ -23,7 +23,7 @@ export default function DynastiesEditor() {
     <EntityEditor
       type="dynasties"
       title="朝代管理"
-      listFn={adminGetDynasties}
+      listFn={adminGetDynasties as any}
       saveFn={adminSaveDynasty as any}
       deleteFn={adminDeleteDynasty as any}
       fields={fields}
