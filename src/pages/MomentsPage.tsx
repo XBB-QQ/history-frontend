@@ -2,59 +2,74 @@
  * 历史人物朋友圈页面 — 支持点赞和评论互动
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import {
   getMomentFeed,
+  subscribeFeedUpdate,
+  regenerateMomentFeed,
   SCENES,
-  PRESET_DATA,
   toggleLike,
   addUserComment,
   replyToUserComment,
   getAllComments,
-  clearMomentCache,
   type Scene,
   type MomentFeed,
   type MomentPost,
   type MomentComment,
 } from '@/features/momentsFeed';
-import { hasApiKey } from '@/utils/llmConfig';
 
 export default function MomentsPage() {
   const [activeScene, setActiveScene] = useState<Scene | null>(null);
   const [feed, setFeed] = useState<MomentFeed | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
   const [error, setError] = useState('');
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
   const [replyingPostId, setReplyingPostId] = useState<string | null>(null);
 
-  const handleSelectScene = useCallback((scene: Scene) => {
-    if (loading) return;
+  const handleSelectScene = useCallback(async (scene: Scene) => {
+    if (regenerating) return;
     setActiveScene(scene);
     setError('');
+    setFeed(null);
 
-    const preset = PRESET_DATA[scene.id];
-
-    if (preset) {
-      setFeed(preset);
+    try {
+      const result = await getMomentFeed(scene);
+      setFeed(result.feed);
+      setAiGenerating(result.isAiGenerating);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '生成失败');
+      setAiGenerating(false);
     }
+  }, [regenerating]);
 
-    if (!hasApiKey()) {
-      return;
+  // 订阅后台 AI 生成完成，自动用 AI 内容替换预设数据
+  useEffect(() => {
+    if (!activeScene) return;
+    const unsubscribe = subscribeFeedUpdate(activeScene.id, (newFeed) => {
+      setFeed(newFeed);
+      setAiGenerating(false);
+    });
+    return unsubscribe;
+  }, [activeScene]);
+
+  const handleRegenerate = useCallback(async () => {
+    if (!activeScene || regenerating) return;
+    setRegenerating(true);
+    setError('');
+    setAiGenerating(false);
+    try {
+      const newFeed = await regenerateMomentFeed(activeScene);
+      setFeed(newFeed);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '生成失败');
+    } finally {
+      setRegenerating(false);
     }
-
-    setLoading(true);
-    getMomentFeed(scene)
-      .then((result) => setFeed(result))
-      .catch((e) => {
-        if (!preset) {
-          setError(e instanceof Error ? e.message : '生成失败');
-        }
-      })
-      .finally(() => setLoading(false));
-  }, [loading]);
+  }, [activeScene, regenerating]);
 
   const handleLike = useCallback((post: MomentPost) => {
     const result = toggleLike(post.id);
@@ -107,7 +122,6 @@ export default function MomentsPage() {
     setCommentInputs((prev) => ({ ...prev, [postId]: value }));
   }, []);
 
-  const apiReady = hasApiKey();
 
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
@@ -120,26 +134,19 @@ export default function MomentsPage() {
           />
         </RevealOnScroll>
 
-        {!apiReady && (
-          <RevealOnScroll direction="up" delay={200}>
-            <div className="mt-8 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 text-sm">
-              ⚙️ 需先配置 LLM API Key — 点击页面右上角"⚙️ 配置"按钮
-            </div>
-          </RevealOnScroll>
-        )}
 
         {/* 场景选择 */}
         <RevealOnScroll direction="up" delay={200}>
           <div className="mt-8 p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
             <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-              ⏳ 选择历史时刻
+              选择历史时刻
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {SCENES.map((scene) => (
                 <button
                   key={scene.id}
                   onClick={() => handleSelectScene(scene)}
-                  disabled={loading}
+                  disabled={regenerating}
                   className={`p-4 rounded-lg text-left transition-all border ${
                     activeScene?.id === scene.id
                       ? 'bg-accent/10 border-accent shadow-md'
@@ -171,8 +178,8 @@ export default function MomentsPage() {
           </div>
         </RevealOnScroll>
 
-        {/* 加载中 */}
-        {loading && !feed && (
+        {/* 重新生成中 */}
+        {regenerating && (
           <RevealOnScroll direction="fade">
             <div className="mt-6 p-8 text-center">
               <div className="inline-block w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin mb-3" />
@@ -191,7 +198,7 @@ export default function MomentsPage() {
         )}
 
         {/* 朋友圈展示 */}
-        {feed && !loading && (
+        {feed && !regenerating && (
           <RevealOnScroll direction="up" delay={300}>
             <div className="mt-6 space-y-4">
               {/* 场景标题 */}
@@ -201,6 +208,14 @@ export default function MomentsPage() {
                   {feed.sceneName}
                 </div>
               </div>
+
+              {/* AI 后台生成中提示 */}
+              {aiGenerating && (
+                <div className="p-3 bg-accent/5 dark:bg-accent/10 rounded-lg border border-accent/20 text-center text-xs text-accent flex items-center justify-center gap-2">
+                  <span className="inline-block w-3 h-3 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+                  AI 正在生成更精彩的朋友圈内容，完成后自动替换…
+                </div>
+              )}
 
               {/* 动态列表 */}
               {feed.posts.map((post, i) => (
@@ -298,14 +313,11 @@ export default function MomentsPage() {
               {activeScene && (
                 <div className="text-center">
                   <button
-                    onClick={() => {
-                      clearMomentCache();
-                      handleSelectScene(activeScene);
-                    }}
-                    disabled={loading}
-                    className="text-xs px-4 py-2 rounded-full bg-accent/10 text-accent hover:bg-accent hover:text-white transition-all"
+                    onClick={handleRegenerate}
+                    disabled={regenerating || aiGenerating}
+                    className="text-xs px-4 py-2 rounded-full bg-accent/10 text-accent hover:bg-accent hover:text-white transition-all disabled:opacity-50"
                   >
-                    🔄 重新生成这组朋友圈
+                    {regenerating ? '🔄 生成中…' : '🔄 重新生成这组朋友圈'}
                   </button>
                 </div>
               )}

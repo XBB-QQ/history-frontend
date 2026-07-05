@@ -10,7 +10,6 @@ import { useUserStore } from '@/store/userStore';
 import { useFavoriteStore } from '@/store/favoriteStore';
 import { computeProfile } from '@/features/profileReport';
 import { generateGeneReportStream } from '@/features/geneReport';
-import { hasApiKey } from '@/utils/llmConfig';
 import {
   PERSONALITY_MATCHES,
   DIMENSION_LABELS,
@@ -22,24 +21,18 @@ import DimensionRadar from '@/components/profile/DimensionRadar';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 
-/** 轻量 Markdown 渲染（仅处理 ## 标题、**加粗**、段落） */
-function renderMiniMarkdown(text: string) {
+/** 渲染基因检测报告 — 解析【】标题，其余按段落显示 */
+function renderGeneReport(text: string) {
   const lines = text.split('\n');
   const blocks: JSX.Element[] = [];
   lines.forEach((line, i) => {
     const trimmed = line.trim();
     if (!trimmed) return;
-    if (trimmed.startsWith('### ')) {
-      blocks.push(<h4 key={i} className="text-base font-bold text-accent mt-4 mb-2">{trimmed.slice(4)}</h4>);
-    } else if (trimmed.startsWith('## ')) {
-      blocks.push(<h3 key={i} className="text-lg font-bold text-ink-900 dark:text-ink-100 mt-5 mb-3 border-l-4 border-accent pl-3">{trimmed.slice(3)}</h3>);
+    const titleMatch = trimmed.match(/^【(.+)】$/);
+    if (titleMatch) {
+      blocks.push(<h4 key={i} className="text-base font-bold text-accent mt-4 mb-2">{titleMatch[1]}</h4>);
     } else {
-      const parts = trimmed.split(/(\*\*[^*]+\*\*)/g).map((p, j) =>
-        p.startsWith('**') && p.endsWith('**')
-          ? <strong key={j} className="font-bold text-accent">{p.slice(2, -2)}</strong>
-          : <span key={j}>{p}</span>,
-      );
-      blocks.push(<p key={i} className="text-sm text-ink-700 dark:text-ink-300 leading-loose mb-2">{parts}</p>);
+      blocks.push(<p key={i} className="text-sm text-ink-700 dark:text-ink-300 leading-loose mb-2">{trimmed}</p>);
     }
   });
   return blocks;
@@ -90,8 +83,7 @@ function ProfileReportPage() {
       setGenerating(false);
     }
   }, [report, matchedPersonality, user, favorites.length]);
-
-  const apiReady = hasApiKey();
+
 
   // 生成日期
   const today = new Date().toLocaleDateString('zh-CN', {
@@ -315,7 +307,6 @@ function ProfileReportPage() {
             <RevealOnScroll direction="up" delay={700}>
               <div ref={reportRef} className="mt-6 p-6 bg-gradient-to-br from-accent/5 via-purple-500/5 to-amber-500/5 dark:from-accent/10 dark:via-purple-700/10 dark:to-amber-700/10 rounded-xl border border-accent/30">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="text-3xl">🧬</span>
                   <div>
                     <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">
                       历史基因检测报告
@@ -326,19 +317,13 @@ function ProfileReportPage() {
                   </div>
                 </div>
 
-                {!apiReady && (
-                  <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800 text-sm text-amber-700 dark:text-amber-400">
-                    ⚙️ 需先配置 LLM API Key — 点击页面右上角"⚙️ 配置"按钮
-                  </div>
-                )}
-
-                {apiReady && !geneReport && !generating && (
+                {!geneReport && !generating && (
                   <button
                     onClick={handleGenerateGene}
                     disabled={!report.hasData}
                     className="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-purple-600 text-white font-bold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                   >
-                    {report.hasData ? '🧬 开始基因检测' : '需要浏览数据后才能检测'}
+                    {report.hasData ? '开始基因检测' : '需要浏览数据后才能检测'}
                   </button>
                 )}
 
@@ -357,7 +342,7 @@ function ProfileReportPage() {
 
                 {geneReport && (
                   <div className="mt-4 p-4 bg-white/70 dark:bg-ink-900/70 rounded-lg border border-ink-200 dark:border-ink-700">
-                    {renderMiniMarkdown(geneReport)}
+                    {renderGeneReport(geneReport)}
                     {generating && (
                       <span className="inline-block w-2 h-5 bg-accent animate-pulse ml-1" />
                     )}

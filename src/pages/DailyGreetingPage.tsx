@@ -17,7 +17,6 @@ import {
   needTodayGreeting,
   type GreetingMessage,
 } from '@/features/dailyGreeting';
-import { hasApiKey } from '@/utils/llmConfig';
 
 export default function DailyGreetingPage() {
   const [followedIds, setFollowedIds] = useState<string[]>([]);
@@ -63,7 +62,6 @@ export default function DailyGreetingPage() {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
 
-  const apiReady = hasApiKey();
 
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
@@ -76,19 +74,12 @@ export default function DailyGreetingPage() {
           />
         </RevealOnScroll>
 
-        {!apiReady && (
-          <RevealOnScroll direction="up" delay={200}>
-            <div className="mt-8 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 text-sm">
-              ⚙️ 需先配置 LLM API Key — 点击页面右上角"⚙️ 配置"按钮
-            </div>
-          </RevealOnScroll>
-        )}
 
         {/* 人物关注列表 */}
         <RevealOnScroll direction="up" delay={200}>
           <div className="mt-8 p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
             <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-              👥 关注人物（已关注 {followedIds.length} 人）
+              关注人物（已关注 {followedIds.length} 人）
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               {FIGURES.map((fig) => {
@@ -106,13 +97,13 @@ export default function DailyGreetingPage() {
                     <span className="text-2xl">{fig.emoji}</span>
                     <span className="text-xs mt-1 font-bold">{fig.name}</span>
                     <span className="text-[10px] opacity-70">{fig.dynasty}</span>
-                    {followed && <span className="text-[10px] mt-1 text-accent">✨ 已关注</span>}
+                    {followed && <span className="text-[10px] mt-1 text-accent">已关注</span>}
                   </button>
                 );
               })}
             </div>
             <p className="mt-3 text-xs text-ink-500 dark:text-ink-400 text-center">
-              💡 关注的人物每天会给你发问候消息
+              关注的人物每天会给你发问候消息
             </p>
           </div>
         </RevealOnScroll>
@@ -124,7 +115,7 @@ export default function DailyGreetingPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100">
-                    📬 今日问候
+                    今日问候
                   </h3>
                   <p className="text-xs text-ink-500 dark:text-ink-400">
                     {new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}
@@ -136,7 +127,7 @@ export default function DailyGreetingPage() {
                     disabled={loading}
                     className="px-4 py-2 rounded-lg bg-accent text-white text-sm font-bold hover:shadow-lg disabled:opacity-50 transition-all"
                   >
-                    {loading ? '发送中…' : '📨 接收问候'}
+                    {loading ? '发送中…' : '接收问候'}
                   </button>
                 )}
               </div>
@@ -190,7 +181,7 @@ export default function DailyGreetingPage() {
           <RevealOnScroll direction="up" delay={400}>
             <div className="mt-6 p-6 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
               <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-4">
-                📜 历史问候 ({historyGreetings.length})
+                历史问候 ({historyGreetings.length})
               </h3>
               <div className="space-y-3 max-h-[500px] overflow-y-auto">
                 {historyGreetings.map((g) => (
@@ -217,7 +208,6 @@ export default function DailyGreetingPage() {
         {todayGreetings.length === 0 && !showRefresh && historyGreetings.length === 0 && (
           <RevealOnScroll direction="fade">
             <div className="mt-8 p-8 bg-white/50 dark:bg-ink-900/50 rounded-xl border border-ink-200 dark:border-ink-700 text-center">
-              <div className="text-5xl mb-3">📭</div>
               <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2">
                 暂无问候消息
               </h3>

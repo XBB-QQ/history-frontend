@@ -48,31 +48,38 @@ export async function generateHistorianComment(portrait: UserPortrait, personaCo
     portrait.matchedFigure ? `最像的历史人物：${portrait.matchedFigure}` : '',
   ].filter(Boolean).join('\n');
 
-  // 注入 persona 上下文（AI 记忆中枢）
+  // 注入 persona 上下文（用户画像）
   const personaInjection = personaContext
-    ? `\n\n--- AI 记忆中枢 ---\n${personaContext}`
+    ? `\n\n--- 用户画像 ---\n${personaContext}`
     : '';
 
   const messages: LLMMessage[] = [
     {
       role: 'system',
-      content: `你是"五千年史馆"的 AI 史官，负责为每位访客撰写个性化评语。${personaInjection}
+      content: `你是"五千年史馆"的史官，负责为每位访客撰写个性化评语。${personaInjection}
 
 你需要用三种风格撰写：
 1. 正史体：模仿《史记》人物列传的风格，用文言文评价此人
-2. 稗官体：用民间说书的风格，通俗有趣，像茶馆里的故事
+2. 稗官体：用民间说书的风格，通俗有趣
 3. 谥议体：模仿古代谥号评定格式，如"某某皇帝，谥曰XX，XX之君也"
 
 格式要求：
+- 输出纯文本，不要使用 Markdown 语法（不要 ##、**、代码块等），不要使用 emoji，不要输出 JSON
 - 每种风格各 100-150 字
 - 最后给出一条学习建议（30字以内）
-- 使用以下 JSON 格式输出：
-{
-  "formal": "正史体评语",
-  "anecdotal": "稗官体评语",
-  "eulogy": "谥议体评语",
-  "suggestion": "学习建议"
-}`,
+- 用【】标注各段，格式如下：
+
+【正史体】
+（正史体评语内容）
+
+【稗官体】
+（稗官体评语内容）
+
+【谥议体】
+（谥议体评语内容）
+
+【史官建议】
+（学习建议）`,
     },
     {
       role: 'user',
@@ -82,29 +89,50 @@ export async function generateHistorianComment(portrait: UserPortrait, personaCo
 
   const raw = await callLLM(messages, { maxTokens: 800, temperature: 0.8 });
 
-  // 尝试解析 JSON
-  try {
-    // 提取 JSON 部分（可能被 markdown code block 包裹）
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      const parsed = JSON.parse(jsonMatch[0]);
-      return {
-        formal: parsed.formal || '',
-        anecdotal: parsed.anecdotal || '',
-        eulogy: parsed.eulogy || '',
-        suggestion: parsed.suggestion || '',
-      };
+  return parseHistorianComment(raw);
+}
+
+/** 解析史官评语（支持【】标注的纯文本格式） */
+function parseHistorianComment(raw: string): HistorianComment {
+  const buffers: Record<string, string[]> = {};
+  let currentLabel = '';
+
+  for (const line of raw.split(/\r?\n/)) {
+    const m = line.match(/^【([^】]+)】\s*(.*)$/);
+    if (m) {
+      currentLabel = m[1].trim();
+      buffers[currentLabel] = [];
+      if (m[2].trim()) buffers[currentLabel].push(m[2].trim());
+    } else if (currentLabel && line.trim()) {
+      buffers[currentLabel].push(line.trim());
     }
-  } catch {
-    // JSON 解析失败，返回原始文本
   }
 
-  return {
-    formal: raw,
-    anecdotal: '',
-    eulogy: '',
-    suggestion: '',
+  const pick = (...labels: string[]) => {
+    for (const label of labels) {
+      if (buffers[label] && buffers[label].length > 0) {
+        return buffers[label].join('\n');
+      }
+    }
+    return '';
   };
+
+  const formal = pick('正史体');
+  const anecdotal = pick('稗官体');
+  const eulogy = pick('谥议体');
+  const suggestion = pick('史官建议', '学习建议', '建议');
+
+  // 兜底：完全没解析出来时把原文塞进 formal
+  if (!formal && !anecdotal && !eulogy && !suggestion) {
+    return {
+      formal: raw.trim(),
+      anecdotal: '',
+      eulogy: '',
+      suggestion: '',
+    };
+  }
+
+  return { formal, anecdotal, eulogy, suggestion };
 }
 
 /** 基于浏览历史构建用户画像（简化版，从 localStorage） */
@@ -170,10 +198,9 @@ export async function chatWithHistorian(
     ? `\n\n你之前为这位访客撰写的评语：\n- 正史体：${previousComment.formal}\n- 稗官体：${previousComment.anecdotal}\n- 谥议体：${previousComment.eulogy}\n- 建议：${previousComment.suggestion}`
     : '';
 
-  const systemPrompt = `你是"五千年史馆"的 AI 史官，一位博古通今、持中守正的史学大家。
+  const systemPrompt = `你是"五千年史馆"的史官。
 
 你的人设：
-- 性格：博学、睿智、略带古风但不迂腐，偶尔幽默
 - 语言：现代白话为主，重要观点可用文言点缀，但要让现代人能懂
 - 立场：客观公正，不偏袒任何朝代，但会基于史实给出独到见解
 - 与访客的关系：你已为这位访客撰写过评语，现在他来追问，你要保持评语中的判断一致性
@@ -185,6 +212,7 @@ export async function chatWithHistorian(
 - 可以反问访客引导深入思考
 - 涉及争议历史时，呈现多元观点
 - 不要重复之前评语的原话，但可以引用其中的判断
+- 不要使用 Markdown 语法，不要使用 emoji
 - 不要说"作为AI"之类的自我指涉`;
 
   const messages: LLMMessage[] = [

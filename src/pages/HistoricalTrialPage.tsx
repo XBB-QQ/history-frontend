@@ -26,7 +26,6 @@ import {
   type TrialAnalysis,
   type VerdictComparison,
 } from '@/features/trialAI';
-import { hasApiKey } from '@/utils/llmConfig';
 import { usePersonaStore } from '@/store/personaStore';
 
 /* ─── 类型声明 ─── */
@@ -102,7 +101,6 @@ export default function HistoricalTrialPage() {
     reason: '',
   });
 
-  const apiReady = hasApiKey();
 
   const allDynasties = useMemo(() => {
     const dynasties = ['全部', ...Object.keys(TRIALS_BY_DYNASTY)];
@@ -146,7 +144,7 @@ export default function HistoricalTrialPage() {
 
   // AI 法官评析
   const handleAnalyze = useCallback(async () => {
-    if (!selectedTrial || !apiReady) return;
+    if (!selectedTrial) return;
     setAnalysisLoading(true);
     try {
       const persona = usePersonaStore.getState().persona;
@@ -157,11 +155,11 @@ export default function HistoricalTrialPage() {
     } finally {
       setAnalysisLoading(false);
     }
-  }, [selectedTrial, apiReady]);
+  }, [selectedTrial]);
 
   // 用户判案对比
   const handleCompareVerdict = useCallback(async () => {
-    if (!selectedTrial || !apiReady) return;
+    if (!selectedTrial) return;
     setComparisonLoading(true);
     try {
       const persona = usePersonaStore.getState().persona;
@@ -172,11 +170,11 @@ export default function HistoricalTrialPage() {
     } finally {
       setComparisonLoading(false);
     }
-  }, [selectedTrial, userVerdict, apiReady]);
+  }, [selectedTrial, userVerdict]);
 
   // 法学科普
   const handleLegalEducation = useCallback(async () => {
-    if (!selectedTrial || !apiReady) return;
+    if (!selectedTrial) return;
     setEducationLoading(true);
     try {
       const result = await generateLegalEducation(selectedTrial);
@@ -186,14 +184,14 @@ export default function HistoricalTrialPage() {
     } finally {
       setEducationLoading(false);
     }
-  }, [selectedTrial, apiReady]);
+  }, [selectedTrial]);
 
   /* ─── Tab 定义 ─── */
-  const tabs: { id: TabId; label: string; emoji: string; disabled?: boolean }[] = [
-    { id: 'detail', label: '案件详情', emoji: '📋' },
-    { id: 'analyze', label: 'AI 评析', emoji: '🧠', disabled: !apiReady },
-    { id: 'judge', label: '你来当法官', emoji: '⚖️', disabled: !apiReady },
-    { id: 'learn', label: '法学科普', emoji: '📚', disabled: !apiReady },
+  const tabs: { id: TabId; label: string; disabled?: boolean }[] = [
+    { id: 'detail', label: '案件详情' },
+    { id: 'analyze', label: 'AI 评析' },
+    { id: 'judge', label: '你来当法官' },
+    { id: 'learn', label: '法学科普' },
   ];
 
   return (
@@ -270,8 +268,8 @@ export default function HistoricalTrialPage() {
                   <Badge text={trial.verdict} colorClass={VERDICT_COLORS[trial.verdict] || 'bg-gray-100 text-gray-800'} />
                 </div>
                 <div className="text-xs text-ink-500 dark:text-ink-400 space-y-1">
-                  <div>📅 {trial.dynasty} · {trial.period}</div>
-                  <div>⚖️ {trial.judge}</div>
+                  <div>{trial.dynasty} · {trial.period}</div>
+                  <div>{trial.judge}</div>
                   <Badge text={trial.type} colorClass={TYPE_COLORS[trial.type] || ''} />
                 </div>
                 <p className="text-xs text-ink-400 dark:text-ink-500 mt-2 line-clamp-2">{trial.accusation}</p>
@@ -281,7 +279,6 @@ export default function HistoricalTrialPage() {
 
           {filteredTrials.length === 0 && (
             <div className="text-center py-16 text-ink-400">
-              <div className="text-4xl mb-2">🔍</div>
               <p>没有找到符合条件的案件</p>
             </div>
           )}
@@ -290,7 +287,7 @@ export default function HistoricalTrialPage() {
         {/* 统计信息 */}
         <RevealOnScroll direction="up" delay={300}>
           <div className="mt-12 p-6 rounded-xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900">
-            <h2 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">📊 审判统计</h2>
+            <h2 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">审判统计</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
               <div>
                 <div className="text-2xl font-bold text-ink-900 dark:text-ink-100">{HISTORICAL_TRIALS.length}</div>
@@ -358,7 +355,7 @@ export default function HistoricalTrialPage() {
                     <div className="flex items-center gap-2 mt-1 flex-wrap">
                       <Badge text={selectedTrial.verdict} colorClass={VERDICT_COLORS[selectedTrial.verdict] || ''} />
                       <Badge text={selectedTrial.type} colorClass={TYPE_COLORS[selectedTrial.type] || ''} />
-                      <span className="text-xs text-ink-500">📅 {selectedTrial.dynasty} · {selectedTrial.period}</span>
+                      <span className="text-xs text-ink-500">{selectedTrial.dynasty} · {selectedTrial.period}</span>
                     </div>
                   </div>
                   <button onClick={handleCloseTrial} className="text-ink-400 hover:text-ink-900 dark:hover:text-ink-100 text-2xl leading-none">✕</button>
@@ -379,7 +376,7 @@ export default function HistoricalTrialPage() {
                           : 'text-ink-600 dark:text-ink-400 hover:bg-ink-100 dark:hover:bg-ink-800'
                       }`}
                     >
-                      {tab.emoji} {tab.label}
+                      {tab.label}
                     </button>
                   ))}
                 </div>
@@ -392,15 +389,15 @@ export default function HistoricalTrialPage() {
                   <div className="space-y-5">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <div className="p-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
-                        <div className="text-xs text-ink-500">📍 地点</div>
+                        <div className="text-xs text-ink-500">地点</div>
                         <div className="font-bold text-ink-900 dark:text-ink-100 mt-1">{selectedTrial.location}</div>
                       </div>
                       <div className="p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700">
-                        <div className="text-xs text-purple-500">⚖️ 审判者</div>
+                        <div className="text-xs text-purple-500">审判者</div>
                         <div className="font-bold text-purple-700 dark:text-purple-300 mt-1">{selectedTrial.judge}</div>
                       </div>
                       <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700">
-                        <div className="text-xs text-blue-500">👤 关键人物</div>
+                        <div className="text-xs text-blue-500">关键人物</div>
                         <div className="flex flex-wrap gap-1 mt-1">
                           {selectedTrial.keyFigures.slice(0, 4).map((p, i) => (
                             <span key={i} className="px-2 py-0.5 rounded text-xs bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200">{p}</span>
@@ -411,11 +408,11 @@ export default function HistoricalTrialPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-                        <h4 className="text-sm font-bold text-red-700 dark:text-red-300 mb-2">⚖️ 指控</h4>
+                        <h4 className="text-sm font-bold text-red-700 dark:text-red-300 mb-2">指控</h4>
                         <p className="text-sm text-red-600 dark:text-red-400">{selectedTrial.accusation}</p>
                       </div>
                       <div className="p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
-                        <h4 className="text-sm font-bold text-green-700 dark:text-green-300 mb-2">🛡️ 辩护</h4>
+                        <h4 className="text-sm font-bold text-green-700 dark:text-green-300 mb-2">辩护</h4>
                         <p className="text-sm text-green-600 dark:text-green-400">{selectedTrial.defense}</p>
                       </div>
                     </div>
@@ -425,7 +422,7 @@ export default function HistoricalTrialPage() {
                     </div>
 
                     <div>
-                      <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">🏛️ 历史后果</h4>
+                      <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">历史后果</h4>
                       <ul className="space-y-1.5">
                         {selectedTrial.consequences.map((c, i) => (
                           <li key={i} className="text-sm text-ink-600 dark:text-ink-400 flex items-start gap-2">
@@ -436,12 +433,12 @@ export default function HistoricalTrialPage() {
                     </div>
 
                     <div>
-                      <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">📚 历史意义</h4>
+                      <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">历史意义</h4>
                       <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">{selectedTrial.historicalSignificance}</p>
                     </div>
 
                     <div>
-                      <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">📖 案件详情</h4>
+                      <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">案件详情</h4>
                       <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">{selectedTrial.details}</p>
                     </div>
                   </div>
@@ -451,7 +448,7 @@ export default function HistoricalTrialPage() {
                 {activeTab === 'analyze' && (
                   <div className="space-y-5">
                     <div className="p-4 bg-amber-50 dark:bg-amber-900/10 rounded-lg border border-amber-200/50 dark:border-amber-800/30 text-sm text-amber-700 dark:text-amber-400">
-                      🧠 AI 将从现代法律和历史背景两个维度，对这个案件进行深度分析。
+                      AI 将从现代法律和历史背景两个维度，对这个案件进行深度分析。
                     </div>
 
                     {!analysis && !analysisLoading && (
@@ -468,15 +465,15 @@ export default function HistoricalTrialPage() {
                     {analysis && (
                       <div className="space-y-5">
                         <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800/30">
-                          <h4 className="text-sm font-bold text-blue-700 dark:text-blue-300 mb-2">⚖️ 现代法律视角</h4>
+                          <h4 className="text-sm font-bold text-blue-700 dark:text-blue-300 mb-2">现代法律视角</h4>
                           <p className="text-sm text-blue-600 dark:text-blue-400 leading-relaxed">{analysis.modernPerspective}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
-                          <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">📜 历史背景解读</h4>
+                          <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">历史背景解读</h4>
                           <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">{analysis.historicalContext}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-purple-50 dark:bg-purple-900/10 border border-purple-200 dark:border-purple-800/30">
-                          <h4 className="text-sm font-bold text-purple-700 dark:text-purple-300 mb-2">🔍 关键争议点</h4>
+                          <h4 className="text-sm font-bold text-purple-700 dark:text-purple-300 mb-2">关键争议点</h4>
                           <ol className="space-y-2">
                             {analysis.controversies.map((c, i) => (
                               <li key={i} className="text-sm text-purple-600 dark:text-purple-400 flex items-start gap-2">
@@ -486,7 +483,7 @@ export default function HistoricalTrialPage() {
                           </ol>
                         </div>
                         <div className="p-3 rounded-lg bg-accent/10 border border-accent/20 text-center">
-                          <span className="text-sm font-bold text-accent">💡 {analysis.takeaway}</span>
+                          <span className="text-sm font-bold text-accent">{analysis.takeaway}</span>
                         </div>
                       </div>
                     )}
@@ -497,7 +494,7 @@ export default function HistoricalTrialPage() {
                 {activeTab === 'judge' && (
                   <div className="space-y-5">
                     <div className="p-4 bg-amber-50 dark:bg-amber-900/10 rounded-lg border border-amber-200/50 dark:border-amber-800/30 text-sm text-amber-700 dark:text-amber-400">
-                      ⚖️ 在查看历史判决之前，先凭你的判断做出裁决，然后 AI 会对比你的判决与历史判决。
+                      在查看历史判决之前，先凭你的判断做出裁决，然后 AI 会对比你的判决与历史判决。
                     </div>
 
                     {/* 案件摘要 */}
@@ -577,15 +574,15 @@ export default function HistoricalTrialPage() {
                     {comparison && (
                       <div className="space-y-4">
                         <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
-                          <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">🧠 AI 对你的判决评价</h4>
+                          <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">AI 对你的判决评价</h4>
                           <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">{comparison.aiComment}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800/30">
-                          <h4 className="text-sm font-bold text-blue-700 dark:text-blue-300 mb-2">📊 与历史判决的差异</h4>
+                          <h4 className="text-sm font-bold text-blue-700 dark:text-blue-300 mb-2">与历史判决的差异</h4>
                           <p className="text-sm text-blue-600 dark:text-blue-400 leading-relaxed">{comparison.differenceAnalysis}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-accent/10 border border-accent/20">
-                          <h4 className="text-sm font-bold text-accent mb-2">⚖️ 如果由你审判</h4>
+                          <h4 className="text-sm font-bold text-accent mb-2">如果由你审判</h4>
                           <p className="text-sm text-ink-700 dark:text-ink-300 leading-relaxed">{comparison.yourVerdict}</p>
                         </div>
                       </div>
@@ -597,7 +594,7 @@ export default function HistoricalTrialPage() {
                 {activeTab === 'learn' && (
                   <div className="space-y-5">
                     <div className="p-4 bg-ink-50 dark:bg-ink-800 rounded-lg border border-ink-200 dark:border-ink-700 text-sm text-ink-600 dark:text-ink-400">
-                      📚 从本案引申出的法律知识点，帮助你理解古今法律理念的差异。
+                      从本案引申出的法律知识点，帮助你理解古今法律理念的差异。
                     </div>
 
                     {!education && !educationLoading && (

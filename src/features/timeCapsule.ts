@@ -4,7 +4,6 @@
  */
 
 import { callLLM, type LLMMessage } from '@/utils/llmClient';
-import { hasApiKey } from '@/utils/llmConfig';
 import type { HistoricalFigure } from '@/types/figure';
 import { FIGURES } from '@/data/scenarios/figures';
 
@@ -84,7 +83,7 @@ export async function openCapsule(capsule: TimeCapsule): Promise<TimeCapsule> {
   const figure = FIGURES.find(f => f.id === capsule.guardFigureId);
   
   let interpretation = '';
-  if (hasApiKey() && figure) {
+  if (figure) {
     try {
       interpretation = await generateInterpretation(capsule, figure);
     } catch {
@@ -133,8 +132,9 @@ async function generateInterpretation(capsule: TimeCapsule, figure: HistoricalFi
 2. 结合你的人生经历和智慧，给访客一些启发
 3. 可以引用你的名言，但要自然
 4. 80-120 字，不要太长
-5. 温暖、有哲理，像一位长者在开导后辈
-6. 不要说"作为AI"之类的自我指涉`;
+5. 温暖有哲理
+6. 不要说"作为AI"之类的自我指涉
+7. 输出纯文本，不要使用 Markdown 语法（不要 ##、**、\`\`\` 等），不要使用 emoji`;
 
   const messages: LLMMessage[] = [
     { role: 'system', content: systemPrompt },

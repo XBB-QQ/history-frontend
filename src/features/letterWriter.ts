@@ -4,7 +4,6 @@
  */
 
 import { callLLMStream, readStreamToString, type LLMMessage } from '@/utils/llmClient';
-import { hasApiKey } from '@/utils/llmConfig';
 import type { HistoricalFigure } from '@/types/figure';
 import type { UserPersona } from '@/types/userPersona';
 
@@ -64,14 +63,11 @@ export async function writeLetterToFigure(
   onChunk?: (chunk: string) => void,
   persona?: UserPersona,
 ): Promise<string> {
-  if (!hasApiKey()) {
-    throw new Error('请先配置 API Key — 点击页面右上角"⚙️ 配置"按钮');
-  }
 
   const quotesText = figure.quotes.map((q) => `「${q}」`).join('、');
 
   const personaContext = persona
-    ? `\n\n写信人是一位对历史充满热情的访客，其画像：朝代偏好${persona.favoriteDynasties.join('、') || '广泛'}，关注人物${persona.favoritePersons.join('、') || '众多'}`
+    ? `\n\n写信人画像：偏好朝代${persona.favoriteDynasties.join('、') || '广泛'}，关注人物${persona.favoritePersons.join('、') || '众多'}`
     : '';
 
   const systemPrompt = `你是历史人物 ${figure.name}（${figure.dynasty} · ${figure.role}）。${personaContext}
@@ -91,7 +87,8 @@ export async function writeLetterToFigure(
 3. 可以引用你的名言，但要自然融入
 4. 200-400 字，格式为书信体（开头"吾友如晤"之类的古风称呼，结尾署名"${figure.name}"）
 5. 如果访客问到你无法知道的事（如现代科技），可以以你的时代认知回应，保持沉浸感
-6. 不要说"作为AI"之类的自我指涉`;
+6. 不要说"作为AI"之类的自我指涉
+7. 输出纯文本，不要使用 Markdown 语法（不要 ##、**、代码块等），不要使用 emoji`;
 
   const messages: LLMMessage[] = [
     { role: 'system', content: systemPrompt },

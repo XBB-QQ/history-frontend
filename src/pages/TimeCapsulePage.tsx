@@ -19,7 +19,6 @@ import {
   deleteCapsule,
   type TimeCapsule,
 } from '@/features/timeCapsule';
-import { hasApiKey } from '@/utils/llmConfig';
 
 export default function TimeCapsulePage() {
   const [view, setView] = useState<'create' | 'list'>('list');
@@ -79,7 +78,6 @@ export default function TimeCapsulePage() {
   const readyCapsules = getReadyToOpenCapsules();
   const openedCapsules = getOpenedCapsules();
   const pendingCapsules = getPendingCapsules();
-  const apiReady = hasApiKey();
 
   const getDaysRemaining = (dateStr: string): string => {
     const target = new Date(dateStr);
@@ -113,7 +111,7 @@ export default function TimeCapsulePage() {
                   : 'bg-white/70 dark:bg-ink-900/70 text-ink-700 dark:text-ink-300 border border-ink-200 dark:border-ink-700'
               }`}
             >
-              📦 我的胶囊
+              我的胶囊
             </button>
             <button
               onClick={() => setView('create')}
@@ -123,7 +121,7 @@ export default function TimeCapsulePage() {
                   : 'bg-white/70 dark:bg-ink-900/70 text-ink-700 dark:text-ink-300 border border-ink-200 dark:border-ink-700'
               }`}
             >
-              ✏️ 写一封信
+              写一封信
             </button>
           </div>
         </RevealOnScroll>
@@ -135,7 +133,7 @@ export default function TimeCapsulePage() {
               {/* 守护史官选择 */}
               <div className="mb-6">
                 <label className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 block tracking-widest">
-                  👤 选择守护史官
+                  选择守护史官
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                   {FIGURES.map((fig) => (
@@ -155,14 +153,14 @@ export default function TimeCapsulePage() {
                   ))}
                 </div>
                 <p className="mt-2 text-xs text-ink-500 dark:text-ink-400">
-                  💡 {FIGURES.find(f => f.id === guardFigureId)?.name} 将为你保管这封信，开启时会为你解读
+                  {FIGURES.find(f => f.id === guardFigureId)?.name} 将为你保管这封信，开启时会为你解读
                 </p>
               </div>
 
               {/* 标题 */}
               <div className="mb-4">
                 <label className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1 block">
-                  📝 信件标题
+                  信件标题
                 </label>
                 <input
                   type="text"
@@ -177,7 +175,7 @@ export default function TimeCapsulePage() {
               {/* 内容 */}
               <div className="mb-4">
                 <label className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1 block">
-                  ✍️ 信件内容
+                  信件内容
                 </label>
                 <textarea
                   value={content}
@@ -195,7 +193,7 @@ export default function TimeCapsulePage() {
               {/* 开启日期 */}
               <div className="mb-6">
                 <label className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1 block">
-                  📅 开启日期
+                  开启日期
                 </label>
                 <input
                   type="date"
@@ -205,7 +203,7 @@ export default function TimeCapsulePage() {
                   min={getTodayString()}
                 />
                 <p className="text-xs text-ink-500 dark:text-ink-400 mt-1">
-                  💡 选择一个未来的日期，届时你的守护史官会提醒你开启
+                  选择一个未来的日期，届时你的守护史官会提醒你开启
                 </p>
               </div>
 
@@ -227,7 +225,7 @@ export default function TimeCapsulePage() {
                   onClick={handleCreate}
                   className="flex-1 px-4 py-3 rounded-lg bg-accent text-white font-bold hover:shadow-lg transition-all"
                 >
-                  📮 封存信件
+                  封存信件
                 </button>
               </div>
             </div>
@@ -242,7 +240,7 @@ export default function TimeCapsulePage() {
               <RevealOnScroll direction="up" delay={200}>
                 <div className="mt-6 p-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 dark:from-amber-700/20 dark:to-orange-700/20 rounded-xl border border-amber-500/30">
                   <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-3 flex items-center gap-2">
-                    <span>🎁</span> 待开启的胶囊 ({readyCapsules.length})
+                    待开启的胶囊 ({readyCapsules.length})
                   </h3>
                   <div className="space-y-3">
                     {readyCapsules.map((capsule) => (
@@ -282,7 +280,7 @@ export default function TimeCapsulePage() {
               <RevealOnScroll direction="up" delay={300}>
                 <div className="mt-6 p-4 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
                   <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-3 flex items-center gap-2">
-                    <span>📜</span> 已开启的胶囊 ({openedCapsules.length})
+                    已开启的胶囊 ({openedCapsules.length})
                   </h3>
                   <div className="space-y-4">
                     {openedCapsules.map((capsule) => (
@@ -334,7 +332,7 @@ export default function TimeCapsulePage() {
               <RevealOnScroll direction="up" delay={400}>
                 <div className="mt-6 p-4 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
                   <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-3 flex items-center gap-2">
-                    <span>⏳</span> 待开启的胶囊 ({pendingCapsules.length})
+                    待开启的胶囊 ({pendingCapsules.length})
                   </h3>
                   <div className="space-y-3">
                     {pendingCapsules.map((capsule) => (
@@ -371,7 +369,6 @@ export default function TimeCapsulePage() {
             {capsules.length === 0 && (
               <RevealOnScroll direction="fade">
                 <div className="mt-8 p-8 bg-white/50 dark:bg-ink-900/50 rounded-xl border border-ink-200 dark:border-ink-700 text-center">
-                  <div className="text-5xl mb-3">📬</div>
                   <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2">
                     暂无时间胶囊
                   </h3>
@@ -382,7 +379,7 @@ export default function TimeCapsulePage() {
                     onClick={() => setView('create')}
                     className="mt-4 px-4 py-2 rounded-lg bg-accent text-white font-bold hover:shadow-lg transition-all"
                   >
-                    ✏️ 写一封信
+                    写一封信
                   </button>
                 </div>
               </RevealOnScroll>

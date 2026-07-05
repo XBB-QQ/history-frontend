@@ -36,9 +36,11 @@ function buildFigurePrompt(figureId: string, stance: string, isPro: boolean): st
 辩论规则：
 1. 必须以${figure.name}的身份说话，保持你的说话风格
 2. 你的论点必须基于你的历史立场和哲学思想
-3. 每轮发言不超过200字，简洁有力
+3. 每轮发言不超过200字
 4. 可以引用你的经典语录或历史典故
-5. 要针对对方的论点进行反驳，不是自说自话`;
+5. 要针对对方的论点进行反驳
+
+输出纯文本，不要使用 Markdown 语法（不要 ##、**、代码块等），不要使用 emoji`;
 }
 
 /** 生成一轮辩论 */
@@ -84,7 +86,7 @@ function buildRoundPrompt(
   const topicDesc = `辩论话题：${topic.title}\n话题背景：${topic.description}`;
 
   if (roundNum === 1) {
-    return `${topicDesc}\n\n这是第 1 轮辩论。请阐述你的核心观点，作为${side === 'pro' ? '正方' : '反方'}的开场陈词。`;
+    return `${topicDesc}\n\n这是第 1 轮辩论。请阐述你的核心观点，作为${side === 'pro' ? '正方' : '反方'}的开场陈词。\n\n输出纯文本，不要使用 Markdown 语法（不要 ##、**、代码块等），不要使用 emoji`;
   }
 
   const history = previousRounds
@@ -95,7 +97,7 @@ function buildRoundPrompt(
     ? previousRounds[previousRounds.length - 1].conArgument
     : previousRounds[previousRounds.length - 1].proArgument;
 
-  return `${topicDesc}\n\n前几轮辩论记录：\n${history}\n\n对方最新论点：${lastOpponent}\n\n这是第 ${roundNum} 轮。请针对对方论点进行反驳，同时强化自己的立场。`;
+  return `${topicDesc}\n\n前几轮辩论记录：\n${history}\n\n对方最新论点：${lastOpponent}\n\n这是第 ${roundNum} 轮。请针对对方论点进行反驳，同时强化自己的立场。\n\n输出纯文本，不要使用 Markdown 语法（不要 ##、**、代码块等），不要使用 emoji`;
 }
 
 /** 生成辩论总结 */
@@ -109,17 +111,17 @@ export async function generateDebateConclusion(
     .join('\n\n');
 
   const personaInjection = persona
-    ? `\n\n--- AI 记忆中枢 ---\n朝代偏好：${persona.favoriteDynasties.join('、') || '无'}\n人物偏好：${persona.favoritePersons.join('、') || '无'}\n性格维度：文治${persona.dimensions.governance}/武功${persona.dimensions.military}/智略${persona.dimensions.wisdom}/博学${persona.dimensions.charisma}`
+    ? `\n\n--- 用户画像 ---\n朝代偏好：${persona.favoriteDynasties.join('、') || '无'}\n人物偏好：${persona.favoritePersons.join('、') || '无'}\n性格维度：文治${persona.dimensions.governance}/武功${persona.dimensions.military}/智略${persona.dimensions.wisdom}/博学${persona.dimensions.charisma}`
     : '';
 
   const messages: LLMMessage[] = [
     {
       role: 'system',
-      content: `你是历史学家，负责为辩论做客观公正的总结评论。${personaInjection}`,
+      content: `你是历史学家，负责为辩论做总结评论。${personaInjection}`,
     },
     {
       role: 'user',
-      content: `辩论话题：${topic.title}\n\n辩论记录：\n${history}\n\n请做以下总结：\n1. 双方各自最有力的论点是什么？\n2. 历史事实倾向于哪一方？\n3. 这个问题的核心矛盾是什么？\n4. 历史给我们什么启示？\n\n保持客观，承认双方的合理性。`,
+      content: `辩论话题：${topic.title}\n\n辩论记录：\n${history}\n\n请做以下总结：\n1. 双方各自最有力的论点是什么？\n2. 历史事实倾向于哪一方？\n3. 这个问题的核心矛盾是什么？\n4. 历史给我们什么启示？\n\n保持客观，承认双方的合理性。\n\n输出纯文本，不要使用 Markdown 语法（不要 ##、**、代码块等），不要使用 emoji`,
     },
   ];
 
@@ -145,7 +147,7 @@ export async function askDebateQuestion(
   const promises: Promise<string>[] = [];
 
   const personaContext = persona
-    ? `\n\n这位提问者是一位对历史充满热情的访客，其画像：朝代偏好${persona.favoriteDynasties.join('、') || '广泛'}，关注人物${persona.favoritePersons.join('、') || '众多'}，性格维度：文治${persona.dimensions.governance}/武功${persona.dimensions.military}/智略${persona.dimensions.wisdom}/博学${persona.dimensions.charisma}`
+    ? `\n\n这位提问者的画像：朝代偏好${persona.favoriteDynasties.join('、') || '广泛'}，关注人物${persona.favoritePersons.join('、') || '众多'}，性格维度：文治${persona.dimensions.governance}/武功${persona.dimensions.military}/智略${persona.dimensions.wisdom}/博学${persona.dimensions.charisma}`
     : '';
 
   if (targetSide === 'pro' || targetSide === 'both') {
@@ -154,7 +156,7 @@ export async function askDebateQuestion(
         { role: 'system', content: buildFigurePrompt(pair.proFigureId, pair.proStance, true) },
         {
           role: 'user',
-          content: `辩论话题：${topic.title}\n辩论记录：${history}\n\n观众向你提问：${question}${personaContext}\n\n请以${proFigure?.name || '正方'}的身份回答这个问题，回应观众的关切。`,
+          content: `辩论话题：${topic.title}\n辩论记录：${history}\n\n观众向你提问：${question}${personaContext}\n\n请以${proFigure?.name || '正方'}的身份回答这个问题，回应观众的关切。\n\n输出纯文本，不要使用 Markdown 语法（不要 ##、**、代码块等），不要使用 emoji`,
         },
       ], { maxTokens: 300, temperature: 0.7 }),
     );
@@ -166,7 +168,7 @@ export async function askDebateQuestion(
         { role: 'system', content: buildFigurePrompt(pair.conFigureId, pair.conStance, false) },
         {
           role: 'user',
-          content: `辩论话题：${topic.title}\n辩论记录：${history}\n\n观众向你提问：${question}${personaContext}\n\n请以${conFigure?.name || '反方'}的身份回答这个问题，回应观众的关切。`,
+          content: `辩论话题：${topic.title}\n辩论记录：${history}\n\n观众向你提问：${question}${personaContext}\n\n请以${conFigure?.name || '反方'}的身份回答这个问题，回应观众的关切。\n\n输出纯文本，不要使用 Markdown 语法（不要 ##、**、代码块等），不要使用 emoji`,
         },
       ], { maxTokens: 300, temperature: 0.7 }),
     );

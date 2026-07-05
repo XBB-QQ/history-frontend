@@ -7,7 +7,6 @@
  */
 
 import { callLLM, type LLMMessage } from '@/utils/llmClient';
-import { hasApiKey } from '@/utils/llmConfig';
 import type { PersonalHistory } from '@/data/features/personalHistoryData';
 import type { UserPersona } from '@/types/userPersona';
 
@@ -84,10 +83,6 @@ export async function generatePersonalBiography(
   history: PersonalHistory,
   persona?: UserPersona,
 ): Promise<PersonalBiography> {
-  if (!hasApiKey()) {
-    throw new Error('请先配置 API Key — 点击页面右上角"⚙️ 配置"按钮');
-  }
-
   const personaInjection = persona
     ? `\n\n--- AI 记忆中枢 ---\n这位用户关注人物${persona.favoritePersons.join('、') || '众多'}，朝代偏好${persona.favoriteDynasties.join('、') || '广泛'}，性格维度：文治${persona.dimensions.governance}/武功${persona.dimensions.military}/智略${persona.dimensions.wisdom}/博学${persona.dimensions.charisma}`
     : '';
@@ -175,9 +170,6 @@ export async function generatePosthumousTitle(history: PersonalHistory): Promise
   title: string;
   explanation: string;
 }> {
-  if (!hasApiKey()) {
-    throw new Error('请先配置 API Key');
-  }
 
   const messages: LLMMessage[] = [
     {

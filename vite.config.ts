@@ -4,6 +4,11 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    rolldownOptions: {
+      // 替代旧的 esbuildOptions
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -14,13 +19,11 @@ export default defineConfig({
     open: true,
   },
   build: {
-    // 代码分割：每个 chunk 不超过 500KB
     chunkSizeWarningLimit: 500,
     rollupOptions: {
       output: {
         manualChunks: {
           'vendor': ['react', 'react-dom', 'react-router-dom', 'zustand'],
-          'tailwind': ['tailwindcss'],
         },
       },
     },

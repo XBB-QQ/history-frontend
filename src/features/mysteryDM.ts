@@ -6,7 +6,6 @@
  */
 
 import { callLLM, type LLMMessage } from '@/utils/llmClient';
-import { hasApiKey } from '@/utils/llmConfig';
 import type { Script, Clue } from '@/data/features/scriptKillerData';
 import type { UserPersona } from '@/types/userPersona';
 
@@ -90,9 +89,6 @@ export async function interrogateCharacter(
   collectedClues: Clue[],
   persona?: UserPersona,
 ): Promise<InterrogationResult> {
-  if (!hasApiKey()) {
-    throw new Error('请先配置 API Key — 点击页面右上角"⚙️ 配置"按钮');
-  }
 
   const character = script.characters.find(c => c.id === characterId);
   if (!character) {
@@ -100,7 +96,7 @@ export async function interrogateCharacter(
   }
 
   const personaInjection = persona
-    ? `\n\n--- AI 记忆中枢 ---\n这位用户关注人物${persona.favoritePersons.join('、') || '众多'}，朝代偏好${persona.favoriteDynasties.join('、') || '广泛'}，性格维度：文治${persona.dimensions.governance}/武功${persona.dimensions.military}/智略${persona.dimensions.wisdom}/博学${persona.dimensions.charisma}`
+    ? `\n\n--- 用户画像 ---\n这位用户关注人物${persona.favoritePersons.join('、') || '众多'}，朝代偏好${persona.favoriteDynasties.join('、') || '广泛'}，性格维度：文治${persona.dimensions.governance}/武功${persona.dimensions.military}/智略${persona.dimensions.wisdom}/博学${persona.dimensions.charisma}`
     : '';
 
   const collectedClueNames = collectedClues.map(c => c.description).join('、');
@@ -135,8 +131,7 @@ export async function interrogateCharacter(
 
 注意：
 - 只有当玩家的提问与已收集线索高度相关且触及角色秘密时，才解锁新线索
-- 嫌疑度变化要合理，不要一次性变化太大
-- DM 评论要像真正的 DM 一样有沉浸感`,
+- 嫌疑度变化要合理，不要一次性变化太大`,
     },
     {
       role: 'user',
@@ -177,9 +172,6 @@ export async function getDMHint(
   collectedClues: Clue[],
   phase: number,
 ): Promise<string> {
-  if (!hasApiKey()) {
-    throw new Error('请先配置 API Key');
-  }
 
   const messages: LLMMessage[] = [
     {
@@ -192,7 +184,7 @@ export async function getDMHint(
 请给玩家一条简洁的提示（50字以内），引导玩家继续推理。
 提示应该暗示下一步应该调查的方向或审问哪个角色。
 
-只输出提示文本，不要 JSON。`,
+输出纯文本，不要使用 Markdown 语法（不要标题、加粗、代码块等），不要使用 emoji，不要 JSON。`,
     },
     {
       role: 'user',
@@ -212,9 +204,6 @@ export async function compareTruthWithHistory(
   userReasoning: string,
   collectedClues: Clue[],
 ): Promise<TruthComparison> {
-  if (!hasApiKey()) {
-    throw new Error('请先配置 API Key');
-  }
 
   const messages: LLMMessage[] = [
     {

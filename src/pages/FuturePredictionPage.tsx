@@ -131,7 +131,6 @@ function MyPredictionsPanel({ predictions }: { predictions: UserPrediction[] }) 
       {/* 预测列表 */}
       {predictions.length === 0 ? (
         <div className="text-center py-12 text-ink-400">
-          <span className="text-4xl block mb-2">🔮</span>
           <p>还没有预测记录，去提交你的第一个预测吧！</p>
         </div>
       ) : (
@@ -289,10 +288,10 @@ export default function FuturePredictionPage() {
         <RevealOnScroll delay={100}>
           <div className="flex gap-2 mt-6 mb-8 overflow-x-auto pb-2">
             {[
-              { id: 'timeline' as const, label: '历史时间线', emoji: '📜' },
-              { id: 'predict' as const, label: 'LLM 推演', emoji: '🔮' },
-              { id: 'my-predictions' as const, label: '我的预测', emoji: '📊' },
-              { id: 'scenario' as const, label: '情景推演', emoji: '🧬' },
+              { id: 'timeline' as const, label: '历史时间线', emoji: '' },
+              { id: 'predict' as const, label: 'LLM 推演', emoji: '' },
+              { id: 'my-predictions' as const, label: '我的预测', emoji: '' },
+              { id: 'scenario' as const, label: '情景推演', emoji: '' },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -314,7 +313,7 @@ export default function FuturePredictionPage() {
           <RevealOnScroll direction="up" delay={200}>
             <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
               <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">
-                📜 历史关键事件（点击选择参考事件）
+                历史关键事件（点击选择参考事件）
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[600px] overflow-y-auto pr-2">
                 {HISTORICAL_EVENTS.map(event => (
@@ -342,7 +341,7 @@ export default function FuturePredictionPage() {
               {/* 未来事件概览 */}
               <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
                 <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">
-                  💡 未来事件预测（AI 评估）
+                  未来事件预测（AI 评估）
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {FUTURE_EVENTS.map(event => (
@@ -354,7 +353,7 @@ export default function FuturePredictionPage() {
               {/* 选择历史事件 + 用户预测 */}
               <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
                 <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">
-                  🔮 基于历史规律推演
+                  基于历史规律推演
                 </h3>
 
                 {/* 已选事件 */}
@@ -410,14 +409,14 @@ export default function FuturePredictionPage() {
                     disabled={isForecasting || selectedEvents.length === 0}
                     className="px-6 py-2.5 rounded-xl bg-accent text-white font-bold hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isForecasting ? '🔄 推演中...' : '🔮 AI 推演'}
+                    {isForecasting ? '推演中...' : 'AI 推演'}
                   </button>
                   <button
                     onClick={handleSavePrediction}
                     disabled={!userPredictionInput.trim()}
                     className="px-6 py-2.5 rounded-xl bg-green-500 text-white font-bold hover:bg-green-600 disabled:opacity-50"
                   >
-                    💾 保存预测
+                    保存预测
                   </button>
                   <button
                     onClick={handleReset}
@@ -431,7 +430,7 @@ export default function FuturePredictionPage() {
               {/* LLM 推演结果 */}
               {llmForecast && (
                 <div className="bg-gradient-to-br from-paper to-ink-50 dark:from-ink-900 dark:to-ink-800 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-                  <h3 className="text-lg font-bold text-accent mb-4 text-center">🔮 AI 推演结果</h3>
+                  <h3 className="text-lg font-bold text-accent mb-4 text-center">AI 推演结果</h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div className="p-4 rounded-xl bg-white dark:bg-ink-900">
@@ -484,7 +483,7 @@ export default function FuturePredictionPage() {
                       disabled={isComparing}
                       className="w-full mt-4 py-3 rounded-xl bg-indigo-500 text-white font-bold hover:bg-indigo-600 disabled:opacity-50"
                     >
-                      {isComparing ? '🔄 分析中...' : '⚖️ 对比用户预测与 AI 推演'}
+                      {isComparing ? '分析中...' : '对比用户预测与 AI 推演'}
                     </button>
                   )}
 
@@ -492,11 +491,11 @@ export default function FuturePredictionPage() {
                   {comparison && (
                     <div className="mt-4 space-y-4">
                       <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800">
-                        <h4 className="font-bold text-blue-800 dark:text-blue-400 mb-2">📝 评价</h4>
+                        <h4 className="font-bold text-blue-800 dark:text-blue-400 mb-2">评价</h4>
                         <p className="text-sm text-ink-700 dark:text-ink-300">{comparison.evaluation}</p>
                       </div>
                       <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800">
-                        <h4 className="font-bold text-green-800 dark:text-green-400 mb-2">🔗 一致性</h4>
+                        <h4 className="font-bold text-green-800 dark:text-green-400 mb-2">一致性</h4>
                         <p className="text-sm text-ink-700 dark:text-ink-300">
                           {comparison.alignment === 'aligned' ? '✅ 用户预测与 AI 推演一致' :
                            comparison.alignment === 'divergent' ? '⚠️ 用户预测与 AI 推演存在分歧' :
@@ -505,7 +504,7 @@ export default function FuturePredictionPage() {
                       </div>
                       {comparison.insight && (
                         <div className="p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-200 dark:border-purple-800">
-                          <h4 className="font-bold text-purple-800 dark:text-purple-400 mb-2">💎 历史洞察</h4>
+                          <h4 className="font-bold text-purple-800 dark:text-purple-400 mb-2">历史洞察</h4>
                           <p className="text-sm text-ink-700 dark:text-ink-300 italic">{comparison.insight}</p>
                         </div>
                       )}
@@ -521,7 +520,7 @@ export default function FuturePredictionPage() {
         {activeTab === 'my-predictions' && (
           <RevealOnScroll direction="up" delay={200}>
             <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-              <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-6">📊 我的预测历史</h3>
+              <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-6">我的预测历史</h3>
               <MyPredictionsPanel predictions={myPredictions} />
             </div>
           </RevealOnScroll>
@@ -533,7 +532,7 @@ export default function FuturePredictionPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* 场景列表 */}
               <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">🧬 预测场景</h3>
+                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">预测场景</h3>
                 <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
                   {PREDICTION_SCENARIOS.map(scenario => (
                     <button
@@ -598,7 +597,6 @@ export default function FuturePredictionPage() {
                   </div>
                 ) : (
                   <div className="text-center text-ink-400 py-20">
-                    <span className="text-4xl block mb-2">🧬</span>
                     <p>选择一个场景开始推演</p>
                   </div>
                 )}

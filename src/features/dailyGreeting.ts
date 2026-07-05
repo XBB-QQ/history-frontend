@@ -4,7 +4,6 @@
  */
 
 import { callLLM, type LLMMessage } from '@/utils/llmClient';
-import { hasApiKey } from '@/utils/llmConfig';
 import type { HistoricalFigure } from '@/types/figure';
 import { FIGURES } from '@/data/scenarios/figures';
 
@@ -76,8 +75,6 @@ function updateLastGreetingDate(): void {
 
 /** 生成今日问候消息 */
 export async function generateTodayGreetings(): Promise<GreetingMessage[]> {
-  if (!hasApiKey()) return [];
-
   const followedIds = getFollowedFigures();
   if (followedIds.length === 0) return [];
 
@@ -116,27 +113,21 @@ export async function generateTodayGreetings(): Promise<GreetingMessage[]> {
 
 /** 生成单个人物的问候 */
 async function generateGreeting(figure: HistoricalFigure, dateStr: string): Promise<string> {
-  const systemPrompt = `你是历史人物 ${figure.name}（${figure.dynasty} · ${figure.role}）。
+  const systemPrompt = `身份：${figure.name}（${figure.dynasty} · ${figure.role}）
+生平：${figure.bio}
+说话风格：${figure.speakingStyle}
+性格：${figure.personality}
+名言：${figure.quotes.join('、')}
 
-你的人物资料：
-- 生平：${figure.bio}
-- 说话风格：${figure.speakingStyle}
-- 性格：${figure.personality}
-- 名言：${figure.quotes.join('、')}
-
-现在是 ${dateStr}。请你给关注你的访客发一条简短的问候消息。
+现在是 ${dateStr}，给关注你的访客发一条简短的问候。
 
 要求：
-1. 严格保持 ${figure.name} 的说话风格和性格
-2. 基于今天的日期，可以聊：
-   - 某个历史上今天发生的事件（你知道的或虚构的）
-   - 对你有特殊意义的日子
-   - 天气/季节相关的问候
-   - 一句鼓励或提醒
-3. 50-80 字，不要太长
-4. 自然亲切，像朋友问候，不要太正式
-5. 可以引用你的名言，但要自然
-6. 不要说"作为AI"之类的自我指涉`;
+1. 保持 ${figure.name} 的说话风格和性格
+2. 可聊历史上今天的事件、对你有意义的日子、季节问候或一句鼓励
+3. 50-80 字，自然亲切，像朋友问候
+4. 可引用名言，但要自然
+5. 不要说"作为AI"之类的自我指涉
+6. 输出纯文本，不要使用 Markdown 语法（不要 ##、**、代码块等），不要使用 emoji`;
 
   const messages: LLMMessage[] = [
     { role: 'system', content: systemPrompt },

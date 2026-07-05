@@ -15,7 +15,6 @@ import {
   type UserPortrait,
   type ChatMessage,
 } from '@/features/aiHistorian';
-import { hasApiKey } from '@/utils/llmConfig';
 import { usePersonaStore } from '@/store/personaStore';
 import { buildPersonaPrompt } from '@/utils/personaBuilder';
 
@@ -107,7 +106,6 @@ export default function AiHistorianPage() {
     }
   }, [chatInput, chatHistory, portrait, comment, chatLoading]);
 
-  const apiReady = hasApiKey();
 
   // 基于画像的追问建议
   const suggestedQuestions = portrait ? [
@@ -262,7 +260,7 @@ export default function AiHistorianPage() {
         )}
 
         {/* 追问史官 — 多轮对话 */}
-        {comment && apiReady && (
+        {comment && (
           <RevealOnScroll direction="up" delay={500}>
             <div className="mt-8 p-6 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
               <div className="flex items-center gap-3 mb-4">
@@ -314,7 +312,7 @@ export default function AiHistorianPage() {
               {/* 等待指示 */}
               {chatHistory.length === 0 && !chatLoading && (
                 <div className="mb-4 p-4 bg-amber-50/50 dark:bg-amber-900/10 rounded-lg border border-amber-200/50 dark:border-amber-800/30 text-sm text-ink-600 dark:text-ink-400">
-                  💡 评语已生成，现在可以向史官追问任何历史问题。史官会记得你的画像和评语，保持判断一致性。
+                  评语已生成，现在可以向史官追问任何历史问题。史官会记得你的画像和评语，保持判断一致性。
                 </div>
               )}
 

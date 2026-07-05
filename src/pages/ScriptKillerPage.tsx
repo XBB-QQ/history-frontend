@@ -47,7 +47,6 @@ function ClueCard({
       }`}
     >
       <div className="flex items-center gap-2">
-        <span className="text-xl">{collected ? '✅' : '🔍'}</span>
         <h4 className="font-bold text-gray-800 dark:text-ink-100">{clue}</h4>
       </div>
       <p className="text-sm text-gray-600 dark:text-ink-400 mt-1">
@@ -95,7 +94,7 @@ function DMDialoguePanel({
             onClick={onGetHint}
             className="px-3 py-1.5 rounded-lg bg-white/20 hover:bg-white/30 transition-colors text-sm font-bold"
           >
-            💡 求提示
+            求提示
           </button>
         </div>
       </div>
@@ -104,7 +103,6 @@ function DMDialoguePanel({
       <div className="h-80 overflow-y-auto p-4 space-y-4 bg-ink-50 dark:bg-ink-950">
         {messages.length === 0 && (
           <div className="text-center text-gray-500 py-12">
-            <span className="text-4xl block mb-2">🎭</span>
             <p>向 {character.displayName} 发起审问吧！</p>
             <p className="text-sm mt-1">尝试询问他的动机、不在场证明或秘密</p>
           </div>
@@ -173,13 +171,13 @@ function InterrogationResultDisplay({
     <div className="space-y-4 mt-4">
       {result.dmComment && (
         <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800">
-          <h4 className="font-bold text-amber-800 dark:text-amber-400 mb-2">🎭 DM 评析</h4>
+          <h4 className="font-bold text-amber-800 dark:text-amber-400 mb-2">DM 评析</h4>
           <p className="text-sm text-ink-700 dark:text-ink-300">{result.dmComment}</p>
         </div>
       )}
       {unlockedClues.length > 0 && (
         <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800">
-          <h4 className="font-bold text-green-800 dark:text-green-400 mb-2">🔓 新线索解锁！</h4>
+          <h4 className="font-bold text-green-800 dark:text-green-400 mb-2">新线索解锁！</h4>
           <ul className="space-y-1">
             {unlockedClues.map((clue, i) => (
               <li key={i} className="text-sm text-ink-700 dark:text-ink-300">• {clue}</li>
@@ -189,7 +187,7 @@ function InterrogationResultDisplay({
       )}
       {result.hint && (
         <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800">
-          <h4 className="font-bold text-blue-800 dark:text-blue-400 mb-2">💡 提示</h4>
+          <h4 className="font-bold text-blue-800 dark:text-blue-400 mb-2">提示</h4>
           <p className="text-sm text-ink-700 dark:text-ink-300">{result.hint}</p>
         </div>
       )}
@@ -265,7 +263,7 @@ export default function ScriptKillerPage() {
       usePersonaStore.getState().recordBrowse('knowledgeViewed');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : '审问失败';
-      setDmMessages(prev => [...prev, { role: 'dm', content: `❌ ${message}`, timestamp: Date.now() }]);
+      setDmMessages(prev => [...prev, { role: 'dm', content: `错误：${message}`, timestamp: Date.now() }]);
     } finally {
       setIsProcessing(false);
     }
@@ -277,7 +275,7 @@ export default function ScriptKillerPage() {
     setIsProcessing(true);
     try {
       const hint = await getDMHint(currentScript, clueCollection, dmMessages.length + 1);
-      setDmMessages(prev => [...prev, { role: 'dm', content: `💡 [DM提示] ${hint}`, timestamp: Date.now() }]);
+      setDmMessages(prev => [...prev, { role: 'dm', content: `[DM提示] ${hint}`, timestamp: Date.now() }]);
     } catch {
       // ignore
     } finally {
@@ -434,7 +432,6 @@ export default function ScriptKillerPage() {
                   </div>
                 ) : (
                   <div className="text-center text-ink-400 py-12">
-                    <span className="text-4xl block mb-2">👤</span>
                     选择一个角色查看详情
                   </div>
                 )}
@@ -462,7 +459,7 @@ export default function ScriptKillerPage() {
           <RevealOnScroll direction="up" delay={100}>
             <div className="mt-8 bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">🔍 收集线索</h3>
+                <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">收集线索</h3>
                 <span className="text-sm bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 px-3 py-1 rounded-full font-bold">
                   已收集 {clueCollection.length} / {mysteryEvent.keyClues.length}
                 </span>
@@ -505,7 +502,7 @@ export default function ScriptKillerPage() {
             <div className="mt-8 space-y-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">
-                  🎭 AI 动态审问 — {currentCharacter.displayName}
+                  AI 动态审问 — {currentCharacter.displayName}
                 </h3>
                 <button
                   onClick={() => setPhase('clues')}
@@ -577,7 +574,7 @@ export default function ScriptKillerPage() {
             <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* 已收集线索 */}
               <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">📋 已收集线索</h3>
+                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">已收集线索</h3>
                 <div className="space-y-2">
                   {clueCollection.length === 0 ? (
                     <p className="text-sm text-ink-400">暂无线索，请先去收集</p>
@@ -594,7 +591,7 @@ export default function ScriptKillerPage() {
 
               {/* 指控 */}
               <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">⚖️ 指控凶手</h3>
+                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">指控凶手</h3>
                 <p className="text-sm text-ink-600 dark:text-ink-400 mb-4">根据线索和动机，选择你认为的凶手：</p>
                 <div className="space-y-3">
                   {characters.map(char => (
@@ -623,7 +620,7 @@ export default function ScriptKillerPage() {
                     disabled={isProcessing}
                     className="w-full mt-4 py-3 rounded-xl bg-accent text-white font-bold hover:bg-accent/90 disabled:opacity-50"
                   >
-                    {isProcessing ? '分析中...' : '🔍 揭示真相'}
+                    {isProcessing ? '分析中...' : '揭示真相'}
                   </button>
                 )}
                 <div className="flex justify-between mt-4">
@@ -661,7 +658,7 @@ export default function ScriptKillerPage() {
                     : 'bg-red-50 dark:bg-red-900/20 border-2 border-red-400'
                 }`}>
                   <h4 className="font-bold mb-2">
-                    {finalAccusation === currentScript.mysteryEvent.killer ? '🎉 恭喜！指控正确！' : '❌ 指控错误'}
+                    {finalAccusation === currentScript.mysteryEvent.killer ? '恭喜！指控正确！' : '指控错误'}
                   </h4>
                   <p className="text-sm">
                     实际凶手：{currentScript.mysteryEvent.killer || '待揭晓'}
@@ -671,7 +668,7 @@ export default function ScriptKillerPage() {
                 {/* AI 评价 */}
                 {truthComparison.evaluation && (
                   <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800 mb-4">
-                    <h4 className="font-bold text-amber-800 dark:text-amber-400 mb-2">🎭 DM 评价</h4>
+                    <h4 className="font-bold text-amber-800 dark:text-amber-400 mb-2">DM 评价</h4>
                     <p className="text-sm text-ink-700 dark:text-ink-300">{truthComparison.evaluation}</p>
                   </div>
                 )}
@@ -679,7 +676,7 @@ export default function ScriptKillerPage() {
                 {/* 史实对照 */}
                 {truthComparison.historicalFact && (
                   <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 mb-4">
-                    <h4 className="font-bold text-blue-800 dark:text-blue-400 mb-2">📚 史实对照</h4>
+                    <h4 className="font-bold text-blue-800 dark:text-blue-400 mb-2">史实对照</h4>
                     <p className="text-sm text-ink-700 dark:text-ink-300">{truthComparison.historicalFact}</p>
                   </div>
                 )}
@@ -687,7 +684,7 @@ export default function ScriptKillerPage() {
                 {/* 遗漏线索 */}
                 {truthComparison.missedClues.length > 0 && (
                   <div className="p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-200 dark:border-purple-800">
-                    <h4 className="font-bold text-purple-800 dark:text-purple-400 mb-2">💡 你可能遗漏的线索</h4>
+                    <h4 className="font-bold text-purple-800 dark:text-purple-400 mb-2">你可能遗漏的线索</h4>
                     <ul className="text-sm space-y-1">
                       {truthComparison.missedClues.map((clue, i) => (
                         <li key={i}>• {clue}</li>

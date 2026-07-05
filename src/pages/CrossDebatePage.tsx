@@ -33,6 +33,9 @@ export default function CrossDebatePage() {
   const conFigure = pair ? getFigureById(pair.conFigureId) : null;
 
   async function startDebate(idx: number) {
+    const pair = DEBATE_FIGURE_PAIRS.find(fp => fp.topicId === DEBATE_TOPICS[idx].id);
+    if (!pair) return;
+
     setTopicIdx(idx);
     setRounds([]);
     setConclusion('');
@@ -44,7 +47,7 @@ export default function CrossDebatePage() {
 
     try {
       // 生成第1轮
-      const r1 = await generateDebateRound(DEBATE_TOPICS[idx], DEBATE_FIGURE_PAIRS[idx], []);
+      const r1 = await generateDebateRound(DEBATE_TOPICS[idx], pair, []);
       setRounds([r1]);
     } catch (e) {
       console.error(e);
@@ -114,14 +117,16 @@ export default function CrossDebatePage() {
           <RevealOnScroll direction="up" delay={200}>
             <div className="mt-8 space-y-4">
               {DEBATE_TOPICS.map((t, idx) => {
-                const p = DEBATE_FIGURE_PAIRS[idx];
-                const pro = getFigureById(p.proFigureId);
-                const con = getFigureById(p.conFigureId);
+                const p = DEBATE_FIGURE_PAIRS.find(fp => fp.topicId === t.id);
+                const pro = p ? getFigureById(p.proFigureId) : null;
+                const con = p ? getFigureById(p.conFigureId) : null;
                 return (
                   <button
                     key={t.id}
                     onClick={() => startDebate(idx)}
-                    className="w-full p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700 hover:border-accent hover:shadow-lg transition-all text-left group"
+                    disabled={!p}
+                    title={!p ? '该话题暂未配置辩手，敬请期待' : undefined}
+                    className="w-full p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700 hover:border-accent hover:shadow-lg transition-all text-left group disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
@@ -239,7 +244,7 @@ export default function CrossDebatePage() {
             {/* 用户提问 */}
             {!loading && rounds.length > 0 && (
               <div className="p-4 bg-ink-50 dark:bg-ink-900 rounded-lg border border-ink-200 dark:border-ink-700">
-                <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">问 向辩手提问</h4>
+                <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">向辩手提问</h4>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -283,7 +288,7 @@ export default function CrossDebatePage() {
                   onClick={nextRound}
                   className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg transition-all"
                 >
-                  {rounds.length >= 3 ? '史 出结论' : `第 ${rounds.length + 1} 轮 →`}
+                  {rounds.length >= 3 ? '出结论' : `第 ${rounds.length + 1} 轮 →`}
                 </button>
                 <button
                   onClick={() => { setPhase('select'); setRounds([]); }}
@@ -342,7 +347,7 @@ export default function CrossDebatePage() {
             {/* 专家观点 */}
             <div className="p-5 bg-amber-50/60 dark:bg-amber-900/10 rounded-lg border-l-4 border-amber-500">
               <h3 className="text-sm font-bold text-amber-700 dark:text-amber-400 mb-2 tracking-widest">
-                注 学术观点
+                学术观点
               </h3>
               <p className="text-ink-800 dark:text-ink-200 leading-loose">{topic.expertView}</p>
             </div>

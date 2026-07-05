@@ -4,7 +4,6 @@
  */
 
 import { callLLM, type LLMMessage } from '@/utils/llmClient';
-import { hasApiKey } from '@/utils/llmConfig';
 import type { HistoricalFigure } from '@/types/figure';
 import { FIGURES } from '@/data/scenarios/figures';
 
@@ -329,33 +328,95 @@ function saveCache(sceneId: string, feed: MomentFeed): void {
   localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
 }
 
-/** 获取场景的朋友圈数据 */
-export async function getMomentFeed(scene: Scene): Promise<MomentFeed> {
+// ========== 预设优先 + 后台预热 ==========
+
+/** 后台生成中的场景集合（防重复触发） */
+const generatingScenes = new Set<string>();
+
+/** feed 更新订阅者（后台生成完成后通知页面刷新） */
+const feedUpdateSubscribers = new Map<string, Set<(feed: MomentFeed) => void>>();
+
+/** 订阅某个场景的 AI 生成完成事件，返回取消订阅函数 */
+export function subscribeFeedUpdate(sceneId: string, cb: (feed: MomentFeed) => void): () => void {
+  if (!feedUpdateSubscribers.has(sceneId)) {
+    feedUpdateSubscribers.set(sceneId, new Set());
+  }
+  feedUpdateSubscribers.get(sceneId)!.add(cb);
+  return () => {
+    feedUpdateSubscribers.get(sceneId)?.delete(cb);
+  };
+}
+
+function notifyFeedUpdate(sceneId: string, feed: MomentFeed): void {
+  feedUpdateSubscribers.get(sceneId)?.forEach(cb => cb(feed));
+}
+
+/** 后台异步生成并缓存，完成后通知订阅者 */
+function triggerBackgroundGeneration(scene: Scene): void {
+  if (generatingScenes.has(scene.id)) return;
+  generatingScenes.add(scene.id);
+
+  generateMomentFeed(scene)
+    .then(feed => {
+      saveCache(scene.id, feed);
+      notifyFeedUpdate(scene.id, feed);
+    })
+    .catch(() => {
+      // 静默失败，用户看到的仍是预设数据
+    })
+    .finally(() => {
+      generatingScenes.delete(scene.id);
+    });
+}
+
+export interface MomentFeedResult {
+  feed: MomentFeed;
+  /** 数据来源：cache=缓存命中，preset=预设数据，fallback=兜底生成 */
+  source: 'cache' | 'preset' | 'fallback';
+  /** 是否正在后台生成 AI 内容 */
+  isAiGenerating: boolean;
+}
+
+/**
+ * 获取场景的朋友圈数据 — 预设优先，后台预热
+ *
+ * - 有缓存：立即返回缓存
+ * - 无缓存：立即返回预设数据 + 后台异步生成，生成完成后通过 subscribeFeedUpdate 通知
+ */
+export async function getMomentFeed(scene: Scene): Promise<MomentFeedResult> {
   const cache = getCache();
   const cached = cache[scene.id];
 
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-    return cached.data;
+    return { feed: cached.data, source: 'cache', isAiGenerating: false };
   }
 
-  if (!hasApiKey()) {
-    return PRESET_DATA[scene.id] || generateFallbackFeed(scene);
+  const preset = PRESET_DATA[scene.id];
+  if (preset) {
+    triggerBackgroundGeneration(scene);
+    return { feed: preset, source: 'preset', isAiGenerating: true };
   }
 
+  // 没有预设数据的场景，只能同步等待
   try {
     const feed = await generateMomentFeed(scene);
     saveCache(scene.id, feed);
-    return feed;
+    return { feed, source: 'cache', isAiGenerating: false };
   } catch {
-    return PRESET_DATA[scene.id] || generateFallbackFeed(scene);
+    return { feed: generateFallbackFeed(scene), source: 'fallback', isAiGenerating: false };
   }
+}
+
+/** 同步重新生成（用于"重新生成"按钮，清缓存后强制重新调用 AI） */
+export async function regenerateMomentFeed(scene: Scene): Promise<MomentFeed> {
+  const feed = await generateMomentFeed(scene);
+  saveCache(scene.id, feed);
+  return feed;
 }
 
 /** 生成场景下的人物朋友圈动态 */
 async function generateMomentFeed(scene: Scene): Promise<MomentFeed> {
-  const systemPrompt = `你是"五千年史馆"的朋友圈生成器。
-
-任务：根据历史事件，生成当事人物们的"朋友圈"动态。
+  const systemPrompt = `根据历史事件，生成当事人物的朋友圈动态。
 
 事件：${scene.name}（${scene.year}）
 事件描述：${scene.description}
@@ -515,10 +576,6 @@ function saveUserComments(postId: string, comments: MomentComment[]): void {
 }
 
 export async function replyToUserComment(post: MomentPost, userComment: MomentComment): Promise<MomentComment> {
-  if (!hasApiKey()) {
-    throw new Error('请先配置 API Key');
-  }
-
   const figure = FIGURES.find(f => f.name === post.author);
   const figureInfo = figure
     ? `\n人物资料：${figure.bio}\n说话风格：${figure.speakingStyle}\n性格：${figure.personality}\n名言：${figure.quotes.join('、')}`

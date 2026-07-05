@@ -16,7 +16,6 @@ import {
   genLetterId,
   type Letter,
 } from '@/features/letterWriter';
-import { hasApiKey } from '@/utils/llmConfig';
 import { usePersonaStore } from '@/store/personaStore';
 
 export default function LetterPage() {
@@ -75,8 +74,6 @@ export default function LetterPage() {
     setLetters(loadLetters());
   }, []);
 
-  const apiReady = hasApiKey();
-
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
       <div className="max-w-4xl mx-auto">
@@ -88,13 +85,6 @@ export default function LetterPage() {
           />
         </RevealOnScroll>
 
-        {!apiReady && (
-          <RevealOnScroll direction="up" delay={200}>
-            <div className="mt-8 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 text-sm">
-              ⚙️ 需先配置 LLM API Key — 点击页面右上角"⚙️ 配置"按钮
-            </div>
-          </RevealOnScroll>
-        )}
 
         {/* 人物选择 */}
         <RevealOnScroll direction="up" delay={200}>
@@ -123,7 +113,7 @@ export default function LetterPage() {
         </RevealOnScroll>
 
         {/* 写信区 */}
-        {selectedFigure && apiReady && (
+        {selectedFigure && (
           <RevealOnScroll direction="up" delay={300}>
             <div className="mt-6 p-6 bg-gradient-to-br from-amber-50/50 to-accent/5 dark:from-amber-900/10 dark:to-accent/10 rounded-xl border border-amber-200/50 dark:border-amber-800/30">
               <div className="flex items-center gap-3 mb-4">
@@ -193,7 +183,7 @@ export default function LetterPage() {
           <RevealOnScroll direction="up" delay={400}>
             <div className="mt-8 p-6 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
               <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-4">
-                📜 往来信件 ({letters.length})
+                往来信件 ({letters.length})
               </h3>
               <div className="space-y-4 max-h-[600px] overflow-y-auto">
                 {letters.map((letter) => (
@@ -221,12 +211,12 @@ export default function LetterPage() {
                       </div>
                     </div>
                     <div className="mb-3 p-3 bg-white/60 dark:bg-ink-900/60 rounded text-sm text-ink-700 dark:text-ink-300">
-                      <div className="text-xs text-ink-500 dark:text-ink-400 mb-1">📝 来信</div>
+                      <div className="text-xs text-ink-500 dark:text-ink-400 mb-1">来信</div>
                       {letter.userContent}
                     </div>
                     <div className="p-3 bg-accent/5 dark:bg-accent/10 rounded text-sm text-ink-800 dark:text-ink-200 font-serif"
                       style={{ fontFamily: 'var(--font-heading), serif' }}>
-                      <div className="text-xs text-accent mb-1">📮 回信</div>
+                      <div className="text-xs text-accent mb-1">回信</div>
                       {letter.replyContent}
                     </div>
                   </div>

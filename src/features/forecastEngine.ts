@@ -6,7 +6,6 @@
  */
 
 import { callLLM, type LLMMessage } from '@/utils/llmClient';
-import { hasApiKey } from '@/utils/llmConfig';
 import type { UserPersona } from '@/types/userPersona';
 
 /** 用户预测记录 */
@@ -50,18 +49,15 @@ export async function forecastFuture(
   historicalEvents: Array<{ name: string; year: number; description: string; impact: string; consequences: string[] }>,
   persona?: UserPersona,
 ): Promise<ForecastResult> {
-  if (!hasApiKey()) {
-    throw new Error('请先配置 API Key — 点击页面右上角"⚙️ 配置"按钮');
-  }
 
   const personaInjection = persona
-    ? `\n\n--- AI 记忆中枢 ---\n这位用户关注人物${persona.favoritePersons.join('、') || '众多'}，朝代偏好${persona.favoriteDynasties.join('、') || '广泛'}，性格维度：文治${persona.dimensions.governance}/武功${persona.dimensions.military}/智略${persona.dimensions.wisdom}/博学${persona.dimensions.charisma}`
+    ? `\n\n--- 用户画像 ---\n这位用户关注人物${persona.favoritePersons.join('、') || '众多'}，朝代偏好${persona.favoriteDynasties.join('、') || '广泛'}，性格维度：文治${persona.dimensions.governance}/武功${persona.dimensions.military}/智略${persona.dimensions.wisdom}/博学${persona.dimensions.charisma}`
     : '';
 
   const messages: LLMMessage[] = [
     {
       role: 'system',
-      content: `你是"五千年史馆"的历史预言家，擅长从历史规律中推演未来趋势。${personaInjection}
+      content: `你是"五千年史馆"的历史预言家。${personaInjection}
 
 你的任务是基于历史事件规律，对用户提出的预测场景进行 LLM 推演。
 
@@ -197,10 +193,6 @@ export async function comparePredictions(
   alignment: 'aligned' | 'divergent' | 'complementary';
   insight: string;
 }> {
-  if (!hasApiKey()) {
-    throw new Error('请先配置 API Key');
-  }
-
   const messages: LLMMessage[] = [
     {
       role: 'system',

@@ -4,7 +4,6 @@
  */
 
 import { callLLMStream, readStreamToString, type LLMMessage } from '@/utils/llmClient';
-import { hasApiKey } from '@/utils/llmConfig';
 import type { ProfileReport } from '@/features/profileReport';
 import type { PersonalityMatch, DimensionKey } from '@/data/core/personalityMatches';
 import { DIMENSION_LABELS } from '@/data/core/personalityMatches';
@@ -24,10 +23,6 @@ export async function generateGeneReportStream(
   input: GeneReportInput,
   onChunk?: (chunk: string) => void,
 ): Promise<string> {
-  if (!hasApiKey()) {
-    throw new Error('请先配置 API Key — 点击页面右上角"⚙️ 配置"按钮');
-  }
-
   const { profile, matched, username, favoritesCount } = input;
 
   const dimensionDesc = profile.dimensions
@@ -52,24 +47,25 @@ export async function generateGeneReportStream(
 
 要求：
 1. 整体风格：伪科学感+趣味化，类似基因检测报告但内容是历史解读
-2. 使用 Markdown 格式输出，包含以下章节：
-   ## 🧬 你的历史基因图谱
+2. 输出纯文本，不要使用任何 Markdown 语法（不要 ##、**、\`\`\` 等），不要使用 emoji
+3. 用空行分隔章节，每个章节标题用【】标注，包含以下章节：
+
+   【历史基因图谱】
    解读四维基因（文治/武功/智略/博学），用拟人化比喻说明每个维度的"基因特性"
 
-   ## 👤 DNA 相似度分析
+   【DNA 相似度分析】
    深度解析为什么用户像 ${matched.name}——不只是表面相似，而是从"性格基因""价值观基因""命运基因"三层分析
    相似度百分比（编一个有趣的数字，如 87.3%）
 
-   ## 📊 跨朝代品味雷达
+   【跨朝代品味雷达】
    基于用户偏好推断 ta 潜意识的朝代偏好，分析这种偏好的心理暗示
 
-   ## 🔮 历史命运预言
-   趣味化：如果用户穿越到古代，ta 最可能成为什么角色？会经历什么命运？
-   要有戏剧性，但结尾给一个温暖的鼓励
+   【历史命运预言】
+   如果用户穿越到古代，ta 最可能成为什么角色？会经历什么命运？
 
-3. 全文 600-900 字，每个章节都要有金句可截图传播
-4. 可以适度引用古文增添韵味，但主体是现代白话
-5. 不要写"作为AI"之类的自我指涉`,
+4. 全文 600-900 字，每个章节都要有金句可截图传播
+5. 可以适度引用古文增添韵味，但主体是现代白话
+6. 不要写"作为AI"之类的自我指涉`,
     },
     {
       role: 'user',

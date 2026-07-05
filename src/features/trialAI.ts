@@ -8,7 +8,6 @@
  */
 
 import { callLLM, type LLMMessage } from '@/utils/llmClient';
-import { hasApiKey } from '@/utils/llmConfig';
 import type { HistoricalTrial } from '@/data/features/trialData';
 import type { UserPersona } from '@/types/userPersona';
 
@@ -49,18 +48,15 @@ export async function analyzeTrial(
   trial: HistoricalTrial,
   persona?: UserPersona,
 ): Promise<TrialAnalysis> {
-  if (!hasApiKey()) {
-    throw new Error('请先配置 API Key — 点击页面右上角"⚙️ 配置"按钮');
-  }
 
   const personaInjection = persona
-    ? `\n\n--- AI 记忆中枢 ---\n这位用户关注人物${persona.favoritePersons.join('、') || '众多'}，朝代偏好${persona.favoriteDynasties.join('、') || '广泛'}，性格维度：文治${persona.dimensions.governance}/武功${persona.dimensions.military}/智略${persona.dimensions.wisdom}/博学${persona.dimensions.charisma}`
+    ? `\n\n--- 用户画像 ---\n这位用户关注人物${persona.favoritePersons.join('、') || '众多'}，朝代偏好${persona.favoriteDynasties.join('、') || '广泛'}，性格维度：文治${persona.dimensions.governance}/武功${persona.dimensions.military}/智略${persona.dimensions.wisdom}/博学${persona.dimensions.charisma}`
     : '';
 
   const messages: LLMMessage[] = [
     {
       role: 'system',
-      content: `你是"五千年史馆"的法学博士兼历史学家，精通古今中外法律体系。${personaInjection}
+      content: `你是"五千年史馆"的法学博士兼历史学家，精通古今法律。${personaInjection}
 
 你的任务是对用户提供的历史审判案件进行深度法律分析。
 
@@ -126,12 +122,9 @@ export async function compareVerdict(
   userVerdict: UserVerdict,
   persona?: UserPersona,
 ): Promise<VerdictComparison> {
-  if (!hasApiKey()) {
-    throw new Error('请先配置 API Key — 点击页面右上角"⚙️ 配置"按钮');
-  }
 
   const personaInjection = persona
-    ? `\n\n--- AI 记忆中枢 ---\n这位用户关注人物${persona.favoritePersons.join('、') || '众多'}，朝代偏好${persona.favoriteDynasties.join('、') || '广泛'}，性格维度：文治${persona.dimensions.governance}/武功${persona.dimensions.military}/智略${persona.dimensions.wisdom}/博学${persona.dimensions.charisma}`
+    ? `\n\n--- 用户画像 ---\n这位用户关注人物${persona.favoritePersons.join('、') || '众多'}，朝代偏好${persona.favoriteDynasties.join('、') || '广泛'}，性格维度：文治${persona.dimensions.governance}/武功${persona.dimensions.military}/智略${persona.dimensions.wisdom}/博学${persona.dimensions.charisma}`
     : '';
 
   const messages: LLMMessage[] = [
@@ -201,9 +194,6 @@ export async function compareVerdict(
 export async function generateLegalEducation(
   trial: HistoricalTrial,
 ): Promise<string> {
-  if (!hasApiKey()) {
-    throw new Error('请先配置 API Key — 点击页面右上角"⚙️ 配置"按钮');
-  }
 
   const messages: LLMMessage[] = [
     {
@@ -215,7 +205,7 @@ export async function generateLegalEducation(
 - 中间解释古今法律理念的差异
 - 结尾给一条现代法律建议
 
-只输出纯文本，不要 JSON。`,
+只输出纯文本，不要 JSON。不要使用 Markdown 语法（不要 ##、**、代码块等），不要使用 emoji。`,
     },
     {
       role: 'user',
