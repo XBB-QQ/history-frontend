@@ -11,10 +11,12 @@ import type { NodeType } from '@/types/knowledgeGraph';
 import KnowledgeGraphView from '@/components/graph/KnowledgeGraphView';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import { useT } from '@/i18n/i18n';
 
 const TYPES: NodeType[] = ['dynasty', 'event', 'person', 'knowledge'];
 
 function KnowledgeGraphPage() {
+  const t = useT();
   const graph = useMemo(() => buildKnowledgeGraph(), []);
   const [highlightType, setHighlightType] = useState<NodeType | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -56,8 +58,8 @@ function KnowledgeGraphPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="KNOWLEDGE GRAPH"
-            title="全局知识图谱"
-            description="实体关联图谱"
+            title={t('knowledgeGraph.title')}
+            description={t('knowledgeGraph.description')}
           />
         </RevealOnScroll>
 
@@ -65,27 +67,27 @@ function KnowledgeGraphPage() {
           <div className="mt-6 grid grid-cols-2 md:grid-cols-5 gap-3">
             <div className="p-3 bg-white/60 dark:bg-ink-900/60 rounded-lg border border-ink-200 dark:border-ink-700 text-center">
               <div className="text-2xl font-bold text-accent">{stats.totalNodes}</div>
-              <div className="text-xs text-ink-500 dark:text-ink-400">节点总数</div>
+              <div className="text-xs text-ink-500 dark:text-ink-400">{t('knowledgeGraph.totalNodes')}</div>
             </div>
             <div className="p-3 bg-white/60 dark:bg-ink-900/60 rounded-lg border border-ink-200 dark:border-ink-700 text-center">
               <div className="text-2xl font-bold text-accent">{stats.totalLinks}</div>
-              <div className="text-xs text-ink-500 dark:text-ink-400">关系边数</div>
+              <div className="text-xs text-ink-500 dark:text-ink-400">{t('knowledgeGraph.totalLinks')}</div>
             </div>
-            {TYPES.map((t) => (
+            {TYPES.map((nt) => (
               <button
-                key={t}
-                onClick={() => setHighlightType(highlightType === t ? null : t)}
+                key={nt}
+                onClick={() => setHighlightType(highlightType === nt ? null : nt)}
                 className={`p-3 rounded-lg border text-center transition-all ${
-                  highlightType === t
+                  highlightType === nt
                     ? 'border-accent bg-accent/10'
                     : 'border-ink-200 dark:border-ink-700 bg-white/60 dark:bg-ink-900/60 hover:border-accent'
                 }`}
               >
-                <div className="text-2xl font-bold" style={{ color: NODE_STYLES[t].color }}>
-                  {stats.byType[t]}
+                <div className="text-2xl font-bold" style={{ color: NODE_STYLES[nt].color }}>
+                  {stats.byType[nt]}
                 </div>
                 <div className="text-xs text-ink-500 dark:text-ink-400">
-                  {NODE_STYLES[t].emoji} {NODE_STYLES[t].label}
+                  {NODE_STYLES[nt].emoji} {NODE_STYLES[nt].label}
                 </div>
               </button>
             ))}
@@ -97,13 +99,13 @@ function KnowledgeGraphPage() {
             <div id="graph-container" className="bg-white/40 dark:bg-ink-900/40 rounded-xl border border-ink-200 dark:border-ink-700 overflow-hidden">
               <div className="p-3 border-b border-ink-200 dark:border-ink-700 flex items-center justify-between text-sm">
                 <span className="text-ink-600 dark:text-ink-400">
-                  注 拖拽节点可重新布局，点击查看详情
+                  {t('knowledgeGraph.dragHint')}
                   {highlightType && (
-                    <span className="ml-2 text-accent">筛选: {NODE_STYLES[highlightType].label}</span>
+                    <span className="ml-2 text-accent">{t('knowledgeGraph.filter')}: {NODE_STYLES[highlightType].label}</span>
                   )}
                 </span>
                 <button onClick={() => setHighlightType(null)} className="text-xs text-accent hover:underline">
-                  清除筛选
+                  {t('knowledgeGraph.clearFilter')}
                 </button>
               </div>
               <div className="flex justify-center bg-paper/30 dark:bg-ink-950/30">
@@ -121,11 +123,11 @@ function KnowledgeGraphPage() {
 
           <RevealOnScroll direction="left" delay={400}>
             <div className="bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700 p-4 lg:sticky lg:top-20">
-              <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-3">节点详情</h3>
+              <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-3">{t('knowledgeGraph.nodeDetail')}</h3>
               {!selectedNode ? (
                 <div className="text-center py-8 text-ink-400 dark:text-ink-500 text-sm">
                   <div className="text-4xl mb-2">拖</div>
-                  点击图谱节点查看详情
+                  {t('knowledgeGraph.clickToView')}
                 </div>
               ) : (
                 <div>
@@ -137,16 +139,16 @@ function KnowledgeGraphPage() {
                   </div>
                   <h4 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2">{selectedNode.label}</h4>
                   {selectedNode.dynasty && (
-                    <div className="text-sm text-ink-600 dark:text-ink-400 mb-2">朝代: {selectedNode.dynasty}</div>
+                    <div className="text-sm text-ink-600 dark:text-ink-400 mb-2">{t('knowledgeGraph.dynasty')}: {selectedNode.dynasty}</div>
                   )}
                   {selectedNode.year && (
                     <div className="text-sm text-ink-600 dark:text-ink-400 mb-2">
-                      年份: {selectedNode.year < 0 ? `公元前 ${-selectedNode.year}` : selectedNode.year}
+                      {t('knowledgeGraph.year')}: {selectedNode.year < 0 ? `${t('knowledgeGraph.bce')} ${-selectedNode.year}` : selectedNode.year}
                     </div>
                   )}
                   <div className="mt-4 pt-3 border-t border-ink-200 dark:border-ink-700">
                     <div className="text-xs font-bold text-ink-700 dark:text-ink-300 mb-2">
-                      相关节点 ({selectedLinks.length})
+                      {t('knowledgeGraph.relatedNodes')} ({selectedLinks.length})
                     </div>
                     <div className="space-y-1 max-h-60 overflow-y-auto">
                       {selectedLinks.map((link, i) => {
@@ -175,12 +177,12 @@ function KnowledgeGraphPage() {
 
         <RevealOnScroll direction="up" delay={500}>
           <div className="mt-6 p-4 bg-white/60 dark:bg-ink-900/60 rounded-lg border border-ink-200 dark:border-ink-700">
-            <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-3 text-sm">图例</h3>
+            <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-3 text-sm">{t('knowledgeGraph.legend')}</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-              {TYPES.map((t) => (
-                <div key={t} className="flex items-center gap-2">
-                  <span className="w-4 h-4 rounded-full" style={{ background: NODE_STYLES[t].color }} />
-                  <span className="text-ink-600 dark:text-ink-400">{NODE_STYLES[t].emoji} {NODE_STYLES[t].label}</span>
+              {TYPES.map((nt) => (
+                <div key={nt} className="flex items-center gap-2">
+                  <span className="w-4 h-4 rounded-full" style={{ background: NODE_STYLES[nt].color }} />
+                  <span className="text-ink-600 dark:text-ink-400">{NODE_STYLES[nt].emoji} {NODE_STYLES[nt].label}</span>
                 </div>
               ))}
             </div>
@@ -189,7 +191,7 @@ function KnowledgeGraphPage() {
 
         <RevealOnScroll direction="fade" delay={600}>
           <div className="mt-8 text-center">
-            <Link to="/" className="btn-secondary">返回首页</Link>
+            <Link to="/" className="btn-secondary">{t('common.back_home')}</Link>
           </div>
         </RevealOnScroll>
       </div>

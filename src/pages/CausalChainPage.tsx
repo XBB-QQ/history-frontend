@@ -1,14 +1,16 @@
 import { useState, useMemo } from 'react';
 import { CAUSAL_CHAINS, findCausalChain, traceCausalRoot } from '@/data/features/causalChains';
 import type { CausalLink } from '@/data/features/causalChains';
+import { useT } from '@/i18n/i18n';
 
 const STRENGTH_STYLE = {
-  direct: { label: '直接因果', color: 'border-red-400 bg-red-50 text-red-700', line: '#c44536' },
-  contributing: { label: '重要因素', color: 'border-yellow-400 bg-yellow-50 text-yellow-700', line: '#d4a017' },
-  background: { label: '深层背景', color: 'border-blue-400 bg-blue-50 text-blue-700', line: '#4a90d9' },
+  direct: { labelKey: 'causalChain.strengthDirect', color: 'border-red-400 bg-red-50 text-red-700', line: '#c44536' },
+  contributing: { labelKey: 'causalChain.strengthContributing', color: 'border-yellow-400 bg-yellow-50 text-yellow-700', line: '#d4a017' },
+  background: { labelKey: 'causalChain.strengthBackground', color: 'border-blue-400 bg-blue-50 text-blue-700', line: '#4a90d9' },
 };
 
 export default function CausalChainPage() {
+  const t = useT();
   const [selectedEvent, setSelectedEvent] = useState<string>('qin-unify');
   const [showChain, setShowChain] = useState(true);
 
@@ -31,10 +33,10 @@ export default function CausalChainPage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            链 历史因果链
+            链 {t('causalChain.title')}
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
-            事件不是孤立的 — 每个历史转折都有前因后果，追根溯源看兴替
+            {t('causalChain.subtitle')}
           </p>
         </div>
 
@@ -62,7 +64,7 @@ export default function CausalChainPage() {
             {rootChain.length > 0 && (
               <div>
                 <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3">
-                  🌱 追根溯源
+                  🌱 {t('causalChain.traceRoot')}
                 </h3>
                 <div className="flex items-center gap-1 overflow-x-auto pb-2">
                   {rootChain.map((link, i) => (
@@ -80,7 +82,7 @@ export default function CausalChainPage() {
             {chain.causes.length > 0 && (
               <div>
                 <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3">
-                  ⬅️ 前因（导致了此事件）
+                  ⬅️ {t('causalChain.causes')}
                 </h3>
                 <div className="space-y-3">
                   {chain.causes.map((link, i) => (
@@ -101,7 +103,7 @@ export default function CausalChainPage() {
             {chain.effects.length > 0 && (
               <div>
                 <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3">
-                  ➡️ 后果（此事件导致了）
+                  ➡️ {t('causalChain.effects')}
                 </h3>
                 <div className="space-y-3">
                   {chain.effects.map((link, i) => (
@@ -113,7 +115,7 @@ export default function CausalChainPage() {
 
             {chain.causes.length === 0 && chain.effects.length === 0 && (
               <p className="text-center text-sm text-ink-400">
-                该事件暂无因果链数据
+                {t('causalChain.noData')}
               </p>
             )}
           </div>
@@ -148,6 +150,7 @@ function CausalCard({ link, direction, onSelect }: {
   direction: 'cause' | 'effect';
   onSelect: (id: string) => void;
 }) {
+  const t = useT();
   const style = STRENGTH_STYLE[link.strength];
   const eventName = direction === 'cause' ? link.causeName : link.effectName;
   const eventId = direction === 'cause' ? link.cause : link.effect;
@@ -160,7 +163,7 @@ function CausalCard({ link, direction, onSelect }: {
     >
       <div className="flex items-center gap-2 mb-1">
         <span className={`px-2 py-0.5 rounded text-xs font-bold ${style.color}`}>
-          {style.label}
+          {t(style.labelKey)}
         </span>
         <span className="text-sm font-bold text-ink-800 dark:text-ink-200">
           {eventName}

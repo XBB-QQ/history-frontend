@@ -11,6 +11,7 @@ import { RARITY_CONFIG } from '@/types/card';
 import type { PersonCard, CardRarity } from '@/types/card';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import { useT } from '@/i18n/i18n';
 
 const RARITY_ORDER: CardRarity[] = ['SSR', 'SR', 'R', 'N'];
 
@@ -27,12 +28,13 @@ function StatBar({ label, value }: { label: string; value: number }) {
 }
 
 function CardDetail({ card, collected, bonds }: { card: PersonCard; collected: boolean; bonds: string[] }) {
+  const t = useT();
   if (!collected) {
     return (
       <div className="text-center py-6">
         <div className="text-6xl mb-3">❓</div>
-        <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-2">未收集</h3>
-        <p className="text-sm text-ink-500 dark:text-ink-400">抽卡获得后解锁详情</p>
+        <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-2">{t('cards.not_collected')}</h3>
+        <p className="text-sm text-ink-500 dark:text-ink-400">{t('cards.unlock_hint')}</p>
       </div>
     );
   }
@@ -48,10 +50,10 @@ function CardDetail({ card, collected, bonds }: { card: PersonCard; collected: b
         </div>
       </div>
       <div className="space-y-2 mb-4">
-        <StatBar label="武力" value={card.stats.military} />
-        <StatBar label="智谋" value={card.stats.wisdom} />
-        <StatBar label="政绩" value={card.stats.governance} />
-        <StatBar label="魅力" value={card.stats.charisma} />
+        <StatBar label={t('cards.stat_military')} value={card.stats.military} />
+        <StatBar label={t('cards.stat_wisdom')} value={card.stats.wisdom} />
+        <StatBar label={t('cards.stat_governance')} value={card.stats.governance} />
+        <StatBar label={t('cards.stat_charisma')} value={card.stats.charisma} />
       </div>
       <div className="p-3 bg-ink-50 dark:bg-ink-800/50 rounded text-sm italic text-ink-700 dark:text-ink-300 mb-3">
         "{card.quote}"
@@ -59,7 +61,7 @@ function CardDetail({ card, collected, bonds }: { card: PersonCard; collected: b
       <p className="text-xs text-ink-600 dark:text-ink-400 mb-3">{card.bio}</p>
       {bonds.length > 0 && (
         <div className="p-2 bg-amber-50 dark:bg-amber-900/20 rounded text-xs text-amber-700 dark:text-amber-400">
-          抽 羁绊激活：{bonds.join(', ')}
+          抽 {t('cards.bond_active')}{bonds.join(', ')}
           {card.bondEffect && <div className="mt-1">{card.bondEffect}</div>}
         </div>
       )}
@@ -68,6 +70,7 @@ function CardDetail({ card, collected, bonds }: { card: PersonCard; collected: b
 }
 
 function CardsPage() {
+  const t = useT();
   const { points, cards, draw, drawTen, hasCard, getActiveBonds } = useCardStore();
   const [drawResults, setDrawResults] = useState<PersonCard[]>([]);
   const [selectedCard, setSelectedCard] = useState<PersonCard | null>(null);
@@ -108,8 +111,8 @@ function CardsPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="CARD COLLECTION"
-            title="历史人物卡牌"
-            description="人物卡牌收集"
+            title={t('cards.title')}
+            description={t('cards.description')}
           />
         </RevealOnScroll>
 
@@ -119,19 +122,19 @@ function CardsPage() {
             <div className="flex items-center justify-between flex-wrap gap-3">
               <div className="flex items-center gap-4">
                 <div>
-                  <div className="text-xs text-ink-500 dark:text-ink-400">积分</div>
+                  <div className="text-xs text-ink-500 dark:text-ink-400">{t('cards.points')}</div>
                   <div className="text-2xl font-bold text-accent">{points}</div>
                 </div>
                 <div className="text-ink-300">|</div>
                 <div>
-                  <div className="text-xs text-ink-500 dark:text-ink-400">已收集</div>
+                  <div className="text-xs text-ink-500 dark:text-ink-400">{t('cards.collected')}</div>
                   <div className="text-2xl font-bold text-ink-900 dark:text-ink-100">
                     {collectedCount}<span className="text-sm text-ink-400">/{totalCount}</span>
                   </div>
                 </div>
                 <div className="text-ink-300">|</div>
                 <div>
-                  <div className="text-xs text-ink-500 dark:text-ink-400">收集进度</div>
+                  <div className="text-xs text-ink-500 dark:text-ink-400">{t('cards.progress')}</div>
                   <div className="text-2xl font-bold text-accent">{progress}%</div>
                 </div>
               </div>
@@ -141,14 +144,14 @@ function CardsPage() {
                   disabled={isDrawing || points < 10}
                   className="px-4 py-2 bg-accent text-white font-bold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-sm"
                 >
-                  单抽 (10积分)
+                  {t('cards.draw_one')}
                 </button>
                 <button
                   onClick={() => handleDraw(10)}
                   disabled={isDrawing || points < 100}
                   className="px-4 py-2 bg-gradient-to-r from-amber-500 to-accent text-white font-bold rounded-lg hover:shadow-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed text-sm"
                 >
-                  十连抽 (100积分)
+                  {t('cards.draw_ten')}
                 </button>
               </div>
             </div>
@@ -163,7 +166,7 @@ function CardsPage() {
           <RevealOnScroll direction="fade">
             <div className="mt-6 p-6 bg-white/70 dark:bg-ink-900/70 rounded-xl border-2 border-accent/30">
               <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-4 text-center">
-                {isDrawing ? '抽 抽卡中...' : `得 获得 ${drawResults.length} 张卡牌`}
+                {isDrawing ? t('cards.drawing') : t('cards.obtained', { count: drawResults.length })}
               </h3>
               {isDrawing ? (
                 <div className="text-center text-4xl animate-pulse">包</div>
@@ -208,7 +211,7 @@ function CardsPage() {
         {/* 卡牌图鉴 */}
         <RevealOnScroll direction="up" delay={400}>
           <div className="mt-6 p-4 bg-white/60 dark:bg-ink-900/60 rounded-xl border border-ink-200 dark:border-ink-700">
-            <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-4">卡牌图鉴</h3>
+            <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-4">{t('cards.album')}</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
               {PERSON_CARDS.map((card) => {
                 const collected = hasCard(card.id);
@@ -226,7 +229,7 @@ function CardsPage() {
                     <div className="text-3xl text-center mb-1">{collected ? card.emoji : '❓'}</div>
                     <div className="text-center font-bold text-sm">{collected ? card.name : '???'}</div>
                     <div className={`text-center text-xs ${collected ? 'opacity-80' : ''}`}>
-                      {collected ? card.dynasty : '未收集'}
+                      {collected ? card.dynasty : t('cards.not_collected')}
                     </div>
                     <div className={`text-center text-xs font-bold mt-1 ${collected ? 'bg-white/80 rounded' : ''}`}>
                       {card.rarity}
@@ -253,7 +256,7 @@ function CardsPage() {
                 onClick={() => setSelectedCard(null)}
                 className="w-full mt-4 px-4 py-2 bg-ink-100 dark:bg-ink-800 text-ink-700 dark:text-ink-300 rounded-lg hover:bg-ink-200 dark:hover:bg-ink-700 transition-colors"
               >
-                关闭
+                {t('common.close')}
               </button>
             </div>
           </div>
@@ -261,12 +264,12 @@ function CardsPage() {
 
         <RevealOnScroll direction="fade" delay={500}>
           <div className="mt-8 text-center">
-            <Link to="/" className="btn-secondary">返回首页</Link>
+            <Link to="/" className="btn-secondary">{t('cards.back_home')}</Link>
           </div>
         </RevealOnScroll>
 
         <div className="mt-6 p-3 bg-amber-50/50 dark:bg-amber-900/10 rounded-lg text-xs text-ink-500 dark:text-ink-400">
-          注 每日答题/签到可获得积分。SSR 概率 3%，SR 12%，R 25%，N 60%。重复获得卡牌按稀有度返还积分。
+          注 {t('cards.tip')}
         </div>
       </div>
     </div>

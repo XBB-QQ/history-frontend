@@ -6,8 +6,16 @@
 import { useState } from 'react';
 import { TOPICS } from '@/data/topics';
 import { useNavigate } from 'react-router-dom';
+import { useT } from '@/i18n/i18n';
 
 const CATEGORIES = ['全部', '制度', '经济', '军事', '文化'];
+const CATEGORY_LABEL_KEYS: Record<string, string> = {
+  '全部': 'topicList.category_all',
+  '制度': 'topicList.category_system',
+  '经济': 'topicList.category_economy',
+  '军事': 'topicList.category_military',
+  '文化': 'topicList.category_culture',
+};
 const CATEGORY_COLORS: Record<string, string> = {
   制度: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
   经济: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
@@ -17,11 +25,12 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 export default function TopicListPage() {
   const navigate = useNavigate();
+  const t = useT();
   const [activeCategory, setActiveCategory] = useState('全部');
 
   const filtered = activeCategory === '全部'
     ? TOPICS
-    : TOPICS.filter(t => t.category === activeCategory);
+    : TOPICS.filter(topic => topic.category === activeCategory);
 
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950">
@@ -33,11 +42,10 @@ export default function TopicListPage() {
         </div>
         <div className="relative max-w-6xl mx-auto px-6 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-ink-900 dark:text-ink-100 mb-4">
-            专题深度长文
+            {t('topicList.hero_title')}
           </h1>
           <p className="text-lg text-ink-600 dark:text-ink-400 max-w-2xl mx-auto">
-            从制度、经济、军事、文化四个维度，深入解读中国历史的核心命题。
-            每个专题分为 5 个章节，带你读懂历史背后的深层逻辑。
+            {t('topicList.hero_subtitle')}
           </p>
         </div>
       </div>
@@ -55,7 +63,7 @@ export default function TopicListPage() {
                   : 'bg-white dark:bg-ink-800 text-ink-600 dark:text-ink-400 hover:bg-ink-100 dark:hover:bg-ink-700'
               }`}
             >
-              {cat}
+              {t(CATEGORY_LABEL_KEYS[cat] || cat)}
             </button>
           ))}
         </div>
@@ -82,7 +90,7 @@ export default function TopicListPage() {
                 </p>
 
                 <div className="flex items-center justify-between text-xs text-ink-400 dark:text-ink-500">
-                  <span>{topic.chapterCount} 章 · 约 {topic.estimatedMinutes} 分钟</span>
+                  <span>{t('topicList.chapter_minutes', { chapters: topic.chapterCount, minutes: topic.estimatedMinutes })}</span>
                   <span className="flex gap-1">
                     {topic.tags.slice(0, 2).map(tag => (
                       <span key={tag} className="px-1.5 py-0.5 bg-ink-50 dark:bg-ink-800 rounded">#{tag}</span>
@@ -96,7 +104,7 @@ export default function TopicListPage() {
 
         {filtered.length === 0 && (
           <div className="text-center py-20 text-ink-400">
-            该分类下暂无专题
+            {t('topicList.empty')}
           </div>
         )}
       </div>

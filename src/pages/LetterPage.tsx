@@ -17,6 +17,7 @@ import {
   type Letter,
 } from '@/features/letterWriter';
 import { usePersonaStore } from '@/store/personaStore';
+import { useT } from '@/i18n/i18n';
 
 export default function LetterPage() {
   const [selectedFigure, setSelectedFigure] = useState<HistoricalFigure | null>(null);
@@ -26,6 +27,7 @@ export default function LetterPage() {
   const [error, setError] = useState('');
   const [letters, setLetters] = useState<Letter[]>([]);
   const replyRef = useRef<HTMLDivElement>(null);
+  const t = useT();
 
   useEffect(() => {
     setLetters(loadLetters());
@@ -63,7 +65,7 @@ export default function LetterPage() {
       setLetterContent('');
       setStreamingReply('');
     } catch (e) {
-      setError(e instanceof Error ? e.message : '投递失败');
+      setError(e instanceof Error ? e.message : t('letter.send_failed'));
     } finally {
       setSending(false);
     }
@@ -80,8 +82,8 @@ export default function LetterPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="TIME MAILBOX"
-            title="时空邮筒"
-            description="给历史人物写信，AI 以其口吻回信"
+            title={t('letter.title')}
+            description={t('letter.description')}
           />
         </RevealOnScroll>
 
@@ -90,7 +92,7 @@ export default function LetterPage() {
         <RevealOnScroll direction="up" delay={200}>
           <div className="mt-8 p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
             <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-              收件人 选择历史人物
+              {t('letter.recipient_title')}
             </h3>
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
               {FIGURES.map((fig) => (
@@ -119,7 +121,7 @@ export default function LetterPage() {
               <div className="flex items-center gap-3 mb-4">
                 <span className="text-3xl">{selectedFigure.emoji}</span>
                 <div>
-                  <div className="text-xs text-ink-500 dark:text-ink-400">致</div>
+                  <div className="text-xs text-ink-500 dark:text-ink-400">{t('letter.to_label')}</div>
                   <div className="font-bold text-ink-900 dark:text-ink-100">
                     {selectedFigure.name} · {selectedFigure.dynasty} · {selectedFigure.role}
                   </div>
@@ -133,7 +135,7 @@ export default function LetterPage() {
               <textarea
                 value={letterContent}
                 onChange={(e) => setLetterContent(e.target.value)}
-                placeholder={`给${selectedFigure.name}写点什么吧…\n可以问他的生平、探讨他的思想、或者只是聊聊你的困惑。`}
+                placeholder={t('letter.input_placeholder', { name: selectedFigure.name })}
                 rows={6}
                 disabled={sending}
                 className="w-full px-4 py-3 rounded-lg bg-white/70 dark:bg-ink-900/70 border border-ink-200 dark:border-ink-600 text-ink-900 dark:text-ink-100 placeholder:text-ink-400 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition-all resize-none disabled:opacity-50"
@@ -141,14 +143,14 @@ export default function LetterPage() {
 
               <div className="mt-3 flex justify-between items-center">
                 <span className="text-xs text-ink-500 dark:text-ink-400">
-                  {letterContent.length} 字
+                  {t('letter.char_count', { n: letterContent.length })}
                 </span>
                 <button
                   onClick={handleSend}
                   disabled={sending || !letterContent.trim()}
                   className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
-                  {sending ? '投递中…' : '📮 投入邮筒'}
+                  {sending ? t('letter.sending') : t('letter.send_btn')}
                 </button>
               </div>
             </div>
@@ -161,7 +163,7 @@ export default function LetterPage() {
             <div className="mt-6 p-6 bg-gradient-to-br from-accent/5 to-purple-500/5 dark:from-accent/10 dark:to-purple-700/10 rounded-xl border border-accent/30">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-2xl">{selectedFigure?.emoji}</span>
-                <span className="font-bold text-accent">{selectedFigure?.name} 回信</span>
+                <span className="font-bold text-accent">{t('letter.reply_title', { name: selectedFigure?.name })}</span>
                 <span className="inline-block w-2 h-2 bg-accent animate-pulse rounded-full" />
               </div>
               <div ref={replyRef} className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line font-serif"
@@ -183,7 +185,7 @@ export default function LetterPage() {
           <RevealOnScroll direction="up" delay={400}>
             <div className="mt-8 p-6 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
               <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-4">
-                往来信件 ({letters.length})
+                {t('letter.letters_title', { n: letters.length })}
               </h3>
               <div className="space-y-4 max-h-[600px] overflow-y-auto">
                 {letters.map((letter) => (
@@ -206,17 +208,17 @@ export default function LetterPage() {
                           onClick={() => handleDelete(letter.id)}
                           className="text-xs text-red-500 hover:text-red-700"
                         >
-                          删除
+                          {t('letter.delete_btn')}
                         </button>
                       </div>
                     </div>
                     <div className="mb-3 p-3 bg-white/60 dark:bg-ink-900/60 rounded text-sm text-ink-700 dark:text-ink-300">
-                      <div className="text-xs text-ink-500 dark:text-ink-400 mb-1">来信</div>
+                      <div className="text-xs text-ink-500 dark:text-ink-400 mb-1">{t('letter.incoming_label')}</div>
                       {letter.userContent}
                     </div>
                     <div className="p-3 bg-accent/5 dark:bg-accent/10 rounded text-sm text-ink-800 dark:text-ink-200 font-serif"
                       style={{ fontFamily: 'var(--font-heading), serif' }}>
-                      <div className="text-xs text-accent mb-1">回信</div>
+                      <div className="text-xs text-accent mb-1">{t('letter.reply_label')}</div>
                       {letter.replyContent}
                     </div>
                   </div>
@@ -229,7 +231,7 @@ export default function LetterPage() {
         {/* 底部 */}
         <RevealOnScroll direction="fade" delay={400}>
           <div className="mt-12 text-center">
-            <Link to="/" className="btn-secondary">返回首页</Link>
+            <Link to="/" className="btn-secondary">{t('common.back_home')}</Link>
           </div>
         </RevealOnScroll>
       </div>

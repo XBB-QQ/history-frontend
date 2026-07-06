@@ -6,8 +6,10 @@ import SectionHeader from '@/components/common/SectionHeader';
 import DynastyGrid from '@/components/dynasty/DynastyGrid';
 import { GridSkeleton } from '@/components/common/Skeleton';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import { useT } from '@/i18n/i18n';
 
 function DynastiesPage() {
+  const t = useT();
   const [dynasties, setDynasties] = useState<DynastyItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -29,13 +31,13 @@ function DynastiesPage() {
           <RevealOnScroll direction="fade">
             <SectionHeader
               label="DYNASTIES"
-              title="历代朝代"
-              description="历代朝代"
+              title={t('dynasties.title')}
+              description={t('dynasties.title')}
             />
           </RevealOnScroll>
           <GridSkeleton count={8} />
           <RevealOnScroll direction="fade" delay={200}>
-            <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>
+            <Link to="/" className="btn-secondary mt-12 inline-flex">{t('common.back_home')}</Link>
           </RevealOnScroll>
         </div>
       </div>
@@ -48,15 +50,15 @@ function DynastiesPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="DYNASTIES"
-            title="历代朝代"
-            description="历代朝代"
+            title={t('dynasties.title')}
+            description={t('dynasties.title')}
           />
         </RevealOnScroll>
         <RevealOnScroll direction="up" delay={200}>
           {loading ? <GridSkeleton count={8} /> : <DynastyGrid dynasties={dynasties} />}
         </RevealOnScroll>
         <RevealOnScroll direction="fade" delay={400}>
-          <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>
+          <Link to="/" className="btn-secondary mt-12 inline-flex">{t('common.back_home')}</Link>
         </RevealOnScroll>
       </div>
     </div>

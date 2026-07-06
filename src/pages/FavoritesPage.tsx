@@ -4,14 +4,15 @@ import { useFavoriteStore } from '@/store/favoriteStore';
 import { useDetailStore } from '@/store/detailStore';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import SectionHeader from '@/components/common/SectionHeader';
+import { useT } from '@/i18n/i18n';
 
 type FavoriteType = 'event' | 'person' | 'dynasty' | 'knowledge';
 
-const typeLabels: Record<FavoriteType, string> = {
-  event: '事件',
-  person: '人物',
-  dynasty: '朝代',
-  knowledge: '知识',
+const typeLabelKeys: Record<FavoriteType, string> = {
+  event: 'favorite.type_event',
+  person: 'favorite.type_person',
+  dynasty: 'favorite.type_dynasty',
+  knowledge: 'favorite.type_knowledge',
 };
 
 const typeIcons: Record<FavoriteType, string> = {
@@ -29,6 +30,7 @@ const typeColors: Record<FavoriteType, string> = {
 };
 
 function FavoriteItem({ id, type, title, pinned }: { id: string; type: FavoriteType; title: string; pinned: boolean }) {
+  const t = useT();
   const navigate = useNavigate();
   const openDetail = useDetailStore((s) => s.openDetail);
 
@@ -47,10 +49,10 @@ function FavoriteItem({ id, type, title, pinned }: { id: string; type: FavoriteT
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${typeColors[type]}`}>
-            {typeLabels[type]}
+            {t(typeLabelKeys[type])}
           </span>
           {pinned && (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-accent text-white">置顶</span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-accent text-white">{t('favorite.pin_badge')}</span>
           )}
         </div>
         <h3 className="text-ink-900 dark:text-ink-100 font-semibold truncate">{title}</h3>
@@ -63,6 +65,7 @@ function FavoriteItem({ id, type, title, pinned }: { id: string; type: FavoriteT
 }
 
 export default function FavoritesPage() {
+  const t = useT();
   const { favorites, removeFavorite, togglePin } = useFavoriteStore();
 
   // 排序：置顶在前，然后按添加时间倒序
@@ -81,8 +84,8 @@ export default function FavoritesPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="FAVORITES"
-            title="我的收藏"
-            description={`已收藏 ${favorites.length} 项内容，其中 ${pinnedCount} 项已置顶`}
+            title={t('favorite.title')}
+            description={t('favorite.summary', { total: favorites.length, pinned: pinnedCount })}
           />
         </RevealOnScroll>
 
@@ -90,8 +93,8 @@ export default function FavoritesPage() {
           <RevealOnScroll direction="scale">
             <div className="text-center py-20">
               <div className="text-6xl mb-4">史</div>
-              <p className="text-ink-400 text-lg mb-2">还没有收藏任何内容</p>
-              <p className="text-ink-300 text-sm">点击详情弹窗中的收藏按钮，即可收藏感兴趣的内容</p>
+              <p className="text-ink-400 text-lg mb-2">{t('favorite.empty_title')}</p>
+              <p className="text-ink-300 text-sm">{t('favorite.empty_hint')}</p>
             </div>
           </RevealOnScroll>
         ) : (
@@ -107,7 +110,7 @@ export default function FavoritesPage() {
                       togglePin(fav.id);
                     }}
                     className="p-1.5 rounded-lg hover:bg-ink-100 dark:hover:bg-ink-700 text-ink-400 hover:text-accent transition-colors"
-                    title={fav.pinned ? '取消置顶' : '置顶'}
+                    title={fav.pinned ? t('favorite.unpin') : t('favorite.pin')}
                   >
                     <svg className="w-4 h-4" fill={fav.pinned ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
@@ -119,7 +122,7 @@ export default function FavoritesPage() {
                       removeFavorite(fav.id);
                     }}
                     className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 text-ink-400 hover:text-red-600 transition-colors"
-                    title="移除收藏"
+                    title={t('favorite.remove_label')}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -134,7 +137,7 @@ export default function FavoritesPage() {
         {favorites.length > 0 && (
           <RevealOnScroll direction="fade" delay={200}>
             <div className="text-center mt-8">
-              <a href="/" className="btn-secondary inline-flex">返回首页</a>
+              <a href="/" className="btn-secondary inline-flex">{t('common.back_home')}</a>
             </div>
           </RevealOnScroll>
         )}

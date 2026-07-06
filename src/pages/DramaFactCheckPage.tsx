@@ -15,19 +15,21 @@ import {
   type DramaMapping,
   type FactCheckSummary,
 } from '@/data/media/dramaMapping';
+import { useT } from '@/i18n/i18n';
 
 type TabType = 'dramas' | 'factcheck' | 'submit';
 
 /* ─── 勘误性质标签 ─── */
-const NATURE_CONFIG: Record<FactCheckSummary['nature'], { label: string; color: string; emoji: string }> = {
-  fiction: { label: '虚构', color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400', emoji: '🎭' },
-  exaggeration: { label: '夸大', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400', emoji: '📢' },
-  inversion: { label: '颠倒', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400', emoji: '🔄' },
-  omission: { label: '遗漏', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400', emoji: '📝' },
+const NATURE_CONFIG: Record<FactCheckSummary['nature'], { labelKey: string; color: string; emoji: string }> = {
+  fiction: { labelKey: 'dramaFactCheck.natureFiction', color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400', emoji: '🎭' },
+  exaggeration: { labelKey: 'dramaFactCheck.natureExaggeration', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400', emoji: '📢' },
+  inversion: { labelKey: 'dramaFactCheck.natureInversion', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400', emoji: '🔄' },
+  omission: { labelKey: 'dramaFactCheck.natureOmission', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400', emoji: '📝' },
 };
 
 /* ─── 剧集卡片 ─── */
 function DramaCard({ drama }: { drama: DramaMapping }) {
+  const t = useT();
   const [expanded, setExpanded] = useState(false);
 
   const factCheckCount = drama.factCheckSummaries.length;
@@ -39,7 +41,7 @@ function DramaCard({ drama }: { drama: DramaMapping }) {
         <div className="flex items-start justify-between mb-3">
           <div>
             <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100">{drama.title}</h3>
-            <p className="text-sm text-ink-500">{drama.year} · {drama.episodes}集 · {drama.director ? drama.director + ' 导演' : ''}</p>
+            <p className="text-sm text-ink-500">{drama.year} · {drama.episodes}{t('dramaFactCheck.episodes')} · {drama.director ? drama.director + ' ' + t('dramaFactCheck.directorSuffix') : ''}</p>
           </div>
           <div className="flex items-center gap-2">
             <span className="px-2 py-1 rounded-full bg-accent/10 text-accent text-sm font-bold">
@@ -47,7 +49,7 @@ function DramaCard({ drama }: { drama: DramaMapping }) {
             </span>
             {factCheckCount > 0 && (
               <span className="px-2 py-1 rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs font-bold">
-                {factCheckCount} 处勘误
+                {t('dramaFactCheck.factCheckCount', { count: factCheckCount })}
               </span>
             )}
           </div>
@@ -76,7 +78,7 @@ function DramaCard({ drama }: { drama: DramaMapping }) {
           onClick={() => setExpanded(!expanded)}
           className="text-sm text-accent font-bold hover:underline"
         >
-          {expanded ? '▲ 收起详情' : '▼ 查看勘误详情'}
+          {expanded ? `▲ ${t('dramaFactCheck.collapse')}` : `▼ ${t('dramaFactCheck.expand')}`}
         </button>
 
         {/* 勘误详情 */}
@@ -94,29 +96,30 @@ function DramaCard({ drama }: { drama: DramaMapping }) {
 
 /* ─── 勘误卡片 ─── */
 function FactCheckCard({ factCheck }: { factCheck: FactCheckSummary }) {
+  const t = useT();
   const config = NATURE_CONFIG[factCheck.nature];
 
   return (
     <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
       <div className="flex items-center gap-2 mb-3">
         <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${config.color}`}>
-          {config.emoji} {config.label}
+          {config.emoji} {t(config.labelKey)}
         </span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <h5 className="text-sm font-bold text-red-700 dark:text-red-400 mb-1">🎬 剧中情节</h5>
+          <h5 className="text-sm font-bold text-red-700 dark:text-red-400 mb-1">🎬 {t('dramaFactCheck.dramaPlot')}</h5>
           <p className="text-sm text-ink-700 dark:text-ink-300">{factCheck.dramaClaim}</p>
         </div>
         <div>
-          <h5 className="text-sm font-bold text-green-700 dark:text-green-400 mb-1">📚 真实史实</h5>
+          <h5 className="text-sm font-bold text-green-700 dark:text-green-400 mb-1">📚 {t('dramaFactCheck.trueHistory')}</h5>
           <p className="text-sm text-ink-700 dark:text-ink-300">{factCheck.historicalFact}</p>
         </div>
       </div>
 
       <div className="mt-3 p-3 rounded-lg bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-700">
-        <h5 className="text-xs font-bold text-ink-500 mb-1">💡 详细说明</h5>
+        <h5 className="text-xs font-bold text-ink-500 mb-1">💡 {t('dramaFactCheck.detailExplain')}</h5>
         <p className="text-sm text-ink-600 dark:text-ink-400">{factCheck.explanation}</p>
       </div>
     </div>
@@ -125,6 +128,7 @@ function FactCheckCard({ factCheck }: { factCheck: FactCheckSummary }) {
 
 /* ─── 提交勘误表单 ─── */
 function SubmitFactCheckForm() {
+  const t = useT();
   const [formData, setFormData] = useState({
     drama: '',
     dramaClaim: '',
@@ -146,13 +150,13 @@ function SubmitFactCheckForm() {
     return (
       <div className="p-8 rounded-2xl bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800 text-center">
         <span className="text-4xl block mb-3">✅</span>
-        <h3 className="text-lg font-bold text-green-800 dark:text-green-400 mb-2">提交成功！</h3>
-        <p className="text-sm text-ink-600 dark:text-ink-400">您的勘误已提交，等待审核后将展示给其他用户。</p>
+        <h3 className="text-lg font-bold text-green-800 dark:text-green-400 mb-2">{t('dramaFactCheck.submitSuccess')}</h3>
+        <p className="text-sm text-ink-600 dark:text-ink-400">{t('dramaFactCheck.submitSuccessDesc')}</p>
         <button
           onClick={() => { setSubmitted(false); setFormData({ drama: '', dramaClaim: '', historicalFact: '', explanation: '' }); }}
           className="mt-4 px-4 py-2 rounded-lg bg-green-500 text-white font-bold"
         >
-          继续提交
+          {t('dramaFactCheck.continueSubmit')}
         </button>
       </div>
     );
@@ -161,43 +165,43 @@ function SubmitFactCheckForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-1">影视剧名称</label>
+        <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-1">{t('dramaFactCheck.formDramaName')}</label>
         <input
           type="text"
           value={formData.drama}
           onChange={(e) => setFormData({ ...formData, drama: e.target.value })}
           className="input-field"
-          placeholder="例如：甄嬛传"
+          placeholder={t('dramaFactCheck.formDramaNamePlaceholder')}
           required
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-1">剧中情节（有误的部分）</label>
+        <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-1">{t('dramaFactCheck.formDramaClaim')}</label>
         <textarea
           value={formData.dramaClaim}
           onChange={(e) => setFormData({ ...formData, dramaClaim: e.target.value })}
           className="input-field h-20"
-          placeholder="描述剧中的相关情节"
+          placeholder={t('dramaFactCheck.formDramaClaimPlaceholder')}
           required
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-1">真实史实</label>
+        <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-1">{t('dramaFactCheck.formHistoricalFact')}</label>
         <textarea
           value={formData.historicalFact}
           onChange={(e) => setFormData({ ...formData, historicalFact: e.target.value })}
           className="input-field h-20"
-          placeholder="纠正后的真实历史"
+          placeholder={t('dramaFactCheck.formHistoricalFactPlaceholder')}
           required
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-1">详细说明</label>
+        <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-1">{t('dramaFactCheck.formExplanation')}</label>
         <textarea
           value={formData.explanation}
           onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}
           className="input-field h-24"
-          placeholder="解释为什么剧中这样处理，真实情况是什么"
+          placeholder={t('dramaFactCheck.formExplanationPlaceholder')}
           required
         />
       </div>
@@ -205,7 +209,7 @@ function SubmitFactCheckForm() {
         type="submit"
         className="w-full py-3 rounded-xl bg-accent text-white font-bold hover:bg-accent/90 shadow-lg"
       >
-        📤 提交勘误
+        📤 {t('dramaFactCheck.submitBtn')}
       </button>
     </form>
   );
@@ -213,6 +217,7 @@ function SubmitFactCheckForm() {
 
 /* ─── 主页面 ─── */
 export default function DramaFactCheckPage() {
+  const t = useT();
   const [activeTab, setActiveTab] = useState<TabType>('dramas');
   const [filterDynasty, setFilterDynasty] = useState('all');
   const [sortBy, setSortBy] = useState<'rating' | 'year' | 'title'>('rating');
@@ -252,8 +257,8 @@ export default function DramaFactCheckPage() {
         <RevealOnScroll>
           <SectionHeader
             label="DRAMA FACT CHECK"
-            title="影视历史勘误台"
-            description="识别影视剧中的历史错误，还原真实历史"
+            title={t('dramaFactCheck.title')}
+            description={t('dramaFactCheck.description')}
           />
         </RevealOnScroll>
 
@@ -262,19 +267,19 @@ export default function DramaFactCheckPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
             <div className="p-4 rounded-xl bg-white dark:bg-ink-900 border-2 border-ink-200 dark:border-ink-700 text-center">
               <div className="text-2xl font-bold text-accent">{totalDramas}</div>
-              <div className="text-sm text-ink-500">收录剧集</div>
+              <div className="text-sm text-ink-500">{t('dramaFactCheck.statDramas')}</div>
             </div>
             <div className="p-4 rounded-xl bg-white dark:bg-ink-900 border-2 border-ink-200 dark:border-ink-700 text-center">
               <div className="text-2xl font-bold text-red-600">{totalFactChecks}</div>
-              <div className="text-sm text-ink-500">勘误条目</div>
+              <div className="text-sm text-ink-500">{t('dramaFactCheck.statFactChecks')}</div>
             </div>
             <div className="p-4 rounded-xl bg-white dark:bg-ink-900 border-2 border-ink-200 dark:border-ink-700 text-center">
               <div className="text-2xl font-bold text-purple-600">{totalFiction}</div>
-              <div className="text-sm text-ink-500">虚构情节</div>
+              <div className="text-sm text-ink-500">{t('dramaFactCheck.statFiction')}</div>
             </div>
             <div className="p-4 rounded-xl bg-white dark:bg-ink-900 border-2 border-ink-200 dark:border-ink-700 text-center">
               <div className="text-2xl font-bold text-yellow-600">{totalExaggeration}</div>
-              <div className="text-sm text-ink-500">夸大处理</div>
+              <div className="text-sm text-ink-500">{t('dramaFactCheck.statExaggeration')}</div>
             </div>
           </div>
         </RevealOnScroll>
@@ -283,9 +288,9 @@ export default function DramaFactCheckPage() {
         <RevealOnScroll delay={150}>
           <div className="flex gap-2 mt-6 mb-8">
             {[
-              { id: 'dramas' as const, label: '剧集列表', emoji: '🎬' },
-              { id: 'factcheck' as const, label: '全部勘误', emoji: '📋' },
-              { id: 'submit' as const, label: '提交勘误', emoji: '✏️' },
+              { id: 'dramas' as const, labelKey: 'dramaFactCheck.tabDramas', emoji: '🎬' },
+              { id: 'factcheck' as const, labelKey: 'dramaFactCheck.tabFactcheck', emoji: '📋' },
+              { id: 'submit' as const, labelKey: 'dramaFactCheck.tabSubmit', emoji: '✏️' },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -296,7 +301,7 @@ export default function DramaFactCheckPage() {
                     : 'bg-white/70 dark:bg-ink-900/70 text-ink-600 dark:text-ink-400 hover:bg-ink-100 dark:hover:bg-ink-800'
                 }`}
               >
-                {tab.emoji} {tab.label}
+                {tab.emoji} {t(tab.labelKey)}
               </button>
             ))}
           </div>
@@ -312,7 +317,7 @@ export default function DramaFactCheckPage() {
                 onChange={(e) => setFilterDynasty(e.target.value)}
                 className="px-4 py-2 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-sm"
               >
-                <option value="all">全部朝代</option>
+                <option value="all">{t('dramaFactCheck.allDynasties')}</option>
                 {dynasties.map(d => (
                   <option key={d} value={d}>{d}</option>
                 ))}
@@ -322,9 +327,9 @@ export default function DramaFactCheckPage() {
                 onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
                 className="px-4 py-2 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-sm"
               >
-                <option value="rating">按评分排序</option>
-                <option value="year">按年份排序</option>
-                <option value="title">按名称排序</option>
+                <option value="rating">{t('dramaFactCheck.sortByRating')}</option>
+                <option value="year">{t('dramaFactCheck.sortByYear')}</option>
+                <option value="title">{t('dramaFactCheck.sortByTitle')}</option>
               </select>
             </div>
 
@@ -364,9 +369,9 @@ export default function DramaFactCheckPage() {
         {activeTab === 'submit' && (
           <RevealOnScroll direction="up" delay={200}>
             <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-              <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">✏️ 提交勘误</h3>
+              <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">{t('dramaFactCheck.submitTitle')}</h3>
               <p className="text-sm text-ink-500 mb-6">
-                发现影视剧中的历史错误？欢迎提交勘误，帮助更多人了解真实历史！
+                {t('dramaFactCheck.submitDesc')}
               </p>
               <SubmitFactCheckForm />
             </div>

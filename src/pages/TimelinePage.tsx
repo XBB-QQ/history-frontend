@@ -7,8 +7,10 @@ import Timeline from '@/components/timeline/Timeline';
 import TimelineFilters from '@/components/timeline/TimelineFilters';
 import { CardSkeleton } from '@/components/common/Skeleton';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import { useT } from '@/i18n/i18n';
 
 function TimelinePage() {
+  const t = useT();
   const [events, setEvents] = useState<EventItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDynasty, setSelectedDynasty] = useState('全部');
@@ -45,8 +47,8 @@ function TimelinePage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="TIMELINE"
-            title="时间轴"
-            description="大事记"
+            title={t('timeline.title')}
+            description={t('timeline.events_desc')}
           />
         </RevealOnScroll>
 
@@ -74,7 +76,7 @@ function TimelinePage() {
 
         <RevealOnScroll direction="fade" delay={400}>
           <div className="text-center mt-12">
-            <Link to="/" className="btn-secondary inline-flex">返回首页</Link>
+            <Link to="/" className="btn-secondary inline-flex">{t('common.back_home')}</Link>
           </div>
         </RevealOnScroll>
       </div>

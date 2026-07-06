@@ -12,8 +12,10 @@ import {
   downloadCanvas,
   type DocumentTemplate,
 } from '@/utils/documentRenderer';
+import { useT } from '@/i18n/i18n';
 
 export default function DocumentGeneratorPage() {
+  const t = useT();
   const [selectedTemplate, setSelectedTemplate] = useState<DocumentTemplate>(DOCUMENT_TEMPLATES[0]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -23,7 +25,7 @@ export default function DocumentGeneratorPage() {
 
   const handleGenerate = useCallback(async () => {
     if (!title.trim() || !content.trim()) {
-      alert('请填写标题和内容');
+      alert(t('documentGenerator.fillRequired'));
       return;
     }
 
@@ -34,10 +36,10 @@ export default function DocumentGeneratorPage() {
         month: 'long',
         day: 'numeric',
       });
-      const canvas = await generateDocumentImage(selectedTemplate, title, content, sender || '臣', date);
+      const canvas = await generateDocumentImage(selectedTemplate, title, content, sender || t('documentGenerator.defaultSender'), date);
       setPreviewUrl(canvas.toDataURL('image/png'));
     } catch {
-      alert('生成失败，请重试');
+      alert(t('documentGenerator.generateFailed'));
     } finally {
       setIsGenerating(false);
     }
@@ -64,15 +66,15 @@ export default function DocumentGeneratorPage() {
         <RevealOnScroll>
           <SectionHeader
             label="DOCUMENT GENERATOR"
-            title="奏折 / 尺牍生成器"
-            description="选择古风模板，一键生成仿古文书"
+            title={t('documentGenerator.title')}
+            description={t('documentGenerator.description')}
           />
         </RevealOnScroll>
 
         {/* 模板选择 */}
         <RevealOnScroll delay={100}>
           <div className="mt-8 bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg mb-8">
-            <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">选择模板</h3>
+            <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">{t('documentGenerator.selectTemplate')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {DOCUMENT_TEMPLATES.map(template => (
                 <button
@@ -103,36 +105,36 @@ export default function DocumentGeneratorPage() {
         {/* 编辑区 */}
         <RevealOnScroll delay={200}>
           <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg mb-8">
-            <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">编写内容</h3>
+            <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">{t('documentGenerator.editContent')}</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-1">标题</label>
+                <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-1">{t('documentGenerator.titleLabel')}</label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   className="input-field"
-                  placeholder="例如：奏为陈奏事"
+                  placeholder={t('documentGenerator.titlePlaceholder')}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-1">正文</label>
+                <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-1">{t('documentGenerator.contentLabel')}</label>
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   className="input-field h-48"
-                  placeholder="谨奏：臣闻天下之事..."
+                  placeholder={t('documentGenerator.contentPlaceholder')}
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-1">署名</label>
+                  <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-1">{t('documentGenerator.senderLabel')}</label>
                   <input
                     type="text"
                     value={sender}
                     onChange={(e) => setSender(e.target.value)}
                     className="input-field"
-                    placeholder="例如：臣某某"
+                    placeholder={t('documentGenerator.senderPlaceholder')}
                   />
                 </div>
                 <div className="flex items-end">
@@ -141,7 +143,7 @@ export default function DocumentGeneratorPage() {
                     disabled={isGenerating || !title.trim() || !content.trim()}
                     className="w-full px-6 py-3 rounded-xl bg-accent text-white font-bold hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                   >
-                    {isGenerating ? '⏳ 生成中...' : '📜 生成文书'}
+                    {isGenerating ? `⏳ ${t('documentGenerator.generating')}` : `📜 ${t('documentGenerator.generate')}`}
                   </button>
                 </div>
               </div>
@@ -154,18 +156,18 @@ export default function DocumentGeneratorPage() {
           <RevealOnScroll delay={300}>
             <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100">生成结果</h3>
+                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100">{t('documentGenerator.resultTitle')}</h3>
                 <button
                   onClick={handleDownload}
                   className="px-4 py-2 rounded-lg bg-green-500 text-white font-bold hover:bg-green-600"
                 >
-                  📥 下载 PNG
+                  📥 {t('documentGenerator.downloadPng')}
                 </button>
               </div>
               <div className="flex justify-center">
                 <img
                   src={previewUrl}
-                  alt="生成的文书"
+                  alt={t('documentGenerator.generatedAlt')}
                   className="max-w-full rounded-xl shadow-xl border-2 border-ink-200 dark:border-ink-700"
                   style={{ maxHeight: '600px', objectFit: 'contain' }}
                 />

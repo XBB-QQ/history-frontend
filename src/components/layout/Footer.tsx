@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ExportDropdown from '@/components/export/ExportDropdown';
+import { useT } from '@/i18n/i18n';
 
 export default function Footer() {
+  const t = useT();
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
@@ -38,30 +40,29 @@ export default function Footer() {
                 <div className="border-2 border-red-700 dark:border-red-500 text-red-700 dark:text-red-500 rounded w-7 h-7 flex items-center justify-center font-bold text-xs">
                   史
                 </div>
-                <span className="font-bold tracking-widest">五千年史馆</span>
+                <span className="font-bold tracking-widest">{t('home.title')}</span>
               </div>
               <p className="text-ink-400 dark:text-ink-500 dark:text-ink-400">
-                以史为鉴，可知兴替。<br />
-                探索中华文明五千年辉煌历史。
+                {t('footer.brand_desc')}
               </p>
             </div>
 
             {/* 导航 */}
             <div>
-              <h4 className="font-bold text-ink-700 dark:text-ink-300 mb-3">快速导航</h4>
+              <h4 className="font-bold text-ink-700 dark:text-ink-300 mb-3">{t('footer.quick_nav')}</h4>
               <ul className="space-y-2 text-ink-500 dark:text-ink-400">
-                <li><Link to="/timeline" className="hover:text-accent transition-colors">时间轴</Link></li>
-                <li><Link to="/dynasties" className="hover:text-accent transition-colors">朝代更迭</Link></li>
-                <li><Link to="/persons" className="hover:text-accent transition-colors">人物志</Link></li>
-                <li><Link to="/knowledge" className="hover:text-accent transition-colors">史海钩沉</Link></li>
-                <li><Link to="/map" className="hover:text-accent transition-colors">历史地图</Link></li>
-                <li><Link to="/favorites" className="hover:text-accent transition-colors">我的收藏</Link></li>
+                <li><Link to="/timeline" className="hover:text-accent transition-colors">{t('nav.timeline')}</Link></li>
+                <li><Link to="/dynasties" className="hover:text-accent transition-colors">{t('nav.dynasties')}</Link></li>
+                <li><Link to="/persons" className="hover:text-accent transition-colors">{t('nav.persons')}</Link></li>
+                <li><Link to="/knowledge" className="hover:text-accent transition-colors">{t('nav.knowledge')}</Link></li>
+                <li><Link to="/map" className="hover:text-accent transition-colors">{t('nav.map')}</Link></li>
+                <li><Link to="/favorites" className="hover:text-accent transition-colors">{t('favorite.title')}</Link></li>
               </ul>
             </div>
 
             {/* 技术 */}
             <div>
-              <h4 className="font-bold text-ink-700 dark:text-ink-300 mb-3">技术栈</h4>
+              <h4 className="font-bold text-ink-700 dark:text-ink-300 mb-3">{t('footer.tech_stack')}</h4>
               <ul className="space-y-2 text-ink-500 dark:text-ink-400">
                 <li>React + TypeScript</li>
                 <li>Tailwind CSS</li>
@@ -78,7 +79,7 @@ export default function Footer() {
 
           {/* 底部版权 */}
           <div className="mt-8 pt-4 border-t border-ink-100 dark:border-ink-800 text-center text-ink-300 text-xs">
-            <p>五千年史馆 v0.1.0 — 仅供学习演示用途</p>
+            <p>{t('footer.version_info')}</p>
           </div>
         </div>
       </footer>

@@ -9,11 +9,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import { STUDY_ROUTES, getRoutesByDifficulty, type StudyRoute } from '@/data/features/storyQuests';
 import { useQuestStore } from '@/store/questStore';
 import SealStamp from '@/components/common/SealStamp';
+import { useT } from '@/i18n/i18n';
+
+const DIFFICULTY_LABEL_KEYS: Record<string, string> = {
+  '入门': 'storyQuest.difficulty_beginner',
+  '进阶': 'storyQuest.difficulty_intermediate',
+  '高阶': 'storyQuest.difficulty_advanced',
+};
 
 /** 难度星级渲染 */
 function DifficultyStars({ level }: { level: number }) {
+  const t = useT();
   return (
-    <div className="flex items-center gap-0.5" title={`难度 ${level}/5`}>
+    <div className="flex items-center gap-0.5" title={`${t('storyQuest.difficulty_label')} ${level}/5`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <span
           key={i}
@@ -62,6 +70,7 @@ function ProgressRing({ percent, size = 48 }: { percent: number; size?: number }
 
 /** 单条研学线卡片 */
 function RouteCard({ route }: { route: StudyRoute }) {
+  const t = useT();
   const navigate = useNavigate();
   const questProgress = useQuestStore((s) => s.progress[route.id]);
   const startRoute = useQuestStore((s) => s.startRoute);
@@ -102,11 +111,11 @@ function RouteCard({ route }: { route: StudyRoute }) {
               </h3>
             </div>
             <div className="flex items-center gap-2 text-xs text-ink-400 dark:text-ink-500">
-              <span>{difficulty}</span>
+              <span>{DIFFICULTY_LABEL_KEYS[difficulty] ? t(DIFFICULTY_LABEL_KEYS[difficulty]) : difficulty}</span>
               <span>·</span>
               <DifficultyStars level={route.difficulty} />
               <span>·</span>
-              <span>{route.estimatedMinutes}分钟</span>
+              <span>{route.estimatedMinutes}{t('storyQuest.minutes')}</span>
             </div>
           </div>
           {/* 进度环 */}
@@ -174,6 +183,7 @@ function RouteCard({ route }: { route: StudyRoute }) {
 
 /** 节点详情面板（点击某条研学线后展开） */
 function NodeDetail({ route }: { route: StudyRoute }) {
+  const t = useT();
   const questProgress = useQuestStore((s) => s.progress[route.id]);
   const markNodeComplete = useQuestStore((s) => s.markNodeComplete);
   const readBriefing = useQuestStore((s) => s.readBriefing);
@@ -191,7 +201,7 @@ function NodeDetail({ route }: { route: StudyRoute }) {
       {/* 节点地图 */}
       <div className="p-5">
         <h3 className="font-bold text-lg text-ink-900 dark:text-ink-100 mb-4">
-          📍 研学节点
+          📍 {t('storyQuest.nodes_title')}
         </h3>
 
         <div className="space-y-3">
@@ -234,7 +244,7 @@ function NodeDetail({ route }: { route: StudyRoute }) {
                         ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400'
                         : 'bg-ink-50 dark:bg-ink-800 text-ink-500 dark:text-ink-400'
                     }`}>
-                      {node.type === 'quiz' ? '测验' : node.type === 'milestone' ? '里程碑' : '浏览'}
+                      {node.type === 'quiz' ? t('storyQuest.quiz') : node.type === 'milestone' ? t('storyQuest.milestone') : t('storyQuest.browse')}
                     </span>
                   </div>
                   {node.description && (
@@ -250,7 +260,7 @@ function NodeDetail({ route }: { route: StudyRoute }) {
                     onClick={() => handleComplete(node.id)}
                     className="flex-shrink-0 text-xs px-3 py-1.5 rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
                   >
-                    标记完成
+                    {t('storyQuest.mark_complete')}
                   </button>
                 )}
               </div>
@@ -265,7 +275,7 @@ function NodeDetail({ route }: { route: StudyRoute }) {
               <SealStamp text={route.seal.icon} size="lg" />
               <div>
                 <h4 className="font-bold text-ink-900 dark:text-ink-100">
-                  恭喜获得印章：{route.seal.name}
+                  {t('storyQuest.seal_obtained')}：{route.seal.name}
                 </h4>
                 <p className="text-xs text-ink-500 dark:text-ink-400">{route.seal.obtainText}</p>
               </div>
@@ -284,7 +294,7 @@ function NodeDetail({ route }: { route: StudyRoute }) {
                   {route.briefing.title}
                 </h4>
                 {!briefingRead && (
-                  <span className="text-xs px-1.5 py-0.5 rounded bg-red-500 text-white">NEW</span>
+                  <span className="text-xs px-1.5 py-0.5 rounded bg-red-500 text-white">{t('storyQuest.new_badge')}</span>
                 )}
               </div>
               <p className="text-xs text-ink-600 dark:text-ink-400 leading-relaxed">
@@ -311,6 +321,7 @@ function NodeDetail({ route }: { route: StudyRoute }) {
 type FilterType = 'all' | 'difficulty' | 'dynasty';
 
 export default function StoryQuestPage() {
+  const t = useT();
   const [filterType, setFilterType] = useState<FilterType>('all');
   const [filterValue, setFilterValue] = useState<string>('');
   const [expandedRoute, setExpandedRoute] = useState<string | null>(null);
@@ -337,10 +348,10 @@ export default function StoryQuestPage() {
         {/* 页面标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 mb-2">
-            📚 主题研学线
+            📚 {t('storyQuest.title')}
           </h1>
           <p className="text-sm text-ink-500 dark:text-ink-400">
-            8 条精心设计的研学路线，带你深度探索中华五千年文明
+            {t('storyQuest.subtitle')}
           </p>
         </div>
 
@@ -355,10 +366,10 @@ export default function StoryQuestPage() {
             }}
             className="text-sm px-3 py-1.5 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-ink-700 dark:text-ink-300"
           >
-            <option value="">全部难度</option>
-            <option value="入门">入门</option>
-            <option value="进阶">进阶</option>
-            <option value="高阶">高阶</option>
+            <option value="">{t('storyQuest.all_difficulty')}</option>
+            <option value="入门">{t('storyQuest.difficulty_beginner')}</option>
+            <option value="进阶">{t('storyQuest.difficulty_intermediate')}</option>
+            <option value="高阶">{t('storyQuest.difficulty_advanced')}</option>
           </select>
 
           {/* 朝代筛选 */}
@@ -370,7 +381,7 @@ export default function StoryQuestPage() {
             }}
             className="text-sm px-3 py-1.5 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-ink-700 dark:text-ink-300"
           >
-            <option value="">全部朝代</option>
+            <option value="">{t('storyQuest.all_dynasty')}</option>
             {allDynasties.map((d) => (
               <option key={d} value={d}>{d}</option>
             ))}
@@ -382,7 +393,7 @@ export default function StoryQuestPage() {
               onClick={() => { setFilterType('all'); setFilterValue(''); }}
               className="text-xs text-ink-400 hover:text-ink-600 dark:hover:text-ink-300 transition-colors"
             >
-              ✕ 重置筛选
+              ✕ {t('storyQuest.reset_filter')}
             </button>
           )}
         </div>
@@ -400,26 +411,26 @@ export default function StoryQuestPage() {
 
         {filtered.length === 0 && (
           <div className="text-center py-12 text-ink-400 dark:text-ink-500">
-            <p className="text-lg mb-2">没有找到匹配的研学线</p>
-            <p className="text-sm">试试调整筛选条件</p>
+            <p className="text-lg mb-2">{t('storyQuest.no_match')}</p>
+            <p className="text-sm">{t('storyQuest.adjust_filter')}</p>
           </div>
         )}
 
         {/* 总进度统计 */}
         <div className="mt-8 p-4 bg-white dark:bg-ink-900 rounded-xl border border-ink-200 dark:border-ink-700">
           <h3 className="font-bold text-sm text-ink-900 dark:text-ink-100 mb-3">
-            📊 研学总览
+            📊 {t('storyQuest.overview_title')}
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div>
               <div className="text-2xl font-bold text-accent">{STUDY_ROUTES.length}</div>
-              <div className="text-xs text-ink-500 dark:text-ink-400">研学线总数</div>
+              <div className="text-xs text-ink-500 dark:text-ink-400">{t('storyQuest.total_routes')}</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-amber-500">
                 {STUDY_ROUTES.reduce((sum, r) => sum + r.nodes.length, 0)}
               </div>
-              <div className="text-xs text-ink-500 dark:text-ink-400">总节点数</div>
+              <div className="text-xs text-ink-500 dark:text-ink-400">{t('storyQuest.total_nodes')}</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-green-500">
@@ -427,7 +438,7 @@ export default function StoryQuestPage() {
                   (p) => p.sealObtained
                 ).length}
               </div>
-              <div className="text-xs text-ink-500 dark:text-ink-400">已获得印章</div>
+              <div className="text-xs text-ink-500 dark:text-ink-400">{t('storyQuest.seals_obtained')}</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-purple-500">
@@ -439,7 +450,7 @@ export default function StoryQuestPage() {
                 ) || 0}
                 %
               </div>
-              <div className="text-xs text-ink-500 dark:text-ink-400">平均进度</div>
+              <div className="text-xs text-ink-500 dark:text-ink-400">{t('storyQuest.avg_progress')}</div>
             </div>
           </div>
         </div>

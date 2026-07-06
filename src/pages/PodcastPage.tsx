@@ -2,8 +2,10 @@ import { useState, useRef, useEffect } from 'react';
 import { PODCAST_EPISODES, CATEGORY_ICON } from '@/data/features/podcastList';
 import { speakText, stopSpeaking, isVoiceSupported } from '@/features/voiceHistorian';
 import type { PodcastEpisode } from '@/data/features/podcastList';
+import { useT } from '@/i18n/i18n';
 
 export default function PodcastPage() {
+  const t = useT();
   const [selectedId, setSelectedId] = useState<string>(PODCAST_EPISODES[0].id);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -42,10 +44,10 @@ export default function PodcastPage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            录 听历史 · 播客导览
+            {t('podcast.title')}
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
-            像听播客一样"听历史" — 说书人风格朗读，章节标记跳转
+            {t('podcast.subtitle')}
           </p>
         </div>
 
@@ -101,7 +103,7 @@ export default function PodcastPage() {
                   onClick={handlePlay}
                   className="w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center text-lg hover:shadow-lg transition-all"
                 >
-                  {playing ? '停' : '播'}
+                  {playing ? t('podcast.stop') : t('podcast.play')}
                 </button>
                 <div className="flex-1">
                   <div className="w-full h-2 rounded-full bg-ink-200 dark:bg-ink-700">
@@ -123,13 +125,13 @@ export default function PodcastPage() {
             </div>
           ) : (
             <div className="text-sm text-ink-400 text-center">
-              当前浏览器不支持语音朗读，请使用 Chrome/Edge 浏览器
+              {t('podcast.voice_unsupported')}
             </div>
           )}
 
           {/* 全文阅读 */}
           <div className="mt-6 p-4 rounded-xl border border-ink-200 dark:border-ink-700 bg-ink-50/30 dark:bg-ink-800/20">
-            <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3">阅 全文阅读</h3>
+            <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3">{t('podcast.full_text')}</h3>
             <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
               {episode.narrationText}
             </p>

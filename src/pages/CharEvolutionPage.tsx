@@ -1,8 +1,10 @@
 import { useState, useCallback } from 'react';
 import { CHAR_EVOLUTIONS, getCharEvolution } from '@/data/features/charEvolution';
 import type { CharEvolution, CharStage } from '@/data/features/charEvolution';
+import { useT } from '@/i18n/i18n';
 
 export default function CharEvolutionPage() {
+  const t = useT();
   const [selectedChar, setSelectedChar] = useState<string>('王');
   const [activeStage, setActiveStage] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -33,10 +35,10 @@ export default function CharEvolutionPage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            演 汉字演变动画器
+            {t('charEvolution.title')}
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
-            从甲骨文到楷书 — 看一个汉字三千年的变形之旅
+            {t('charEvolution.subtitle')}
           </p>
         </div>
 
@@ -123,13 +125,13 @@ export default function CharEvolutionPage() {
                 : 'bg-accent text-white hover:shadow-lg'
             }`}
           >
-            {isAnimating ? '播 播放中...' : '演 自动演变'}
+            {isAnimating ? t('charEvolution.playing') : t('charEvolution.auto_evolve')}
           </button>
           <button
             onClick={() => { setActiveStage(evolution.stages.length - 1); setIsAnimating(false); }}
             className="px-6 py-3 rounded-xl border border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-300 font-bold hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors"
           >
-            ⏩ 楷书（最终）
+            {t('charEvolution.final_stage')}
           </button>
         </div>
 
@@ -143,14 +145,14 @@ export default function CharEvolutionPage() {
             {currentStage.description}
           </p>
           <div className="mt-4 text-center text-xs text-ink-400">
-            释义：{evolution.meaning}
+            {t('charEvolution.meaning_label')}{evolution.meaning}
           </div>
         </div>
 
         {/* 全阶段对比 */}
         <div className="mt-8">
           <h3 className="text-sm font-bold text-ink-600 dark:text-ink-400 mb-4 text-center">
-            完整演变历程对比
+            {t('charEvolution.full_comparison')}
           </h3>
           <div className="flex justify-center gap-3">
             {evolution.stages.map((stage, i) => (

@@ -17,14 +17,16 @@ import {
 } from '@/features/aiHistorian';
 import { usePersonaStore } from '@/store/personaStore';
 import { buildPersonaPrompt } from '@/utils/personaBuilder';
+import { useT } from '@/i18n/i18n';
 
 const STYLE_LABELS = [
-  { key: 'formal', label: '正史体', emoji: '史', desc: '模仿《史记》列传风格，文言文评价' },
-  { key: 'anecdotal', label: '稗官体', emoji: '传', desc: '民间说书风格，通俗有趣' },
-  { key: 'eulogy', label: '谥议体', emoji: '评', desc: '古代谥号评定格式，正式庄重' },
+  { key: 'formal', labelKey: 'aiHistorian.style_formal_label', emoji: '史', descKey: 'aiHistorian.style_formal_desc' },
+  { key: 'anecdotal', labelKey: 'aiHistorian.style_anecdotal_label', emoji: '传', descKey: 'aiHistorian.style_anecdotal_desc' },
+    { key: 'eulogy', labelKey: 'aiHistorian.style_eulogy_label', emoji: '评', descKey: 'aiHistorian.style_eulogy_desc' },
 ] as const;
 
 export default function AiHistorianPage() {
+  const t = useT();
   const [portrait, setPortrait] = useState<UserPortrait | null>(null);
   const [comment, setComment] = useState<HistorianComment | null>(null);
   const [loading, setLoading] = useState(false);
@@ -61,7 +63,7 @@ export default function AiHistorianPage() {
       // 重置对话历史
       setChatHistory([]);
     } catch (e) {
-      setError(e instanceof Error ? e.message : '生成失败');
+      setError(e instanceof Error ? e.message : t('aiHistorian.generate_failed'));
     } finally {
       setLoading(false);
     }
@@ -100,7 +102,7 @@ export default function AiHistorianPage() {
       setChatHistory([...nextHistory, { role: 'assistant', content: reply }]);
       setStreamingReply('');
     } catch (e) {
-      setChatError(e instanceof Error ? e.message : '对话失败');
+      setChatError(e instanceof Error ? e.message : t('aiHistorian.chat_failed'));
     } finally {
       setChatLoading(false);
     }
@@ -109,10 +111,10 @@ export default function AiHistorianPage() {
 
   // 基于画像的追问建议
   const suggestedQuestions = portrait ? [
-    `为什么说${portrait.matchedFigure || '我'}是我的镜像？`,
-    `我关注${portrait.topDynasties[0] || '唐朝'}，这个朝代有什么被低估的细节？`,
-    `如果我从${portrait.topPersons[0] || '李白'}身上只学一件事，应该是什么？`,
-    `历史学家会怎么评价我这种"画像"？`,
+    t('aiHistorian.q_mirror_figure', { name: portrait.matchedFigure || t('aiHistorian.default_figure') }),
+    t('aiHistorian.q_dynasty_details', { dynasty: portrait.topDynasties[0] || t('aiHistorian.default_dynasty') }),
+    t('aiHistorian.q_learn_one_thing', { name: portrait.topPersons[0] || t('aiHistorian.default_person') }),
+    t('aiHistorian.q_historian_judgment'),
   ] : [];
 
   return (
@@ -121,8 +123,8 @@ export default function AiHistorianPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="AI HISTORIAN"
-            title="AI 史官评语"
-            description="AI 生成的人物传记"
+            title={t('aiHistorian.title')}
+            description={t('aiHistorian.description')}
           />
         </RevealOnScroll>
 
@@ -131,26 +133,26 @@ export default function AiHistorianPage() {
           <RevealOnScroll direction="up" delay={200}>
             <div className="mt-8 p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
               <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-                像 你的历史画像
+                {t('aiHistorian.portrait_title')}
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
                 <div>
-                  <div className="text-ink-500 dark:text-ink-400">常览朝代</div>
+                  <div className="text-ink-500 dark:text-ink-400">{t('aiHistorian.top_dynasties')}</div>
                   <div className="font-bold text-ink-900 dark:text-ink-100">{portrait.topDynasties.join('、')}</div>
                 </div>
                 <div>
-                  <div className="text-ink-500 dark:text-ink-400">关注人物</div>
+                  <div className="text-ink-500 dark:text-ink-400">{t('aiHistorian.top_persons')}</div>
                   <div className="font-bold text-ink-900 dark:text-ink-100">{portrait.topPersons.join('、')}</div>
                 </div>
                 {portrait.quizAccuracy && (
                   <div>
-                    <div className="text-ink-500 dark:text-ink-400">答题正确率</div>
+                    <div className="text-ink-500 dark:text-ink-400">{t('aiHistorian.quiz_accuracy')}</div>
                     <div className="font-bold text-accent">{portrait.quizAccuracy}%</div>
                   </div>
                 )}
                 {portrait.matchedFigure && (
                   <div>
-                    <div className="text-ink-500 dark:text-ink-400">最像的人物</div>
+                    <div className="text-ink-500 dark:text-ink-400">{t('aiHistorian.matched_figure')}</div>
                     <div className="font-bold text-accent">{portrait.matchedFigure}</div>
                   </div>
                 )}
@@ -158,13 +160,13 @@ export default function AiHistorianPage() {
               {portrait.dimensions && (
                 <div className="mt-3 grid grid-cols-4 gap-2">
                   {[
-                    { key: 'governance', label: '文治', color: 'text-amber-600' },
-                    { key: 'military', label: '武功', color: 'text-red-600' },
-                    { key: 'wisdom', label: '智略', color: 'text-indigo-600' },
-                    { key: 'charisma', label: '博学', color: 'text-green-600' },
+                    { key: 'governance', labelKey: 'aiHistorian.dim_governance', color: 'text-amber-600' },
+                    { key: 'military', labelKey: 'aiHistorian.dim_military', color: 'text-red-600' },
+                    { key: 'wisdom', labelKey: 'aiHistorian.dim_wisdom', color: 'text-indigo-600' },
+                    { key: 'charisma', labelKey: 'aiHistorian.dim_charisma', color: 'text-green-600' },
                   ].map(d => (
                     <div key={d.key} className="text-center">
-                      <div className="text-xs text-ink-400">{d.label}</div>
+                      <div className="text-xs text-ink-400">{t(d.labelKey)}</div>
                       <div className={`text-lg font-bold ${d.color}`}>
                         {portrait.dimensions?.[d.key as keyof typeof portrait.dimensions] ?? '-'}
                       </div>
@@ -184,7 +186,7 @@ export default function AiHistorianPage() {
               disabled={loading}
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-accent to-amber-600 text-white font-bold text-lg hover:shadow-xl disabled:opacity-50 transition-all"
             >
-              {loading ? '撰写中…' : '为我作评'}
+              {loading ? t('aiHistorian.generating') : t('aiHistorian.generate_btn')}
             </button>
           </div>
         </RevealOnScroll>
@@ -192,7 +194,7 @@ export default function AiHistorianPage() {
         {/* 错误 */}
         {error && (
           <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400">
-            错 {error}
+            {t('aiHistorian.error_prefix')} {error}
           </div>
         )}
 
@@ -212,7 +214,7 @@ export default function AiHistorianPage() {
                         : 'bg-ink-100 dark:bg-ink-800 text-ink-700 dark:text-ink-300 hover:bg-accent hover:text-white'
                     }`}
                   >
-                    {s.emoji} {s.label}
+                    {s.emoji} {t(s.labelKey)}
                   </button>
                 ))}
               </div>
@@ -222,7 +224,7 @@ export default function AiHistorianPage() {
                 <div className="text-center mb-4">
                   <div className="text-3xl">{STYLE_LABELS.find(s => s.key === activeStyle)?.emoji}</div>
                   <div className="text-sm font-bold text-ink-500 dark:text-ink-400 mt-1">
-                    {STYLE_LABELS.find(s => s.key === activeStyle)?.desc}
+                    {t(STYLE_LABELS.find(s => s.key === activeStyle)?.descKey || '')}
                   </div>
                 </div>
 
@@ -236,7 +238,7 @@ export default function AiHistorianPage() {
               {/* 学习建议 */}
               {comment.suggestion && (
                 <div className="p-4 bg-accent/5 dark:bg-accent/10 rounded-lg border-l-4 border-accent text-center">
-                  <div className="text-xs text-accent tracking-widest mb-1">注 史官建议</div>
+                  <div className="text-xs text-accent tracking-widest mb-1">{t('aiHistorian.suggestion_title')}</div>
                   <div className="text-ink-900 dark:text-ink-100 font-bold">{comment.suggestion}</div>
                 </div>
               )}
@@ -244,12 +246,12 @@ export default function AiHistorianPage() {
               {/* 全三种风格预览 */}
               <div className="p-4 bg-ink-50/50 dark:bg-ink-900/30 rounded-lg border border-ink-200 dark:border-ink-700">
                 <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-                  三体对照
+                  {t('aiHistorian.compare_title')}
                 </h4>
                 <div className="space-y-3">
                   {STYLE_LABELS.map(s => (
                     <div key={s.key} className="text-sm">
-                      <span className="font-bold text-accent">{s.emoji} {s.label}：</span>
+                      <span className="font-bold text-accent">{s.emoji} {t(s.labelKey)}：</span>
                       <span className="text-ink-600 dark:text-ink-400">{comment[s.key]?.slice(0, 80) || '—'}…</span>
                     </div>
                   ))}
@@ -269,10 +271,10 @@ export default function AiHistorianPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100">
-                    追问史官
+                    {t('aiHistorian.chat_title')}
                   </h3>
                   <p className="text-xs text-ink-500 dark:text-ink-400">
-                    史官记得你的画像与他之前的评语，可以继续追问
+                    {t('aiHistorian.chat_subtitle')}
                   </p>
                 </div>
               </div>
@@ -312,7 +314,7 @@ export default function AiHistorianPage() {
               {/* 等待指示 */}
               {chatHistory.length === 0 && !chatLoading && (
                 <div className="mb-4 p-4 bg-amber-50/50 dark:bg-amber-900/10 rounded-lg border border-amber-200/50 dark:border-amber-800/30 text-sm text-ink-600 dark:text-ink-400">
-                  评语已生成，现在可以向史官追问任何历史问题。史官会记得你的画像和评语，保持判断一致性。
+                  {t('aiHistorian.chat_hint')}
                 </div>
               )}
 
@@ -346,7 +348,7 @@ export default function AiHistorianPage() {
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleChat()}
-                  placeholder="向史官提问…"
+                  placeholder={t('aiHistorian.chat_input_placeholder')}
                   disabled={chatLoading}
                   className="flex-1 px-4 py-2.5 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-600 text-ink-900 dark:text-ink-100 placeholder:text-ink-400 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition-all disabled:opacity-50"
                 />
@@ -355,7 +357,7 @@ export default function AiHistorianPage() {
                   disabled={chatLoading || !chatInput.trim()}
                   className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
-                  {chatLoading ? '…' : '发送'}
+                  {chatLoading ? '…' : t('aiHistorian.chat_send')}
                 </button>
               </div>
             </div>
@@ -365,7 +367,7 @@ export default function AiHistorianPage() {
         {/* 底部 */}
         <RevealOnScroll direction="fade" delay={400}>
           <div className="mt-12 text-center">
-            <Link to="/" className="btn-secondary">返回首页</Link>
+            <Link to="/" className="btn-secondary">{t('common.back_home')}</Link>
           </div>
         </RevealOnScroll>
       </div>

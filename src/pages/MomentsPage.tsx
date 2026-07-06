@@ -20,6 +20,7 @@ import {
   type MomentPost,
   type MomentComment,
 } from '@/features/momentsFeed';
+import { useT } from '@/i18n/i18n';
 
 export default function MomentsPage() {
   const [activeScene, setActiveScene] = useState<Scene | null>(null);
@@ -29,6 +30,7 @@ export default function MomentsPage() {
   const [error, setError] = useState('');
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
   const [replyingPostId, setReplyingPostId] = useState<string | null>(null);
+  const t = useT();
 
   const handleSelectScene = useCallback(async (scene: Scene) => {
     if (regenerating) return;
@@ -41,7 +43,7 @@ export default function MomentsPage() {
       setFeed(result.feed);
       setAiGenerating(result.isAiGenerating);
     } catch (e) {
-      setError(e instanceof Error ? e.message : '生成失败');
+      setError(e instanceof Error ? e.message : t('moments.generate_failed'));
       setAiGenerating(false);
     }
   }, [regenerating]);
@@ -65,7 +67,7 @@ export default function MomentsPage() {
       const newFeed = await regenerateMomentFeed(activeScene);
       setFeed(newFeed);
     } catch (e) {
-      setError(e instanceof Error ? e.message : '生成失败');
+      setError(e instanceof Error ? e.message : t('moments.generate_failed'));
     } finally {
       setRegenerating(false);
     }
@@ -129,8 +131,8 @@ export default function MomentsPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="MOMENTS FEED"
-            title="历史人物朋友圈"
-            description="看看历史大事件发生时，当事人们的朋友圈 · 你也可以点赞和评论"
+            title={t('moments.title')}
+            description={t('moments.description')}
           />
         </RevealOnScroll>
 
@@ -139,7 +141,7 @@ export default function MomentsPage() {
         <RevealOnScroll direction="up" delay={200}>
           <div className="mt-8 p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
             <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-              选择历史时刻
+              {t('moments.scene_select_title')}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {SCENES.map((scene) => (
@@ -184,7 +186,7 @@ export default function MomentsPage() {
             <div className="mt-6 p-8 text-center">
               <div className="inline-block w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin mb-3" />
               <div className="text-sm text-ink-500 dark:text-ink-400">
-                历史人物正在发朋友圈…
+                {t('moments.regenerating')}
               </div>
             </div>
           </RevealOnScroll>
@@ -203,7 +205,7 @@ export default function MomentsPage() {
             <div className="mt-6 space-y-4">
               {/* 场景标题 */}
               <div className="p-4 bg-gradient-to-r from-accent/10 to-amber-500/10 dark:from-accent/20 dark:to-amber-700/20 rounded-xl border border-accent/30 text-center">
-                <div className="text-xs text-accent tracking-widest">朋友圈 · {feed.year}</div>
+                <div className="text-xs text-accent tracking-widest">{t('moments.feed_header', { year: feed.year })}</div>
                 <div className="text-xl font-bold text-ink-900 dark:text-ink-100 mt-1">
                   {feed.sceneName}
                 </div>
@@ -213,7 +215,7 @@ export default function MomentsPage() {
               {aiGenerating && (
                 <div className="p-3 bg-accent/5 dark:bg-accent/10 rounded-lg border border-accent/20 text-center text-xs text-accent flex items-center justify-center gap-2">
                   <span className="inline-block w-3 h-3 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-                  AI 正在生成更精彩的朋友圈内容，完成后自动替换…
+                  {t('moments.ai_generating_hint')}
                 </div>
               )}
 
@@ -261,7 +263,7 @@ export default function MomentsPage() {
                         className="flex items-center gap-1 text-xs text-ink-500 dark:text-ink-400 hover:text-accent transition-all"
                       >
                         <span>💬</span>
-                        <span>{post.comments.length} 评论</span>
+                        <span>{t('moments.comment_count', { n: post.comments.length })}</span>
                       </button>
                     </div>
 
@@ -276,7 +278,7 @@ export default function MomentsPage() {
                                 <span className={`font-bold mr-1 ${c.isUser ? 'text-blue-600 dark:text-blue-400' : 'text-accent'}`}>
                                   {c.author}
                                 </span>
-                                {c.isUser && <span className="text-[10px] text-blue-500 dark:text-blue-400 mr-1">[你]</span>}
+                                {c.isUser && <span className="text-[10px] text-blue-500 dark:text-blue-400 mr-1">{t('moments.you_tag')}</span>}
                                 <span className="text-ink-700 dark:text-ink-300">{c.content}</span>
                               </div>
                             ))}
@@ -291,7 +293,7 @@ export default function MomentsPage() {
                               value={commentInputs[post.id] || ''}
                               onChange={(e) => handleInputChange(post.id, e.target.value)}
                               onKeyDown={(e) => e.key === 'Enter' && handleCommentSubmit(post)}
-                              placeholder="写评论…"
+                              placeholder={t('moments.comment_placeholder')}
                               className="flex-1 px-3 py-2 rounded-lg border border-ink-200 dark:border-ink-700 bg-white/70 dark:bg-ink-800/70 text-sm focus:outline-none focus:border-accent"
                             />
                             <button
@@ -299,7 +301,7 @@ export default function MomentsPage() {
                               disabled={!commentInputs[post.id]?.trim()}
                               className="px-4 py-2 rounded-lg bg-accent text-white text-sm font-bold hover:shadow-md disabled:opacity-50 transition-all"
                             >
-                              发送
+                              {t('moments.comment_send_btn')}
                             </button>
                           </div>
                         )}
@@ -317,7 +319,7 @@ export default function MomentsPage() {
                     disabled={regenerating || aiGenerating}
                     className="text-xs px-4 py-2 rounded-full bg-accent/10 text-accent hover:bg-accent hover:text-white transition-all disabled:opacity-50"
                   >
-                    {regenerating ? '🔄 生成中…' : '🔄 重新生成这组朋友圈'}
+                    {regenerating ? t('moments.regenerating_btn') : t('moments.regenerate_btn')}
                   </button>
                 </div>
               )}
@@ -328,7 +330,7 @@ export default function MomentsPage() {
         {/* 底部 */}
         <RevealOnScroll direction="fade" delay={400}>
           <div className="mt-12 text-center">
-            <Link to="/" className="btn-secondary">返回首页</Link>
+            <Link to="/" className="btn-secondary">{t('common.back_home')}</Link>
           </div>
         </RevealOnScroll>
       </div>

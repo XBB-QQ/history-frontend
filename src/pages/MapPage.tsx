@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import MapSVG from '@/components/map/MapSVG';
 import { dynastyMapData } from '@/data/core/map-data';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import { useT } from '@/i18n/i18n';
 
 /** 朝代信息卡片 */
 interface DynastyInfo {
@@ -61,6 +62,7 @@ function getDynastyColor(name: string): string {
 }
 
 export default function MapPage() {
+  const t = useT();
   const [selectedDynasty, setSelectedDynasty] = useState('唐');
 
   const sortedDynasties = useMemo(
@@ -86,10 +88,10 @@ export default function MapPage() {
         <RevealOnScroll direction="fade">
           <div className="text-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold text-ink-900 mb-2">
-              中国历史疆域图
+              {t('mapPage.title')}
             </h1>
             <p className="text-ink-500 text-sm">
-              点击下方朝代时间线，查看历代疆域变迁
+              {t('mapPage.subtitle')}
             </p>
           </div>
         </RevealOnScroll>
@@ -133,12 +135,12 @@ export default function MapPage() {
                 </div>
                 <dl className="text-sm space-y-2 text-ink-700">
                   <div className="flex justify-between">
-                    <dt className="text-ink-400">都城</dt>
+                    <dt className="text-ink-400">{t('mapPage.capital_label')}</dt>
                     <dd className="font-medium">{info.capital}</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="text-ink-400">辖域</dt>
-                    <dd className="font-medium">{info.regionCount} 个区域</dd>
+                    <dt className="text-ink-400">{t('mapPage.region_label')}</dt>
+                    <dd className="font-medium">{t('mapPage.region_count', { n: info.regionCount })}</dd>
                   </div>
                 </dl>
               </div>
@@ -148,7 +150,7 @@ export default function MapPage() {
             <RevealOnScroll direction="left" delay={100}>
               <div className="bg-white/60 dark:bg-ink-900/60 rounded-2xl shadow-lg p-4 border border-ink-100 dark:border-ink-700 max-h-[400px] overflow-y-auto">
                 <h4 className="text-xs font-bold text-ink-400 dark:text-ink-500 uppercase tracking-wider mb-3 sticky top-0 bg-white/90 dark:bg-ink-800/90 py-2 -mt-2">
-                  朝代年表
+                  {t('mapPage.dynasty_chronology')}
                 </h4>
                 <div className="space-y-1 relative">
                   {/* 连接线 */}
@@ -183,7 +185,7 @@ export default function MapPage() {
                             className="text-xs px-2 py-0.5 rounded-full text-white font-medium flex-shrink-0"
                             style={{ backgroundColor: color }}
                           >
-                            今
+                            {t('mapPage.current_badge')}
                           </span>
                         )}
                       </button>
@@ -198,7 +200,7 @@ export default function MapPage() {
         {/* 底部说明 */}
         <RevealOnScroll direction="fade" delay={200}>
           <div className="mt-8 text-center text-xs text-ink-300">
-            <p>注：地图为示意性质，使用简化区域轮廓展示各朝代大致疆域范围，非精确地理边界。</p>
+            <p>{t('mapPage.map_disclaimer')}</p>
           </div>
         </RevealOnScroll>
       </div>

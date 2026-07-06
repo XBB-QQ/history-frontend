@@ -11,6 +11,7 @@ import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import ResultView from '@/components/simulator/ResultView';
 import { usePersonaStore } from '@/store/personaStore';
+import { useT } from '@/i18n/i18n';
 
 type GameState = 'intro' | 'dilemma' | 'result';
 
@@ -30,13 +31,14 @@ const INITIAL_STATS: GameStats = {
   plausibilitySum: 0,
 };
 
-const DIFFICULTY_LABELS: Record<string, { label: string; color: string }> = {
-  easy: { label: '入门', color: 'text-green-600 bg-green-100 dark:bg-green-900/30' },
-  medium: { label: '进阶', color: 'text-amber-600 bg-amber-100 dark:bg-amber-900/30' },
-  hard: { label: '困难', color: 'text-red-600 bg-red-100 dark:bg-red-900/30' },
+const DIFFICULTY_LABELS: Record<string, { labelKey: string; color: string }> = {
+  easy: { labelKey: 'simulator.difficulty_easy', color: 'text-green-600 bg-green-100 dark:bg-green-900/30' },
+  medium: { labelKey: 'simulator.difficulty_medium', color: 'text-amber-600 bg-amber-100 dark:bg-amber-900/30' },
+  hard: { labelKey: 'simulator.difficulty_hard', color: 'text-red-600 bg-red-100 dark:bg-red-900/30' },
 };
 
 function SimulatorPage() {
+  const t = useT();
   const [state, setState] = useState<GameState>('intro');
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedChoice, setSelectedChoice] = useState<Choice | null>(null);
@@ -110,8 +112,8 @@ function SimulatorPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="DECISION SIMULATOR"
-            title="历史决策模拟器"
-            description="在关键历史时刻做出选择，看看会发生什么"
+            title={t('simulator.title')}
+            description={t('simulator.description')}
           />
         </RevealOnScroll>
 
@@ -121,21 +123,21 @@ function SimulatorPage() {
             <div className="flex items-center justify-between flex-wrap gap-3 text-sm">
               <div className="flex items-center gap-4 flex-wrap">
                 <span>
-                  已完成：<b className="text-accent">{stats.total}</b> / {SCENARIOS.length}
+                  {t('simulator.completed')}<b className="text-accent">{stats.total}</b> / {SCENARIOS.length}
                 </span>
                 <span className="hidden md:inline text-ink-400">|</span>
                 <span>
-                  史 与史一致 <b className="text-accent">{stats.correct}</b>
+                  史 {t('simulator.historical_match')} <b className="text-accent">{stats.correct}</b>
                 </span>
                 <span>
-                  推 平行推演 <b className="text-indigo-600 dark:text-indigo-400">{stats.alternate}</b>
+                  推 {t('simulator.alternative_history')} <b className="text-indigo-600 dark:text-indigo-400">{stats.alternate}</b>
                 </span>
                 <span>
-                  败 失败 <b className="text-gray-600 dark:text-gray-400">{stats.failed}</b>
+                  败 {t('simulator.failed')} <b className="text-gray-600 dark:text-gray-400">{stats.failed}</b>
                 </span>
               </div>
               <span>
-                平均可信度：<b className="text-accent">{avgPlausibility}</b>
+                {t('simulator.avg_plausibility')}<b className="text-accent">{avgPlausibility}</b>
               </span>
             </div>
           </div>
@@ -163,16 +165,16 @@ function SimulatorPage() {
                           {s.title}
                         </h3>
                         <span className={`text-xs px-2 py-0.5 rounded-full ${diff.color}`}>
-                          {diff.label}
+                          {t(diff.labelKey)}
                         </span>
                         {isDone && (
                           <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
-                            ✓ 已完成
+                            {t('simulator.done')}
                           </span>
                         )}
                       </div>
                       <div className="text-xs text-ink-500 dark:text-ink-400 mb-2">
-                        {s.yearDisplay} · {s.dynasty} · 扮演 {s.role}
+                        {s.yearDisplay} · {s.dynasty} · {t('simulator.play_as')} {s.role}
                       </div>
                       <p className="text-sm text-ink-600 dark:text-ink-400 line-clamp-2">
                         {s.background}
@@ -200,14 +202,14 @@ function SimulatorPage() {
                   </span>
                 </div>
                 <div className="text-sm text-accent font-bold">
-                  你的身份：{scenario.role}
+                  {t('simulator.your_role')}{scenario.role}
                 </div>
               </div>
 
               {/* 背景描述 */}
               <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-lg border border-ink-200 dark:border-ink-700">
                 <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                  背景
+                  {t('simulator.background')}
                 </h3>
                 <p className="text-ink-800 dark:text-ink-200 leading-relaxed whitespace-pre-line">
                   {scenario.background}
@@ -217,7 +219,7 @@ function SimulatorPage() {
               {/* 抉择描述 */}
               <div className="p-5 bg-amber-50/60 dark:bg-amber-900/10 rounded-lg border-l-4 border-accent">
                 <h3 className="text-sm font-bold text-accent mb-2 tracking-widest">
-                  择 你的抉择
+                  择 {t('simulator.your_dilemma')}
                 </h3>
                 <p className="text-ink-800 dark:text-ink-200 leading-relaxed whitespace-pre-line">
                   {scenario.dilemma}
@@ -257,7 +259,7 @@ function SimulatorPage() {
                   onClick={() => setState('intro')}
                   className="text-sm text-ink-500 dark:text-ink-400 hover:text-accent transition-colors"
                 >
-                  ← 返回场景列表
+                  {t('simulator.back_to_scenarios')}
                 </button>
               </div>
             </div>
@@ -276,28 +278,28 @@ function SimulatorPage() {
                   onClick={handleRestart}
                   className="px-6 py-3 rounded-lg border-2 border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-300 font-bold hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors"
                 >
-                  🔁 重新选择
+                  {t('simulator.reselect')}
                 </button>
                 {!isLastScenario ? (
                   <button
                     onClick={handleNext}
                     className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg transition-all"
                   >
-                    下一关 →
+                    {t('simulator.next_scenario')}
                   </button>
                 ) : (
                   <Link
                     to="/"
                     className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg transition-all"
                   >
-                    完 全部完成，返回首页
+                    {t('simulator.all_done_home')}
                   </Link>
                 )}
                 <button
                   onClick={() => setState('intro')}
                   className="px-6 py-3 rounded-lg border-2 border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-300 font-bold hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors"
                 >
-                  场景列表
+                  {t('simulator.scenario_list')}
                 </button>
               </div>
             </div>
@@ -308,7 +310,7 @@ function SimulatorPage() {
         <RevealOnScroll direction="fade" delay={400}>
           <div className="mt-12 text-center">
             <Link to="/" className="btn-secondary">
-              返回首页
+              {t('simulator.back_home')}
             </Link>
           </div>
         </RevealOnScroll>

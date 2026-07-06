@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { MULTI_PERSPECTIVE_EVENTS, type MultiPerspectiveEvent, type Perspective } from '@/data/features/multiPerspectives';
+import { useT } from '@/i18n/i18n';
 
 type ViewMode = 'overview' | 'single';
 
@@ -24,6 +25,7 @@ const FACTION_COLORS: Record<string, { bg: string; text: string; border: string 
 };
 
 export default function MultiPerspectivePage() {
+  const t = useT();
   const [selectedEvent, setSelectedEvent] = useState<MultiPerspectiveEvent | null>(null);
   const [activePerspective, setActivePerspective] = useState<number>(0);
   const [viewMode, setViewMode] = useState<ViewMode>('overview');
@@ -33,9 +35,9 @@ export default function MultiPerspectivePage() {
       <div className="max-w-4xl mx-auto">
         <RevealOnScroll direction="fade">
           <SectionHeader
-            label="ROSHOMON"
-            title="多视角叙事"
-            description="同一事件的不同记载"
+            label={t('multiPerspective.label')}
+            title={t('multiPerspective.title')}
+            description={t('multiPerspective.description')}
           />
         </RevealOnScroll>
 
@@ -81,7 +83,7 @@ export default function MultiPerspectivePage() {
               onClick={() => setSelectedEvent(null)}
               className="text-sm text-ink-500 dark:text-ink-400 hover:text-accent transition-colors"
             >
-              ← 返回事件列表
+              {t('multiPerspective.back_to_list')}
             </button>
 
             {/* 事件头部 */}
@@ -124,13 +126,13 @@ export default function MultiPerspectivePage() {
                   onClick={() => setViewMode('overview')}
                   className={`px-3 py-1 rounded text-xs font-bold ${viewMode === 'overview' ? 'bg-accent text-white' : 'bg-ink-100 dark:bg-ink-800 text-ink-600'}`}
                 >
-                  全景
+                  {t('multiPerspective.view_overview')}
                 </button>
                 <button
                   onClick={() => setViewMode('single')}
                   className={`px-3 py-1 rounded text-xs font-bold ${viewMode === 'single' ? 'bg-accent text-white' : 'bg-ink-100 dark:bg-ink-800 text-ink-600'}`}
                 >
-                  单视角
+                  {t('multiPerspective.view_single')}
                 </button>
               </div>
             </div>
@@ -154,7 +156,7 @@ export default function MultiPerspectivePage() {
                       <p className="text-sm text-ink-700 dark:text-ink-300 leading-relaxed">
                         {p.narrative.slice(0, 100)}…
                       </p>
-                      <div className="mt-2 text-xs text-ink-400 text-center">点击查看完整视角 →</div>
+                      <div className="mt-2 text-xs text-ink-400 text-center">{t('multiPerspective.view_full')}</div>
                     </div>
                   );
                 })}
@@ -181,7 +183,7 @@ export default function MultiPerspectivePage() {
                   {/* 叙事 */}
                   <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-lg border border-ink-200 dark:border-ink-700">
                     <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                      叙 视角叙事
+                      {t('multiPerspective.narrative_title')}
                     </h3>
                     <p className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line">
                       {p.narrative}
@@ -191,20 +193,20 @@ export default function MultiPerspectivePage() {
                   {/* 独有信息 */}
                   <div className="p-4 bg-amber-50/60 dark:bg-amber-900/10 rounded-lg border-l-4 border-amber-500">
                     <h3 className="text-sm font-bold text-amber-700 dark:text-amber-400 mb-2 tracking-widest">
-                      查 独有视角信息
+                      {t('multiPerspective.exclusive_info')}
                     </h3>
                     <p className="text-ink-800 dark:text-ink-200 text-sm leading-relaxed">
                       {p.exclusiveInfo}
                     </p>
                     <div className="text-xs text-ink-400 mt-1">
-                      注 此信息仅 {p.figureName} 视角可见，其他视角无法得知
+                      {t('multiPerspective.exclusive_note', { name: p.figureName })}
                     </div>
                   </div>
 
                   {/* 评价 */}
                   <div className={`p-4 rounded-lg ${faction.bg} border ${faction.border}`}>
                     <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                      评 评价
+                      {t('multiPerspective.judgment_title')}
                     </h3>
                     <p className={`font-bold ${faction.text}`}>{p.judgment}</p>
                   </div>
@@ -215,7 +217,7 @@ export default function MultiPerspectivePage() {
             {/* 矛盾对比 */}
             <div className="p-5 bg-indigo-50/60 dark:bg-indigo-900/10 rounded-lg border-l-4 border-indigo-500">
               <h3 className="text-sm font-bold text-indigo-700 dark:text-indigo-400 mb-3 tracking-widest">
-                矛 视角矛盾点
+                {t('multiPerspective.contradictions_title')}
               </h3>
               <div className="space-y-3">
                 {selectedEvent.contradictions.map((c, idx) => (
@@ -229,7 +231,7 @@ export default function MultiPerspectivePage() {
             {/* 历史教训 */}
             <div className="p-5 bg-gradient-to-br from-amber-500/10 to-accent/10 dark:from-amber-700/15 dark:to-accent/15 rounded-lg">
               <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                启 历史启示
+                {t('multiPerspective.lesson_title')}
               </h3>
               <p className="text-ink-800 dark:text-ink-200 leading-loose italic">
                 {selectedEvent.lesson}
@@ -241,7 +243,7 @@ export default function MultiPerspectivePage() {
         {/* 底部 */}
         <RevealOnScroll direction="fade" delay={400}>
           <div className="mt-12 text-center">
-            <Link to="/" className="btn-secondary">返回首页</Link>
+            <Link to="/" className="btn-secondary">{t('multiPerspective.back_home')}</Link>
           </div>
         </RevealOnScroll>
       </div>

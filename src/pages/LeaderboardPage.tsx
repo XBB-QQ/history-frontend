@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchQuizLeaderboard } from '@/services/api';
+import { useT } from '@/i18n/i18n';
 
 interface LeaderboardRow {
   id: number;
@@ -11,6 +12,7 @@ interface LeaderboardRow {
 }
 
 function LeaderboardPage() {
+  const t = useT();
   const [entries, setEntries] = useState<LeaderboardRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -32,8 +34,8 @@ function LeaderboardPage() {
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
           <span className="text-4xl mb-4 block">榜</span>
-          <h1 className="text-3xl font-black text-ink-900 dark:text-ink-100">积分排行榜</h1>
-          <p className="text-sm text-ink-500 mt-2">快来答题挑战，登上历史巅峰！</p>
+          <h1 className="text-3xl font-black text-ink-900 dark:text-ink-100">{t('leaderboard.title')}</h1>
+          <p className="text-sm text-ink-500 mt-2">{t('leaderboard.subtitle')}</p>
         </div>
 
         {loading && (
@@ -46,7 +48,7 @@ function LeaderboardPage() {
 
         {error && (
           <div className="text-center py-12 text-ink-400">
-            <p>加载失败，请刷新重试</p>
+            <p>{t('leaderboard.load_failed')}</p>
           </div>
         )}
 
@@ -54,7 +56,7 @@ function LeaderboardPage() {
           <div className="space-y-2">
             {entries.length === 0 ? (
               <div className="text-center py-12 text-ink-400">
-                <p>暂无排名数据</p>
+                <p>{t('leaderboard.no_data')}</p>
               </div>
             ) : (
               entries.map((entry, i) => {
@@ -83,14 +85,14 @@ function LeaderboardPage() {
                         {entry.nickname || entry.username}
                       </div>
                       <div className="text-xs text-ink-400">
-                        答题 {entry.quizzesAnswered} 题 · 正确 {entry.quizzesCorrect} 题
+                        {t('leaderboard.answered_correct', { answered: entry.quizzesAnswered, correct: entry.quizzesCorrect })}
                       </div>
                     </div>
                     <div className="text-right">
                       <div className="text-lg font-black text-accent tabular-nums">
                         {entry.score}
                       </div>
-                      <div className="text-[10px] text-ink-400">积分</div>
+                      <div className="text-[10px] text-ink-400">{t('leaderboard.points')}</div>
                     </div>
                   </div>
                 );

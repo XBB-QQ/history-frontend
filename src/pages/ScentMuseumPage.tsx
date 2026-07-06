@@ -2,23 +2,25 @@ import { useState, useMemo } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { HISTORICAL_SCENTS, SCENTS_BY_DYNASTY, POPULAR_SCENTS, ENERGY_COLORS } from '@/data/features/scentData';
+import { useT } from '@/i18n/i18n';
 
 const ScentMuseumPage = () => {
+  const t = useT();
   const [selectedDynasty, setSelectedDynasty] = useState('全部');
   const [selectedEnergy, setSelectedEnergy] = useState('全部');
   const [selectedScent, setSelectedScent] = useState<typeof HISTORICAL_SCENTS[0] | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const dynastyOptions = ['全部', ...Object.keys(SCENTS_BY_DYNASTY).map(d => d.toUpperCase()).map(d => ({
+  const dynastyOptions = [{ value: '全部', label: t('scentMuseum.all_dynasty') }, ...Object.keys(SCENTS_BY_DYNASTY).map(d => d.toUpperCase()).map(d => ({
     value: d,
     label: d
   }))];
 
   const energyOptions = [
-    { value: '全部', label: '全部能量' },
-    { value: 'calm', label: '宁静' },
-    { value: 'energetic', label: '活力' },
-    { value: 'grand', label: '宏大' }
+    { value: '全部', label: t('scentMuseum.all_energy') },
+    { value: 'calm', label: t('scentMuseum.energy_calm') },
+    { value: 'energetic', label: t('scentMuseum.energy_energetic') },
+    { value: 'grand', label: t('scentMuseum.energy_grand') }
   ];
 
   const filteredScents = useMemo(() => {
@@ -40,7 +42,7 @@ const ScentMuseumPage = () => {
   };
 
   const getEnergyBadge = (energy: string) => {
-    const badges: Record<string, { bg: string; text: string; icon: string }> = {
+    const badges: Record<string, { bg: string; icon: string }> = {
       calm: { bg: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300', icon: '🍃' },
       energetic: { bg: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300', icon: '⚡' },
       grand: { bg: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300', icon: '🏛️' },
@@ -55,9 +57,9 @@ const ScentMuseumPage = () => {
       {/* Header */}
       <div className="bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 dark:from-amber-900 dark:via-orange-900 dark:to-amber-900 text-white py-16 px-4">
         <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-5xl font-bold mb-4 tracking-tight">历史气味博物馆</h1>
+          <h1 className="text-5xl font-bold mb-4 tracking-tight">{t('scentMuseum.title')}</h1>
           <p className="text-xl opacity-90 max-w-2xl mx-auto">
-            穿越时空的嗅觉之旅，感受千年文明的独特气息
+            {t('scentMuseum.subtitle')}
           </p>
         </div>
       </div>
@@ -69,7 +71,7 @@ const ScentMuseumPage = () => {
             <div className="flex flex-wrap gap-4">
               <div className="flex-1 min-w-[200px]">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  🏛️ 朝代时期
+                  {t('scentMuseum.dynasty_label')}
                 </label>
                 <select
                   value={selectedDynasty}
@@ -86,7 +88,7 @@ const ScentMuseumPage = () => {
 
               <div className="flex-1 min-w-[200px]">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  💫 能量氛围
+                  {t('scentMuseum.energy_label')}
                 </label>
                 <select
                   value={selectedEnergy}
@@ -103,7 +105,7 @@ const ScentMuseumPage = () => {
             </div>
 
             <div className="text-sm text-gray-600 dark:text-gray-400 pt-2">
-              共找到 <span className="font-bold text-amber-600 dark:text-amber-400">{filteredScents.length}</span> 个历史气味
+              {t('scentMuseum.result_count', { count: filteredScents.length })}
             </div>
           </div>
         </div>
@@ -112,7 +114,7 @@ const ScentMuseumPage = () => {
       {/* Popular Scents Section */}
       <RevealOnScroll>
         <div className="max-w-6xl mx-auto px-4 py-12">
-          <SectionHeader label="RECOMMENDED" title="推荐气味" description="精选最具代表性的历史气味" />
+          <SectionHeader label={t('scentMuseum.recommended_label')} title={t('scentMuseum.recommended_title')} description={t('scentMuseum.recommended_desc')} />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {POPULAR_SCENTS.map((scent: any, index: number) => (
@@ -132,15 +134,15 @@ const ScentMuseumPage = () => {
       <RevealOnScroll>
         <div className="max-w-6xl mx-auto px-4 pb-16">
           <SectionHeader
-            label="SCENT MUSEUM"
-            title="历史气味图鉴"
-            description={`共 ${HISTORICAL_SCENTS.length} 个气味：${filteredScents.length} 个匹配`}
+            label={t('scentMuseum.museum_label')}
+            title={t('scentMuseum.museum_title')}
+            description={t('scentMuseum.museum_desc', { total: HISTORICAL_SCENTS.length, matched: filteredScents.length })}
           />
 
           {filteredScents.length === 0 ? (
             <div className="text-center py-12 text-gray-500 dark:text-gray-400">
               <p className="text-6xl mb-4">🔍</p>
-              <p>未找到匹配的气味，请尝试调整筛选条件</p>
+              <p>{t('scentMuseum.no_match')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -174,10 +176,11 @@ interface ScentCardProps {
   scent: any;
   index: number;
   onClick: (scent: any) => void;
-  getEnergyBadge: (energy: string) => { bg: string; text: string; icon: string };
+  getEnergyBadge: (energy: string) => { bg: string; icon: string };
 }
 
 const ScentCard = ({ scent, index, onClick, getEnergyBadge }: ScentCardProps) => {
+  const t = useT();
   const energyBadge = getEnergyBadge(scent.energy);
   const gradientClass = ENERGY_COLORS[scent.energy] || ENERGY_COLORS.calm;
 
@@ -212,7 +215,7 @@ const ScentCard = ({ scent, index, onClick, getEnergyBadge }: ScentCardProps) =>
              '🏭'}
           </div>
           <span className={`px-3 py-1 rounded-full text-xs font-medium ${energyBadge.bg}`}>
-            {energyBadge.icon} {scent.energy === 'calm' ? '宁静' : scent.energy === 'energetic' ? '活力' : '宏大'}
+            {energyBadge.icon} {scent.energy === 'calm' ? t('scentMuseum.energy_calm') : scent.energy === 'energetic' ? t('scentMuseum.energy_energetic') : t('scentMuseum.energy_grand')}
           </span>
         </div>
 
@@ -237,9 +240,9 @@ const ScentCard = ({ scent, index, onClick, getEnergyBadge }: ScentCardProps) =>
       {/* Footer */}
       <div className="relative bg-gray-50 dark:bg-gray-900/50 px-6 py-4">
         <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-          <span>温度：{scent.temperature === '极寒' ? '❄️' : scent.temperature === '寒冷' ? '🥶' : scent.temperature === '温暖' ? '☀️' : '🔥'}</span>
-          <span>强度：{scent.intensity}/10</span>
-          <span>时间：{scent.timeOfDay}</span>
+          <span>{t('scentMuseum.temperature_label')}{scent.temperature === '极寒' ? '❄️' : scent.temperature === '寒冷' ? '🥶' : scent.temperature === '温暖' ? '☀️' : '🔥'}</span>
+          <span>{t('scentMuseum.intensity_label')}{scent.intensity}/10</span>
+          <span>{t('scentMuseum.time_label')}{scent.timeOfDay}</span>
         </div>
       </div>
     </div>
@@ -249,10 +252,11 @@ const ScentCard = ({ scent, index, onClick, getEnergyBadge }: ScentCardProps) =>
 interface ScentDetailModalProps {
   scent: any;
   onClose: () => void;
-  getEnergyBadge: (energy: string) => { bg: string; text: string; icon: string };
+  getEnergyBadge: (energy: string) => { bg: string; icon: string };
 }
 
 const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalProps) => {
+  const t = useT();
   const energyBadge = getEnergyBadge(scent.energy);
   const gradientClass = ENERGY_COLORS[scent.energy] || ENERGY_COLORS.calm;
 
@@ -300,7 +304,7 @@ const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalPr
               <div className="flex items-center gap-3 mb-2">
                 <h2 className="text-3xl font-bold text-white">{scent.name}</h2>
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${energyBadge.bg}`}>
-                  {energyBadge.icon} {scent.energy === 'calm' ? '宁静' : scent.energy === 'energetic' ? '活力' : '宏大'}
+                  {energyBadge.icon} {scent.energy === 'calm' ? t('scentMuseum.energy_calm') : scent.energy === 'energetic' ? t('scentMuseum.energy_energetic') : t('scentMuseum.energy_grand')}
                 </span>
               </div>
               <p className="text-white/90 text-lg">
@@ -314,17 +318,17 @@ const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalPr
             <div className="bg-white/20 rounded-xl p-4 text-center">
               <div className="text-2xl mb-1">🌡️</div>
               <div className="text-white font-medium">{scent.temperature}</div>
-              <div className="text-white/70 text-sm">温度</div>
+              <div className="text-white/70 text-sm">{t('scentMuseum.temperature')}</div>
             </div>
             <div className="bg-white/20 rounded-xl p-4 text-center">
               <div className="text-2xl mb-1">💫</div>
               <div className="text-white font-medium">{scent.intensity}/10</div>
-              <div className="text-white/70 text-sm">强度</div>
+              <div className="text-white/70 text-sm">{t('scentMuseum.intensity')}</div>
             </div>
             <div className="bg-white/20 rounded-xl p-4 text-center">
               <div className="text-2xl mb-1">⏰</div>
               <div className="text-white font-medium">{scent.timeOfDay}</div>
-              <div className="text-white/70 text-sm">时间</div>
+              <div className="text-white/70 text-sm">{t('scentMuseum.time')}</div>
             </div>
           </div>
         </div>
@@ -334,7 +338,7 @@ const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalPr
           {/* Description */}
           <div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-              📝 气味描述
+              {t('scentMuseum.description_title')}
             </h3>
             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
               {scent.description}
@@ -345,19 +349,19 @@ const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalPr
           <div className="grid grid-cols-2 gap-6">
             <div className="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-6">
               <h4 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                <span className="text-2xl">🔍</span> 主基调
+                {t('scentMuseum.base_scent')}
               </h4>
               <p className="text-lg text-gray-700 dark:text-gray-300">{scent.baseScent}</p>
               {scent.secondaryScent && (
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                  次基调：{scent.secondaryScent}
+                  {t('scentMuseum.secondary_scent', { scent: scent.secondaryScent })}
                 </p>
               )}
             </div>
 
             <div className="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-6">
               <h4 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                <span className="text-2xl">🎭</span> 香调
+                {t('scentMuseum.accords')}
               </h4>
               <div className="flex flex-wrap gap-2">
                 {scent.accords.map((accord: string, i: number) => (
@@ -375,7 +379,7 @@ const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalPr
           {/* Atmosphere */}
           <div className="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-6">
             <h4 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              <span className="text-2xl">🌫️</span> 氛围感受
+              {t('scentMuseum.atmosphere')}
             </h4>
             <p className="text-gray-700 dark:text-gray-300 text-lg">
               {scent.atmosphere}
@@ -385,7 +389,7 @@ const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalPr
           {/* Emotional Impact */}
           <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-6">
             <h4 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              <span className="text-2xl">💖</span> 情感冲击
+              {t('scentMuseum.emotional_impact')}
             </h4>
             <p className="text-gray-700 dark:text-gray-300 text-lg">
               {scent.emotionalImpact}
@@ -395,7 +399,7 @@ const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalPr
           {/* Visual Elements */}
           <div>
             <h4 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              <span className="text-2xl">🖼️</span> 视觉元素
+              {t('scentMuseum.visual_elements')}
             </h4>
             <div className="flex flex-wrap gap-2">
               {scent.visualElements.map((el: string, i: number) => (
@@ -412,7 +416,7 @@ const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalPr
           {/* Sound Elements */}
           <div>
             <h4 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              <span className="text-2xl">🔊</span> 声音元素
+              {t('scentMuseum.sound_elements')}
             </h4>
             <div className="flex flex-wrap gap-2">
               {scent.soundElements.map((el: string, i: number) => (
@@ -429,7 +433,7 @@ const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalPr
           {/* Soundscape */}
           <div className="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-6">
             <h4 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              <span className="text-2xl">🎵</span> 声景体验
+              {t('scentMuseum.soundscape')}
             </h4>
             <p className="text-gray-700 dark:text-gray-300 italic">
               "{scent.soundscape}"
@@ -439,7 +443,7 @@ const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalPr
           {/* Historical Context */}
           <div>
             <h4 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              <span className="text-2xl">📜</span> 历史背景
+              {t('scentMuseum.historical_context')}
             </h4>
             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
               {scent.historicalContext}
@@ -449,7 +453,7 @@ const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalPr
           {/* Trivia */}
           <div>
             <h4 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              <span className="text-2xl">💡</span> 历史冷知识
+              {t('scentMuseum.trivia')}
             </h4>
             <ul className="space-y-2">
               {scent.trivia.map((fact: string, i: number) => (
@@ -465,15 +469,15 @@ const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalPr
           <div className="grid grid-cols-2 gap-6">
             <div>
               <h4 className="font-bold text-gray-900 dark:text-white mb-3">
-                🎨 质地感受
+                {t('scentMuseum.texture')}
               </h4>
               <p className="text-gray-700 dark:text-gray-300">{scent.texture}</p>
             </div>
             <div>
               <h4 className="font-bold text-gray-900 dark:text-white mb-3">
-                ⚡ 能量属性
+                {t('scentMuseum.energy_attribute')}
               </h4>
-              <p className="text-gray-700 dark:text-gray-300">{scent.energy === 'calm' ? '平静、内敛、冥想' : scent.energy === 'energetic' ? '激发、活跃、冲动' : '庄严、崇高、宏大'}</p>
+              <p className="text-gray-700 dark:text-gray-300">{scent.energy === 'calm' ? t('scentMuseum.energy_calm_desc') : scent.energy === 'energetic' ? t('scentMuseum.energy_energetic_desc') : t('scentMuseum.energy_grand_desc')}</p>
             </div>
           </div>
         </div>

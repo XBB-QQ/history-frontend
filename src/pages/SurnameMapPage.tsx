@@ -11,10 +11,12 @@ import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { SURNAMES, SURNAMES_BY_INITIAL, SURNAMES_INITIALS } from '@/data/features/surnameData';
+import { useT } from '@/i18n/i18n';
 
 import './SurnameMapPage.module.css';
 
 export default function SurnameMapPage() {
+  const t = useT();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedInitial, setSelectedInitial] = useState<string>(SURNAMES_INITIALS[0]);
   const [selectedSurname, setSelectedSurname] = useState<Surname | null>(() => 
@@ -57,8 +59,8 @@ export default function SurnameMapPage() {
       {/* 标题区 */}
       <SectionHeader
         label="SURNAME"
-        title="姓氏迁徙与族谱地图"
-        description="探索百家姓的起源、迁徙与名人辈出"
+        title={t('surnameMap.title')}
+        description={t('surnameMap.description')}
       />
 
       <RevealOnScroll>
@@ -66,7 +68,7 @@ export default function SurnameMapPage() {
         <div className="search-container mb-8">
           <input
             type="text"
-            placeholder="搜索姓氏（如：王、Wang、Wáng）..."
+            placeholder={t('surnameMap.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
@@ -150,13 +152,13 @@ export default function SurnameMapPage() {
                       </h2>
                       <div className="flex flex-wrap gap-2 text-sm">
                         <span className="px-2 py-1 rounded bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400">
-                          百家姓排名: {selected.rank}
+                          {t('surnameMap.rank')}: {selected.rank}
                         </span>
                         <span className="px-2 py-1 rounded bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400">
-                          人口排名: {selected.populationRank}
+                          {t('surnameMap.populationRank')}: {selected.populationRank}
                         </span>
                         <span className="px-2 py-1 rounded bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400">
-                          人口: {selected.population.toLocaleString()} 万
+                          {t('surnameMap.population')}: {selected.population.toLocaleString()} {t('surnameMap.wan')}
                         </span>
                       </div>
                     </div>
@@ -166,7 +168,7 @@ export default function SurnameMapPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div className="info-block">
                       <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">
-                        📜 起源
+                        📜 {t('surnameMap.origin')}
                       </h3>
                       <p className="text-ink-700 dark:text-ink-300 leading-relaxed">
                         {selected.origin}
@@ -174,13 +176,13 @@ export default function SurnameMapPage() {
                     </div>
                     <div className="info-block">
                       <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">
-                        🏮 起源地
+                        🏮 {t('surnameMap.originPlace')}
                       </h3>
                       <p className="text-ink-700 dark:text-ink-300 leading-relaxed mb-2">
                         {selected.originPlace.name} ({selected.originPeriod})
                       </p>
                       <p className="text-sm text-ink-500">
-                        经度: {selected.originPlace.lng}°, 纬度: {selected.originPlace.lat}°
+                        {t('surnameMap.longitude')}: {selected.originPlace.lng}°, {t('surnameMap.latitude')}: {selected.originPlace.lat}°
                       </p>
                     </div>
                     <div className="info-block md:col-span-2">
@@ -189,7 +191,7 @@ export default function SurnameMapPage() {
                     </div>
                     <div className="info-block">
                       <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">
-                        🏛️ 郡望堂号
+                        🏛️ {t('surnameMap.junwang')}
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {selected.junwang.map((junwang, idx) => (
@@ -199,7 +201,7 @@ export default function SurnameMapPage() {
                               {junwang.location}
                             </div>
                             <div className="text-xs text-ink-500 mt-1">
-                              堂号: {junwang.tanghao}
+                              {t('surnameMap.tanghao')}: {junwang.tanghao}
                             </div>
                           </div>
                         ))}
@@ -207,13 +209,13 @@ export default function SurnameMapPage() {
                     </div>
                     <div className="info-block">
                       <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">
-                        🎨 图腾
+                        🎨 {t('surnameMap.totem')}
                       </h3>
                       <p className="text-ink-700 dark:text-ink-300">{selected.totem}</p>
                     </div>
                     <div className="info-block">
                       <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">
-                        📖 族史
+                        📖 {t('surnameMap.history')}
                       </h3>
                       <p className="text-ink-700 dark:text-ink-300">{selected.history}</p>
                     </div>
@@ -222,7 +224,7 @@ export default function SurnameMapPage() {
                   {/* 姓氏迁徙地图（SVG） */}
                   <div className="migration-map-section mb-6">
                     <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-3">
-                      🗺️ 姓氏迁徙轨迹
+                      🗺️ {t('surnameMap.migrationTrack')}
                     </h3>
                     <div className="map-container relative bg-ink-50 dark:bg-ink-800 rounded-xl overflow-hidden">
                       <svg
@@ -296,19 +298,19 @@ export default function SurnameMapPage() {
                         {/* 图例 */}
                         <g transform="translate(20, 350)">
                           <circle cx="0" cy="0" r="5" fill="#10b981" />
-                          <text x="10" y="4" className="map-legend">发源地</text>
+                          <text x="10" y="4" className="map-legend">{t('surnameMap.originLabel')}</text>
 
                           <circle cx="80" cy="0" r="5" fill="#f59e0b" />
-                          <text x="90" y="4" className="map-legend">迁徙节点</text>
+                          <text x="90" y="4" className="map-legend">{t('surnameMap.migrationNode')}</text>
 
                           <circle cx="180" cy="0" r="5" fill="#ef4444" />
-                          <text x="190" y="4" className="map-legend">现居地</text>
+                          <text x="190" y="4" className="map-legend">{t('surnameMap.currentResidence')}</text>
                         </g>
                       </svg>
 
                       {/* 地图说明 */}
                       <p className="text-xs text-ink-500 mt-2 px-2">
-                        ⚠️ 红点代表现居地，绿色点代表发源地，黄色点代表迁徙节点
+                        ⚠️ {t('surnameMap.mapNote')}
                       </p>
                     </div>
                   </div>
@@ -317,7 +319,7 @@ export default function SurnameMapPage() {
                   {selected.figures.length > 0 && (
                     <div className="figures-section">
                       <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-3">
-                        👑 历代名人
+                        👑 {t('surnameMap.figures')}
                       </h3>
                       <div className="figures-grid grid grid-cols-1 md:grid-cols-3 gap-3">
                         {selected.figures.map((figure, idx) => (

@@ -9,8 +9,10 @@ import React, { useState, useMemo } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { ANCIENT_JOBS, ANCIENT_JOBS_BY_DYNASTY, POPULAR_JOBS, UNCOMMON_JOBS, type AncientJob } from '@/data/features/jobsData';
+import { useT } from '@/i18n/i18n';
 
 export default function JobsPage() {
+  const t = useT();
   const [selectedDynasty, setSelectedDynasty] = useState<string>('全部');
   const [selectedStatus, setSelectedStatus] = useState<string>('全部');
   const [selectedJob, setSelectedJob] = useState<AncientJob | null>(null);
@@ -31,13 +33,13 @@ export default function JobsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'common':
-        return <span className="badge-common">常见</span>;
+        return <span className="badge-common">{t('jobs.badge_common')}</span>;
       case 'rare':
-        return <span className="badge-rare">稀有</span>;
+        return <span className="badge-rare">{t('jobs.badge_rare')}</span>;
       case 'elite':
-        return <span className="badge-elite">精英</span>;
+        return <span className="badge-elite">{t('jobs.badge_elite')}</span>;
       case 'royal':
-        return <span className="badge-royal">皇室</span>;
+        return <span className="badge-royal">{t('jobs.badge_royal')}</span>;
       default:
         return <span>{status}</span>;
     }
@@ -61,9 +63,9 @@ export default function JobsPage() {
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
       <SectionHeader
-        label="JOBS"
-        title="古代职业图鉴"
-        description="穿越时空，了解古代人的生活与职业"
+        label={t('jobs.label')}
+        title={t('jobs.title')}
+        description={t('jobs.description')}
       />
 
       <RevealOnScroll>
@@ -73,7 +75,7 @@ export default function JobsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">
-                  选择朝代
+                  {t('jobs.select_dynasty')}
                 </label>
                 <select
                   value={selectedDynasty}
@@ -82,7 +84,7 @@ export default function JobsPage() {
                 >
                   {allDynasties.map(dynasty => (
                     <option key={dynasty} value={dynasty}>
-                      {dynasty}
+                      {dynasty === '全部' ? t('jobs.all') : dynasty}
                     </option>
                   ))}
                 </select>
@@ -90,18 +92,18 @@ export default function JobsPage() {
 
               <div>
                 <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">
-                  职业等级
+                  {t('jobs.select_status')}
                 </label>
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
                   className="input-field w-full"
                 >
-                  <option value="全部">全部等级</option>
-                  <option value="common">常见职业</option>
-                  <option value="rare">稀有职业</option>
-                  <option value="elite">精英职业</option>
-                  <option value="royal">皇室职业</option>
+                  <option value="全部">{t('jobs.all_status')}</option>
+                  <option value="common">{t('jobs.status_common')}</option>
+                  <option value="rare">{t('jobs.status_rare')}</option>
+                  <option value="elite">{t('jobs.status_elite')}</option>
+                  <option value="royal">{t('jobs.status_royal')}</option>
                 </select>
               </div>
             </div>
@@ -146,7 +148,7 @@ export default function JobsPage() {
             <div className="text-center py-12">
               <div className="text-4xl mb-2">🔍</div>
               <div className="text-ink-600 dark:text-ink-400">
-                没有找到符合条件的职业
+                {t('jobs.no_match')}
               </div>
             </div>
           )}
@@ -189,7 +191,7 @@ export default function JobsPage() {
 
                   {/* 薪资 */}
                   <div className="mb-6 p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
-                    <div className="text-sm text-ink-500 mb-1">薪资水平</div>
+                    <div className="text-sm text-ink-500 mb-1">{t('jobs.salary_level')}</div>
                     <div className="text-2xl font-bold text-accent">
                       {selectedJob.salary} <span className="text-base">{selectedJob.salaryUnit}</span>
                     </div>
@@ -198,7 +200,7 @@ export default function JobsPage() {
                   {/* 描述 */}
                   <div className="mb-6">
                     <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2">
-                      📖 职业介绍
+                      {t('jobs.job_intro')}
                     </h3>
                     <p className="text-ink-600 dark:text-ink-400 leading-relaxed">
                       {selectedJob.description}
@@ -208,7 +210,7 @@ export default function JobsPage() {
                   {/* 要求 */}
                   <div className="mb-6">
                     <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2">
-                      📋 入职要求
+                      {t('jobs.requirements')}
                     </h3>
                     <ul className="space-y-2">
                       {selectedJob.requirements.map((req: string, idx: number) => (
@@ -223,7 +225,7 @@ export default function JobsPage() {
                   {/* 技能 */}
                   <div className="mb-6">
                     <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2">
-                      🛠️ 所需技能
+                      {t('jobs.skills')}
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       {selectedJob.skills.map((skill: string, idx: number) => (
@@ -240,7 +242,7 @@ export default function JobsPage() {
                   {/* 日常生活 */}
                   <div className="mb-6">
                     <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2">
-                      🏠 日常工作
+                      {t('jobs.daily_work')}
                     </h3>
                     <p className="text-ink-600 dark:text-ink-400 leading-relaxed">
                       {selectedJob.dailyLife}
@@ -250,17 +252,17 @@ export default function JobsPage() {
                   {/* 穿越建议 */}
                   <div className="mb-6 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700">
                     <h3 className="text-lg font-bold text-amber-800 dark:text-amber-200 mb-2">
-                      🎭 穿越建议
+                      {t('jobs.travel_advice')}
                     </h3>
                     <div className="text-amber-700 dark:text-amber-300 text-sm leading-relaxed">
                       {selectedJob.status === 'common' ? (
-                        <>这是最常见的职业，最适合新手穿越。需要基本的体力或技能，生活相对稳定。</>
+                        <>{t('jobs.advice_common')}</>
                       ) : selectedJob.status === 'rare' ? (
-                        <>这是相对稀有的职业，需要特殊的才能或资源。竞争较少，但挑战也更大。</>
+                        <>{t('jobs.advice_rare')}</>
                       ) : selectedJob.status === 'elite' ? (
-                        <>这是精英职业，需要顶级的专业技能。收入高但压力也大，需要完美表现。</>
+                        <>{t('jobs.advice_elite')}</>
                       ) : (
-                        <>这是皇室职业，普通人难以触及。需要极高的地位或特殊的机缘。</>
+                        <>{t('jobs.advice_royal')}</>
                       )}
                     </div>
                   </div>
@@ -270,7 +272,7 @@ export default function JobsPage() {
                     className="w-full py-3 rounded-xl bg-accent text-white font-bold hover:bg-accent/90 transition-colors"
                     onClick={() => setSelectedJob(null)}
                   >
-                    返回职业列表
+                    {t('jobs.back_to_list')}
                   </button>
                 </div>
               </div>
@@ -280,13 +282,13 @@ export default function JobsPage() {
           {/* 热门职业推荐 */}
           <div className="mt-12 p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg">
             <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100 mb-6">
-              ⭐ 热门职业推荐
+              {t('jobs.popular_jobs')}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-3">
-                  常见职业（适合初次穿越）
+                  {t('jobs.popular_section')}
                 </h3>
                 <div className="space-y-2">
                   {POPULAR_JOBS.slice(0, 6).map(job => (
@@ -309,7 +311,7 @@ export default function JobsPage() {
 
               <div>
                 <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-3">
-                  稀有/精英职业（适合进阶穿越）
+                  {t('jobs.uncommon_section')}
                 </h3>
                 <div className="space-y-2">
                   {UNCOMMON_JOBS.slice(0, 6).map(job => (

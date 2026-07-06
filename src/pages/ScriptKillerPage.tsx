@@ -22,6 +22,7 @@ import {
   type TruthComparison,
 } from '@/features/mysteryDM';
 import { usePersonaStore } from '@/store/personaStore';
+import { useT } from '@/i18n/i18n';
 
 /* ─── 类型定义 ─── */
 type GamePhase = 'intro' | 'character' | 'clues' | 'interrogate' | 'deduction' | 'reveal';
@@ -36,6 +37,7 @@ function ClueCard({
   collected: boolean;
   onCollect: () => void;
 }) {
+  const t = useT();
   return (
     <button
       onClick={onCollect}
@@ -50,7 +52,7 @@ function ClueCard({
         <h4 className="font-bold text-gray-800 dark:text-ink-100">{clue}</h4>
       </div>
       <p className="text-sm text-gray-600 dark:text-ink-400 mt-1">
-        {collected ? '已收集' : '点击收集线索'}
+        {collected ? t('scriptKiller.collected') : t('scriptKiller.collect_clue')}
       </p>
     </button>
   );
@@ -70,6 +72,7 @@ function DMDialoguePanel({
   onGetHint: () => void;
   isProcessing: boolean;
 }) {
+  const t = useT();
   const [input, setInput] = useState('');
 
   const handleSubmit = () => {
@@ -94,7 +97,7 @@ function DMDialoguePanel({
             onClick={onGetHint}
             className="px-3 py-1.5 rounded-lg bg-white/20 hover:bg-white/30 transition-colors text-sm font-bold"
           >
-            求提示
+            {t('scriptKiller.ask_hint')}
           </button>
         </div>
       </div>
@@ -103,8 +106,8 @@ function DMDialoguePanel({
       <div className="h-80 overflow-y-auto p-4 space-y-4 bg-ink-50 dark:bg-ink-950">
         {messages.length === 0 && (
           <div className="text-center text-gray-500 py-12">
-            <p>向 {character.displayName} 发起审问吧！</p>
-            <p className="text-sm mt-1">尝试询问他的动机、不在场证明或秘密</p>
+            <p>{t('scriptKiller.ask_prompt', { name: character.displayName })}</p>
+            <p className="text-sm mt-1">{t('scriptKiller.ask_subprompt')}</p>
           </div>
         )}
         {messages.map((msg, i) => (
@@ -141,7 +144,7 @@ function DMDialoguePanel({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-            placeholder={`向${character.displayName}提问...`}
+            placeholder={t('scriptKiller.ask_placeholder', { name: character.displayName })}
             className="flex-1 px-4 py-2 rounded-xl border border-ink-200 dark:border-ink-700 bg-ink-50 dark:bg-ink-800 focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button
@@ -149,7 +152,7 @@ function DMDialoguePanel({
             disabled={!input.trim() || isProcessing}
             className="px-6 py-2 rounded-xl bg-accent text-white font-bold hover:bg-accent/90 disabled:opacity-50"
           >
-            发送
+            {t('scriptKiller.send')}
           </button>
         </div>
       </div>
@@ -165,19 +168,20 @@ function InterrogationResultDisplay({
   result: InterrogationResult;
   unlockedClues: string[];
 }) {
+  const t = useT();
   if (!result.dmComment && !unlockedClues.length) return null;
 
   return (
     <div className="space-y-4 mt-4">
       {result.dmComment && (
         <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800">
-          <h4 className="font-bold text-amber-800 dark:text-amber-400 mb-2">DM 评析</h4>
+          <h4 className="font-bold text-amber-800 dark:text-amber-400 mb-2">{t('scriptKiller.dm_comment')}</h4>
           <p className="text-sm text-ink-700 dark:text-ink-300">{result.dmComment}</p>
         </div>
       )}
       {unlockedClues.length > 0 && (
         <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800">
-          <h4 className="font-bold text-green-800 dark:text-green-400 mb-2">新线索解锁！</h4>
+          <h4 className="font-bold text-green-800 dark:text-green-400 mb-2">{t('scriptKiller.new_clue')}</h4>
           <ul className="space-y-1">
             {unlockedClues.map((clue, i) => (
               <li key={i} className="text-sm text-ink-700 dark:text-ink-300">• {clue}</li>
@@ -187,7 +191,7 @@ function InterrogationResultDisplay({
       )}
       {result.hint && (
         <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800">
-          <h4 className="font-bold text-blue-800 dark:text-blue-400 mb-2">提示</h4>
+          <h4 className="font-bold text-blue-800 dark:text-blue-400 mb-2">{t('scriptKiller.hint')}</h4>
           <p className="text-sm text-ink-700 dark:text-ink-300">{result.hint}</p>
         </div>
       )}
@@ -197,6 +201,7 @@ function InterrogationResultDisplay({
 
 /* ─── 主页面 ─── */
 export default function ScriptKillerPage() {
+  const t = useT();
   const [selectedScriptId, setSelectedScriptId] = useState('shang-mystery');
   const [phase, setPhase] = useState<GamePhase>('intro');
   const [selectedCharacters, setSelectedCharacters] = useState<string[]>([]);
@@ -250,7 +255,7 @@ export default function ScriptKillerPage() {
 
       // 添加 DM 回复
       const dmReply = result.dmComment
-        ? `[DM评析] ${result.dmComment}\n\n${currentCharacter.testimony}`
+        ? `${t('scriptKiller.dm_comment_prefix', { comment: result.dmComment })}\n\n${currentCharacter.testimony}`
         : currentCharacter.testimony;
       setDmMessages(prev => [...prev, { role: 'dm', content: dmReply, timestamp: Date.now() }]);
 
@@ -262,8 +267,8 @@ export default function ScriptKillerPage() {
       // 记录到 persona
       usePersonaStore.getState().recordBrowse('knowledgeViewed');
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : '审问失败';
-      setDmMessages(prev => [...prev, { role: 'dm', content: `错误：${message}`, timestamp: Date.now() }]);
+      const message = err instanceof Error ? err.message : t('scriptKiller.alert_interrogate_failed');
+      setDmMessages(prev => [...prev, { role: 'dm', content: t('scriptKiller.error_prefix', { message }), timestamp: Date.now() }]);
     } finally {
       setIsProcessing(false);
     }
@@ -275,7 +280,7 @@ export default function ScriptKillerPage() {
     setIsProcessing(true);
     try {
       const hint = await getDMHint(currentScript, clueCollection, dmMessages.length + 1);
-      setDmMessages(prev => [...prev, { role: 'dm', content: `[DM提示] ${hint}`, timestamp: Date.now() }]);
+      setDmMessages(prev => [...prev, { role: 'dm', content: t('scriptKiller.dm_hint_prefix', { hint }), timestamp: Date.now() }]);
     } catch {
       // ignore
     } finally {
@@ -294,7 +299,7 @@ export default function ScriptKillerPage() {
     setIsProcessing(true);
     try {
       const accused = characters.find(c => c.id === finalAccusation);
-      const reasoning = `我指控 ${accused?.displayName || '未知'} 是凶手，因为我收集了 ${clueCollection.length} 条线索`;
+      const reasoning = t('scriptKiller.accuse_reasoning', { name: accused?.displayName || t('scriptKiller.actual_killer_pending'), count: clueCollection.length });
       const comparison = await compareTruthWithHistory(currentScript, finalAccusation, reasoning, clueCollection);
       setTruthComparison(comparison);
     } catch {
@@ -322,9 +327,9 @@ export default function ScriptKillerPage() {
         {/* 头部 */}
         <RevealOnScroll>
           <SectionHeader
-            label="HISTORY SCRIPT KILLER"
-            title="历史剧本杀"
-            description="穿越时空，化身历史人物，解开神秘谜团"
+            label={t('scriptKiller.label')}
+            title={t('scriptKiller.title')}
+            description={t('scriptKiller.description')}
           />
         </RevealOnScroll>
 
@@ -332,7 +337,7 @@ export default function ScriptKillerPage() {
         {phase === 'intro' && (
           <RevealOnScroll direction="up" delay={100}>
             <div className="mt-8 bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 md:p-8 shadow-lg">
-              <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-6">选择剧本</h3>
+              <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-6">{t('scriptKiller.select_script')}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {SCRIPTS.map(script => (
                   <button
@@ -347,9 +352,9 @@ export default function ScriptKillerPage() {
                     <h4 className="font-bold text-lg mb-2">{script.title}</h4>
                     <p className="text-sm opacity-90 mb-3">{script.description}</p>
                     <div className="flex flex-wrap gap-2">
-                      <span className="text-xs bg-white/20 px-2 py-1 rounded">玩家: {script.playerCount}人</span>
-                      <span className="text-xs bg-white/20 px-2 py-1 rounded">时长: {script.duration}分钟</span>
-                      <span className="text-xs bg-white/20 px-2 py-1 rounded">难度: {script.difficulty}</span>
+                      <span className="text-xs bg-white/20 px-2 py-1 rounded">{t('scriptKiller.players', { count: script.playerCount })}</span>
+                      <span className="text-xs bg-white/20 px-2 py-1 rounded">{t('scriptKiller.duration', { minutes: script.duration })}</span>
+                      <span className="text-xs bg-white/20 px-2 py-1 rounded">{t('scriptKiller.difficulty', { level: script.difficulty })}</span>
                     </div>
                   </button>
                 ))}
@@ -359,7 +364,7 @@ export default function ScriptKillerPage() {
                   onClick={() => setPhase('character')}
                   className="px-8 py-3 rounded-xl bg-accent text-white font-bold text-lg hover:bg-accent/90 shadow-lg"
                 >
-                  开始游戏 →
+                  {t('scriptKiller.start_game')}
                 </button>
               </div>
             </div>
@@ -371,7 +376,7 @@ export default function ScriptKillerPage() {
           <RevealOnScroll direction="up" delay={100}>
             <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">选择角色</h3>
+                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">{t('scriptKiller.select_character')}</h3>
                 <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
                   {characters.map(char => (
                     <button
@@ -403,7 +408,7 @@ export default function ScriptKillerPage() {
 
               {/* 角色档案 */}
               <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">角色档案</h3>
+                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">{t('scriptKiller.character_profile')}</h3>
                 {currentCharacter ? (
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
@@ -414,11 +419,11 @@ export default function ScriptKillerPage() {
                       </div>
                     </div>
                     <div>
-                      <h5 className="font-bold text-sm text-ink-700 dark:text-ink-300 mb-1">背景</h5>
+                      <h5 className="font-bold text-sm text-ink-700 dark:text-ink-300 mb-1">{t('scriptKiller.background')}</h5>
                       <p className="text-sm text-ink-600 dark:text-ink-400">{currentCharacter.background}</p>
                     </div>
                     <div>
-                      <h5 className="font-bold text-sm text-ink-700 dark:text-ink-300 mb-1">动机</h5>
+                      <h5 className="font-bold text-sm text-ink-700 dark:text-ink-300 mb-1">{t('scriptKiller.motive')}</h5>
                       <ul className="text-sm text-ink-600 dark:text-ink-400 space-y-1">
                         {currentCharacter.motivations.map((m, i) => (
                           <li key={i}>• {m}</li>
@@ -426,13 +431,13 @@ export default function ScriptKillerPage() {
                       </ul>
                     </div>
                     <div>
-                      <h5 className="font-bold text-sm text-ink-700 dark:text-ink-300 mb-1">不在场证明</h5>
+                      <h5 className="font-bold text-sm text-ink-700 dark:text-ink-300 mb-1">{t('scriptKiller.alibi')}</h5>
                       <p className="text-sm text-ink-600 dark:text-ink-400">{currentCharacter.alibi}</p>
                     </div>
                   </div>
                 ) : (
                   <div className="text-center text-ink-400 py-12">
-                    选择一个角色查看详情
+                    {t('scriptKiller.select_character_tip')}
                   </div>
                 )}
                 <div className="flex justify-between mt-6">
@@ -440,13 +445,13 @@ export default function ScriptKillerPage() {
                     onClick={() => setPhase('intro')}
                     className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-700 dark:text-ink-300 font-bold"
                   >
-                    ← 返回
+                    {t('scriptKiller.back')}
                   </button>
                   <button
                     onClick={() => setPhase('clues')}
                     className="px-4 py-2 rounded-lg bg-accent text-white font-bold"
                   >
-                    下一步 →
+                    {t('scriptKiller.next_step')}
                   </button>
                 </div>
               </div>
@@ -459,9 +464,9 @@ export default function ScriptKillerPage() {
           <RevealOnScroll direction="up" delay={100}>
             <div className="mt-8 bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">收集线索</h3>
+                <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">{t('scriptKiller.collect_clues')}</h3>
                 <span className="text-sm bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 px-3 py-1 rounded-full font-bold">
-                  已收集 {clueCollection.length} / {mysteryEvent.keyClues.length}
+                  {t('scriptKiller.clue_collected_count', { collected: clueCollection.length, total: mysteryEvent.keyClues.length })}
                 </span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
@@ -475,7 +480,7 @@ export default function ScriptKillerPage() {
                 ))}
               </div>
               <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-xl p-4 mb-6">
-                <h4 className="font-bold text-ink-900 dark:text-ink-100 mb-2">案件背景</h4>
+                <h4 className="font-bold text-ink-900 dark:text-ink-100 mb-2">{t('scriptKiller.case_background')}</h4>
                 <p className="text-sm text-ink-700 dark:text-ink-300">{mysteryEvent.description}</p>
               </div>
               <div className="flex justify-between">
@@ -489,7 +494,7 @@ export default function ScriptKillerPage() {
                   onClick={() => setPhase('interrogate')}
                   className="px-4 py-2 rounded-lg bg-accent text-white font-bold"
                 >
-                  开始审问 →
+                  {t('scriptKiller.start_interrogate')}
                 </button>
               </div>
             </div>
@@ -502,13 +507,13 @@ export default function ScriptKillerPage() {
             <div className="mt-8 space-y-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">
-                  AI 动态审问 — {currentCharacter.displayName}
+                  {t('scriptKiller.ai_interrogate', { name: currentCharacter.displayName })}
                 </h3>
                 <button
                   onClick={() => setPhase('clues')}
                   className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 font-bold text-sm"
                 >
-                  ← 返回线索
+                  {t('scriptKiller.back_to_clues')}
                 </button>
               </div>
 
@@ -529,7 +534,7 @@ export default function ScriptKillerPage() {
 
               {/* 角色切换 */}
               <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-                <h4 className="font-bold text-ink-900 dark:text-ink-100 mb-4">选择其他角色审问</h4>
+                <h4 className="font-bold text-ink-900 dark:text-ink-100 mb-4">{t('scriptKiller.select_other_character')}</h4>
                 <div className="flex flex-wrap gap-3">
                   {characters.map(char => (
                     <button
@@ -554,13 +559,13 @@ export default function ScriptKillerPage() {
                     onClick={() => setPhase('clues')}
                     className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 font-bold"
                   >
-                    ← 返回
+                    {t('scriptKiller.back')}
                   </button>
                   <button
                     onClick={() => setPhase('deduction')}
                     className="px-4 py-2 rounded-lg bg-red-500 text-white font-bold"
                   >
-                    进入推理 →
+                    {t('scriptKiller.to_deduction')}
                   </button>
                 </div>
               </div>
@@ -574,10 +579,10 @@ export default function ScriptKillerPage() {
             <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* 已收集线索 */}
               <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">已收集线索</h3>
+                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">{t('scriptKiller.collected_clues')}</h3>
                 <div className="space-y-2">
                   {clueCollection.length === 0 ? (
-                    <p className="text-sm text-ink-400">暂无线索，请先去收集</p>
+                    <p className="text-sm text-ink-400">{t('scriptKiller.no_clues')}</p>
                   ) : (
                     clueCollection.map((clue, i) => (
                       <div key={i} className="p-3 rounded-lg bg-ink-50 dark:bg-ink-800">
@@ -591,8 +596,8 @@ export default function ScriptKillerPage() {
 
               {/* 指控 */}
               <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">指控凶手</h3>
-                <p className="text-sm text-ink-600 dark:text-ink-400 mb-4">根据线索和动机，选择你认为的凶手：</p>
+                <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">{t('scriptKiller.accuse_killer')}</h3>
+                <p className="text-sm text-ink-600 dark:text-ink-400 mb-4">{t('scriptKiller.accuse_tip')}</p>
                 <div className="space-y-3">
                   {characters.map(char => (
                     <button
@@ -620,7 +625,7 @@ export default function ScriptKillerPage() {
                     disabled={isProcessing}
                     className="w-full mt-4 py-3 rounded-xl bg-accent text-white font-bold hover:bg-accent/90 disabled:opacity-50"
                   >
-                    {isProcessing ? '分析中...' : '揭示真相'}
+                    {isProcessing ? t('scriptKiller.analyzing') : t('scriptKiller.reveal_truth')}
                   </button>
                 )}
                 <div className="flex justify-between mt-4">
@@ -628,13 +633,13 @@ export default function ScriptKillerPage() {
                     onClick={() => setPhase('interrogate')}
                     className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 font-bold text-sm"
                   >
-                    ← 返回审问
+                    {t('scriptKiller.back_to_interrogate')}
                   </button>
                   <button
                     onClick={handleReset}
                     className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 font-bold text-sm"
                   >
-                    重新开始
+                    {t('scriptKiller.restart')}
                   </button>
                 </div>
               </div>
@@ -648,7 +653,7 @@ export default function ScriptKillerPage() {
             <div className="mt-8 space-y-6">
               <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
                 <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-4 text-center">
-                  {currentScript.title} — 真相揭秘
+                  {t('scriptKiller.truth_reveal', { title: currentScript.title })}
                 </h3>
 
                 {/* 用户指控结果 */}
@@ -658,17 +663,17 @@ export default function ScriptKillerPage() {
                     : 'bg-red-50 dark:bg-red-900/20 border-2 border-red-400'
                 }`}>
                   <h4 className="font-bold mb-2">
-                    {finalAccusation === currentScript.mysteryEvent.killer ? '恭喜！指控正确！' : '指控错误'}
+                    {finalAccusation === currentScript.mysteryEvent.killer ? t('scriptKiller.accuse_correct') : t('scriptKiller.accuse_wrong')}
                   </h4>
                   <p className="text-sm">
-                    实际凶手：{currentScript.mysteryEvent.killer || '待揭晓'}
+                    {currentScript.mysteryEvent.killer ? t('scriptKiller.actual_killer', { name: currentScript.mysteryEvent.killer }) : t('scriptKiller.actual_killer_pending')}
                   </p>
                 </div>
 
                 {/* AI 评价 */}
                 {truthComparison.evaluation && (
                   <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800 mb-4">
-                    <h4 className="font-bold text-amber-800 dark:text-amber-400 mb-2">DM 评价</h4>
+                    <h4 className="font-bold text-amber-800 dark:text-amber-400 mb-2">{t('scriptKiller.dm_evaluation')}</h4>
                     <p className="text-sm text-ink-700 dark:text-ink-300">{truthComparison.evaluation}</p>
                   </div>
                 )}
@@ -676,7 +681,7 @@ export default function ScriptKillerPage() {
                 {/* 史实对照 */}
                 {truthComparison.historicalFact && (
                   <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 mb-4">
-                    <h4 className="font-bold text-blue-800 dark:text-blue-400 mb-2">史实对照</h4>
+                    <h4 className="font-bold text-blue-800 dark:text-blue-400 mb-2">{t('scriptKiller.history_compare')}</h4>
                     <p className="text-sm text-ink-700 dark:text-ink-300">{truthComparison.historicalFact}</p>
                   </div>
                 )}
@@ -684,7 +689,7 @@ export default function ScriptKillerPage() {
                 {/* 遗漏线索 */}
                 {truthComparison.missedClues.length > 0 && (
                   <div className="p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-200 dark:border-purple-800">
-                    <h4 className="font-bold text-purple-800 dark:text-purple-400 mb-2">你可能遗漏的线索</h4>
+                    <h4 className="font-bold text-purple-800 dark:text-purple-400 mb-2">{t('scriptKiller.missed_clues')}</h4>
                     <ul className="text-sm space-y-1">
                       {truthComparison.missedClues.map((clue, i) => (
                         <li key={i}>• {clue}</li>
@@ -699,13 +704,13 @@ export default function ScriptKillerPage() {
                   onClick={handleReset}
                   className="px-6 py-3 rounded-xl bg-ink-100 dark:bg-ink-800 font-bold"
                 >
-                  返回首页
+                  {t('scriptKiller.back_home')}
                 </button>
                 <button
                   onClick={handleReset}
                   className="px-6 py-3 rounded-xl bg-accent text-white font-bold"
                 >
-                  重新开始
+                  {t('scriptKiller.restart')}
                 </button>
               </div>
             </div>

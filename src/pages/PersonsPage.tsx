@@ -6,8 +6,10 @@ import SectionHeader from '@/components/common/SectionHeader';
 import PersonGrid from '@/components/person/PersonGrid';
 import { GridSkeleton } from '@/components/common/Skeleton';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import { useT } from '@/i18n/i18n';
 
 function PersonsPage() {
+  const t = useT();
   const [persons, setPersons] = useState<PersonItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -35,13 +37,13 @@ function PersonsPage() {
           <RevealOnScroll direction="fade">
             <SectionHeader
               label="PERSONS"
-              title="人物志"
-              description="人物列表"
+              title={t('persons.title')}
+              description={t('persons.list_desc')}
             />
           </RevealOnScroll>
           <GridSkeleton count={8} />
           <RevealOnScroll direction="fade" delay={200}>
-            <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>
+            <Link to="/" className="btn-secondary mt-12 inline-flex">{t('common.back_home')}</Link>
           </RevealOnScroll>
         </div>
       </div>
@@ -54,15 +56,15 @@ function PersonsPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="PERSONS"
-            title="人物志"
-            description="从先秦到近代，纵览五千年风云人物"
+            title={t('persons.title')}
+            description={t('persons.description')}
           />
         </RevealOnScroll>
         <RevealOnScroll direction="up" delay={200}>
           {loading ? <GridSkeleton count={8} /> : <PersonGrid persons={persons} />}
         </RevealOnScroll>
         <RevealOnScroll direction="fade" delay={400}>
-          <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>
+          <Link to="/" className="btn-secondary mt-12 inline-flex">{t('common.back_home')}</Link>
         </RevealOnScroll>
       </div>
     </div>

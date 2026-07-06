@@ -20,6 +20,7 @@ import {
 import DimensionRadar from '@/components/profile/DimensionRadar';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import { useT } from '@/i18n/i18n';
 
 /** 渲染基因检测报告 — 解析【】标题，其余按段落显示 */
 function renderGeneReport(text: string) {
@@ -39,6 +40,7 @@ function renderGeneReport(text: string) {
 }
 
 function ProfileReportPage() {
+  const t = useT();
   const user = useUserStore((s) => s.user);
   const isAuthenticated = useUserStore((s) => s.isAuthenticated);
   const favorites = useFavoriteStore((s) => s.favorites);
@@ -69,7 +71,7 @@ function ProfileReportPage() {
         {
           profile: report,
           matched: matchedPersonality,
-          username: user?.nickname || user?.username || '史官',
+          username: user?.nickname || user?.username || t('profileReport.default_username'),
           favoritesCount: favorites.length,
         },
         (chunk) => {
@@ -78,11 +80,11 @@ function ProfileReportPage() {
         },
       );
     } catch (e) {
-      setGeneError(e instanceof Error ? e.message : '生成失败');
+      setGeneError(e instanceof Error ? e.message : t('profileReport.generation_failed'));
     } finally {
       setGenerating(false);
     }
-  }, [report, matchedPersonality, user, favorites.length]);
+  }, [report, matchedPersonality, user, favorites.length, t]);
 
 
   // 生成日期
@@ -98,8 +100,8 @@ function ProfileReportPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="PROFILE REPORT"
-            title="我的历史画像"
-            description="根据你的浏览和答题记录生成画像"
+            title={t('profileReport.title')}
+            description={t('profileReport.description')}
           />
         </RevealOnScroll>
 
@@ -119,10 +121,10 @@ function ProfileReportPage() {
               </p>
               <div className="flex gap-3 justify-center">
                 <Link to="/login" className="btn-primary">
-                  登录开启史官之旅
+                  {t('profileReport.login_cta')}
                 </Link>
                 <Link to="/register" className="btn-secondary">
-                  注册新账号
+                  {t('profileReport.register_cta')}
                 </Link>
               </div>
             </div>
@@ -135,14 +137,14 @@ function ProfileReportPage() {
                 <div className="flex items-start justify-between flex-wrap gap-4">
                   <div>
                     <div className="text-xs text-ink-500 dark:text-ink-400 mb-1">
-                      {today} 生成
+                      {t('profileReport.generated_at', { date: today })}
                     </div>
                     <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100">
-                      {user?.nickname || user?.username || '史官'} ·{' '}
+                      {user?.nickname || user?.username || t('profileReport.default_username')} ·{' '}
                       <span className="text-accent">{report.level}</span>
                     </h2>
                     <p className="text-sm text-ink-600 dark:text-ink-400 mt-1">
-                      历史画像综合评分：
+                      {t('profileReport.profile_score_label')}
                       <span className="font-bold text-accent ml-1">
                         {report.totalScore}
                       </span>
@@ -150,13 +152,13 @@ function ProfileReportPage() {
                   </div>
                   <div className="text-right">
                     <div className="text-xs text-ink-500 dark:text-ink-400">
-                      已收集
+                      {t('profileReport.collected_label')}
                     </div>
                     <div className="text-2xl font-bold text-ink-900 dark:text-ink-100">
                       {report.matchCount}
                     </div>
                     <div className="text-xs text-ink-500 dark:text-ink-400">
-                      条历史足迹
+                      {t('profileReport.footprints_label')}
                     </div>
                   </div>
                 </div>
@@ -169,7 +171,7 @@ function ProfileReportPage() {
               <RevealOnScroll direction="right" delay={300}>
                 <div className="p-6 bg-white/60 dark:bg-ink-900/60 rounded-xl border border-ink-200 dark:border-ink-700 h-full">
                   <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-4 text-center">
-                    四维画像
+                    {t('profileReport.four_dim_title')}
                   </h3>
                   <DimensionRadar dimensions={report.dimensions} size={260} />
                   <div className="mt-4 space-y-2 text-sm">
@@ -202,7 +204,7 @@ function ProfileReportPage() {
               <RevealOnScroll direction="left" delay={400}>
                 <div className="p-6 bg-gradient-to-br from-accent/5 to-amber-500/5 dark:from-accent/10 dark:to-amber-700/10 rounded-xl border border-accent/30 h-full flex flex-col">
                   <div className="text-xs text-accent tracking-widest text-center mb-2">
-                    你最像的历史人物
+                    {t('profileReport.match_title')}
                   </div>
                   <div className="text-6xl text-center mb-3">
                     {matchedPersonality.emoji}
@@ -223,7 +225,7 @@ function ProfileReportPage() {
                   </p>
                   <div className="mt-4 pt-4 border-t border-accent/20">
                     <div className="text-xs text-ink-500 dark:text-ink-400 mb-1">
-                      主导维度 · {DIMENSION_LABELS[report.dominantDimension]}
+                      {t('profileReport.dominant_dim_label', { name: DIMENSION_LABELS[report.dominantDimension] })}
                     </div>
                     <div className="text-xs text-ink-600 dark:text-ink-400">
                       {DIMENSION_DESCRIPTIONS[report.dominantDimension]}
@@ -237,7 +239,7 @@ function ProfileReportPage() {
             <RevealOnScroll direction="up" delay={500}>
               <div className="mt-6 p-6 bg-white/60 dark:bg-ink-900/60 rounded-xl border border-ink-200 dark:border-ink-700">
                 <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-4">
-                  同维先贤
+                  {t('profileReport.same_dim_title')}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {PERSONALITY_MATCHES[report.dominantDimension]
@@ -264,7 +266,7 @@ function ProfileReportPage() {
             <RevealOnScroll direction="up" delay={600}>
               <div className="mt-6 p-6 bg-white/60 dark:bg-ink-900/60 rounded-xl border border-ink-200 dark:border-ink-700">
                 <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-4">
-                  历史足迹
+                  {t('profileReport.footprint_title')}
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                   <div>
@@ -272,7 +274,7 @@ function ProfileReportPage() {
                       {user?.score ?? 0}
                     </div>
                     <div className="text-xs text-ink-500 dark:text-ink-400 mt-1">
-                      答题积分
+                      {t('profileReport.stat_score')}
                     </div>
                   </div>
                   <div>
@@ -280,7 +282,7 @@ function ProfileReportPage() {
                       {user?.quizzesAnswered ?? 0}
                     </div>
                     <div className="text-xs text-ink-500 dark:text-ink-400 mt-1">
-                      答题次数
+                      {t('profileReport.stat_quizzes')}
                     </div>
                   </div>
                   <div>
@@ -288,7 +290,7 @@ function ProfileReportPage() {
                       {user?.quizzesCorrect ?? 0}
                     </div>
                     <div className="text-xs text-ink-500 dark:text-ink-400 mt-1">
-                      答对题数
+                      {t('profileReport.stat_correct')}
                     </div>
                   </div>
                   <div>
@@ -296,23 +298,23 @@ function ProfileReportPage() {
                       {favorites.length}
                     </div>
                     <div className="text-xs text-ink-500 dark:text-ink-400 mt-1">
-                      收藏内容
+                      {t('profileReport.stat_favorites')}
                     </div>
                   </div>
                 </div>
               </div>
             </RevealOnScroll>
 
-            {/* 历史基因检测报告 */}
+            {/* {t('profileReport.gene_report_title')} */}
             <RevealOnScroll direction="up" delay={700}>
               <div ref={reportRef} className="mt-6 p-6 bg-gradient-to-br from-accent/5 via-purple-500/5 to-amber-500/5 dark:from-accent/10 dark:via-purple-700/10 dark:to-amber-700/10 rounded-xl border border-accent/30">
                 <div className="flex items-center gap-3 mb-4">
                   <div>
                     <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">
-                      历史基因检测报告
+                      {t('profileReport.gene_report_title')}
                     </h3>
                     <p className="text-xs text-ink-500 dark:text-ink-400">
-                      AI 深度解读你的历史基因，生成可截图传播的个性化报告
+                      {t('profileReport.gene_report_desc')}
                     </p>
                   </div>
                 </div>
@@ -323,14 +325,14 @@ function ProfileReportPage() {
                     disabled={!report.hasData}
                     className="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-purple-600 text-white font-bold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                   >
-                    {report.hasData ? '开始基因检测' : '需要浏览数据后才能检测'}
+                    {report.hasData ? t('profileReport.gene_start') : t('profileReport.gene_need_data')}
                   </button>
                 )}
 
                 {generating && (
                   <div className="text-center py-4">
                     <div className="inline-block w-8 h-8 border-3 border-accent border-t-transparent rounded-full animate-spin mb-2" />
-                    <div className="text-sm text-ink-500 dark:text-ink-400">基因测序中…</div>
+                    <div className="text-sm text-ink-500 dark:text-ink-400">{t('profileReport.gene_sequencing')}</div>
                   </div>
                 )}
 
@@ -352,7 +354,7 @@ function ProfileReportPage() {
                           onClick={handleGenerateGene}
                           className="text-xs px-3 py-1.5 rounded-full bg-accent/10 text-accent hover:bg-accent hover:text-white transition-all"
                         >
-                          🔄 重新检测
+                          🔄 {t('profileReport.gene_regenerate')}
                         </button>
                         <button
                           onClick={() => {
@@ -360,7 +362,7 @@ function ProfileReportPage() {
                           }}
                           className="text-xs px-3 py-1.5 rounded-full bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400 hover:bg-ink-200 dark:hover:bg-ink-700 transition-all"
                         >
-                          📋 复制全文
+                          📋 {t('profileReport.gene_copy')}
                         </button>
                       </div>
                     )}
@@ -373,10 +375,10 @@ function ProfileReportPage() {
             <RevealOnScroll direction="fade" delay={700}>
               <div className="mt-8 text-center">
                 <Link to="/" className="btn-secondary mr-3">
-                  返回首页
+                  {t('common.back_home')}
                 </Link>
                 <Link to="/profile" className="btn-secondary">
-                  个人中心
+                  {t('profileReport.profile_center')}
                 </Link>
               </div>
             </RevealOnScroll>

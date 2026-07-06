@@ -12,6 +12,7 @@ import { DEBATE_FIGURE_PAIRS } from '@/data/scenarios/debateFigures';
 import { getFigureById } from '@/data/scenarios/figures';
 import { generateDebateRound, generateDebateConclusion, askDebateQuestion, type DebateRound } from '@/features/debateEngine';
 import { usePersonaStore } from '@/store/personaStore';
+import { useT } from '@/i18n/i18n';
 
 type Phase = 'select' | 'debating' | 'concluded';
 
@@ -26,6 +27,7 @@ export default function CrossDebatePage() {
   const [proVotes, setProVotes] = useState(0);
   const [conVotes, setConVotes] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const t = useT();
 
   const topic = DEBATE_TOPICS[topicIdx];
   const pair = DEBATE_FIGURE_PAIRS.find(p => p.topicId === topic.id);
@@ -107,8 +109,8 @@ export default function CrossDebatePage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="CROSS-TIME DEBATE"
-            title="跨时空辩论场"
-            description="不同时代的人怎么想同一件事"
+            title={t('crossDebate.title')}
+            description={t('crossDebate.description')}
           />
         </RevealOnScroll>
 
@@ -116,34 +118,34 @@ export default function CrossDebatePage() {
         {phase === 'select' && (
           <RevealOnScroll direction="up" delay={200}>
             <div className="mt-8 space-y-4">
-              {DEBATE_TOPICS.map((t, idx) => {
-                const p = DEBATE_FIGURE_PAIRS.find(fp => fp.topicId === t.id);
+              {DEBATE_TOPICS.map((topic, idx) => {
+                const p = DEBATE_FIGURE_PAIRS.find(fp => fp.topicId === topic.id);
                 const pro = p ? getFigureById(p.proFigureId) : null;
                 const con = p ? getFigureById(p.conFigureId) : null;
                 return (
                   <button
-                    key={t.id}
+                    key={topic.id}
                     onClick={() => startDebate(idx)}
                     disabled={!p}
-                    title={!p ? '该话题暂未配置辩手，敬请期待' : undefined}
+                    title={!p ? t('crossDebate.no_pair_hint') : undefined}
                     className="w-full p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700 hover:border-accent hover:shadow-lg transition-all text-left group disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
-                        <span className="text-2xl">{pro?.emoji || '人'}</span>
-                        <span className="text-sm font-bold text-accent">{pro?.name || '正方'}</span>
+                        <span className="text-2xl">{pro?.emoji || t('crossDebate.default_figure_emoji')}</span>
+                        <span className="text-sm font-bold text-accent">{pro?.name || t('crossDebate.pro_side')}</span>
                       </div>
-                      <span className="text-lg font-bold text-ink-400">战</span>
+                      <span className="text-lg font-bold text-ink-400">{t('crossDebate.vs_label')}</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-2xl">{con?.emoji || '人'}</span>
-                        <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{con?.name || '反方'}</span>
+                        <span className="text-2xl">{con?.emoji || t('crossDebate.default_figure_emoji')}</span>
+                        <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{con?.name || t('crossDebate.con_side')}</span>
                       </div>
                     </div>
                     <div className="mt-2 text-lg font-bold text-ink-900 dark:text-ink-100 group-hover:text-accent transition-colors">
-                      {t.title}
+                      {topic.title}
                     </div>
                     <div className="text-xs text-ink-500 dark:text-ink-400 mt-1">
-                      {t.era} · {t.description.slice(0, 60)}…
+                      {topic.era} · {topic.description.slice(0, 60)}…
                     </div>
                   </button>
                 );
@@ -170,7 +172,7 @@ export default function CrossDebatePage() {
                     <div className="text-sm font-bold text-accent">{proFigure.name}</div>
                     <div className="text-xs text-ink-400">{topic.proSide.label}</div>
                   </div>
-                  <div className="text-2xl text-ink-400 font-bold">战</div>
+                  <div className="text-2xl text-ink-400 font-bold">{t('crossDebate.vs_label')}</div>
                   <div className="text-center">
                     <div className="text-3xl mb-1">{conFigure.emoji}</div>
                     <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{conFigure.name}</div>
@@ -184,13 +186,13 @@ export default function CrossDebatePage() {
             {rounds.map((r) => (
               <div key={r.round} className="space-y-3">
                 <div className="text-center text-sm font-bold text-ink-500 tracking-widest">
-                  — 第 {r.round} 轮 —
+                  {t('crossDebate.round_label', { n: r.round })}
                 </div>
                 {/* 正方 */}
                 <div className="p-4 bg-accent/5 dark:bg-accent/10 rounded-lg border-l-4 border-accent">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-lg">{proFigure?.emoji}</span>
-                    <span className="font-bold text-accent">{proFigure?.name || '正方'}</span>
+                    <span className="font-bold text-accent">{proFigure?.name || t('crossDebate.pro_side')}</span>
                   </div>
                   <p className="text-ink-800 dark:text-ink-200 leading-relaxed">{r.proArgument}</p>
                   <button
@@ -204,14 +206,14 @@ export default function CrossDebatePage() {
                     }}
                     className="mt-2 text-xs text-accent hover:underline"
                   >
-                    赞 有道理 ({proVotes})
+                    {t('crossDebate.vote_pro', { n: proVotes })}
                   </button>
                 </div>
                 {/* 反方 */}
                 <div className="p-4 bg-indigo-500/5 dark:bg-indigo-700/10 rounded-lg border-l-4 border-indigo-500">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-lg">{conFigure?.emoji}</span>
-                    <span className="font-bold text-indigo-600 dark:text-indigo-400">{conFigure?.name || '反方'}</span>
+                    <span className="font-bold text-indigo-600 dark:text-indigo-400">{conFigure?.name || t('crossDebate.con_side')}</span>
                   </div>
                   <p className="text-ink-800 dark:text-ink-200 leading-relaxed">{r.conArgument}</p>
                   <button
@@ -225,7 +227,7 @@ export default function CrossDebatePage() {
                     }}
                     className="mt-2 text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
                   >
-                    赞 有道理 ({conVotes})
+                    {t('crossDebate.vote_con', { n: conVotes })}
                   </button>
                 </div>
               </div>
@@ -234,8 +236,8 @@ export default function CrossDebatePage() {
             {/* Loading */}
             {loading && (
               <div className="text-center py-4">
-                <div className="inline-block animate-pulse text-2xl">辩</div>
-                <div className="text-sm text-ink-500 mt-1">辩手正在思考…</div>
+                <div className="inline-block animate-pulse text-2xl">{t('crossDebate.thinking_icon')}</div>
+                <div className="text-sm text-ink-500 mt-1">{t('crossDebate.thinking')}</div>
               </div>
             )}
 
@@ -244,14 +246,14 @@ export default function CrossDebatePage() {
             {/* 用户提问 */}
             {!loading && rounds.length > 0 && (
               <div className="p-4 bg-ink-50 dark:bg-ink-900 rounded-lg border border-ink-200 dark:border-ink-700">
-                <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">向辩手提问</h4>
+                <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">{t('crossDebate.ask_title')}</h4>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     value={userQuestion}
                     onChange={e => setUserQuestion(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleAsk()}
-                    placeholder="你想问什么？两位辩手都会回答…"
+                    placeholder={t('crossDebate.ask_placeholder')}
                     className="flex-1 px-3 py-2 rounded-lg bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-600 text-sm focus:border-accent outline-none"
                     disabled={loading}
                   />
@@ -260,7 +262,7 @@ export default function CrossDebatePage() {
                     disabled={loading || !userQuestion.trim()}
                     className="px-4 py-2 rounded-lg bg-accent text-white text-sm font-bold disabled:opacity-50"
                   >
-                    提问
+                    {t('crossDebate.ask_btn')}
                   </button>
                 </div>
                 {/* 用户提问的回答 */}
@@ -288,13 +290,13 @@ export default function CrossDebatePage() {
                   onClick={nextRound}
                   className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg transition-all"
                 >
-                  {rounds.length >= 3 ? '出结论' : `第 ${rounds.length + 1} 轮 →`}
+                  {rounds.length >= 3 ? t('crossDebate.conclude_btn') : t('crossDebate.next_round_btn', { n: rounds.length + 1 })}
                 </button>
                 <button
                   onClick={() => { setPhase('select'); setRounds([]); }}
                   className="px-6 py-3 rounded-lg border-2 border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-300 font-bold hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors"
                 >
-                  返回选择
+                  {t('crossDebate.back_to_select')}
                 </button>
               </div>
             )}
@@ -307,7 +309,7 @@ export default function CrossDebatePage() {
             {/* 投票统计 */}
             <div className="p-5 bg-gradient-to-br from-accent/10 to-indigo-500/10 dark:from-accent/15 dark:to-indigo-700/15 rounded-xl text-center">
               <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 tracking-widest mb-3">
-                观众投票结果
+                {t('crossDebate.vote_result_title')}
               </h3>
               <div className="flex items-center justify-center gap-8">
                 <div>
@@ -315,7 +317,7 @@ export default function CrossDebatePage() {
                   <div className="text-lg font-bold text-accent">{proFigure?.name}</div>
                   <div className="text-3xl font-bold text-accent">{proVotes}</div>
                 </div>
-                <div className="text-4xl text-ink-300">辩</div>
+                <div className="text-4xl text-ink-300">{t('crossDebate.thinking_icon')}</div>
                 <div>
                   <div className="text-2xl">{conFigure?.emoji}</div>
                   <div className="text-lg font-bold text-indigo-600 dark:text-indigo-400">{conFigure?.name}</div>
@@ -339,7 +341,7 @@ export default function CrossDebatePage() {
             {/* 史官评语 */}
             {conclusion && (
               <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
-                <h3 className="text-sm font-bold text-accent mb-3 tracking-widest">史官评语</h3>
+                <h3 className="text-sm font-bold text-accent mb-3 tracking-widest">{t('crossDebate.conclusion_title')}</h3>
                 <p className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line">{conclusion}</p>
               </div>
             )}
@@ -347,7 +349,7 @@ export default function CrossDebatePage() {
             {/* 专家观点 */}
             <div className="p-5 bg-amber-50/60 dark:bg-amber-900/10 rounded-lg border-l-4 border-amber-500">
               <h3 className="text-sm font-bold text-amber-700 dark:text-amber-400 mb-2 tracking-widest">
-                学术观点
+                {t('crossDebate.expert_view_title')}
               </h3>
               <p className="text-ink-800 dark:text-ink-200 leading-loose">{topic.expertView}</p>
             </div>
@@ -358,10 +360,10 @@ export default function CrossDebatePage() {
                 onClick={() => { setPhase('select'); setRounds([]); setConclusion(''); }}
                 className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg transition-all"
               >
-                选择新话题
+                {t('crossDebate.select_new_topic')}
               </button>
               <Link to="/" className="btn-secondary">
-                返回首页
+                {t('common.back_home')}
               </Link>
             </div>
           </div>

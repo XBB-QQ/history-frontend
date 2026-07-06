@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLearningStore, type ReadingListItem, type ModuleProgress } from '@/store/learningStore';
 import { useUserStore } from '@/store/userStore';
+import { useT } from '@/i18n/i18n';
 
 function ProgressBar({ percent, label, icon }: { percent: number; label: string; icon: string }) {
   const getColor = (p: number) => {
@@ -32,6 +33,7 @@ function ProgressBar({ percent, label, icon }: { percent: number; label: string;
 }
 
 function LearningPage() {
+  const t = useT();
   const { lists, fetchLists, createList, addResource, removeResource, moduleProgress, fetchProgress } = useLearningStore();
   const { user, isAuthenticated } = useUserStore();
   const [showCreate, setShowCreate] = useState(false);
@@ -61,8 +63,8 @@ function LearningPage() {
     return (
       <div className="min-h-screen bg-paper dark:bg-ink-950 pt-24 pb-12 px-4 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-lg text-ink-400 mb-4">请先登录后查看学习进度</p>
-          <a href="/login" className="text-accent hover:underline">去登录</a>
+          <p className="text-lg text-ink-400 mb-4">{t('learning.login_required')}</p>
+          <a href="/login" className="text-accent hover:underline">{t('auth.login_now')}</a>
         </div>
       </div>
     );
@@ -73,23 +75,23 @@ function LearningPage() {
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-black text-ink-900 dark:text-ink-100">学习进度</h1>
+            <h1 className="text-3xl font-black text-ink-900 dark:text-ink-100">{t('learning.title')}</h1>
             <p className="text-sm text-ink-500 mt-1">
-              浏览 {user?.quizzesAnswered || 0} 题 · 正确 {user?.quizzesCorrect || 0} 题 · 积分 {user?.score || 0}
+              {t('learning.stats_summary', { answered: user?.quizzesAnswered || 0, correct: user?.quizzesCorrect || 0, score: user?.score || 0 })}
             </p>
           </div>
           <button
             onClick={() => setShowCreate(!showCreate)}
             className="px-4 py-2 bg-accent text-white rounded-xl text-sm font-bold hover:bg-red-800 transition-colors"
           >
-            + 新建清单
+            + {t('learning.create_list')}
           </button>
         </div>
 
         {/* 总体概览 */}
         <div className="mb-6 bg-gradient-to-r from-accent/10 to-transparent dark:from-accent/5 rounded-xl p-5 border border-accent/20">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-bold text-ink-700 dark:text-ink-300">总体完成度</span>
+            <span className="text-sm font-bold text-ink-700 dark:text-ink-300">{t('learning.overall')}</span>
             <span className="text-2xl font-black text-accent">{overallPercent}%</span>
           </div>
           <div className="w-full h-3 bg-ink-100 dark:bg-ink-800 rounded-full overflow-hidden">
@@ -115,21 +117,21 @@ function LearningPage() {
             <input
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              placeholder="清单名称"
+              placeholder={t('learning.list_name')}
               className="w-full px-3 py-2 mb-2 rounded-lg border border-ink-200 dark:border-ink-700 bg-transparent text-ink-900 dark:text-ink-100"
             />
             <input
               value={newDesc}
               onChange={(e) => setNewDesc(e.target.value)}
-              placeholder="描述（可选）"
+              placeholder={t('learning.description_placeholder')}
               className="w-full px-3 py-2 mb-3 rounded-lg border border-ink-200 dark:border-ink-700 bg-transparent text-ink-900 dark:text-ink-100"
             />
             <div className="flex gap-2">
               <button onClick={handleCreate} className="px-4 py-2 bg-accent text-white rounded-lg text-sm font-bold">
-                创建
+                {t('learning.create_btn')}
               </button>
               <button onClick={() => setShowCreate(false)} className="px-4 py-2 text-ink-500 text-sm">
-                取消
+                {t('common.cancel')}
               </button>
             </div>
           </div>
@@ -138,8 +140,8 @@ function LearningPage() {
         {/* Reading Lists */}
         {lists.length === 0 ? (
           <div className="text-center py-12 text-ink-400">
-            <p className="text-lg mb-1">暂无阅读清单</p>
-            <p className="text-sm">点击右上角"新建清单"开始规划你的学习计划</p>
+            <p className="text-lg mb-1">{t('learning.no_list')}</p>
+            <p className="text-sm">{t('learning.create_hint')}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -155,7 +157,7 @@ function LearningPage() {
                   <div className="text-left">
                     <div className="font-bold text-ink-900 dark:text-ink-100">{list.name}</div>
                     <div className="text-xs text-ink-400">
-                      {list.resources.length} 个资源 · {list.description || '无描述'}
+                      {t('learning.resource_count', { n: list.resources.length })} · {list.description || t('learning.no_description')}
                     </div>
                   </div>
                   <svg className={`w-4 h-4 text-ink-400 transition-transform ${expandedList === list.id ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">

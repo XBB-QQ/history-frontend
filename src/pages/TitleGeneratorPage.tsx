@@ -13,8 +13,10 @@ import {
   calculatePosthumousTitleScore
 } from '@/data/features/titleData';
 import { usePersonaStore } from '@/store/personaStore';
+import { useT } from '@/i18n/i18n';
 
 const TitleGeneratorPage = () => {
+  const t = useT();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedEra, setSelectedEra] = useState('all');
   const [generatedTitles, setGeneratedTitles] = useState<string[]>([]);
@@ -22,7 +24,7 @@ const TitleGeneratorPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const categoryOptions = [
-    { value: 'all', label: '全部类别' },
+    { value: 'all', label: t('titleGenerator.all_category') },
     ...POSTHUMOUS_TITLE_CATEGORIES.map(cat => ({
       value: cat.id,
       label: `${cat.full} - ${cat.name}`,
@@ -31,7 +33,7 @@ const TitleGeneratorPage = () => {
   ];
 
   const eraOptions = [
-    { value: 'all', label: '全部朝代' },
+    { value: 'all', label: t('titleGenerator.all_era') },
     ...POSTHUMOUS_TITLE_CATEGORIES.reduce((acc, cat) => {
       if (cat.dynasty) {
         cat.dynasty.forEach(d => {
@@ -118,9 +120,9 @@ const TitleGeneratorPage = () => {
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900 text-white py-16 px-4">
         <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-5xl font-bold mb-4 tracking-tight">谥号与年号生成器</h1>
+          <h1 className="text-5xl font-bold mb-4 tracking-tight">{t('titleGenerator.title')}</h1>
           <p className="text-xl opacity-90 max-w-2xl mx-auto">
-            探索古代帝王的称号规则，一键生成独特的谥号与年号
+            {t('titleGenerator.subtitle')}
           </p>
         </div>
       </div>
@@ -131,7 +133,7 @@ const TitleGeneratorPage = () => {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 space-y-6">
             <div className="text-center mb-8">
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                点击按钮生成随机谥号或年号，探索古代称号的丰富世界
+                {t('titleGenerator.intro')}
               </p>
 
               <div className="flex flex-wrap justify-center gap-4">
@@ -139,21 +141,21 @@ const TitleGeneratorPage = () => {
                   onClick={generateRandomTitle}
                   className="px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
                 >
-                  🎲 生成随机称号
+                  {t('titleGenerator.generate_random')}
                 </button>
 
                 <button
                   onClick={() => generateMultipleTitles(3)}
                   className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
                 >
-                  ✨ 生成3个称号
+                  {t('titleGenerator.generate_3')}
                 </button>
 
                 <button
                   onClick={() => generateMultipleTitles(6)}
                   className="px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
                 >
-                  🎁 生成6个称号
+                  {t('titleGenerator.generate_6')}
                 </button>
               </div>
             </div>
@@ -162,7 +164,7 @@ const TitleGeneratorPage = () => {
             {generatedTitles.length > 0 && (
               <div className="space-y-3">
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  <span>✅</span> 已生成的称号
+                  <span>✅</span> {t('titleGenerator.generated')}
                 </h3>
                 <div className="flex flex-wrap gap-3">
                   {generatedTitles.map((title, index) => (
@@ -182,7 +184,7 @@ const TitleGeneratorPage = () => {
             <div className="flex flex-wrap gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
               <div className="flex-1 min-w-[200px]">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  💝 谥号类别
+                  {t('titleGenerator.category_label')}
                 </label>
                 <select
                   value={selectedCategory}
@@ -199,7 +201,7 @@ const TitleGeneratorPage = () => {
 
               <div className="flex-1 min-w-[200px]">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  📅 朝代/时期
+                  {t('titleGenerator.era_label')}
                 </label>
                 <select
                   value={selectedEra}
@@ -235,7 +237,7 @@ const TitleGeneratorPage = () => {
       {/* Famous Titles Section */}
       <RevealOnScroll>
         <div className="max-w-6xl mx-auto px-4 py-12">
-          <SectionHeader label="POSTHUMOUS" title="知名谥号" description="历史上的著名谥号" />
+          <SectionHeader label={t('titleGenerator.posthumous_label')} title={t('titleGenerator.posthumous_title')} description={t('titleGenerator.posthumous_desc')} />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {FAMOUS_POSTHUMOUS_TITLES.map((title, index) => (
@@ -253,7 +255,7 @@ const TitleGeneratorPage = () => {
       {/* Era Templates Section */}
       <RevealOnScroll>
         <div className="max-w-6xl mx-auto px-4 pb-16">
-          <SectionHeader label="ERA" title="年号模板" description="古代年号的构成与意义" />
+          <SectionHeader label={t('titleGenerator.era_label_section')} title={t('titleGenerator.era_title')} description={t('titleGenerator.era_desc')} />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {ERA_TEMPLATES.slice(0, 6).map((template, index) => (
@@ -347,6 +349,7 @@ interface TitleDetailModalProps {
 }
 
 const TitleDetailModal = ({ titleInfo, titleDetail, onClose }: TitleDetailModalProps) => {
+  const t = useT();
   const isPosthumous = titleInfo.type === 'posthumous';
   const score = titleInfo.type === 'posthumous'
     ? calculatePosthumousTitleScore(titleDetail.title)
@@ -379,7 +382,7 @@ const TitleDetailModal = ({ titleInfo, titleDetail, onClose }: TitleDetailModalP
             <div>
               <h2 className="text-4xl font-bold text-white mb-2">{titleDetail.title}</h2>
               <p className="text-white/90">
-                {isPosthumous ? '谥号' : '年号'}
+                {isPosthumous ? t('titleGenerator.type_posthumous') : t('titleGenerator.type_era')}
               </p>
             </div>
           </div>
@@ -390,7 +393,7 @@ const TitleDetailModal = ({ titleInfo, titleDetail, onClose }: TitleDetailModalP
           {/* Description */}
           <div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-              📝 {isPosthumous ? '谥号含义' : '年号含义'}
+              {isPosthumous ? t('titleGenerator.meaning_title_posthumous') : t('titleGenerator.meaning_title_era')}
             </h3>
             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
               {titleDetail.meaning}
@@ -400,7 +403,7 @@ const TitleDetailModal = ({ titleInfo, titleDetail, onClose }: TitleDetailModalP
           {/* Description Section */}
           <div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-              📖 详细说明
+              {t('titleGenerator.detail_title')}
             </h3>
             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
               {titleDetail.description}
@@ -411,7 +414,7 @@ const TitleDetailModal = ({ titleInfo, titleDetail, onClose }: TitleDetailModalP
           {titleDetail.dynasty && (
             <div className="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-6">
               <h4 className="font-bold text-gray-900 dark:text-white mb-3">
-                🏛️ 适用朝代
+                {t('titleGenerator.dynasty_title')}
               </h4>
               <div className="flex flex-wrap gap-2">
                 {titleDetail.dynasty.map((d: string, i: number) => (
@@ -430,7 +433,7 @@ const TitleDetailModal = ({ titleInfo, titleDetail, onClose }: TitleDetailModalP
           {titleDetail.examples && (
             <div className="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-6">
               <h4 className="font-bold text-gray-900 dark:text-white mb-3">
-                👤 历史实例
+                {t('titleGenerator.examples_title')}
               </h4>
               <ul className="space-y-2">
                 {titleDetail.examples.map((ex: string, i: number) => (
@@ -446,7 +449,7 @@ const TitleDetailModal = ({ titleInfo, titleDetail, onClose }: TitleDetailModalP
           {titleDetail.variants && titleDetail.variants.length > 0 && (
             <div className="bg-gray-50 dark:bg-gray-700/30 rounded-xl p-6">
               <h4 className="font-bold text-gray-900 dark:text-white mb-3">
-                🔄 同义变体
+                {t('titleGenerator.variants_title')}
               </h4>
               <div className="flex flex-wrap gap-2">
                 {titleDetail.variants.map((v: string, i: number) => (
@@ -464,14 +467,14 @@ const TitleDetailModal = ({ titleInfo, titleDetail, onClose }: TitleDetailModalP
           {/* Score */}
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6">
             <h4 className="font-bold text-gray-900 dark:text-white mb-3">
-              🎯 称号指数
+              {t('titleGenerator.score_title')}
             </h4>
             <div className="flex items-center gap-4">
               <div className="text-4xl font-bold text-blue-600 dark:text-blue-400">
                 {score.toFixed(1)}
               </div>
               <div className="text-gray-700 dark:text-gray-300">
-                {score > 8 ? '传奇称号' : score > 6 ? '优秀称号' : score > 4 ? '良好称号' : '普通称号'}
+                {score > 8 ? t('titleGenerator.score_legendary') : score > 6 ? t('titleGenerator.score_excellent') : score > 4 ? t('titleGenerator.score_good') : t('titleGenerator.score_normal')}
               </div>
             </div>
           </div>
@@ -480,7 +483,7 @@ const TitleDetailModal = ({ titleInfo, titleDetail, onClose }: TitleDetailModalP
         {/* Footer */}
         <div className="bg-gray-50 dark:bg-gray-900/50 px-8 py-4 rounded-b-3xl">
           <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-            {isPosthumous ? '谥号是古代帝王、大臣死后，朝廷根据其生平事迹给予的称号' : '年号是皇帝在位时期用来纪年的名号'}
+            {isPosthumous ? t('titleGenerator.footer_posthumous') : t('titleGenerator.footer_era')}
           </p>
         </div>
       </div>

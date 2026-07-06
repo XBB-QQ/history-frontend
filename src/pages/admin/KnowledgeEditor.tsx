@@ -1,4 +1,5 @@
 import EntityEditor from './EntityEditor';
+import { useT } from '@/i18n/i18n';
 import { adminGetKnowledge, adminSaveKnowledge, adminDeleteKnowledge, type AdminKnowledgeDTO } from '@/services/adminApi';
 
 const fields = [
@@ -16,10 +17,11 @@ const fields = [
 ];
 
 export default function KnowledgeEditor() {
+  const t = useT();
   return (
     <EntityEditor
       type="knowledge"
-      title="知识卡片管理"
+      title={t('admin.knowledge_manage')}
       listFn={adminGetKnowledge as any}
       saveFn={adminSaveKnowledge as any}
       deleteFn={adminDeleteKnowledge as any}

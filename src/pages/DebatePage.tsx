@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { DEBATE_TOPICS } from '@/data/scenarios/debateTopics';
 import type { DebateTopic } from '@/data/scenarios/debateTopics';
+import { useT } from '@/i18n/i18n';
 
 export default function DebatePage() {
+  const t = useT();
   const [selectedId, setSelectedId] = useState<string>(DEBATE_TOPICS[0].id);
   const [votes, setVotes] = useState<Record<string, 'pro' | 'con'>>({});
 
@@ -20,10 +22,10 @@ export default function DebatePage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            辩 历史辩论场
+            {t('debate.title')}
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
-            历史没有标准答案 — 站队投票，思考你的史观
+            {t('debate.subtitle')}
           </p>
         </div>
 
@@ -57,7 +59,7 @@ export default function DebatePage() {
               ))}
             </div>
             <h2 className="text-xl font-serif font-bold text-ink-900 dark:text-ink-100 mb-2">
-              辩 {topic.title}
+              {t('debate.debate_prefix')}{topic.title}
             </h2>
             <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
               {topic.description}
@@ -114,12 +116,12 @@ export default function DebatePage() {
           {/* 投票统计 */}
           {myVote && (
             <div className="p-4 rounded-xl border border-ink-200 dark:border-ink-700">
-              <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3">投票统计</h3>
+              <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3">{t('debate.vote_stats')}</h3>
               <div className="flex items-center gap-4 mb-2">
                 <div className="flex-1">
                   <div className="flex items-center justify-between text-xs mb-1">
                     <span className="font-bold text-red-700">{topic.proSide.label}</span>
-                    <span>{totalPro}票 ({Math.round(totalPro/total*100)}%)</span>
+                    <span>{t('debate.vote_count', { count: totalPro, percent: Math.round(totalPro/total*100) })}</span>
                   </div>
                   <div className="w-full h-3 rounded-full bg-ink-200 dark:bg-ink-700">
                     <div className="h-full rounded-full bg-red-400 transition-all" style={{ width: `${(totalPro/total)*100}%` }} />
@@ -128,20 +130,20 @@ export default function DebatePage() {
                 <div className="flex-1">
                   <div className="flex items-center justify-between text-xs mb-1">
                     <span className="font-bold text-blue-700">{topic.conSide.label}</span>
-                    <span>{totalCon}票 ({Math.round(totalCon/total*100)}%)</span>
+                    <span>{t('debate.vote_count', { count: totalCon, percent: Math.round(totalCon/total*100) })}</span>
                   </div>
                   <div className="w-full h-3 rounded-full bg-ink-200 dark:bg-ink-700">
                     <div className="h-full rounded-full bg-blue-400 transition-all" style={{ width: `${(totalCon/total)*100}%` }} />
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-ink-400 text-center">你投了：{myVote === 'pro' ? topic.proSide.label : topic.conSide.label}</p>
+              <p className="text-xs text-ink-400 text-center">{t('debate.your_vote', { side: myVote === 'pro' ? topic.proSide.label : topic.conSide.label })}</p>
             </div>
           )}
 
           {/* 专家观点 */}
           <div className="p-4 rounded-xl border border-accent/30 bg-accent/10 dark:bg-accent/5">
-            <h3 className="text-sm font-bold text-accent mb-2">🎓 学者视角</h3>
+            <h3 className="text-sm font-bold text-accent mb-2">{t('debate.expert_view')}</h3>
             <p className="text-sm text-ink-700 dark:text-ink-300 leading-relaxed">
               {topic.expertView}
             </p>

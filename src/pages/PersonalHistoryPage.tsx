@@ -16,14 +16,15 @@ import {
 } from '@/data/features/personalHistoryData';
 import { generatePersonalBiography, type PersonalBiography } from '@/features/personalHistoryAI';
 import { usePersonaStore } from '@/store/personaStore';
+import { useT } from '@/i18n/i18n';
 import './PersonalHistoryPage.module.css';
 
 /* ─── Tab 定义 ─── */
 type TabId = 'edit' | 'biography' | 'ai';
-const TABS: { id: TabId; label: string; emoji: string }[] = [
-  { id: 'edit', label: '编辑个人信息', emoji: '✏️' },
-  { id: 'biography', label: '人生历程', emoji: '📅' },
-  { id: 'ai', label: 'AI 著史', emoji: '🖊️' },
+const TABS: { id: TabId; labelKey: string; emoji: string }[] = [
+  { id: 'edit', labelKey: 'personalHistory.tab_edit', emoji: '✏️' },
+  { id: 'biography', labelKey: 'personalHistory.tab_biography', emoji: '📅' },
+  { id: 'ai', labelKey: 'personalHistory.tab_ai', emoji: '🖊️' },
 ];
 
 /* ─── 个人信息编辑面板 ─── */
@@ -34,6 +35,7 @@ function EditPanel({
   history: PersonalHistory;
   onChange: (patch: Partial<PersonalHistory>) => void;
 }) {
+  const t = useT();
   return (
     <div className="info-card p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg">
       <div className="flex items-start gap-6">
@@ -44,7 +46,7 @@ function EditPanel({
               type="text"
               value={history.name}
               onChange={(e) => onChange({ name: e.target.value })}
-              placeholder="请输入姓名"
+              placeholder={t('personalHistory.name_placeholder')}
               className="input-field text-2xl font-bold flex-1"
             />
             <select
@@ -56,15 +58,15 @@ function EditPanel({
                 'bg-gray-100 text-gray-800'
               }`}
             >
-              <option value="male">男</option>
-              <option value="female">女</option>
-              <option value="other">其他</option>
+              <option value="male">{t('personalHistory.gender_male')}</option>
+              <option value="female">{t('personalHistory.gender_female')}</option>
+              <option value="other">{t('personalHistory.gender_other')}</option>
             </select>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
-              <div className="text-sm text-ink-500 mb-1">🎂 出生日期</div>
+              <div className="text-sm text-ink-500 mb-1">{t('personalHistory.birth_date')}</div>
               <input
                 type="date"
                 value={history.birthDate}
@@ -73,12 +75,12 @@ function EditPanel({
               />
             </div>
             <div>
-              <div className="text-sm text-ink-500 mb-1">📍 出生地</div>
+              <div className="text-sm text-ink-500 mb-1">{t('personalHistory.birth_location')}</div>
               <input
                 type="text"
                 value={history.birthLocation}
                 onChange={(e) => onChange({ birthLocation: e.target.value })}
-                placeholder="例如：北京市"
+                placeholder={t('personalHistory.birth_location_placeholder')}
                 className="input-field"
               />
             </div>
@@ -87,32 +89,32 @@ function EditPanel({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* 教育 */}
             <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
-              <div className="text-sm text-ink-500 mb-2">🎓 教育背景</div>
+              <div className="text-sm text-ink-500 mb-2">{t('personalHistory.education')}</div>
               <div className="space-y-2">
                 <input
                   type="text"
-                  placeholder="学校"
+                  placeholder={t('personalHistory.school_placeholder')}
                   value={history.education?.school || ''}
                   onChange={(e) => onChange({ education: { ...history.education, school: e.target.value } })}
                   className="input-field text-sm w-full"
                 />
                 <input
                   type="text"
-                  placeholder="专业"
+                  placeholder={t('personalHistory.major_placeholder')}
                   value={history.education?.major || ''}
                   onChange={(e) => onChange({ education: { ...history.education, major: e.target.value } })}
                   className="input-field text-sm w-full"
                 />
                 <input
                   type="text"
-                  placeholder="学位"
+                  placeholder={t('personalHistory.degree_placeholder')}
                   value={history.education?.degree || ''}
                   onChange={(e) => onChange({ education: { ...history.education, degree: e.target.value } })}
                   className="input-field text-sm w-full"
                 />
                 <input
                   type="text"
-                  placeholder="毕业年份"
+                  placeholder={t('personalHistory.graduation_year_placeholder')}
                   value={history.education?.year || ''}
                   onChange={(e) => onChange({ education: { ...history.education, year: e.target.value } })}
                   className="input-field text-sm w-full"
@@ -122,25 +124,25 @@ function EditPanel({
 
             {/* 工作 */}
             <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
-              <div className="text-sm text-ink-500 mb-2">💼 工作经历</div>
+              <div className="text-sm text-ink-500 mb-2">{t('personalHistory.work')}</div>
               <div className="space-y-2">
                 <input
                   type="text"
-                  placeholder="公司"
+                  placeholder={t('personalHistory.company_placeholder')}
                   value={history.work?.company || ''}
                   onChange={(e) => onChange({ work: { ...history.work, company: e.target.value } })}
                   className="input-field text-sm w-full"
                 />
                 <input
                   type="text"
-                  placeholder="职位"
+                  placeholder={t('personalHistory.position_placeholder')}
                   value={history.work?.position || ''}
                   onChange={(e) => onChange({ work: { ...history.work, position: e.target.value } })}
                   className="input-field text-sm w-full"
                 />
                 <input
                   type="text"
-                  placeholder="行业"
+                  placeholder={t('personalHistory.industry_placeholder')}
                   value={history.work?.industry || ''}
                   onChange={(e) => onChange({ work: { ...history.work, industry: e.target.value } })}
                   className="input-field text-sm w-full"
@@ -151,12 +153,12 @@ function EditPanel({
 
           {/* 个人简介 */}
           <div className="mt-6">
-            <div className="text-sm text-ink-500 mb-2">📝 个人简介</div>
+            <div className="text-sm text-ink-500 mb-2">{t('personalHistory.biography')}</div>
             <textarea
               value={history.biography || ''}
               onChange={(e) => onChange({ biography: e.target.value })}
               className="input-field w-full h-24"
-              placeholder="写下你的个人简介..."
+              placeholder={t('personalHistory.biography_placeholder')}
             />
           </div>
         </div>
@@ -175,6 +177,7 @@ function TimelinePanel({
   onAddEvent: (event: LifeEvent) => void;
   onDeleteEvent: (id: string) => void;
 }) {
+  const t = useT();
   const [selectedType, setSelectedType] = useState<string>('all');
   const [showForm, setShowForm] = useState(false);
   const [newEvent, setNewEvent] = useState<Partial<LifeEvent>>({
@@ -192,7 +195,7 @@ function TimelinePanel({
 
   const handleAdd = () => {
     if (!newEvent.title || !newEvent.date) {
-      alert('请填写标题和日期');
+      alert(t('personalHistory.alert_title_date'));
       return;
     }
     onAddEvent({
@@ -211,7 +214,7 @@ function TimelinePanel({
   return (
     <div className="timeline-card p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-        <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">📅 人生历程</h3>
+        <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">{t('personalHistory.timeline_title')}</h3>
         <div className="flex gap-2 flex-wrap">
           {Object.entries(EVENT_TYPE_STATS).map(([type, stat]) => (
             <button
@@ -242,7 +245,7 @@ function TimelinePanel({
             </select>
             <input
               type="text"
-              placeholder="事件标题"
+              placeholder={t('personalHistory.event_title_placeholder')}
               value={newEvent.title}
               onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
               className="input-field"
@@ -255,23 +258,23 @@ function TimelinePanel({
             />
             <input
               type="text"
-              placeholder="地点（可选）"
+              placeholder={t('personalHistory.event_location_placeholder')}
               value={newEvent.location || ''}
               onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
               className="input-field"
             />
             <textarea
-              placeholder="事件描述"
+              placeholder={t('personalHistory.event_description_placeholder')}
               value={newEvent.description}
               onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
               className="input-field h-20"
             />
             <div className="flex gap-2">
               <button onClick={handleAdd} className="px-4 py-2 rounded-lg bg-accent text-white font-bold hover:bg-accent/90">
-                添加
+                {t('personalHistory.add')}
               </button>
               <button onClick={() => setShowForm(false)} className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 font-bold">
-                取消
+                {t('personalHistory.cancel')}
               </button>
             </div>
           </div>
@@ -283,7 +286,7 @@ function TimelinePanel({
           onClick={() => setShowForm(true)}
           className="w-full mb-6 py-3 rounded-xl border-2 border-dashed border-ink-300 dark:border-ink-600 text-ink-500 dark:text-ink-400 hover:border-accent hover:text-accent transition-colors font-bold"
         >
-          ➕ 添加新事件
+          {t('personalHistory.add_event')}
         </button>
       )}
 
@@ -323,7 +326,7 @@ function TimelinePanel({
                   onClick={() => onDeleteEvent(event.id)}
                   className="px-3 py-1 rounded-lg text-sm font-bold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
                 >
-                  🗑️ 删除
+                  {t('personalHistory.delete')}
                 </button>
               </div>
             </div>
@@ -334,7 +337,7 @@ function TimelinePanel({
       {filteredEvents.length === 0 && (
         <div className="text-center py-12">
           <div className="text-4xl mb-2">📝</div>
-          <div className="text-ink-600 dark:text-ink-400">还没有记录任何事件，点击上方按钮添加吧！</div>
+          <div className="text-ink-600 dark:text-ink-400">{t('personalHistory.no_events')}</div>
         </div>
       )}
     </div>
@@ -343,6 +346,7 @@ function TimelinePanel({
 
 /* ─── AI 著史结果展示 ─── */
 function AIBiographyDisplay({ biography }: { biography: PersonalBiography }) {
+  const t = useT();
   const [showModern, setShowModern] = useState(false);
 
   if (!biography) return null;
@@ -366,7 +370,7 @@ function AIBiographyDisplay({ biography }: { biography: PersonalBiography }) {
       {/* 正史体传记 */}
       <div className="p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-gradient-to-br from-paper to-ink-50 dark:from-ink-900 dark:to-ink-800 shadow-lg">
         <h3 className="text-lg font-bold text-accent mb-4 tracking-widest text-center">
-          【列传】
+          {t('personalHistory.liezhuan')}
         </h3>
         <div className="prose prose-ink dark:prose-invert max-w-none">
           <p className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-wrap text-base">
@@ -379,7 +383,7 @@ function AIBiographyDisplay({ biography }: { biography: PersonalBiography }) {
       {biography.historianComment && (
         <div className="p-6 rounded-2xl border-2 border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20">
           <h3 className="text-sm font-bold text-amber-700 dark:text-amber-400 mb-2 tracking-widest">
-            【太史公曰】
+            {t('personalHistory.taishigong')}
           </h3>
           <p className="text-ink-700 dark:text-ink-300 leading-relaxed italic">
             {biography.historianComment}
@@ -394,12 +398,12 @@ function AIBiographyDisplay({ biography }: { biography: PersonalBiography }) {
             onClick={() => setShowModern(!showModern)}
             className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-700 dark:text-ink-300 font-bold hover:bg-ink-200 dark:hover:bg-ink-700 transition-colors"
           >
-            {showModern ? '▲ 收起白话译文' : '▼ 查看现代语译'}
+            {showModern ? t('personalHistory.hide_modern') : t('personalHistory.show_modern')}
           </button>
           {showModern && (
             <div className="mt-4 p-6 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg">
               <h3 className="text-sm font-bold text-ink-500 mb-3 tracking-widest">
-                【现代语译】
+                {t('personalHistory.modern_translation')}
               </h3>
               <p className="text-ink-700 dark:text-ink-300 leading-relaxed whitespace-pre-wrap">
                 {biography.modernTranslation}
@@ -413,7 +417,7 @@ function AIBiographyDisplay({ biography }: { biography: PersonalBiography }) {
       {biography.lifeStages.length > 0 && (
         <div className="p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg">
           <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-6 tracking-widest text-center">
-            【人生四段】
+            {t('personalHistory.life_stages')}
           </h3>
           <div className="space-y-6">
             {biography.lifeStages.map((stage, i) => (
@@ -438,6 +442,7 @@ function AIBiographyDisplay({ biography }: { biography: PersonalBiography }) {
 
 /* ─── 主页面 ─── */
 export default function PersonalHistoryPage() {
+  const t = useT();
   const [activeTab, setActiveTab] = useState<TabId>('edit');
 
   // 从 localStorage 读取个人史册数据
@@ -488,7 +493,7 @@ export default function PersonalHistoryPage() {
 
   // 删除事件
   const handleDeleteEvent = useCallback((id: string) => {
-    if (window.confirm('确定要删除这个事件吗？')) {
+    if (window.confirm(t('personalHistory.confirm_delete'))) {
       setPersonalHistory(prev => ({
         ...prev,
         lifeEvents: prev.lifeEvents.filter(e => e.id !== id),
@@ -503,7 +508,7 @@ export default function PersonalHistoryPage() {
 
   const handleGenerateBiography = useCallback(async () => {
     if (personalHistory.lifeEvents.length === 0) {
-      alert('请先添加一些人生事件，AI 才能为你著史！');
+      alert(t('personalHistory.alert_no_events'));
       return;
     }
 
@@ -513,8 +518,8 @@ export default function PersonalHistoryPage() {
       const result = await generatePersonalBiography(personalHistory, persona || undefined);
       setManualBiography(result);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : '生成失败，请稍后重试';
-      alert(`AI 著史失败：${message}`);
+      const message = err instanceof Error ? err.message : t('personalHistory.error_default');
+      alert(t('personalHistory.alert_ai_failed', { message }));
     } finally {
       setIsManualGenerating(false);
     }
@@ -537,9 +542,9 @@ export default function PersonalHistoryPage() {
         {/* 头部 */}
         <RevealOnScroll direction="fade">
           <SectionHeader
-            label="PERSONAL HISTORY"
-            title="个人史册"
-            description="记录你的人生历程，打造属于你的传记"
+            label={t('personalHistory.label')}
+            title={t('personalHistory.title')}
+            description={t('personalHistory.description')}
           />
         </RevealOnScroll>
 
@@ -556,7 +561,7 @@ export default function PersonalHistoryPage() {
                     : 'bg-white/70 dark:bg-ink-900/70 text-ink-600 dark:text-ink-400 hover:bg-ink-100 dark:hover:bg-ink-800'
                 }`}
               >
-                {tab.emoji} {tab.label}
+                {tab.emoji} {t(tab.labelKey)}
               </button>
             ))}
           </div>
@@ -584,19 +589,19 @@ export default function PersonalHistoryPage() {
                   <div className="p-6 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800">
                     <div className="text-4xl mb-2">📭</div>
                     <p className="text-ink-600 dark:text-ink-400 mb-4">
-                      还没有人生事件记录，无法生成传记
+                      {t('personalHistory.no_events_record')}
                     </p>
                     <button
                       onClick={() => handleTabChange('biography')}
                       className="px-6 py-2 rounded-lg bg-accent text-white font-bold hover:bg-accent/90"
                     >
-                      先去添加事件 →
+                      {t('personalHistory.go_add_events')}
                     </button>
                   </div>
                 ) : (
                   <>
                     <p className="text-sm text-ink-500 dark:text-ink-400 mb-4">
-                      已记录 {personalHistory.lifeEvents.length} 件人生大事，AI 史官将为你编纂古典风格传记
+                      {t('personalHistory.events_count_tip', { count: personalHistory.lifeEvents.length })}
                     </p>
                     <button
                       onClick={handleGenerateBiography}
@@ -609,10 +614,10 @@ export default function PersonalHistoryPage() {
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                           </svg>
-                          著史中...
+                          {t('personalHistory.generating')}
                         </span>
                       ) : (
-                        '🖊️ AI 著史'
+                        t('personalHistory.generate')
                       )}
                     </button>
                   </>
@@ -639,7 +644,7 @@ export default function PersonalHistoryPage() {
               {/* 无结果提示 */}
               {!displayBiography && !isManualGenerating && personalHistory.lifeEvents.length > 0 && (
                 <div className="text-center py-8 text-ink-400">
-                  点击"AI 著史"按钮开始生成
+                  {t('personalHistory.click_to_generate')}
                 </div>
               )}
             </div>

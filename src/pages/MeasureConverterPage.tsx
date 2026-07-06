@@ -8,8 +8,10 @@ import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { MEASURE_CATEGORIES, ALL_UNITS } from '@/data/features/measureUnits';
 import { convertMeasure, formatResult, getConversionOptions, findUnit } from '@/utils/measureConverter';
+import { useT } from '@/i18n/i18n';
 
 export default function MeasureConverterPage() {
+  const t = useT();
   const [fromUnit, setFromUnit] = useState('');
   const [toUnit, setToUnit] = useState('');
   const [value, setValue] = useState('1');
@@ -59,8 +61,8 @@ export default function MeasureConverterPage() {
         <RevealOnScroll>
           <SectionHeader
             label="ANCIENT MEASUREMENT"
-            title="历史度量衡换算器"
-            description="穿越古今，一键换算周尺与米、汉斤与千克"
+            title={t('measureConverter.title')}
+            description={t('measureConverter.description')}
           />
         </RevealOnScroll>
 
@@ -77,7 +79,7 @@ export default function MeasureConverterPage() {
                     : 'bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400'
                 }`}
               >
-                全部
+                {t('measureConverter.all')}
               </button>
               {MEASURE_CATEGORIES.map(cat => (
                 <button
@@ -96,27 +98,27 @@ export default function MeasureConverterPage() {
 
             {/* 数值输入 */}
             <div className="mb-6">
-              <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-2">数值</label>
+              <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-2">{t('measureConverter.valueLabel')}</label>
               <input
                 type="number"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 className="input-field text-2xl font-bold"
-                placeholder="输入数值"
+                placeholder={t('measureConverter.valuePlaceholder')}
               />
             </div>
 
             {/* 源单位 */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-2">
-                从（源单位）
+                {t('measureConverter.fromUnit')}
               </label>
               <select
                 value={fromUnit}
                 onChange={(e) => handleFromChange(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl border border-ink-200 dark:border-ink-700 bg-ink-50 dark:bg-ink-800 text-lg font-bold"
               >
-                <option value="">选择源单位</option>
+                <option value="">{t('measureConverter.selectFromUnit')}</option>
                 {fromOptions.map(unit => (
                   <option key={unit.id} value={unit.id}>
                     {unit.emoji} {unit.name}（{unit.dynasty} · {unit.toBase}{unit.category === 'weight' ? 'kg' : unit.category === 'length' ? 'm' : 'ml'}）
@@ -139,7 +141,7 @@ export default function MeasureConverterPage() {
                   }}
                   className="px-4 py-2 rounded-full bg-accent/10 text-accent hover:bg-accent/20 transition-colors font-bold"
                 >
-                  ⇄ 交换
+                  ⇄ {t('measureConverter.swap')}
                 </button>
               </div>
             )}
@@ -148,14 +150,14 @@ export default function MeasureConverterPage() {
             {fromUnit && (
               <div className="mb-6">
                 <label className="block text-sm font-medium text-ink-600 dark:text-ink-400 mb-2">
-                  到（目标单位）
+                  {t('measureConverter.toUnit')}
                 </label>
                 <select
                   value={toUnit}
                   onChange={(e) => setToUnit(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-ink-200 dark:border-ink-700 bg-ink-50 dark:bg-ink-800 text-lg font-bold"
                 >
-                  <option value="">选择目标单位</option>
+                  <option value="">{t('measureConverter.selectToUnit')}</option>
                   {toOptions.map(opt => (
                     <option key={opt.toId} value={opt.toId}>
                       {opt.emoji} {opt.name}（{findUnit(opt.toId)?.dynasty}）
@@ -182,7 +184,7 @@ export default function MeasureConverterPage() {
 
             {!result && fromUnit && toUnit && (
               <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800 text-center text-ink-500">
-                无法在不同类别的单位间换算
+                {t('measureConverter.cannotConvert')}
               </div>
             )}
           </div>
@@ -191,15 +193,15 @@ export default function MeasureConverterPage() {
         {/* 常用换算速查表 */}
         <RevealOnScroll delay={200}>
           <div className="mt-8 bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-            <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">📋 常用换算速查</h3>
+            <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">📋 {t('measureConverter.quickReference')}</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b-2 border-ink-200 dark:border-ink-700">
-                    <th className="text-left py-2 px-3 text-ink-600 dark:text-ink-400">单位</th>
-                    <th className="text-left py-2 px-3 text-ink-600 dark:text-ink-400">朝代</th>
-                    <th className="text-left py-2 px-3 text-ink-600 dark:text-ink-400">换算（基准）</th>
-                    <th className="text-left py-2 px-3 text-ink-600 dark:text-ink-400">相当于</th>
+                    <th className="text-left py-2 px-3 text-ink-600 dark:text-ink-400">{t('measureConverter.colUnit')}</th>
+                    <th className="text-left py-2 px-3 text-ink-600 dark:text-ink-400">{t('measureConverter.colDynasty')}</th>
+                    <th className="text-left py-2 px-3 text-ink-600 dark:text-ink-400">{t('measureConverter.colConversion')}</th>
+                    <th className="text-left py-2 px-3 text-ink-600 dark:text-ink-400">{t('measureConverter.colEquivalent')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -207,13 +209,13 @@ export default function MeasureConverterPage() {
                     let equivalent = '';
                     if (unit.category === 'length') {
                       const meters = unit.toBase;
-                      equivalent = meters >= 1 ? `${meters.toFixed(3)} 米` : `${(meters * 100).toFixed(2)} 厘米`;
+                      equivalent = meters >= 1 ? `${meters.toFixed(3)} ${t('measureConverter.unitM')}` : `${(meters * 100).toFixed(2)} ${t('measureConverter.unitCm')}`;
                     } else if (unit.category === 'weight') {
                       const grams = unit.toBase * 1000;
-                      equivalent = grams >= 1 ? `${grams.toFixed(2)} 克` : `${(grams * 1000).toFixed(1)} 毫克`;
+                      equivalent = grams >= 1 ? `${grams.toFixed(2)} ${t('measureConverter.unitG')}` : `${(grams * 1000).toFixed(1)} ${t('measureConverter.unitMg')}`;
                     } else {
                       const ml = unit.toBase;
-                      equivalent = ml >= 1000 ? `${(ml / 1000).toFixed(2)} 升` : `${ml.toFixed(1)} 毫升`;
+                      equivalent = ml >= 1000 ? `${(ml / 1000).toFixed(2)} ${t('measureConverter.unitL')}` : `${ml.toFixed(1)} ${t('measureConverter.unitMl')}`;
                     }
                     return (
                       <tr key={unit.id} className="border-b border-ink-100 dark:border-ink-800 hover:bg-ink-50 dark:hover:bg-ink-800">

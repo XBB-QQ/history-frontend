@@ -6,9 +6,11 @@ import TimeTravelBar from '@/components/time/TimeTravelBar';
 import TimeTravelPanel from '@/components/time/TimeTravelPanel';
 import QuizDialog from '@/components/quiz/QuizDialog';
 import { fetchTimelineEvents } from '@/services/api';
+import { useT } from '@/i18n/i18n';
 import type { EventItem } from '@/types';
 
 function HomePage() {
+  const t = useT();
   const [events, setEvents] = useState<EventItem[]>([]);
   const [showQuiz, setShowQuiz] = useState(false);
 
@@ -31,10 +33,10 @@ function HomePage() {
           <span className="text-lg text-ink-400 dark:text-ink-500 flex-shrink-0">◆</span>
           <div className="flex-1 text-left">
             <h3 className="font-bold text-ink-900 dark:text-ink-100 group-hover:text-accent transition-colors">
-              每日历史挑战
+              {t('home.daily_quiz')}
             </h3>
             <p className="text-xs text-ink-500 dark:text-ink-400">
-              每天一道历史题，答对加分
+              {t('home.daily_quiz_desc')}
             </p>
           </div>
           <svg className="w-5 h-5 text-ink-400 group-hover:text-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">

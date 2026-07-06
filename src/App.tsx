@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { useI18nStore } from '@/i18n/i18n';
+import { useI18nStore, useT } from '@/i18n/i18n';
 import HomePage from './pages/HomePage';
 const TimelinePage = lazy(() => import('./pages/TimelinePage'));
 const TimelineHubPage = lazy(() => import('./pages/TimelineHubPage'));
@@ -102,6 +102,7 @@ import { useSceneStore } from './store/sceneStore';
 import { preloadAllSceneFonts } from './utils/fontLoader';
 
 function App() {
+  const t = useT();
   const hydrateFromStorage = useSceneStore((s) => s.hydrateFromStorage);
 
   // 启动时恢复场景偏好 + 后台预加载所有字体
@@ -134,7 +135,7 @@ function App() {
           <div className="min-h-screen flex items-center justify-center bg-paper dark:bg-ink-950">
             <div className="text-center">
               <div className="text-4xl mb-2 animate-pulse">史</div>
-              <p className="text-ink-400 dark:text-ink-500">加载中...</p>
+              <p className="text-ink-400 dark:text-ink-500">{t('common.loading')}</p>
             </div>
           </div>
         }

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { CLIMATE_PERIODS, generateClimateTimeSeries } from '@/data/features/climateHistory';
+import { useT } from '@/i18n/i18n';
 
 export default function ClimatePage() {
+  const t = useT();
   const [selectedPeriod, setSelectedPeriod] = useState<number>(0);
   const series = generateClimateTimeSeries();
 
@@ -28,10 +30,10 @@ export default function ClimatePage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            候 历史气候变迁
+            候 {t('climate.title')}
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
-            基于竺可桢研究 — 五千年温度曲线与历史兴衰的因果关联
+            {t('climate.subtitle')}
           </p>
         </div>
 
@@ -40,7 +42,7 @@ export default function ClimatePage() {
           <svg viewBox="0 0 {chartWidth} {chartHeight + 60}" width="100%" className="min-w-[500px]">
             {/* 0度基准线 */}
             <line x1="0" y1={tempToY(0)} x2={chartWidth} y2={tempToY(0)} stroke="#999" strokeWidth="1" strokeDasharray="4" />
-            <text x="5" y={tempToY(0) - 5} fontSize="10" fill="#999">0°C（现代基准）</text>
+            <text x="5" y={tempToY(0) - 5} fontSize="10" fill="#999">{t('climate.zeroLine')}</text>
 
             {/* 温度曲线 */}
             <polyline points={linePath} fill="none" stroke="#c44536" strokeWidth="2" />
@@ -91,12 +93,12 @@ export default function ClimatePage() {
               <span className={`px-3 py-1 rounded-lg text-sm font-bold ${
                 period.temperatureDelta > 0 ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'
               }`}>
-                {period.temperatureDelta > 0 ? '暖 温暖期' : '寒 寒冷期'}
+                {period.temperatureDelta > 0 ? `暖 ${t('climate.warmPeriod')}` : `寒 ${t('climate.coldPeriod')}`}
                 ({period.temperatureDelta > 0 ? '+' : ''}{period.temperatureDelta}°C)
               </span>
               <span className="text-sm text-ink-400">
-                {period.startYear < 0 ? `前${Math.abs(period.startYear)}` : period.startYear}年 —
-                {period.endYear < 0 ? `前${Math.abs(period.endYear)}` : period.endYear}年
+                {period.startYear < 0 ? t('climate.yearBce', { year: Math.abs(period.startYear) }) : t('climate.yearCe', { year: period.startYear })} —
+                {period.endYear < 0 ? t('climate.yearBce', { year: Math.abs(period.endYear) }) : t('climate.yearCe', { year: period.endYear })}
               </span>
             </div>
 
@@ -105,7 +107,7 @@ export default function ClimatePage() {
             </p>
 
             <div className="p-4 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50/30 dark:bg-amber-900/20">
-              <h3 className="text-sm font-bold text-amber-700 dark:text-amber-300 mb-2">对历史的影响</h3>
+              <h3 className="text-sm font-bold text-amber-700 dark:text-amber-300 mb-2">{t('climate.historyImpact')}</h3>
               <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
                 {period.historicalImpact}
               </p>

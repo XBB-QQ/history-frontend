@@ -6,15 +6,17 @@
 import { useState } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import { useT } from '@/i18n/i18n';
 
 export default function WidgetDocsPage() {
   const [activeSection, setActiveSection] = useState('overview');
+  const t = useT();
 
   const sections = [
-    { id: 'overview', label: '概述' },
-    { id: 'embed', label: '嵌入方式' },
-    { id: 'api', label: '通信 API' },
-    { id: 'examples', label: '示例代码' },
+    { id: 'overview', labelKey: 'widgetDocs.nav_overview' },
+    { id: 'embed', labelKey: 'widgetDocs.nav_embed' },
+    { id: 'api', labelKey: 'widgetDocs.nav_api' },
+    { id: 'examples', labelKey: 'widgetDocs.nav_examples' },
   ];
 
   return (
@@ -23,8 +25,8 @@ export default function WidgetDocsPage() {
         <RevealOnScroll>
           <SectionHeader
             label="WIDGET API"
-            title="开放 Widget API 文档"
-            description="将史馆工具嵌入到你的网站"
+            title={t('widgetDocs.title')}
+            description={t('widgetDocs.description')}
           />
         </RevealOnScroll>
 
@@ -41,7 +43,7 @@ export default function WidgetDocsPage() {
                     : 'bg-white dark:bg-ink-900 text-ink-600 dark:text-ink-400'
                 }`}
               >
-                {s.label}
+                {t(s.labelKey)}
               </button>
             ))}
           </div>
@@ -51,25 +53,24 @@ export default function WidgetDocsPage() {
         {activeSection === 'overview' && (
           <RevealOnScroll direction="up" delay={200}>
             <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg space-y-4">
-              <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">什么是 Widget API？</h3>
+              <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">{t('widgetDocs.overview_title')}</h3>
               <p className="text-ink-700 dark:text-ink-300">
-                通过添加 <code className="bg-ink-100 dark:bg-ink-800 px-2 py-0.5 rounded text-sm">?embed=1</code> 参数，
-                可以将史馆的任何工具页面以精简模式嵌入到其他网站中。
+                {t('widgetDocs.overview_desc')}
               </p>
-              <h4 className="font-bold text-ink-900 dark:text-ink-100">支持的页面</h4>
+              <h4 className="font-bold text-ink-900 dark:text-ink-100">{t('widgetDocs.supported_pages')}</h4>
               <ul className="space-y-1 text-sm text-ink-600 dark:text-ink-400">
-                <li>• AI 史官：<code className="bg-ink-100 dark:bg-ink-800 px-1.5 py-0.5 rounded text-xs">/ai-historian?embed=1</code></li>
-                <li>• 历史抉择：<code className="bg-ink-100 dark:bg-ink-800 px-1.5 py-0.5 rounded text-xs">/simulator?embed=1</code></li>
-                <li>• 度量衡换算：<code className="bg-ink-100 dark:bg-ink-800 px-1.5 py-0.5 rounded text-xs">/measure?embed=1</code></li>
-                <li>• 历史色谱：<code className="bg-ink-100 dark:bg-ink-800 px-1.5 py-0.5 rounded text-xs">/color-history?embed=1</code></li>
-                <li>• 信物鉴定：<code className="bg-ink-100 dark:bg-ink-800 px-1.5 py-0.5 rounded text-xs">/artifact-quiz?embed=1</code></li>
+                <li>• {t('widgetDocs.pages_ai_historian')}：<code className="bg-ink-100 dark:bg-ink-800 px-1.5 py-0.5 rounded text-xs">/ai-historian?embed=1</code></li>
+                <li>• {t('widgetDocs.pages_simulator')}：<code className="bg-ink-100 dark:bg-ink-800 px-1.5 py-0.5 rounded text-xs">/simulator?embed=1</code></li>
+                <li>• {t('widgetDocs.pages_measure')}：<code className="bg-ink-100 dark:bg-ink-800 px-1.5 py-0.5 rounded text-xs">/measure?embed=1</code></li>
+                <li>• {t('widgetDocs.pages_color_history')}：<code className="bg-ink-100 dark:bg-ink-800 px-1.5 py-0.5 rounded text-xs">/color-history?embed=1</code></li>
+                <li>• {t('widgetDocs.pages_artifact_quiz')}：<code className="bg-ink-100 dark:bg-ink-800 px-1.5 py-0.5 rounded text-xs">/artifact-quiz?embed=1</code></li>
               </ul>
-              <h4 className="font-bold text-ink-900 dark:text-ink-100">嵌入模式特性</h4>
+              <h4 className="font-bold text-ink-900 dark:text-ink-100">{t('widgetDocs.embed_features')}</h4>
               <ul className="space-y-1 text-sm text-ink-600 dark:text-ink-400">
-                <li>✅ 隐藏导航栏和页脚</li>
-                <li>✅ 自适应宽度</li>
-                <li>✅ 支持深色/浅色主题跟随</li>
-                <li>✅ 可通过 postMessage 与父页面通信</li>
+                <li>✅ {t('widgetDocs.feature_hide_nav')}</li>
+                <li>✅ {t('widgetDocs.feature_responsive')}</li>
+                <li>✅ {t('widgetDocs.feature_theme')}</li>
+                <li>✅ {t('widgetDocs.feature_postmessage')}</li>
               </ul>
             </div>
           </RevealOnScroll>
@@ -79,7 +80,7 @@ export default function WidgetDocsPage() {
         {activeSection === 'embed' && (
           <RevealOnScroll direction="up" delay={200}>
             <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-              <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-4">iframe 嵌入方式</h3>
+              <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-4">{t('widgetDocs.embed_method_title')}</h3>
               <pre className="bg-ink-50 dark:bg-ink-800 p-4 rounded-xl overflow-x-auto text-sm text-ink-800 dark:text-ink-200">
 {`<iframe
   src="https://history-museum.example.com/ai-historian?embed=1"
@@ -89,22 +90,22 @@ export default function WidgetDocsPage() {
   allowfullscreen
 />`}
               </pre>
-              <h4 className="font-bold text-ink-900 dark:text-ink-100 mt-6 mb-2">可用参数</h4>
+              <h4 className="font-bold text-ink-900 dark:text-ink-100 mt-6 mb-2">{t('widgetDocs.params_title')}</h4>
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-ink-200 dark:border-ink-700">
-                    <th className="text-left py-2">参数</th>
-                    <th className="text-left py-2">说明</th>
+                    <th className="text-left py-2">{t('widgetDocs.param_name')}</th>
+                    <th className="text-left py-2">{t('widgetDocs.param_desc')}</th>
                   </tr>
                 </thead>
                 <tbody className="space-y-2">
                   <tr className="border-b border-ink-100 dark:border-ink-800">
                     <td className="py-2 font-mono text-accent">embed</td>
-                    <td className="py-2">设为 1 启用嵌入模式</td>
+                    <td className="py-2">{t('widgetDocs.param_embed')}</td>
                   </tr>
                   <tr className="border-b border-ink-100 dark:border-ink-800">
                     <td className="py-2 font-mono text-accent">theme</td>
-                    <td className="py-2">可选 light/dark/auto</td>
+                    <td className="py-2">{t('widgetDocs.param_theme')}</td>
                   </tr>
                 </tbody>
               </table>
@@ -117,7 +118,7 @@ export default function WidgetDocsPage() {
           <RevealOnScroll direction="up" delay={200}>
             <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg space-y-6">
               <div>
-                <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-2">向父页面发消息</h3>
+                <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-2">{t('widgetDocs.send_to_parent')}</h3>
                 <pre className="bg-ink-50 dark:bg-ink-800 p-4 rounded-xl overflow-x-auto text-sm">
 {`// 嵌入页面内
 postMessageToParent('user-action', {
@@ -128,7 +129,7 @@ postMessageToParent('user-action', {
                 </pre>
               </div>
               <div>
-                <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-2">接收父页面消息</h3>
+                <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-2">{t('widgetDocs.receive_from_parent')}</h3>
                 <pre className="bg-ink-50 dark:bg-ink-800 p-4 rounded-xl overflow-x-auto text-sm">
 {`// 父页面
 const iframe = document.querySelector('iframe');
@@ -147,7 +148,7 @@ iframe.contentWindow.postMessage({
           <RevealOnScroll direction="up" delay={200}>
             <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg space-y-6">
               <div>
-                <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-2">完整示例</h3>
+                <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-2">{t('widgetDocs.example_complete')}</h3>
                 <pre className="bg-ink-50 dark:bg-ink-800 p-4 rounded-xl overflow-x-auto text-sm">
 {`<!DOCTYPE html>
 <html>
@@ -172,7 +173,7 @@ iframe.contentWindow.postMessage({
                 </pre>
               </div>
               <div>
-                <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-2">React 示例</h3>
+                <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-2">{t('widgetDocs.example_react')}</h3>
                 <pre className="bg-ink-50 dark:bg-ink-800 p-4 rounded-xl overflow-x-auto text-sm">
 {`import React, { useEffect, useRef } from 'react';
 

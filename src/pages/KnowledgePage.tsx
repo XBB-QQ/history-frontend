@@ -7,8 +7,10 @@ import KnowledgeMasonry from '@/components/knowledge/KnowledgeMasonry';
 import TagCloud from '@/components/knowledge/TagCloud';
 import { GridSkeleton } from '@/components/common/Skeleton';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import { useT } from '@/i18n/i18n';
 
 function KnowledgePage() {
+  const t = useT();
   const [cards, setCards] = useState<KnowledgeCardItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTag, setActiveTag] = useState<string | null>(null);
@@ -41,8 +43,8 @@ function KnowledgePage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="KNOWLEDGE"
-            title="史海钩沉"
-            description="知识卡片"
+            title={t('knowledge.title')}
+            description={t('knowledge.cards_label')}
           />
         </RevealOnScroll>
 
@@ -56,7 +58,7 @@ function KnowledgePage() {
           <RevealOnScroll direction="fade" delay={150}>
             <div className="text-left mb-4">
               <span className="text-xs text-ink-400">
-                筛选标签：
+                {t('knowledge.filter_label')}
                 {activeTag!.split(',').map(t => t.trim()).filter(Boolean).map((t, i) => (
                   <span key={i} className="text-accent font-bold">
                     {i > 0 && ' ∩ '}#{t}
@@ -66,7 +68,7 @@ function KnowledgePage() {
                   onClick={() => setActiveTag(null)}
                   className="ml-2 text-ink-400 hover:text-accent transition-colors underline"
                 >
-                  清除筛选
+                  {t('knowledge.clear_filter')}
                 </button>
               </span>
             </div>
@@ -79,12 +81,12 @@ function KnowledgePage() {
 
         {filteredCards.length === 0 && !loading && (
           <div className="text-center py-12 text-ink-400">
-            <p>该标签下暂无知识卡片</p>
+            <p>{t('knowledge.no_card')}</p>
           </div>
         )}
 
         <RevealOnScroll direction="fade" delay={400}>
-          <Link to="/" className="btn-secondary mt-12 inline-flex">返回首页</Link>
+          <Link to="/" className="btn-secondary mt-12 inline-flex">{t('common.back_home')}</Link>
         </RevealOnScroll>
       </div>
     </div>

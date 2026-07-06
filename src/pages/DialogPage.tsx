@@ -10,6 +10,7 @@ import { generateFigureReply, generateGreeting } from '@/features/figureReply';
 import type { HistoricalFigure, ChatMessage } from '@/types/figure';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import { useT } from '@/i18n/i18n';
 
 function DialogPage() {
   const [selectedFigure, setSelectedFigure] = useState<HistoricalFigure | null>(null);
@@ -17,6 +18,7 @@ function DialogPage() {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const t = useT();
 
   // 切换人物时重置对话
   function handleSelectFigure(figure: HistoricalFigure) {
@@ -83,8 +85,8 @@ function DialogPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="AI DIALOG"
-            title="与历史人物对话"
-            description="和历史人物对话"
+            title={t('dialog.title')}
+            description={t('dialog.description')}
           />
         </RevealOnScroll>
 
@@ -124,7 +126,7 @@ function DialogPage() {
               <button
                 onClick={handleBack}
                 className="text-ink-500 hover:text-accent transition-colors"
-                aria-label="返回"
+                aria-label={t('dialog.back_aria')}
               >
                 ←
               </button>
@@ -138,13 +140,13 @@ function DialogPage() {
                 </div>
               </div>
               <div className="hidden md:flex gap-1 flex-wrap">
-                {selectedFigure.topics.slice(0, 4).map((t) => (
+                {selectedFigure.topics.slice(0, 4).map((topic) => (
                   <button
-                    key={t}
-                    onClick={() => setInput(`请问${t}之道？`)}
+                    key={topic}
+                    onClick={() => setInput(t('dialog.topic_btn_template', { topic }))}
                     className="text-xs px-2 py-1 bg-accent/10 dark:bg-accent/20 text-accent rounded-full hover:bg-accent/20 transition-colors"
                   >
-                    {t}
+                    {topic}
                   </button>
                 ))}
               </div>
@@ -198,7 +200,7 @@ function DialogPage() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder={`向${selectedFigure.name}提问...`}
+                placeholder={t('dialog.input_placeholder', { name: selectedFigure.name })}
                 className="flex-1 px-4 py-2 bg-paper dark:bg-ink-950 border border-ink-200 dark:border-ink-700 rounded-lg text-ink-900 dark:text-ink-100 placeholder-ink-400 focus:outline-none focus:border-accent"
                 disabled={isTyping}
               />
@@ -207,7 +209,7 @@ function DialogPage() {
                 disabled={!input.trim() || isTyping}
                 className="px-6 py-2 bg-accent text-white font-bold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                发送
+                {t('dialog.send_btn')}
               </button>
             </div>
           </div>
@@ -217,7 +219,7 @@ function DialogPage() {
         <RevealOnScroll direction="fade" delay={400}>
           <div className="mt-12 text-center">
             <Link to="/" className="btn-secondary">
-              返回首页
+              {t('common.back_home')}
             </Link>
           </div>
         </RevealOnScroll>
@@ -225,7 +227,7 @@ function DialogPage() {
         {/* 提示 */}
         {!selectedFigure && (
           <div className="mt-8 p-4 bg-amber-50/50 dark:bg-amber-900/10 rounded-lg border border-amber-200/50 dark:border-amber-700/30 text-sm text-ink-600 dark:text-ink-400 text-center">
-            注 当前为规则版回复，后续将接入 LLM 实现真正智能对话。可尝试询问人物专长话题（如问孔子"仁"、问李白"诗"）获得更好体验。
+            {t('dialog.rule_hint')}
           </div>
         )}
       </div>

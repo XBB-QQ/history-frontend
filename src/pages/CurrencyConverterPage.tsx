@@ -10,10 +10,12 @@ import React, { useState, useMemo } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { DYNASTY_CURRENCIES, calculatePurchasingPower, type PurchasingPower } from '@/data/features/currencyData';
+import { useT } from '@/i18n/i18n';
 
 import './CurrencyConverterPage.module.css';
 
 export default function CurrencyConverterPage() {
+  const t = useT();
   const [amount, setAmount] = useState<string>('');
   const [dynasty, setDynasty] = useState<string>(DYNASTY_CURRENCIES[DYNASTY_CURRENCIES.length - 1].dynasty);
   const [type, setType] = useState<'rice' | 'flour' | 'cloth' | 'meat' | 'wine' | 'custom'>('rice');
@@ -42,8 +44,8 @@ export default function CurrencyConverterPage() {
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
       <SectionHeader
         label="CURRENCY"
-        title="货币购买力换算器"
-        description="穿越时空，了解古代货币的实际价值"
+        title={t('currencyConverter.title')}
+        description={t('currencyConverter.description')}
       />
 
       <RevealOnScroll>
@@ -51,27 +53,27 @@ export default function CurrencyConverterPage() {
           {/* 换算器卡片 */}
           <div className="converter-card p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg mb-8">
             <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100 mb-6">
-              📊 货币换算工具
+              📊 {t('currencyConverter.toolTitle')}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">
-                    输入金额（贯）
+                    {t('currencyConverter.inputAmount')}
                   </label>
                   <input
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    placeholder="例如：100"
+                    placeholder={t('currencyConverter.amountPlaceholder')}
                     className="input-field w-full"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">
-                    选择朝代
+                    {t('currencyConverter.selectDynasty')}
                   </label>
                   <select
                     value={dynasty}
@@ -88,36 +90,36 @@ export default function CurrencyConverterPage() {
 
                 <div>
                   <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">
-                    选择商品类型
+                    {t('currencyConverter.selectProductType')}
                   </label>
                   <select
                     value={type}
                     onChange={(e) => setType(e.target.value as any)}
                     className="input-field w-full"
                   >
-                    <option value="rice">🍚 大米</option>
-                    <option value="flour">🌾 面粉</option>
-                    <option value="cloth">🧵 布匹</option>
-                    <option value="meat">🥩 猪肉</option>
-                    <option value="wine">🍶 酒</option>
-                    <option value="custom">🎯 自定义</option>
+                    <option value="rice">🍚 {t('currencyConverter.productRice')}</option>
+                    <option value="flour">🌾 {t('currencyConverter.productFlour')}</option>
+                    <option value="cloth">🧵 {t('currencyConverter.productCloth')}</option>
+                    <option value="meat">🥩 {t('currencyConverter.productMeat')}</option>
+                    <option value="wine">🍶 {t('currencyConverter.productWine')}</option>
+                    <option value="custom">🎯 {t('currencyConverter.productCustom')}</option>
                   </select>
                 </div>
 
                 {type === 'custom' && (
                   <div>
                     <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">
-                      自定义商品价格（贯）
+                      {t('currencyConverter.customPrice')}
                     </label>
                     <input
                       type="number"
                       value={customPrice}
                       onChange={(e) => setCustomPrice(e.target.value)}
-                      placeholder="例如：500"
+                      placeholder={t('currencyConverter.customPricePlaceholder')}
                       className="input-field w-full"
                     />
                     <p className="text-xs text-ink-500 mt-1">
-                      ⚠️ 用于估算当前可购买数量
+                      ⚠️ {t('currencyConverter.customPriceHint')}
                     </p>
                   </div>
                 )}
@@ -128,13 +130,13 @@ export default function CurrencyConverterPage() {
                   <>
                     <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
                       <div className="text-sm text-ink-600 dark:text-ink-400 mb-1">
-                        折合现代人民币
+                        {t('currencyConverter.modernYuan')}
                       </div>
                       <div className="text-3xl font-bold text-accent">
                         ¥{result.yuanValue.toLocaleString()}
                       </div>
                       <div className="text-xs text-ink-500 mt-1">
-                        (基于大米价格 ¥3/斤)
+                        {t('currencyConverter.basedOnRice')}
                       </div>
                     </div>
 
@@ -142,23 +144,22 @@ export default function CurrencyConverterPage() {
                       <>
                         <div className="grid grid-cols-2 gap-3">
                           <div className="p-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
-                            <div className="text-xs text-ink-500">可购买大米</div>
+                            <div className="text-xs text-ink-500">{t('currencyConverter.canBuyRice')}</div>
                             <div className="text-xl font-bold text-ink-900 dark:text-ink-100">
-                              {result.riceAmount.toLocaleString()} 斤
+                              {result.riceAmount.toLocaleString()} {t('currencyConverter.jin')}
                             </div>
                           </div>
                           <div className="p-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
-                            <div className="text-xs text-ink-500">可购买米袋</div>
+                            <div className="text-xs text-ink-500">{t('currencyConverter.canBuyRiceBags')}</div>
                             <div className="text-xl font-bold text-ink-900 dark:text-ink-100">
-                              {Math.floor(result.riceAmount / 100)} 袋
+                              {Math.floor(result.riceAmount / 100)} {t('currencyConverter.dai')}
                             </div>
                           </div>
                         </div>
 
                         <div className="p-3 rounded-lg bg-accent/10 border border-accent/30">
                           <div className="text-sm text-ink-700 dark:text-ink-300">
-                            💡 这是一个现代人穿越到这个朝代，拿着 {result.amount} 贯，
-                            <br/>可以购买 {result.riceAmount.toLocaleString()} 斤大米。
+                            💡 {t('currencyConverter.riceHint', { amount: result.amount, rice: result.riceAmount.toLocaleString() })}
                           </div>
                         </div>
                       </>
@@ -167,8 +168,7 @@ export default function CurrencyConverterPage() {
                     {type === 'flour' && (
                       <div className="p-3 rounded-lg bg-accent/10 border border-accent/30">
                         <div className="text-sm text-ink-700 dark:text-ink-300">
-                          💡 你可以购买 {result.flourAmount.toLocaleString()} 斤面粉，
-                          <br/>足够制作 {Math.floor(result.flourAmount / 50)} 个馒头。
+                          💡 {t('currencyConverter.flourHint', { flour: result.flourAmount.toLocaleString(), num: Math.floor(result.flourAmount / 50) })}
                         </div>
                       </div>
                     )}
@@ -176,8 +176,7 @@ export default function CurrencyConverterPage() {
                     {type === 'cloth' && (
                       <div className="p-3 rounded-lg bg-accent/10 border border-accent/30">
                         <div className="text-sm text-ink-700 dark:text-ink-300">
-                          💡 你可以购买 {result.clothAmount.toFixed(2)} 匹布匹，
-                          <br/>足够制作 {Math.floor(result.clothAmount)} 件衣服。
+                          💡 {t('currencyConverter.clothHint', { cloth: result.clothAmount.toFixed(2), num: Math.floor(result.clothAmount) })}
                         </div>
                       </div>
                     )}
@@ -185,8 +184,7 @@ export default function CurrencyConverterPage() {
                     {type === 'meat' && (
                       <div className="p-3 rounded-lg bg-accent/10 border border-accent/30">
                         <div className="text-sm text-ink-700 dark:text-ink-300">
-                          💡 你可以购买 {result.meatAmount.toFixed(2)} 斤猪肉，
-                          <br/>足以制作 {Math.floor(result.meatAmount / 3)} 份红烧肉大餐。
+                          💡 {t('currencyConverter.meatHint', { meat: result.meatAmount.toFixed(2), num: Math.floor(result.meatAmount / 3) })}
                         </div>
                       </div>
                     )}
@@ -194,20 +192,19 @@ export default function CurrencyConverterPage() {
                     {type === 'wine' && (
                       <div className="p-3 rounded-lg bg-accent/10 border border-accent/30">
                         <div className="text-sm text-ink-700 dark:text-ink-300">
-                          💡 你可以购买 {result.wineAmount.toFixed(2)} 斤酒，
-                          <br/>足够招待 {Math.floor(result.wineAmount / 10)} 位客人。
+                          💡 {t('currencyConverter.wineHint', { wine: result.wineAmount.toFixed(2), num: Math.floor(result.wineAmount / 10) })}
                         </div>
                       </div>
                     )}
 
                     {type === 'custom' && (
                       <div className="p-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
-                        <div className="text-xs text-ink-500">可购买自定义商品</div>
+                        <div className="text-xs text-ink-500">{t('currencyConverter.customResult')}</div>
                         <div className="text-xl font-bold text-ink-900 dark:text-ink-100">
-                          {result.riceAmount.toFixed(0)} 斤当量
+                          {result.riceAmount.toFixed(0)} {t('currencyConverter.customEquivalent')}
                         </div>
                         <div className="text-xs text-ink-500 mt-1">
-                          (基于该朝代大米价格折算)
+                          {t('currencyConverter.customHint')}
                         </div>
                       </div>
                     )}
@@ -216,7 +213,7 @@ export default function CurrencyConverterPage() {
                     <div className="p-8 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 text-center">
                       <div className="text-4xl mb-2">⚠️</div>
                       <div className="text-ink-600 dark:text-ink-400">
-                        请输入有效的金额
+                        {t('currencyConverter.inputInvalid')}
                       </div>
                     </div>
                   )}
@@ -227,19 +224,19 @@ export default function CurrencyConverterPage() {
           {/* 历史价格对比表 */}
           <div className="price-table-card p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg mb-8">
             <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100 mb-6">
-              📈 不同朝代物价对比
+              📈 {t('currencyConverter.priceCompareTitle')}
             </h2>
 
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-ink-200 dark:border-ink-700">
-                    <th className="text-left py-3 px-4 text-ink-700 dark:text-ink-300 font-bold">朝代</th>
-                    <th className="text-left py-3 px-4 text-ink-700 dark:text-ink-300 font-bold">时期</th>
-                    <th className="text-left py-3 px-4 text-ink-700 dark:text-ink-300 font-bold">货币</th>
-                    <th className="text-right py-3 px-4 text-ink-700 dark:text-ink-300 font-bold">1贯=斤米</th>
-                    <th className="text-right py-3 px-4 text-ink-700 dark:text-ink-300 font-bold">1贯=匹布</th>
-                    <th className="text-right py-3 px-4 text-ink-700 dark:text-ink-300 font-bold">1贯=斤肉</th>
+                    <th className="text-left py-3 px-4 text-ink-700 dark:text-ink-300 font-bold">{t('currencyConverter.colDynasty')}</th>
+                    <th className="text-left py-3 px-4 text-ink-700 dark:text-ink-300 font-bold">{t('currencyConverter.colPeriod')}</th>
+                    <th className="text-left py-3 px-4 text-ink-700 dark:text-ink-300 font-bold">{t('currencyConverter.colCurrency')}</th>
+                    <th className="text-right py-3 px-4 text-ink-700 dark:text-ink-300 font-bold">{t('currencyConverter.colRicePerGuan')}</th>
+                    <th className="text-right py-3 px-4 text-ink-700 dark:text-ink-300 font-bold">{t('currencyConverter.colClothPerGuan')}</th>
+                    <th className="text-right py-3 px-4 text-ink-700 dark:text-ink-300 font-bold">{t('currencyConverter.colMeatPerGuan')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -257,8 +254,8 @@ export default function CurrencyConverterPage() {
                           currency.currencyType === 'paper' ? 'bg-blue-100 text-blue-800' :
                           'bg-silver-100 text-silver-800'
                         }`}>
-                          {currency.currencyType === 'coins' ? '铜钱' :
-                           currency.currencyType === 'paper' ? '纸币' : '白银'}
+                          {currency.currencyType === 'coins' ? t('currencyConverter.currencyCoins') :
+                           currency.currencyType === 'paper' ? t('currencyConverter.currencyPaper') : t('currencyConverter.currencySilver')}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-right font-mono">
@@ -277,50 +274,42 @@ export default function CurrencyConverterPage() {
             </div>
 
             <div className="mt-4 text-xs text-ink-500">
-              ⚠️ 注：价格基于历史文献记录的大致均值，实际价格会因地区、季节等因素波动。
+              ⚠️ {t('currencyConverter.priceNote')}
             </div>
           </div>
 
           {/* 货币单位说明 */}
           <div className="info-card p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-ink-50 dark:bg-ink-800">
             <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100 mb-6">
-              📚 货币单位说明
+              📚 {t('currencyConverter.unitExplainTitle')}
             </h2>
 
             <div className="space-y-4">
               <div>
-                <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">贯</h3>
+                <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">{t('currencyConverter.guan')}</h3>
                 <p className="text-ink-600 dark:text-ink-400">
-                  贯是古代最常见的货币单位。1贯 = 1000文铜钱。
-                  在宋朝及以后，纸币（交子、会子）和白银成为主要货币，但"贯"仍然被广泛使用。
+                  {t('currencyConverter.guanDesc')}
                 </p>
               </div>
 
               <div>
-                <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">文</h3>
+                <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">{t('currencyConverter.wen')}</h3>
                 <p className="text-ink-600 dark:text-ink-400">
-                  文是最小的货币单位，1文 = 1文铜钱。
-                  在古代，一文钱可以购买1升米（约1斤）。
+                  {t('currencyConverter.wenDesc')}
                 </p>
               </div>
 
               <div>
-                <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">两</h3>
+                <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">{t('currencyConverter.liang')}</h3>
                 <p className="text-ink-600 dark:text-ink-400">
-                  两是重量单位，在宋朝及以后成为主要货币单位。
-                  1两 = 10钱 = 100分。
-                  一两银子大约相当于1贯铜钱或1000文。
+                  {t('currencyConverter.liangDesc')}
                 </p>
               </div>
 
               <div>
-                <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">金银比例</h3>
+                <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">{t('currencyConverter.goldSilverRatio')}</h3>
                 <p className="text-ink-600 dark:text-ink-400">
-                  各朝代金银比价不同。一般来说：
-                  <br/>• 唐朝：1两金 = 4两银
-                  <br/>• 宋朝：1两金 = 2两银
-                  <br/>• 元朝：1两金 = 1两银（黄金开始成为主要货币）
-                  <br/>• 明清：1两金 = 0.5~0.8两银
+                  {t('currencyConverter.goldSilverDesc')}
                 </p>
               </div>
             </div>

@@ -8,12 +8,14 @@ import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { DYNASTY_ECONOMIES, type DynastyEconomyTemplate, type TurnState, type SandbagEvent, type SandbagOption } from '@/data/features/dynastyEconomy';
+import { useT } from '@/i18n/i18n';
 
 type Phase = 'select' | 'playing' | 'ended';
 
 function clamp(v: number, min: number, max: number) { return Math.max(min, Math.min(max, v)); }
 
 export default function DynastyEconomyPage() {
+  const t = useT();
   const [phase, setPhase] = useState<Phase>('select');
   const [template, setTemplate] = useState<DynastyEconomyTemplate | null>(null);
   const [currentTurn, setCurrentTurn] = useState<TurnState | null>(null);
@@ -135,7 +137,7 @@ export default function DynastyEconomyPage() {
   // 渲染状态条
   function StatBar({ label, value, max, color }: { label: string; value: number; max: number; color: string }) {
     const pct = clamp(Math.round(value / max * 100), 0, 100);
-    const status = pct > 60 ? '良好' : pct > 30 ? '一般' : '危险';
+    const status = pct > 60 ? t('dynastyEconomy.status_good') : pct > 30 ? t('dynastyEconomy.status_normal') : t('dynastyEconomy.status_danger');
     const statusColor = pct > 60 ? 'text-green-600' : pct > 30 ? 'text-amber-600' : 'text-red-600';
     return (
       <div className="flex items-center gap-2">
@@ -154,8 +156,8 @@ export default function DynastyEconomyPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="DYNASTY ECONOMY"
-            title="朝代经济沙盘"
-            description="模拟朝代经济管理"
+            title={t('dynastyEconomy.title')}
+            description={t('dynastyEconomy.description')}
           />
         </RevealOnScroll>
 
@@ -163,24 +165,24 @@ export default function DynastyEconomyPage() {
         {phase === 'select' && (
           <RevealOnScroll direction="up" delay={200}>
             <div className="mt-8 space-y-4">
-              {DYNASTY_ECONOMIES.map(t => (
+              {DYNASTY_ECONOMIES.map(tpl => (
                 <button
-                  key={t.id}
-                  onClick={() => startGame(t)}
+                  key={tpl.id}
+                  onClick={() => startGame(tpl)}
                   className="w-full p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700 hover:border-accent hover:shadow-lg transition-all text-left group"
                 >
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="text-2xl">{t.emoji}</span>
+                    <span className="text-2xl">{tpl.emoji}</span>
                     <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 group-hover:text-accent transition-colors">
-                      {t.name}
+                      {tpl.name}
                     </h3>
-                    <span className="text-sm text-ink-500">{t.period}</span>
+                    <span className="text-sm text-ink-500">{tpl.period}</span>
                   </div>
                   <p className="text-sm text-ink-600 dark:text-ink-400">
-                    国库 {t.initialTreasury}万贯 · 民心 {t.initialMorale} · 边防 {t.initialDefense} · 人口 {t.populationBase}万
+                    {t('dynastyEconomy.treasury')} {tpl.initialTreasury}万贯 · {t('dynastyEconomy.morale')} {tpl.initialMorale} · {t('dynastyEconomy.defense')} {tpl.initialDefense} · {t('dynastyEconomy.population')} {tpl.populationBase}万
                   </p>
                   <div className="text-xs text-ink-400 mt-1">
-                    关键事件：{t.events.map(e => e.title).join(' → ')}
+                    {t('dynastyEconomy.key_events')}{tpl.events.map(e => e.title).join(' → ')}
                   </div>
                 </button>
               ))}
@@ -194,18 +196,18 @@ export default function DynastyEconomyPage() {
             {/* 回合信息 */}
             <div className="p-4 bg-gradient-to-br from-accent/5 to-amber-500/5 dark:from-accent/10 dark:to-amber-700/10 rounded-xl border border-accent/20 text-center">
               <div className="text-lg font-bold text-ink-900 dark:text-ink-100">
-                {template.emoji} {template.name} · 第 {turnNum} / {MAX_TURNS} 回合
+                {template.emoji} {template.name} · {t('dynastyEconomy.turn_of', { turn: turnNum, max: MAX_TURNS })}
               </div>
             </div>
 
             {/* 状态面板 */}
             <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700 space-y-3">
-              <StatBar label="💰 国库" value={currentTurn.treasury} max={1000} color="bg-amber-500" />
-              <StatBar label="心 民心" value={currentTurn.morale} max={100} color="bg-green-500" />
-              <StatBar label="🛡️ 边防" value={currentTurn.defense} max={100} color="bg-blue-500" />
-              <StatBar label="文 文化" value={currentTurn.culture} max={100} color="bg-purple-500" />
+              <StatBar label={`💰 ${t('dynastyEconomy.treasury')}`} value={currentTurn.treasury} max={1000} color="bg-amber-500" />
+              <StatBar label={`心 ${t('dynastyEconomy.morale')}`} value={currentTurn.morale} max={100} color="bg-green-500" />
+              <StatBar label={`🛡️ ${t('dynastyEconomy.defense')}`} value={currentTurn.defense} max={100} color="bg-blue-500" />
+              <StatBar label={`文 ${t('dynastyEconomy.culture')}`} value={currentTurn.culture} max={100} color="bg-purple-500" />
               <div className="flex items-center gap-2 pt-1">
-                <span className="text-sm font-bold text-ink-700 dark:text-ink-300 w-20">民 人口</span>
+                <span className="text-sm font-bold text-ink-700 dark:text-ink-300 w-20">民 {t('dynastyEconomy.population')}</span>
                 <span className="text-lg font-bold text-ink-900 dark:text-ink-100">{currentTurn.population}万</span>
               </div>
             </div>
@@ -213,12 +215,12 @@ export default function DynastyEconomyPage() {
             {/* 政策调节 */}
             <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
               <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-                策 本回合政策
+                策 {t('dynastyEconomy.policy_this_turn')}
               </h3>
               <div className="space-y-4">
                 <div>
                   <div className="flex items-center justify-between text-sm mb-1">
-                    <span className="font-bold text-ink-700 dark:text-ink-300">税率</span>
+                    <span className="font-bold text-ink-700 dark:text-ink-300">{t('dynastyEconomy.tax_rate')}</span>
                     <span className="text-accent font-bold">{taxRate}%</span>
                   </div>
                   <input
@@ -231,16 +233,16 @@ export default function DynastyEconomyPage() {
                     className="w-full h-2 rounded-lg accent-accent"
                   />
                   <div className="text-xs text-ink-400 mt-1">
-                    {taxRate < 10 ? '极低税率，民心上升但国库收入少' :
-                     taxRate < 15 ? '低税率，民心稳定，收入正常' :
-                     taxRate < 20 ? '中等税率，收入可观，民心略降' :
-                     taxRate < 25 ? '高税率，国库充盈但民心下降' :
-                     '极高税率，民怨沸腾！'}
+                    {taxRate < 10 ? t('dynastyEconomy.tax_very_low') :
+                     taxRate < 15 ? t('dynastyEconomy.tax_low') :
+                     taxRate < 20 ? t('dynastyEconomy.tax_medium') :
+                     taxRate < 25 ? t('dynastyEconomy.tax_high') :
+                     t('dynastyEconomy.tax_very_high')}
                   </div>
                 </div>
                 <div>
                   <div className="flex items-center justify-between text-sm mb-1">
-                    <span className="font-bold text-ink-700 dark:text-ink-300">军费占比</span>
+                    <span className="font-bold text-ink-700 dark:text-ink-300">{t('dynastyEconomy.military_budget')}</span>
                     <span className="text-blue-600 dark:text-blue-400 font-bold">{militaryBudget}%</span>
                   </div>
                   <input
@@ -253,10 +255,10 @@ export default function DynastyEconomyPage() {
                     className="w-full h-2 rounded-lg accent-blue-500"
                   />
                   <div className="text-xs text-ink-400 mt-1">
-                    {militaryBudget < 15 ? '轻武重文：边防弱，文化强' :
-                     militaryBudget < 30 ? '均衡分配：边防和文化同步发展' :
-                     militaryBudget < 45 ? '重武轻文：边防强，文化弱' :
-                     '穷兵黩武！边防极强但国库和文化衰退'}
+                    {militaryBudget < 15 ? t('dynastyEconomy.mil_very_low') :
+                     militaryBudget < 30 ? t('dynastyEconomy.mil_low') :
+                     militaryBudget < 45 ? t('dynastyEconomy.mil_high') :
+                     t('dynastyEconomy.mil_very_high')}
                   </div>
                 </div>
               </div>
@@ -266,7 +268,7 @@ export default function DynastyEconomyPage() {
             {pendingEvent && (
               <div className="p-5 bg-red-50/60 dark:bg-red-900/10 rounded-xl border-l-4 border-red-500">
                 <h3 className="text-sm font-bold text-red-700 dark:text-red-400 mb-2 tracking-widest">
-                  警 历史事件：{pendingEvent.title}
+                  警 {t('dynastyEconomy.historical_event')}{pendingEvent.title}
                 </h3>
                 <p className="text-ink-800 dark:text-ink-200 mb-3">{pendingEvent.description}</p>
 
@@ -285,7 +287,7 @@ export default function DynastyEconomyPage() {
                         <div className="font-bold">{opt.label}</div>
                         <div className="text-xs opacity-80">{opt.description}</div>
                         <div className="text-xs mt-1">
-                          效果：{Object.entries(opt.effects).filter(([k,v]) => v !== 0).map(([k,v]) => `${k} ${v>0?'+':''}${v}`).join(' / ')}
+                          {t('dynastyEconomy.effects')}{Object.entries(opt.effects).filter(([k,v]) => v !== 0).map(([k,v]) => `${k} ${v>0?'+':''}${v}`).join(' / ')}
                         </div>
                       </button>
                     ))}
@@ -293,12 +295,12 @@ export default function DynastyEconomyPage() {
                       onClick={skipEvent}
                       className="text-sm text-ink-400 hover:text-ink-600 transition-colors"
                     >
-                      不做应对（接受默认影响）
+                      {t('dynastyEconomy.skip_event')}
                     </button>
                   </div>
                 ) : (
                   <div className="text-xs text-ink-400">
-                    无可选方案，将受默认影响：{Object.entries(pendingEvent.effects).filter(([k,v]) => v !== 0).map(([k,v]) => `${k} ${v>0?'+':''}${v}`).join(' / ')}
+                    {t('dynastyEconomy.no_options')}{Object.entries(pendingEvent.effects).filter(([k,v]) => v !== 0).map(([k,v]) => `${k} ${v>0?'+':''}${v}`).join(' / ')}
                   </div>
                 )}
               </div>
@@ -308,13 +310,13 @@ export default function DynastyEconomyPage() {
             {history.length > 1 && (
               <div className="p-4 bg-ink-50/50 dark:bg-ink-900/30 rounded-lg border border-ink-200 dark:border-ink-700">
                 <h4 className="text-xs font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                  势 国运走势
+                  势 {t('dynastyEconomy.trend')}
                 </h4>
                 <div className="grid grid-cols-4 gap-2 text-xs">
-                  <div className="font-bold text-ink-500">回合</div>
-                  <div className="font-bold text-amber-600">国库</div>
-                  <div className="font-bold text-green-600">民心</div>
-                  <div className="font-bold text-blue-600">边防</div>
+                  <div className="font-bold text-ink-500">{t('dynastyEconomy.turn')}</div>
+                  <div className="font-bold text-amber-600">{t('dynastyEconomy.treasury')}</div>
+                  <div className="font-bold text-green-600">{t('dynastyEconomy.morale')}</div>
+                  <div className="font-bold text-blue-600">{t('dynastyEconomy.defense')}</div>
                   {history.slice(-5).map(h => (
                     <React.Fragment key={h.turn}>
                       <div className="text-ink-500">{h.turn}{h.eventTitle ? `(${h.eventTitle.slice(0,4)})` : ''}</div>
@@ -333,13 +335,13 @@ export default function DynastyEconomyPage() {
                 onClick={nextTurn}
                 className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg transition-all"
               >
-                第 {turnNum + 1} 回合 →
+                {t('dynastyEconomy.turn_next', { turn: turnNum + 1 })}
               </button>
               <button
                 onClick={() => setPhase('select')}
                 className="px-6 py-3 rounded-lg border-2 border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-300 font-bold hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors"
               >
-                返回选择
+                {t('dynastyEconomy.back_to_select')}
               </button>
             </div>
           </div>
@@ -351,41 +353,41 @@ export default function DynastyEconomyPage() {
             <div className="p-6 bg-gradient-to-br from-accent/10 to-amber-500/10 dark:from-accent/15 dark:to-amber-700/15 rounded-xl text-center">
               <div className="text-3xl mb-2">{template.emoji}</div>
               <h2 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-1">
-                {template.name} · {MAX_TURNS} 回合终
+                {template.name} · {t('dynastyEconomy.turns_ended', { max: MAX_TURNS })}
               </h2>
               <div className="text-sm text-ink-500 dark:text-ink-400">
-                {currentTurn.morale <= 0 ? '民心崩溃，王朝覆灭！' :
-                 currentTurn.defense <= 0 ? '边防崩溃，外敌入侵！' :
-                 currentTurn.treasury <= 0 ? '国库空虚，财政崩溃！' :
-                 '成功维持国运！'}
+                {currentTurn.morale <= 0 ? t('dynastyEconomy.end_morale') :
+                 currentTurn.defense <= 0 ? t('dynastyEconomy.end_defense') :
+                 currentTurn.treasury <= 0 ? t('dynastyEconomy.end_treasury') :
+                 t('dynastyEconomy.end_success')}
               </div>
             </div>
 
             {/* 最终状态 */}
             <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700 space-y-3">
-              <StatBar label="💰 国库" value={currentTurn.treasury} max={1000} color="bg-amber-500" />
-              <StatBar label="心 民心" value={currentTurn.morale} max={100} color="bg-green-500" />
-              <StatBar label="🛡️ 边防" value={currentTurn.defense} max={100} color="bg-blue-500" />
-              <StatBar label="文 文化" value={currentTurn.culture} max={100} color="bg-purple-500" />
+              <StatBar label={`💰 ${t('dynastyEconomy.treasury')}`} value={currentTurn.treasury} max={1000} color="bg-amber-500" />
+              <StatBar label={`心 ${t('dynastyEconomy.morale')}`} value={currentTurn.morale} max={100} color="bg-green-500" />
+              <StatBar label={`🛡️ ${t('dynastyEconomy.defense')}`} value={currentTurn.defense} max={100} color="bg-blue-500" />
+              <StatBar label={`文 ${t('dynastyEconomy.culture')}`} value={currentTurn.culture} max={100} color="bg-purple-500" />
               <div className="text-center mt-2">
-                <span className="text-sm text-ink-500">人口：</span>
+                <span className="text-sm text-ink-500">{t('dynastyEconomy.population')}：</span>
                 <span className="font-bold text-ink-900 dark:text-ink-100">{currentTurn.population}万</span>
               </div>
             </div>
 
             {/* 评分 */}
             <div className="p-5 bg-accent/5 dark:bg-accent/10 rounded-xl text-center">
-              <div className="text-xs text-accent tracking-widest mb-1">综合评分</div>
+              <div className="text-xs text-accent tracking-widest mb-1">{t('dynastyEconomy.score')}</div>
               <div className="text-4xl font-bold text-accent">
                 {Math.round((currentTurn.treasury / 10 + currentTurn.morale + currentTurn.defense + currentTurn.culture + currentTurn.population / 100) / 5)}
               </div>
-              <div className="text-xs text-ink-400 mt-1">满分 100</div>
+              <div className="text-xs text-ink-400 mt-1">{t('dynastyEconomy.max_score')}</div>
             </div>
 
             {/* 历史结局对比 */}
             <div className="p-5 bg-amber-50/60 dark:bg-amber-900/10 rounded-lg border-l-4 border-amber-500">
               <h3 className="text-sm font-bold text-amber-700 dark:text-amber-400 mb-2 tracking-widest">
-                史 真实历史结局
+                史 {t('dynastyEconomy.historical_outcome')}
               </h3>
               <p className="text-ink-800 dark:text-ink-200 leading-loose">{template.historicalOutcome}</p>
             </div>
@@ -393,12 +395,12 @@ export default function DynastyEconomyPage() {
             {/* 操作 */}
             <div className="flex gap-3 justify-center">
               <button onClick={() => startGame(template)} className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg transition-all">
-                重新挑战
+                {t('dynastyEconomy.retry')}
               </button>
               <button onClick={() => setPhase('select')} className="px-6 py-3 rounded-lg border-2 border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-300 font-bold hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors">
-                选择其他朝代
+                {t('dynastyEconomy.choose_other')}
               </button>
-              <Link to="/" className="btn-secondary">返回首页</Link>
+              <Link to="/" className="btn-secondary">{t('dynastyEconomy.back_home')}</Link>
             </div>
           </div>
         )}

@@ -1,4 +1,5 @@
 import EntityEditor from './EntityEditor';
+import { useT } from '@/i18n/i18n';
 import { adminGetEvents, adminSaveEvent, adminDeleteEvent, type AdminEventDTO } from '@/services/adminApi';
 
 const fields = [
@@ -17,10 +18,11 @@ const fields = [
 ];
 
 export default function EventsEditor() {
+  const t = useT();
   return (
     <EntityEditor
       type="events"
-      title="事件管理"
+      title={t('admin.events_manage')}
       listFn={adminGetEvents as any}
       saveFn={adminSaveEvent as any}
       deleteFn={adminDeleteEvent as any}

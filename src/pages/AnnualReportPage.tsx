@@ -10,6 +10,7 @@ import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { usePersonaStore } from '@/store/personaStore';
 import { useFavoriteStore } from '@/store/favoriteStore';
+import { useT } from '@/i18n/i18n';
 
 /* ─── 年度报告数据 ─── */
 interface ReportData {
@@ -40,22 +41,22 @@ interface ReportData {
 
 interface Badge {
   id: string;
-  name: string;
+  nameKey: string;
   emoji: string;
-  description: string;
+  descKey: string;
   earned: boolean;
 }
 
 /* ─── 徽章定义 ─── */
 const BADGE_DEFINITIONS: Omit<Badge, 'earned'>[] = [
-  { id: 'scholar', name: '博学之士', emoji: '📚', description: '浏览知识卡片 10 次以上' },
-  { id: 'explorer', name: '历史探险家', emoji: '🗺️', description: '浏览朝代页面 5 次以上' },
-  { id: 'debater', name: '辩论达人', emoji: '🎤', description: '参与跨时空辩论 3 次以上' },
-  { id: 'simulator', name: '决策大师', emoji: '🎲', description: '完成历史决策 5 次以上' },
-  { id: 'quizmaster', name: '答题高手', emoji: '🏅', description: '答题正确率达到 80%' },
-  { id: 'collector', name: '收藏家', emoji: '💎', description: '收藏 5 个以上条目' },
-  { id: 'reader', name: '深度阅读者', emoji: '📖', description: '阅读专题文章 3 篇以上' },
-  { id: 'historian', name: '史学通才', emoji: '🏛️', description: '四个维度均超过 50' },
+  { id: 'scholar', nameKey: 'annualReport.badgeScholar', emoji: '📚', descKey: 'annualReport.badgeScholarDesc' },
+  { id: 'explorer', nameKey: 'annualReport.badgeExplorer', emoji: '🗺️', descKey: 'annualReport.badgeExplorerDesc' },
+  { id: 'debater', nameKey: 'annualReport.badgeDebater', emoji: '🎤', descKey: 'annualReport.badgeDebaterDesc' },
+  { id: 'simulator', nameKey: 'annualReport.badgeSimulator', emoji: '🎲', descKey: 'annualReport.badgeSimulatorDesc' },
+  { id: 'quizmaster', nameKey: 'annualReport.badgeQuizmaster', emoji: '🏅', descKey: 'annualReport.badgeQuizmasterDesc' },
+  { id: 'collector', nameKey: 'annualReport.badgeCollector', emoji: '💎', descKey: 'annualReport.badgeCollectorDesc' },
+  { id: 'reader', nameKey: 'annualReport.badgeReader', emoji: '📖', descKey: 'annualReport.badgeReaderDesc' },
+  { id: 'historian', nameKey: 'annualReport.badgeHistorian', emoji: '🏛️', descKey: 'annualReport.badgeHistorianDesc' },
 ];
 
 /* ─── 环形进度条 ─── */
@@ -101,11 +102,12 @@ function CircularProgress({ value, size = 120, strokeWidth = 8, color = '#F97316
 
 /* ─── 维度雷达图（简化版条形图） ─── */
 function DimensionBars({ dimensions }: { dimensions: ReportData['dimensions'] }) {
+  const t = useT();
   const dims = [
-    { key: 'governance' as const, label: '文治', emoji: '📜' },
-    { key: 'military' as const, label: '武功', emoji: '⚔️' },
-    { key: 'wisdom' as const, label: '智略', emoji: '🧠' },
-    { key: 'charisma' as const, label: '博学', emoji: '🎭' },
+    { key: 'governance' as const, labelKey: 'annualReport.dimGovernance', emoji: '📜' },
+    { key: 'military' as const, labelKey: 'annualReport.dimMilitary', emoji: '⚔️' },
+    { key: 'wisdom' as const, labelKey: 'annualReport.dimWisdom', emoji: '🧠' },
+    { key: 'charisma' as const, labelKey: 'annualReport.dimCharisma', emoji: '🎭' },
   ];
 
   return (
@@ -114,7 +116,7 @@ function DimensionBars({ dimensions }: { dimensions: ReportData['dimensions'] })
         <div key={d.key}>
           <div className="flex items-center justify-between mb-1">
             <span className="text-sm font-bold text-ink-700 dark:text-ink-300">
-              {d.emoji} {d.label}
+              {d.emoji} {t(d.labelKey)}
             </span>
             <span className="text-sm font-bold text-accent">{dimensions[d.key]}</span>
           </div>
@@ -132,6 +134,7 @@ function DimensionBars({ dimensions }: { dimensions: ReportData['dimensions'] })
 
 /* ─── 主页面 ─── */
 export default function AnnualReportPage() {
+  const t = useT();
   const [selectedYear] = useState(2025);
   const persona = usePersonaStore.getState().persona;
   const favorites = useFavoriteStore.getState().favorites;
@@ -143,8 +146,8 @@ export default function AnnualReportPage() {
     const dims = persona.dimensions;
 
     // 确定偏好朝代
-    const topDynasty = persona.favoriteDynasties[0] || '暂无数据';
-    const topPerson = persona.favoritePersons[0] || '暂无数据';
+    const topDynasty = persona.favoriteDynasties[0] || t('annualReport.noDataFallback');
+    const topPerson = persona.favoritePersons[0] || t('annualReport.noDataFallback');
 
     // 计算总浏览
     const totalVisits = browse.eventsViewed + browse.personsViewed + browse.dynastiesViewed + browse.knowledgeViewed + browse.topicsRead;
@@ -191,11 +194,11 @@ export default function AnnualReportPage() {
         <div className="max-w-4xl mx-auto text-center">
           <SectionHeader
             label="ANNUAL REPORT"
-            title="年度报告"
-            description="暂无数据，请先浏览页面积累数据"
+            title={t('annualReport.emptyTitle')}
+            description={t('annualReport.emptyDesc')}
           />
           <div className="mt-12 text-6xl mb-4">📊</div>
-          <p className="text-ink-500">开始探索历史长河，生成你的专属年度报告</p>
+          <p className="text-ink-500">{t('annualReport.emptyHint')}</p>
         </div>
       </div>
     );
@@ -211,8 +214,8 @@ export default function AnnualReportPage() {
         <RevealOnScroll>
           <SectionHeader
             label="ANNUAL REPORT"
-            title="我的史馆年度报告"
-            description={`回顾你在 ${report.year} 年的历史之旅`}
+            title={t('annualReport.title')}
+            description={t('annualReport.subtitle', { year: report.year })}
           />
         </RevealOnScroll>
 
@@ -221,19 +224,19 @@ export default function AnnualReportPage() {
           <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-4 rounded-2xl bg-gradient-to-br from-accent to-amber-500 text-white text-center shadow-lg">
               <div className="text-3xl font-bold">{report.totalVisits}</div>
-              <div className="text-sm opacity-90">总浏览</div>
+              <div className="text-sm opacity-90">{t('annualReport.statVisits')}</div>
             </div>
             <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-500 text-white text-center shadow-lg">
               <div className="text-3xl font-bold">{report.favoriteCount}</div>
-              <div className="text-sm opacity-90">收藏</div>
+              <div className="text-sm opacity-90">{t('annualReport.statFavorites')}</div>
             </div>
             <div className="p-4 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 text-white text-center shadow-lg">
               <div className="text-3xl font-bold">{report.debateCount}</div>
-              <div className="text-sm opacity-90">辩论</div>
+              <div className="text-sm opacity-90">{t('annualReport.statDebates')}</div>
             </div>
             <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 text-white text-center shadow-lg">
               <div className="text-3xl font-bold">{report.simulationCount}</div>
-              <div className="text-sm opacity-90">决策</div>
+              <div className="text-sm opacity-90">{t('annualReport.statSimulations')}</div>
             </div>
           </div>
         </RevealOnScroll>
@@ -241,24 +244,24 @@ export default function AnnualReportPage() {
         {/* 偏好分析 */}
         <RevealOnScroll delay={200}>
           <div className="mt-8 bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-            <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">🎯 偏好分析</h3>
+            <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">🎯 {t('annualReport.preferenceAnalysis')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="text-center">
                 <CircularProgress value={report.quizAccuracy} color="#22C55E" />
-                <p className="text-sm text-ink-500 mt-2">答题正确率</p>
+                <p className="text-sm text-ink-500 mt-2">{t('annualReport.quizAccuracy')}</p>
               </div>
               <div className="space-y-3">
                 <div>
-                  <span className="text-sm text-ink-500">最爱朝代：</span>
+                  <span className="text-sm text-ink-500">{t('annualReport.favoriteDynasty')}：</span>
                   <span className="font-bold text-accent">{report.topDynasty}</span>
                 </div>
                 <div>
-                  <span className="text-sm text-ink-500">最关注人物：</span>
+                  <span className="text-sm text-ink-500">{t('annualReport.favoritePerson')}：</span>
                   <span className="font-bold text-accent">{report.topPerson}</span>
                 </div>
                 {report.matchedFigure && (
                   <div>
-                    <span className="text-sm text-ink-500">匹配历史人物：</span>
+                    <span className="text-sm text-ink-500">{t('annualReport.matchedFigure')}：</span>
                     <span className="font-bold text-amber-600">{report.matchedFigure}</span>
                   </div>
                 )}
@@ -270,7 +273,7 @@ export default function AnnualReportPage() {
         {/* 性格维度 */}
         <RevealOnScroll delay={300}>
           <div className="mt-8 bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-            <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">📊 性格维度</h3>
+            <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">📊 {t('annualReport.dimensionAnalysis')}</h3>
             <DimensionBars dimensions={report.dimensions} />
           </div>
         </RevealOnScroll>
@@ -278,19 +281,19 @@ export default function AnnualReportPage() {
         {/* 浏览分布 */}
         <RevealOnScroll delay={400}>
           <div className="mt-8 bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-            <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">📈 浏览分布</h3>
+            <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-4">📈 {t('annualReport.browseDistribution')}</h3>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
               {[
-                { label: '事件', value: report.browseSummary.eventsViewed, emoji: '📜' },
-                { label: '人物', value: report.browseSummary.personsViewed, emoji: '👤' },
-                { label: '朝代', value: report.browseSummary.dynastiesViewed, emoji: '🏛️' },
-                { label: '知识', value: report.browseSummary.knowledgeViewed, emoji: '📚' },
-                { label: '专题', value: report.browseSummary.topicsRead, emoji: '📖' },
+                { labelKey: 'annualReport.browseEvents', value: report.browseSummary.eventsViewed, emoji: '📜' },
+                { labelKey: 'annualReport.browsePersons', value: report.browseSummary.personsViewed, emoji: '👤' },
+                { labelKey: 'annualReport.browseDynasties', value: report.browseSummary.dynastiesViewed, emoji: '🏛️' },
+                { labelKey: 'annualReport.browseKnowledge', value: report.browseSummary.knowledgeViewed, emoji: '📚' },
+                { labelKey: 'annualReport.browseTopics', value: report.browseSummary.topicsRead, emoji: '📖' },
               ].map(item => (
-                <div key={item.label} className="text-center p-3 rounded-xl bg-ink-50 dark:bg-ink-800">
+                <div key={item.labelKey} className="text-center p-3 rounded-xl bg-ink-50 dark:bg-ink-800">
                   <div className="text-2xl mb-1">{item.emoji}</div>
                   <div className="text-xl font-bold text-ink-900 dark:text-ink-100">{item.value}</div>
-                  <div className="text-xs text-ink-500">{item.label}</div>
+                  <div className="text-xs text-ink-500">{t(item.labelKey)}</div>
                 </div>
               ))}
             </div>
@@ -300,16 +303,16 @@ export default function AnnualReportPage() {
         {/* 徽章 */}
         <RevealOnScroll delay={500}>
           <div className="mt-8 bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-            <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2">🏅 徽章成就</h3>
-            <p className="text-sm text-ink-500 mb-4">已获得 {earnedBadges.length} / {report.badges.length} 枚徽章</p>
+            <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2">🏅 {t('annualReport.badgeAchievements')}</h3>
+            <p className="text-sm text-ink-500 mb-4">{t('annualReport.badgeProgress', { earned: earnedBadges.length, total: report.badges.length })}</p>
 
             {earnedBadges.length > 0 && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
                 {earnedBadges.map(badge => (
                   <div key={badge.id} className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800 text-center">
                     <div className="text-3xl mb-1">{badge.emoji}</div>
-                    <div className="font-bold text-sm text-ink-900 dark:text-ink-100">{badge.name}</div>
-                    <div className="text-xs text-ink-500 mt-1">{badge.description}</div>
+                    <div className="font-bold text-sm text-ink-900 dark:text-ink-100">{t(badge.nameKey)}</div>
+                    <div className="text-xs text-ink-500 mt-1">{t(badge.descKey)}</div>
                   </div>
                 ))}
               </div>
@@ -317,12 +320,12 @@ export default function AnnualReportPage() {
 
             {unearnedBadges.length > 0 && (
               <div>
-                <h4 className="text-sm font-bold text-ink-500 mb-2">🔒 未解锁</h4>
+                <h4 className="text-sm font-bold text-ink-500 mb-2">🔒 {t('annualReport.badgeLocked')}</h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {unearnedBadges.map(badge => (
                     <div key={badge.id} className="p-3 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 text-center opacity-50">
                       <div className="text-2xl mb-1">🔒</div>
-                      <div className="font-bold text-sm text-ink-500">{badge.name}</div>
+                      <div className="font-bold text-sm text-ink-500">{t(badge.nameKey)}</div>
                     </div>
                   ))}
                 </div>

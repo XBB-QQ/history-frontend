@@ -8,12 +8,14 @@ import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { DYNASTY_TERRITORIES, TIMELINE_YEARS, getTerritoryAtYear, type DynastyTerritory } from '@/data/features/dynastyTerritory';
+import { useT } from '@/i18n/i18n';
 
-function formatYear(y: number): string {
-  return y < 0 ? `公元前${Math.abs(y)}年` : `公元${y}年`;
+function formatYear(y: number, t: (key: string, params?: Record<string, string | number>) => string): string {
+  return y < 0 ? t('territoryMap.yearBce', { year: Math.abs(y) }) : t('territoryMap.yearCe', { year: y });
 }
 
 export default function TerritoryMapPage() {
+  const t = useT();
   const [selectedYear, setSelectedYear] = useState(TIMELINE_YEARS[0]);
 
   const activeDynasties = useMemo(() => getTerritoryAtYear(selectedYear), [selectedYear]);
@@ -49,8 +51,8 @@ export default function TerritoryMapPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="DYNASTY TERRITORY"
-            title="疆域动态地图"
-            description="朝代疆域变化"
+            title={t('territoryMap.title')}
+            description={t('territoryMap.description')}
           />
         </RevealOnScroll>
 
@@ -58,7 +60,7 @@ export default function TerritoryMapPage() {
         <RevealOnScroll direction="up" delay={200}>
           <div className="mt-8 p-4 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
             <div className="flex items-center gap-3 mb-2">
-              <span className="text-sm font-bold text-accent">{formatYear(selectedYear)}</span>
+              <span className="text-sm font-bold text-accent">{formatYear(selectedYear, t)}</span>
               <input
                 type="range"
                 min={0}
@@ -161,7 +163,7 @@ export default function TerritoryMapPage() {
                       fontSize={8}
                       opacity={0.6}
                     >
-                      {d.areaEstimate}万km²
+                      {d.areaEstimate}{t('territoryMap.areaUnit')}
                     </text>
                   </g>
                 );
@@ -170,10 +172,10 @@ export default function TerritoryMapPage() {
               {/* 标注重要城市 */}
               {/* 北京 */}
               <circle cx={lngToX(116)} cy={latToY(40)} r={3} fill="#d97706" />
-              <text x={lngToX(116)} y={latToY(40) - 8} textAnchor="middle" fill="#d97706" fontSize={8}>北京</text>
+              <text x={lngToX(116)} y={latToY(40) - 8} textAnchor="middle" fill="#d97706" fontSize={8}>{t('territoryMap.beijing')}</text>
               {/* 西安 */}
               <circle cx={lngToX(109)} cy={latToY(34)} r={3} fill="#d97706" />
-              <text x={lngToX(109)} y={latToY(34) - 8} textAnchor="middle" fill="#d97706" fontSize={8}>长安</text>
+              <text x={lngToX(109)} y={latToY(34) - 8} textAnchor="middle" fill="#d97706" fontSize={8}>{t('territoryMap.changAn')}</text>
 
               {/* 年份水印 */}
               <text x={MAP_W - 10} y={MAP_H - 10} textAnchor="end" fill="#3a5070" fontSize={24} fontWeight="bold">
@@ -196,7 +198,7 @@ export default function TerritoryMapPage() {
                   </div>
                   <p className="text-sm text-ink-600 dark:text-ink-400 mb-1">{d.description}</p>
                   <div className="text-xs text-ink-500 dark:text-ink-500">
-                    面积估算：{d.areaEstimate}万km² · 都城：{d.capitals.join('、')}
+                    {t('territoryMap.area')}：{d.areaEstimate}{t('territoryMap.areaUnit')} · {t('territoryMap.capital')}：{d.capitals.join('、')}
                   </div>
                 </div>
               ))}
@@ -206,7 +208,7 @@ export default function TerritoryMapPage() {
 
         {activeDynasties.length === 0 && (
           <div className="mt-4 p-4 text-center text-ink-400">
-            {formatYear(selectedYear)} 时期暂无数据
+            {t('territoryMap.noData', { year: formatYear(selectedYear, t) })}
           </div>
         )}
 
@@ -214,19 +216,19 @@ export default function TerritoryMapPage() {
         {activeEvents.length > 0 && (
           <div className="mt-4 p-4 bg-amber-50/60 dark:bg-amber-900/10 rounded-lg border-l-4 border-amber-500">
             <h4 className="text-xs font-bold text-amber-700 dark:text-amber-400 mb-2 tracking-widest">
-              史 近期疆域事件
+              史 {t('territoryMap.recentEvents')}
             </h4>
             <div className="space-y-1">
               {activeEvents.map(e => (
                 <div key={`${e.dynasty}-${e.year}-${e.title}`} className="text-sm">
-                  <span className="font-bold">{e.dynasty} · {formatYear(e.year)}：</span>
+                  <span className="font-bold">{e.dynasty} · {formatYear(e.year, t)}：</span>
                   <span className="text-ink-600 dark:text-ink-400">{e.title} — {e.description}</span>
                   <span className={`ml-1 text-xs px-1 rounded ${
                     e.type === 'expand' ? 'bg-green-500/10 text-green-700 dark:text-green-400' :
                     e.type === 'shrink' ? 'bg-red-500/10 text-red-700 dark:text-red-400' :
                     'bg-ink-100 text-ink-600'
                   }`}>
-                    {e.type === 'expand' ? '↑扩张' : e.type === 'shrink' ? '↓收缩' : '→稳定'}
+                    {e.type === 'expand' ? `↑${t('territoryMap.expand')}` : e.type === 'shrink' ? `↓${t('territoryMap.shrink')}` : `→${t('territoryMap.stable')}`}
                   </span>
                 </div>
               ))}
@@ -237,7 +239,7 @@ export default function TerritoryMapPage() {
         {/* 底部 */}
         <RevealOnScroll direction="fade" delay={400}>
           <div className="mt-12 text-center">
-            <Link to="/" className="btn-secondary">返回首页</Link>
+            <Link to="/" className="btn-secondary">{t('common.back_home')}</Link>
           </div>
         </RevealOnScroll>
       </div>

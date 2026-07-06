@@ -8,26 +8,28 @@ import { Link } from 'react-router-dom';
 import { WORLD_HISTORY } from '@/data/themes/worldHistory';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import { useT } from '@/i18n/i18n';
 
 function WorldComparePage() {
+  const t = useT();
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
       <div className="max-w-6xl mx-auto">
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="WORLD COMPARE"
-            title="中外时间轴对照"
-            description="中外对照"
+            title={t('worldCompare.title')}
+            description={t('worldCompare.description')}
           />
         </RevealOnScroll>
 
         {/* 表头 */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 text-center font-bold">
           <div className="p-3 bg-accent/10 dark:bg-accent/20 rounded-t-lg border-b-2 border-accent">
-            <span className="text-accent text-lg">🇨🇳 中国</span>
+            <span className="text-accent text-lg">🇨🇳 {t('worldCompare.china')}</span>
           </div>
           <div className="p-3 bg-indigo-500/10 dark:bg-indigo-700/20 rounded-t-lg border-b-2 border-indigo-500">
-            <span className="text-indigo-600 dark:text-indigo-400 text-lg">世 世界</span>
+            <span className="text-indigo-600 dark:text-indigo-400 text-lg">世 {t('worldCompare.world')}</span>
           </div>
         </div>
 
@@ -94,7 +96,7 @@ function WorldComparePage() {
         <RevealOnScroll direction="fade" delay={300}>
           <div className="mt-12 text-center">
             <Link to="/" className="btn-secondary">
-              返回首页
+              {t('common.back_home')}
             </Link>
           </div>
         </RevealOnScroll>

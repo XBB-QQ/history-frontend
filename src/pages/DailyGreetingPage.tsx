@@ -17,6 +17,7 @@ import {
   needTodayGreeting,
   type GreetingMessage,
 } from '@/features/dailyGreeting';
+import { useT } from '@/i18n/i18n';
 
 export default function DailyGreetingPage() {
   const [followedIds, setFollowedIds] = useState<string[]>([]);
@@ -25,6 +26,7 @@ export default function DailyGreetingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showRefresh, setShowRefresh] = useState(false);
+  const t = useT();
 
   useEffect(() => {
     const followed = getFollowedFigures();
@@ -46,7 +48,7 @@ export default function DailyGreetingPage() {
       setHistoryGreetings(getGreetingHistory().filter(g => g.date !== getTodayString()));
       setShowRefresh(false);
     } catch (e) {
-      setError(e instanceof Error ? e.message : '生成失败');
+      setError(e instanceof Error ? e.message : t('dailyGreeting.generate_failed'));
     } finally {
       setLoading(false);
     }
@@ -69,8 +71,8 @@ export default function DailyGreetingPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="DAILY GREETING"
-            title="历史人物每日问候"
-            description="关注你喜欢的历史人物，每天收到他们的问候"
+            title={t('dailyGreeting.title')}
+            description={t('dailyGreeting.description')}
           />
         </RevealOnScroll>
 
@@ -79,7 +81,7 @@ export default function DailyGreetingPage() {
         <RevealOnScroll direction="up" delay={200}>
           <div className="mt-8 p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
             <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-              关注人物（已关注 {followedIds.length} 人）
+              {t('dailyGreeting.follow_title', { n: followedIds.length })}
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               {FIGURES.map((fig) => {
@@ -97,13 +99,13 @@ export default function DailyGreetingPage() {
                     <span className="text-2xl">{fig.emoji}</span>
                     <span className="text-xs mt-1 font-bold">{fig.name}</span>
                     <span className="text-[10px] opacity-70">{fig.dynasty}</span>
-                    {followed && <span className="text-[10px] mt-1 text-accent">已关注</span>}
+                    {followed && <span className="text-[10px] mt-1 text-accent">{t('dailyGreeting.followed')}</span>}
                   </button>
                 );
               })}
             </div>
             <p className="mt-3 text-xs text-ink-500 dark:text-ink-400 text-center">
-              关注的人物每天会给你发问候消息
+              {t('dailyGreeting.follow_hint')}
             </p>
           </div>
         </RevealOnScroll>
@@ -115,7 +117,7 @@ export default function DailyGreetingPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100">
-                    今日问候
+                    {t('dailyGreeting.today_title')}
                   </h3>
                   <p className="text-xs text-ink-500 dark:text-ink-400">
                     {new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}
@@ -127,7 +129,7 @@ export default function DailyGreetingPage() {
                     disabled={loading}
                     className="px-4 py-2 rounded-lg bg-accent text-white text-sm font-bold hover:shadow-lg disabled:opacity-50 transition-all"
                   >
-                    {loading ? '发送中…' : '接收问候'}
+                    {loading ? t('dailyGreeting.sending') : t('dailyGreeting.receive_btn')}
                   </button>
                 )}
               </div>
@@ -169,7 +171,7 @@ export default function DailyGreetingPage() {
               {loading && (
                 <div className="text-center py-4">
                   <div className="inline-block w-8 h-8 border-3 border-accent border-t-transparent rounded-full animate-spin mb-2" />
-                  <div className="text-sm text-ink-500 dark:text-ink-400">人物正在写问候…</div>
+                  <div className="text-sm text-ink-500 dark:text-ink-400">{t('dailyGreeting.writing')}</div>
                 </div>
               )}
             </div>
@@ -181,7 +183,7 @@ export default function DailyGreetingPage() {
           <RevealOnScroll direction="up" delay={400}>
             <div className="mt-6 p-6 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
               <h3 className="font-bold text-ink-900 dark:text-ink-100 mb-4">
-                历史问候 ({historyGreetings.length})
+                {t('dailyGreeting.history_title', { n: historyGreetings.length })}
               </h3>
               <div className="space-y-3 max-h-[500px] overflow-y-auto">
                 {historyGreetings.map((g) => (
@@ -209,10 +211,10 @@ export default function DailyGreetingPage() {
           <RevealOnScroll direction="fade">
             <div className="mt-8 p-8 bg-white/50 dark:bg-ink-900/50 rounded-xl border border-ink-200 dark:border-ink-700 text-center">
               <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2">
-                暂无问候消息
+                {t('dailyGreeting.empty_title')}
               </h3>
               <p className="text-sm text-ink-600 dark:text-ink-400">
-                先关注几位历史人物，明天就能收到他们的问候啦！
+                {t('dailyGreeting.empty_desc')}
               </p>
             </div>
           </RevealOnScroll>
@@ -221,7 +223,7 @@ export default function DailyGreetingPage() {
         {/* 底部 */}
         <RevealOnScroll direction="fade" delay={400}>
           <div className="mt-12 text-center">
-            <Link to="/" className="btn-secondary">返回首页</Link>
+            <Link to="/" className="btn-secondary">{t('common.back_home')}</Link>
           </div>
         </RevealOnScroll>
       </div>

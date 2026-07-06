@@ -65,8 +65,9 @@ export const useI18nStore = create<I18nState>((set) => ({
   },
 }));
 
-/** 便捷 Hook */
+/** 便捷 Hook：显式订阅 locale，确保语言切换时组件重渲染 */
 export function useT() {
-  const { t } = useI18nStore();
+  useI18nStore((s) => s.locale);
+  const t = useI18nStore((s) => s.t);
   return t;
 }

@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { loginUser } from '@/services/userApi';
 import { useUserStore } from '@/store/userStore';
+import { useT } from '@/i18n/i18n';
 
 export default function LoginPage() {
+  const t = useT();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -22,7 +24,7 @@ export default function LoginPage() {
       setToken(data.token);
       navigate('/');
     } catch (err: any) {
-      setError(err.message || '登录失败');
+      setError(err.message || t('auth.login_failed'));
     } finally {
       setLoading(false);
     }
@@ -33,9 +35,9 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="text-2xl font-bold text-ink-900 dark:text-ink-100">
-            五千年史馆
+            {t('home.title')}
           </Link>
-          <p className="text-ink-500 dark:text-ink-400 mt-2">欢迎回来，请登录您的账号</p>
+          <p className="text-ink-500 dark:text-ink-400 mt-2">{t('auth.login_welcome')}</p>
         </div>
 
         <div className="bg-white/80 dark:bg-ink-900/80 rounded-2xl shadow-lg p-8 border border-ink-200 dark:border-ink-700">
@@ -48,14 +50,14 @@ export default function LoginPage() {
 
             <div>
               <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">
-                用户名
+                {t('auth.username')}
               </label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 text-ink-900 dark:text-ink-100 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
-                placeholder="请输入用户名"
+                placeholder={t('auth.username_placeholder')}
                 required
                 autoComplete="username"
               />
@@ -63,14 +65,14 @@ export default function LoginPage() {
 
             <div>
               <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">
-                密码
+                {t('auth.password')}
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 text-ink-900 dark:text-ink-100 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
-                placeholder="请输入密码"
+                placeholder={t('auth.password_placeholder')}
                 required
                 autoComplete="current-password"
               />
@@ -81,15 +83,15 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full py-3 rounded-lg bg-accent text-white font-bold hover:bg-red-700 disabled:opacity-50 transition-colors"
             >
-              {loading ? '登录中...' : '登 录'}
+              {loading ? t('auth.logging_in') : t('auth.login')}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-ink-500 dark:text-ink-400">
-              还没有账号？{' '}
+              {t('auth.no_account')}{' '}
               <Link to="/register" className="text-accent hover:underline font-bold">
-                立即注册
+                {t('auth.register_now')}
               </Link>
             </p>
           </div>

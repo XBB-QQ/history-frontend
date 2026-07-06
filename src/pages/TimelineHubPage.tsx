@@ -7,89 +7,91 @@
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import { useT } from '@/i18n/i18n';
 
 interface TimelineFeature {
   id: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descKey: string;
   icon: string;
   link: string;
   color: string;
   darkBg: string;
-  tags: string[];
+  tagKeys: string[];
   featured?: boolean;
 }
 
 const TIMELINE_FEATURES: TimelineFeature[] = [
   {
     id: 'events',
-    title: '历史大事记',
-    description: '按时间线浏览中国历代重大事件，支持朝代和分类筛选',
+    titleKey: 'timelineHub.feature_events_title',
+    descKey: 'timelineHub.feature_events_desc',
     icon: '📜',
     link: '/timeline',
     color: 'text-accent',
     darkBg: 'bg-accent/10',
-    tags: ['朝代筛选', '分类浏览', '交互式时间线'],
+    tagKeys: ['timelineHub.tag_dynasty_filter', 'timelineHub.tag_category_browse', 'timelineHub.tag_interactive_timeline'],
     featured: true,
   },
   {
     id: 'transport',
-    title: '古代交通图',
-    description: '从商代到清代，探索历代交通路线、工具和基础设施的演变',
+    titleKey: 'timelineHub.feature_transport_title',
+    descKey: 'timelineHub.feature_transport_desc',
     icon: '🛣️',
     link: '/transport-timeline',
     color: 'text-orange-600',
     darkBg: 'bg-orange-100 dark:bg-orange-900/30',
-    tags: ['路线图', '朝代对比', '基础设施'],
+    tagKeys: ['timelineHub.tag_route_map', 'timelineHub.tag_dynasty_compare_tag', 'timelineHub.tag_infrastructure'],
   },
   {
     id: 'simulator',
-    title: '历史决策模拟',
-    description: '穿越到关键历史时刻，做出你的选择，体验平行历史推演',
+    titleKey: 'timelineHub.feature_simulator_title',
+    descKey: 'timelineHub.feature_simulator_desc',
     icon: '🎲',
     link: '/simulator',
     color: 'text-indigo-600',
     darkBg: 'bg-indigo-100 dark:bg-indigo-900/30',
-    tags: ['互动体验', '平行历史', '多结局'],
+    tagKeys: ['timelineHub.tag_interactive', 'timelineHub.tag_parallel_history', 'timelineHub.tag_multi_ending'],
   },
   {
     id: 'story-quest',
-    title: '主题研学线',
-    description: '8 条精心设计的主题研究路线，带你深度探索历史长河',
+    titleKey: 'timelineHub.feature_story_quest_title',
+    descKey: 'timelineHub.feature_story_quest_desc',
     icon: '🗺️',
     link: '/story-quest',
     color: 'text-emerald-600',
     darkBg: 'bg-emerald-100 dark:bg-emerald-900/30',
-    tags: ['主题路线', '进度追踪', '深度学习'],
+    tagKeys: ['timelineHub.tag_theme_routes', 'timelineHub.tag_progress_tracking', 'timelineHub.tag_deep_learning'],
   },
   {
     id: 'dynasty-compare',
-    title: '朝代对比',
-    description: '横向对比不同朝代在政治、经济、文化、军事等方面的表现',
+    titleKey: 'timelineHub.feature_dynasty_compare_title',
+    descKey: 'timelineHub.feature_dynasty_compare_desc',
     icon: '⚖️',
     link: '/dynasty-compare',
     color: 'text-purple-600',
     darkBg: 'bg-purple-100 dark:bg-purple-900/30',
-    tags: ['多维度对比', '雷达图', '数据可视化'],
+    tagKeys: ['timelineHub.tag_multi_dim_compare', 'timelineHub.tag_radar_chart', 'timelineHub.tag_data_viz'],
   },
   {
     id: 'causal-chain',
-    title: '因果链',
-    description: '追溯历史事件的因果关系，理解蝴蝶效应如何改变历史走向',
+    titleKey: 'timelineHub.feature_causal_chain_title',
+    descKey: 'timelineHub.feature_causal_chain_desc',
     icon: '🔗',
     link: '/causal-chain',
     color: 'text-cyan-600',
     darkBg: 'bg-cyan-100 dark:bg-cyan-900/30',
-    tags: ['因果分析', '事件关联', '深度推理'],
+    tagKeys: ['timelineHub.tag_causal_analysis', 'timelineHub.tag_event_link', 'timelineHub.tag_deep_inference'],
   },
 ];
 
 /* ─── 时间轴缩略预览组件 ─── */
 function TimelineMiniPreview() {
+  const t = useT();
   return (
     <div className="mt-12 p-6 bg-white/50 dark:bg-ink-900/50 rounded-xl border border-ink-200 dark:border-ink-700">
       <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-4 tracking-widest text-center">
-        时间轴总览 · 千年一瞬
+        {t('timelineHub.overview_title')}
       </h3>
       <div className="relative h-32 overflow-hidden rounded-lg bg-gradient-to-r from-ink-100 via-ink-200 to-ink-100 dark:from-ink-800 dark:via-ink-700 dark:to-ink-800">
         {/* 中心时间线 */}
@@ -112,13 +114,14 @@ function TimelineMiniPreview() {
         <div className="absolute right-2 top-1/2 -translate-y-1/2 text-ink-400 text-xs">→</div>
       </div>
       <p className="text-center text-xs text-ink-500 dark:text-ink-400 mt-3">
-        从夏商周到明清，五千年文明尽在眼前
+        {t('timelineHub.overview_subtitle')}
       </p>
     </div>
   );
 }
 
 export default function TimelineHubPage() {
+  const t = useT();
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
       <div className="max-w-5xl mx-auto">
@@ -126,8 +129,8 @@ export default function TimelineHubPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="UNIFIED TIMELINE"
-            title="统一时间轴"
-            description="聚合所有时间轴相关功能，一站式探索历史长河"
+            title={t('timelineHub.title')}
+            description={t('timelineHub.description')}
           />
         </RevealOnScroll>
 
@@ -144,11 +147,11 @@ export default function TimelineHubPage() {
                   <span className="text-3xl">{feature.icon}</span>
                   <div>
                     <h3 className={`text-base font-bold ${feature.color} group-hover:text-accent transition-colors`}>
-                      {feature.title}
+                      {t(feature.titleKey)}
                     </h3>
                     {feature.featured && (
                       <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-accent/10 text-accent font-bold">
-                        核心
+                        {t('timelineHub.core_badge')}
                       </span>
                     )}
                   </div>
@@ -156,17 +159,17 @@ export default function TimelineHubPage() {
 
                 {/* 描述 */}
                 <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed mb-3 line-clamp-2">
-                  {feature.description}
+                  {t(feature.descKey)}
                 </p>
 
                 {/* 标签 */}
                 <div className="flex flex-wrap gap-1.5">
-                  {feature.tags.map(tag => (
+                  {feature.tagKeys.map(tagKey => (
                     <span
-                      key={tag}
+                      key={tagKey}
                       className={`text-[10px] px-2 py-0.5 rounded-full ${feature.darkBg} ${feature.color}`}
                     >
-                      {tag}
+                      {t(tagKey)}
                     </span>
                   ))}
                 </div>
@@ -181,7 +184,7 @@ export default function TimelineHubPage() {
         {/* 底部 */}
         <RevealOnScroll direction="fade" delay={400}>
           <div className="mt-12 text-center">
-            <Link to="/" className="btn-secondary">返回首页</Link>
+            <Link to="/" className="btn-secondary">{t('common.back_home')}</Link>
           </div>
         </RevealOnScroll>
       </div>

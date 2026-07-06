@@ -9,10 +9,12 @@ import React, { useState, useMemo } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { EXAM_PAPERS, TYPE_STATS, CATEGORY_STATS, type ExamPaper } from '@/data/features/examinationData';
+import { useT } from '@/i18n/i18n';
 
 import './ImperialExaminationPage.module.css';
 
 export default function ImperialExaminationPage() {
+  const t = useT();
   const [selectedPaper, setSelectedPaper] = useState<ExamPaper | null>(EXAM_PAPERS[0]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -90,9 +92,9 @@ export default function ImperialExaminationPage() {
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
       <SectionHeader
-        label="EXAMINATION"
-        title="科举考试沉浸模拟器"
-        description="穿越回古代，体验科举考试的氛围"
+        label={t('imperialExamination.label')}
+        title={t('imperialExamination.title')}
+        description={t('imperialExamination.description')}
       />
 
       <RevealOnScroll>
@@ -101,7 +103,7 @@ export default function ImperialExaminationPage() {
           {showPaperList && (
             <div className="paper-list p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg mb-6">
               <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100 mb-6">
-                📋 选择考试试卷
+                {t('imperialExamination.select_paper')}
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -118,13 +120,13 @@ export default function ImperialExaminationPage() {
                     <div className="space-y-2 text-sm text-ink-600 dark:text-ink-400 mb-4">
                       <div>📅 {paper.dynasty} · {paper.period}</div>
                       {paper.year && <div>{paper.year}</div>}
-                      <div>⏱️ 考试时长：{paper.duration}分钟</div>
-                      <div>👥 录取率：{paper.passingRate}</div>
-                      <div>📊 总分：{paper.totalScore}</div>
+                      <div>{t('imperialExamination.duration_label', { duration: paper.duration })}</div>
+                      <div>{t('imperialExamination.passing_rate_label', { rate: paper.passingRate })}</div>
+                      <div>{t('imperialExamination.total_score_label', { score: paper.totalScore })}</div>
                     </div>
 
                     <button className="w-full py-2 rounded-lg bg-accent text-white font-bold hover:bg-accent/90 transition-colors">
-                      开始考试
+                      {t('imperialExamination.start_exam')}
                     </button>
                   </div>
                 ))}
@@ -139,19 +141,19 @@ export default function ImperialExaminationPage() {
               <div className="exam-info p-4 rounded-xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg mb-6">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <div className="text-sm text-ink-500">试卷</div>
+                    <div className="text-sm text-ink-500">{t('imperialExamination.paper_label')}</div>
                     <div className="font-bold text-ink-900 dark:text-ink-100">
                       {selectedPaper?.title}
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm text-ink-500">进度</div>
+                    <div className="text-sm text-ink-500">{t('imperialExamination.progress_label')}</div>
                     <div className="font-bold text-accent">
                       {currentQuestionIndex + 1}/{selectedPaper!.questions.length}
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm text-ink-500">得分</div>
+                    <div className="text-sm text-ink-500">{t('imperialExamination.score_label')}</div>
                     <div className="font-bold text-accent">
                       {calculateScore}/{selectedPaper!.totalScore}
                     </div>
@@ -166,23 +168,23 @@ export default function ImperialExaminationPage() {
                     {currentQuestion.difficulty}
                   </span>
                   <span className="px-3 py-1 rounded-full text-sm font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
-                    {currentQuestion.points}分
+                    {t('imperialExamination.question_points', { points: currentQuestion.points })}
                   </span>
                 </div>
 
                 <div className="space-y-2 mb-6">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-ink-700 dark:text-ink-300">题目类型：</span>
+                    <span className="text-sm font-bold text-ink-700 dark:text-ink-300">{t('imperialExamination.question_type_label')}</span>
                     <span className="text-sm text-ink-600 dark:text-ink-400">
-                      {currentQuestion.type === 'choice' ? '选择题' :
-                       currentQuestion.type === 'fill' ? '填空题' :
-                       currentQuestion.type === 'essay' ? '论述题' :
-                       currentQuestion.type === 'match' ? '匹配题' : '判断题'}
+                      {currentQuestion.type === 'choice' ? t('imperialExamination.type_choice') :
+                       currentQuestion.type === 'fill' ? t('imperialExamination.type_fill') :
+                       currentQuestion.type === 'essay' ? t('imperialExamination.type_essay') :
+                       currentQuestion.type === 'match' ? t('imperialExamination.type_match') : t('imperialExamination.type_true_false')}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-ink-700 dark:text-ink-300">所属科目：</span>
+                    <span className="text-sm font-bold text-ink-700 dark:text-ink-300">{t('imperialExamination.category_label')}</span>
                     <span className="text-sm text-ink-600 dark:text-ink-400">
                       {currentQuestion.category}
                     </span>
@@ -225,11 +227,11 @@ export default function ImperialExaminationPage() {
                 {currentQuestion.type === 'essay' && (
                   <div className="mb-4">
                     <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">
-                      请作答：
+                      {t('imperialExamination.answer_essay_label')}
                     </label>
                     <textarea
                       className="input-field w-full h-40"
-                      placeholder="请在这里写下你的答案..."
+                      placeholder={t('imperialExamination.answer_essay_placeholder')}
                       value={answers[currentQuestion.id] || ''}
                       onChange={(e) => setAnswers({...answers, [currentQuestion.id]: e.target.value})}
                     />
@@ -240,12 +242,12 @@ export default function ImperialExaminationPage() {
                 {currentQuestion.type === 'fill' && (
                   <div className="mb-4">
                     <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">
-                      请填写答案：
+                      {t('imperialExamination.answer_fill_label')}
                     </label>
                     <input
                       type="text"
                       className="input-field w-full"
-                      placeholder="请填写答案..."
+                      placeholder={t('imperialExamination.answer_fill_placeholder')}
                       value={answers[currentQuestion.id] || ''}
                       onChange={(e) => setAnswers({...answers, [currentQuestion.id]: e.target.value})}
                     />
@@ -263,7 +265,7 @@ export default function ImperialExaminationPage() {
                       }`}
                       onClick={() => handleAnswer('true')}
                     >
-                      ✓ 正确
+                      {t('imperialExamination.answer_true')}
                     </button>
                     <button
                       className={`flex-1 p-4 rounded-xl border-2 transition-all cursor-pointer ${
@@ -273,7 +275,7 @@ export default function ImperialExaminationPage() {
                       }`}
                       onClick={() => handleAnswer('false')}
                     >
-                      ✗ 错误
+                      {t('imperialExamination.answer_false')}
                     </button>
                   </div>
                 )}
@@ -282,12 +284,12 @@ export default function ImperialExaminationPage() {
                 {currentQuestion.type === 'match' && (
                   <div className="mb-4">
                     <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">
-                      请将左侧项目与右侧项目匹配：
+                      {t('imperialExamination.answer_match_label')}
                     </label>
                     <input
                       type="text"
                       className="input-field w-full"
-                      placeholder="格式：A-1, B-2, C-3, D-4"
+                      placeholder={t('imperialExamination.answer_match_placeholder')}
                       value={answers[currentQuestion.id] || ''}
                       onChange={(e) => setAnswers({...answers, [currentQuestion.id]: e.target.value})}
                     />
@@ -301,7 +303,7 @@ export default function ImperialExaminationPage() {
                   className="px-6 py-3 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-900 dark:text-ink-100 font-bold hover:bg-ink-200 dark:hover:bg-ink-700 transition-colors"
                   onClick={() => setCurrentQuestionIndex(0)}
                 >
-                  🏠 重新开始
+                  {t('imperialExamination.restart')}
                 </button>
 
                 {currentQuestionIndex > 0 && (
@@ -309,7 +311,7 @@ export default function ImperialExaminationPage() {
                     className="px-6 py-3 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 font-bold hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
                     onClick={handlePrevious}
                   >
-                    ⬅️ 上一题
+                    {t('imperialExamination.previous')}
                   </button>
                 )}
 
@@ -318,7 +320,7 @@ export default function ImperialExaminationPage() {
                     className="px-6 py-3 rounded-lg bg-accent text-white font-bold hover:bg-accent/90 transition-colors"
                     onClick={handleNext}
                   >
-                    下一题 ➡️
+                    {t('imperialExamination.next')}
                   </button>
                 )}
 
@@ -327,7 +329,7 @@ export default function ImperialExaminationPage() {
                     className="px-6 py-3 rounded-lg bg-green-500 text-white font-bold hover:bg-green-600 transition-colors"
                     onClick={() => setShowResults(true)}
                   >
-                    🎉 提交试卷
+                    {t('imperialExamination.submit')}
                   </button>
                 )}
               </div>
@@ -343,7 +345,7 @@ export default function ImperialExaminationPage() {
                 </div>
 
                 <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100 mb-2">
-                  考试结束
+                  {t('imperialExamination.exam_end')}
                 </h2>
 
                 <div className="text-5xl font-bold text-accent mb-2">
@@ -351,27 +353,27 @@ export default function ImperialExaminationPage() {
                 </div>
 
                 <p className="text-xl">
-                  {passed ? '🎉 恭喜通过考试！' : '📚 继续加油！'}
+                  {passed ? t('imperialExamination.passed') : t('imperialExamination.failed')}
                 </p>
               </div>
 
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800">
-                  <div className="text-sm text-ink-500 mb-1">总分</div>
+                  <div className="text-sm text-ink-500 mb-1">{t('imperialExamination.total_score')}</div>
                   <div className="text-2xl font-bold text-ink-900 dark:text-ink-100">
                     {calculateScore}/{selectedPaper.totalScore}
                   </div>
                 </div>
 
                 <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/20">
-                  <div className="text-sm text-green-500 mb-1">及格线</div>
+                  <div className="text-sm text-green-500 mb-1">{t('imperialExamination.passing_score')}</div>
                   <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                     {selectedPaper.passingScore}
                   </div>
                 </div>
 
                 <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20">
-                  <div className="text-sm text-blue-500 mb-1">及格率</div>
+                  <div className="text-sm text-blue-500 mb-1">{t('imperialExamination.passing_rate')}</div>
                   <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                     {selectedPaper.passingRate}
                   </div>
@@ -380,7 +382,7 @@ export default function ImperialExaminationPage() {
 
               <div className="space-y-4 mb-6">
                 <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100">
-                  答题分析
+                  {t('imperialExamination.analysis')}
                 </h3>
 
                 {selectedPaper.questions.map((question: any, idx: number) => (
@@ -394,15 +396,15 @@ export default function ImperialExaminationPage() {
                   >
                     <div className="flex items-start justify-between mb-2">
                       <span className="text-sm font-bold text-ink-700 dark:text-ink-300">
-                        题目 {idx + 1}
+                        {t('imperialExamination.question_no', { index: idx + 1 })}
                       </span>
                       {answers[question.id] === question.answer ? (
                         <span className="px-2 py-0.5 rounded text-xs font-bold bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
-                          ✓ 正确
+                          {t('imperialExamination.correct')}
                         </span>
                       ) : (
                         <span className="px-2 py-0.5 rounded text-xs font-bold bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300">
-                          ✗ 错误
+                          {t('imperialExamination.wrong')}
                         </span>
                       )}
                     </div>
@@ -413,7 +415,7 @@ export default function ImperialExaminationPage() {
 
                     {question.explanation && (
                       <p className="text-sm text-ink-500">
-                        <span className="font-bold">解释：</span>{question.explanation}
+                        <span className="font-bold">{t('imperialExamination.explanation_label')}</span>{question.explanation}
                       </p>
                     )}
                   </div>
@@ -425,14 +427,14 @@ export default function ImperialExaminationPage() {
                   className="flex-1 py-3 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-900 dark:text-ink-100 font-bold hover:bg-ink-200 dark:hover:bg-ink-700 transition-colors"
                   onClick={handleBack}
                 >
-                  🏠 返回列表
+                  {t('imperialExamination.back_to_list')}
                 </button>
 
                 <button
                   className="flex-1 py-3 rounded-lg bg-accent text-white font-bold hover:bg-accent/90 transition-colors"
                   onClick={handleRestart}
                 >
-                  🔄 重新考试
+                  {t('imperialExamination.retry')}
                 </button>
               </div>
             </div>
@@ -441,14 +443,14 @@ export default function ImperialExaminationPage() {
           {/* 考试统计 */}
           <div className="stats-card p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg">
             <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100 mb-6">
-              📊 考试统计
+              {t('imperialExamination.stats_title')}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* 题目类型统计 */}
               <div>
                 <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-3">
-                  🔘 题目类型
+                  {t('imperialExamination.type_stats')}
                 </h3>
                 <div className="space-y-3">
                   {Object.entries(TYPE_STATS).map(([type, stat]) => (
@@ -458,7 +460,7 @@ export default function ImperialExaminationPage() {
                     >
                       <div>
                         <div className="font-bold text-ink-900 dark:text-ink-100">{stat.icon} {stat.label}</div>
-                        <div className="text-sm text-ink-500">{stat.count}道题</div>
+                        <div className="text-sm text-ink-500">{t('imperialExamination.question_count', { count: stat.count })}</div>
                       </div>
                     </div>
                   ))}
@@ -468,7 +470,7 @@ export default function ImperialExaminationPage() {
               {/* 科目统计 */}
               <div>
                 <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-3">
-                  📖 考试科目
+                  {t('imperialExamination.category_stats')}
                 </h3>
                 <div className="space-y-3">
                   {Object.entries(CATEGORY_STATS).map(([category, stat]) => (
@@ -478,7 +480,7 @@ export default function ImperialExaminationPage() {
                     >
                       <div>
                         <div className="font-bold text-ink-900 dark:text-ink-100">{stat.icon} {stat.label}</div>
-                        <div className="text-sm text-ink-500">{stat.count}道题</div>
+                        <div className="text-sm text-ink-500">{t('imperialExamination.question_count', { count: stat.count })}</div>
                       </div>
                     </div>
                   ))}
@@ -489,13 +491,13 @@ export default function ImperialExaminationPage() {
             {/* 考试小知识 */}
             <div className="mt-6 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700">
               <h3 className="text-lg font-bold text-amber-800 dark:text-amber-200 mb-2">
-                📚 科举小知识
+                {t('imperialExamination.knowledge_title')}
               </h3>
               <div className="text-amber-700 dark:text-amber-300 text-sm space-y-2">
-                <p>1. 科举考试分为四个阶段：童生试（院试）、乡试、会试、殿试</p>
-                <p>2. 明清科举以《四书五经》为考试内容，以程朱理学为主要思想</p>
-                <p>3. 考试文章要求严格遵循八股文的格式规范</p>
-                <p>4. 殿试由皇帝亲自主持，决定最终名次</p>
+                <p>{t('imperialExamination.knowledge_1')}</p>
+                <p>{t('imperialExamination.knowledge_2')}</p>
+                <p>{t('imperialExamination.knowledge_3')}</p>
+                <p>{t('imperialExamination.knowledge_4')}</p>
               </div>
             </div>
           </div>

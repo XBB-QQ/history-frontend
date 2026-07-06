@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react';
 import { INVENTIONS, CATEGORY_STYLE, IMPORTANCE_STYLE } from '@/data/features/techTree';
 import type { InventionNode } from '@/data/features/techTree';
+import { useT } from '@/i18n/i18n';
 
 export default function TechTreePage() {
+  const t = useT();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set());
@@ -45,10 +47,10 @@ export default function TechTreePage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            技 中国发明科技树
+            {t('techTree.title')}
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
-            从造纸到火药，从丝绸到指南针 — 看中国发明如何改变世界
+            {t('techTree.subtitle')}
           </p>
         </div>
 
@@ -62,7 +64,7 @@ export default function TechTreePage() {
                 : 'border-ink-200 dark:border-ink-700 text-ink-600 dark:text-ink-400'
             }`}
           >
-            全部
+            {t('techTree.all')}
           </button>
           {Object.entries(CATEGORY_STYLE).map(([key, style]) => (
             <button
@@ -84,7 +86,7 @@ export default function TechTreePage() {
           {layers.map((layer, layerIdx) => (
             <div key={layerIdx}>
               <div className="text-xs font-bold text-ink-400 dark:text-ink-500 mb-3 text-center">
-                {layerIdx === 0 ? '基 基础发明' : layerIdx === 1 ? '派 派生发明' : '技 终端发明'}
+                {layerIdx === 0 ? t('techTree.layer_base') : layerIdx === 1 ? t('techTree.layer_derived') : t('techTree.layer_terminal')}
               </div>
               <div className="flex flex-wrap gap-3 justify-center">
                 {layer.map(inv => {
@@ -159,8 +161,8 @@ export default function TechTreePage() {
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-              <div><span className="text-ink-400">朝代：</span><span className="font-bold text-ink-700 dark:text-ink-300">{selected.dynasty}</span></div>
-              <div><span className="text-ink-400">年代：</span><span className="font-bold text-ink-700 dark:text-ink-300">{selected.year}</span></div>
+              <div><span className="text-ink-400">{t('techTree.dynasty_label')}</span><span className="font-bold text-ink-700 dark:text-ink-300">{selected.dynasty}</span></div>
+              <div><span className="text-ink-400">{t('techTree.year_label')}</span><span className="font-bold text-ink-700 dark:text-ink-300">{selected.year}</span></div>
             </div>
 
             <p className="text-sm text-ink-700 dark:text-ink-300 leading-relaxed mb-4">
@@ -172,7 +174,7 @@ export default function TechTreePage() {
               {dependencies.length > 0 && (
                 <div>
                   <h3 className="text-sm font-bold text-ink-600 dark:text-ink-400 mb-2">
-                    ⬅️ 基于以下发明
+                    {t('techTree.based_on')}
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {dependencies.map(dep => (
@@ -190,7 +192,7 @@ export default function TechTreePage() {
               {dependents.length > 0 && (
                 <div>
                   <h3 className="text-sm font-bold text-ink-600 dark:text-ink-400 mb-2">
-                    ➡️ 衍生出以下发明
+                    {t('techTree.derived_to')}
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {dependents.map(dep => (

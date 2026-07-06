@@ -8,16 +8,17 @@ import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { askHistoryStream, type RagAnswer } from '@/features/ragSearch';
+import { useT } from '@/i18n/i18n';
 
 const SUGGESTIONS = [
-  '安史之乱到底怎么影响唐朝经济的？',
-  '秦始皇统一六国用了什么策略？',
-  '宋朝为什么重文轻武？',
-  '明朝灭亡和气候有关系吗？',
-  '孔子和老子有什么分歧？',
-  '唐朝和宋朝哪个更繁荣？',
-  '赤壁之战曹操为什么会输？',
-  '四大发明是怎么传到西方的？',
+  'ragQa.suggestion_1',
+  'ragQa.suggestion_2',
+  'ragQa.suggestion_3',
+  'ragQa.suggestion_4',
+  'ragQa.suggestion_5',
+  'ragQa.suggestion_6',
+  'ragQa.suggestion_7',
+  'ragQa.suggestion_8',
 ];
 
 export default function RagQaPage() {
@@ -27,6 +28,7 @@ export default function RagQaPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const answerEndRef = useRef<HTMLDivElement>(null);
+  const t = useT();
 
   const handleSubmit = useCallback(async (q?: string) => {
     const query = q || question.trim();
@@ -44,7 +46,7 @@ export default function RagQaPage() {
       });
       setAnswer(result);
     } catch (e) {
-      setError(e instanceof Error ? e.message : '请求失败，请检查 API Key 配置');
+      setError(e instanceof Error ? e.message : t('ragQa.request_failed'));
     } finally {
       setLoading(false);
     }
@@ -56,8 +58,8 @@ export default function RagQaPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="AI HISTORY Q&A"
-            title="历史智慧问答"
-            description="基于史料回答历史问题"
+            title={t('ragQa.title')}
+            description={t('ragQa.description')}
           />
         </RevealOnScroll>
 
@@ -70,7 +72,7 @@ export default function RagQaPage() {
                 value={question}
                 onChange={e => setQuestion(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleSubmit()}
-                placeholder="问任何历史问题… 例如：安史之乱到底怎么影响唐朝经济的？"
+                placeholder={t('ragQa.input_placeholder')}
                 className="flex-1 px-4 py-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-600 text-ink-900 dark:text-ink-100 placeholder:text-ink-400 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition-all"
                 disabled={loading}
               />
@@ -79,7 +81,7 @@ export default function RagQaPage() {
                 disabled={loading || !question.trim()}
                 className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
-                {loading ? '查找中…' : '提问'}
+                {loading ? t('ragQa.searching') : t('ragQa.submit_btn')}
               </button>
             </div>
 
@@ -88,11 +90,11 @@ export default function RagQaPage() {
               {SUGGESTIONS.map(s => (
                 <button
                   key={s}
-                  onClick={() => { setQuestion(s); handleSubmit(s); }}
+                  onClick={() => { setQuestion(t(s)); handleSubmit(t(s)); }}
                   disabled={loading}
                   className="text-xs px-3 py-1.5 rounded-full bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400 hover:bg-accent hover:text-white transition-all disabled:opacity-50"
                 >
-                  {s}
+                  {t(s)}
                 </button>
               ))}
             </div>
@@ -102,7 +104,7 @@ export default function RagQaPage() {
         {/* 错误提示 */}
         {error && (
           <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400">
-            错 {error}
+            {t('ragQa.error_prefix')} {error}
           </div>
         )}
 
@@ -114,11 +116,11 @@ export default function RagQaPage() {
               <div className="p-6 bg-gradient-to-br from-white/80 to-accent/5 dark:from-ink-900/80 dark:to-accent/10 rounded-xl border border-ink-200 dark:border-ink-700 shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-8 h-8 rounded-full bg-accent/10 dark:bg-accent/20 flex items-center justify-center">
-                    <span className="text-accent text-lg">机</span>
+                    <span className="text-accent text-lg">{t('ragQa.answer_icon')}</span>
                   </div>
                   <div>
-                    <div className="font-bold text-ink-900 dark:text-ink-100">史馆答问</div>
-                    <div className="text-xs text-ink-500 dark:text-ink-400">基于史料检索，非凭空作答</div>
+                    <div className="font-bold text-ink-900 dark:text-ink-100">{t('ragQa.answer_title')}</div>
+                    <div className="text-xs text-ink-500 dark:text-ink-400">{t('ragQa.answer_subtitle')}</div>
                   </div>
                 </div>
 
@@ -136,7 +138,7 @@ export default function RagQaPage() {
                 <div className="space-y-3">
                   {/* 匹配度 */}
                   <div className="flex items-center gap-2 text-sm text-ink-500 dark:text-ink-400">
-                    <span>史料匹配度：</span>
+                    <span>{t('ragQa.match_score')}</span>
                     <div className="flex-1 h-2 rounded-full bg-ink-200 dark:bg-ink-700 max-w-xs">
                       <div
                         className="h-full rounded-full bg-accent"
@@ -150,7 +152,7 @@ export default function RagQaPage() {
                   {answer.sources.events.length > 0 && (
                     <div className="p-4 bg-white/50 dark:bg-ink-900/50 rounded-lg border border-ink-200 dark:border-ink-700">
                       <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                        史 引用事件
+                        {t('ragQa.source_events_title')}
                       </h4>
                       <div className="space-y-2">
                         {answer.sources.events.map(e => (
@@ -176,7 +178,7 @@ export default function RagQaPage() {
                   {answer.sources.persons.length > 0 && (
                     <div className="p-4 bg-white/50 dark:bg-ink-900/50 rounded-lg border border-ink-200 dark:border-ink-700">
                       <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                        人 引用人物
+                        {t('ragQa.source_persons_title')}
                       </h4>
                       <div className="space-y-2">
                         {answer.sources.persons.map(p => (
@@ -202,7 +204,7 @@ export default function RagQaPage() {
                   {answer.sources.dynasties.length > 0 && (
                     <div className="p-4 bg-white/50 dark:bg-ink-900/50 rounded-lg border border-ink-200 dark:border-ink-700">
                       <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                        朝 引用朝代
+                        {t('ragQa.source_dynasties_title')}
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {answer.sources.dynasties.map(d => (
@@ -211,7 +213,7 @@ export default function RagQaPage() {
                             to={`/dynasty/${d.id}`}
                             className="px-3 py-1 rounded-full bg-accent/10 text-accent text-sm font-bold hover:bg-accent/20 transition-colors"
                           >
-                            {d.name}朝
+                            {d.name}{t('ragQa.dynasty_suffix')}
                           </Link>
                         ))}
                       </div>
@@ -227,7 +229,7 @@ export default function RagQaPage() {
         <RevealOnScroll direction="fade" delay={400}>
           <div className="mt-12 text-center">
             <Link to="/" className="btn-secondary">
-              返回首页
+              {t('common.back_home')}
             </Link>
           </div>
         </RevealOnScroll>

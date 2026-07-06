@@ -16,6 +16,7 @@ import {
 import { getChaptersByDynasty } from '@/data/media/audiobookChapters';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import { useT } from '@/i18n/i18n';
 
 /** 优先级标签颜色 */
 const PRIORITY_COLORS: Record<DramaMapping['priority'], string> = {
@@ -26,10 +27,11 @@ const PRIORITY_COLORS: Record<DramaMapping['priority'], string> = {
 
 /** 星级渲染 */
 function Stars({ rating }: { rating: number }) {
+  const t = useT();
   const full = Math.floor(rating / 2);
   const half = rating % 2 >= 1 ? 1 : 0;
   return (
-    <span className="text-amber-500 text-sm" title={`${rating} 分`}>
+    <span className="text-amber-500 text-sm" title={`${rating} ${t('mediaBridge.rating')}`}>
       {'★'.repeat(full)}{half ? '☆' : ''}{rating.toFixed(1)}
     </span>
   );
@@ -37,12 +39,13 @@ function Stars({ rating }: { rating: number }) {
 
 /** 听书章节卡片 */
 function ChapterCard({ chapter }: { chapter: ReturnType<typeof getChaptersByDynasty>[0] }) {
+  const t = useT();
   return (
     <div className="bg-white dark:bg-ink-900 rounded-xl border border-ink-200 dark:border-ink-700 p-4 hover:border-accent dark:hover:border-accent transition-colors">
       <div className="flex items-center gap-2 mb-2">
         <span className="text-lg">🎧</span>
         <h4 className="font-bold text-sm text-ink-900 dark:text-ink-100">{chapter.title}</h4>
-        <span className="text-xs text-ink-400 ml-auto">{chapter.durationMin}分钟</span>
+        <span className="text-xs text-ink-400 ml-auto">{t('mediaBridge.minutes', { count: chapter.durationMin })}</span>
       </div>
       <div className="flex flex-wrap gap-1 mb-2">
         {chapter.keyEvents.map((e) => (
@@ -52,7 +55,7 @@ function ChapterCard({ chapter }: { chapter: ReturnType<typeof getChaptersByDyna
         ))}
       </div>
       <div className="text-xs text-ink-500 dark:text-ink-400">
-        人物：{chapter.keyFigures.slice(0, 4).join('、')}
+        {t('mediaBridge.figures_label')}：{chapter.keyFigures.slice(0, 4).join('、')}
       </div>
     </div>
   );
@@ -60,6 +63,7 @@ function ChapterCard({ chapter }: { chapter: ReturnType<typeof getChaptersByDyna
 
 /** 剧集卡片 */
 function DramaCard({ drama }: { drama: DramaMapping }) {
+  const t = useT();
   const [showFactCheck, setShowFactCheck] = useState(false);
 
   return (
@@ -72,7 +76,7 @@ function DramaCard({ drama }: { drama: DramaMapping }) {
             <div className="flex items-center gap-2 text-xs text-ink-400">
               <span>{drama.year}</span>
               <span>·</span>
-              <span>{drama.episodes}集</span>
+              <span>{t('mediaBridge.years', { count: drama.episodes })}</span>
               <span>·</span>
               <Stars rating={drama.doubanRating} />
             </div>
@@ -82,14 +86,14 @@ function DramaCard({ drama }: { drama: DramaMapping }) {
         {/* 优先级标签 */}
         <div className="flex items-center gap-2 mb-2">
           <span className={`text-xs px-2 py-0.5 rounded-full border ${PRIORITY_COLORS[drama.priority]}`}>
-            {drama.priority === 'essential' ? '必看' : drama.priority === 'recommended' ? '推荐' : '可选'}
+            {t(drama.priority === 'essential' ? 'mediaBridge.essential' : drama.priority === 'recommended' ? 'mediaBridge.recommended' : 'mediaBridge.optional')}
           </span>
         </div>
 
         {/* 主演 */}
         {drama.cast.length > 0 && (
           <p className="text-xs text-ink-500 dark:text-ink-400 mb-2">
-            主演：{drama.cast.join('、')}
+            {t('mediaBridge.starring_label')}：{drama.cast.join('、')}
           </p>
         )}
 
@@ -108,7 +112,7 @@ function DramaCard({ drama }: { drama: DramaMapping }) {
             onClick={() => setShowFactCheck(!showFactCheck)}
             className="text-xs text-red-500 dark:text-red-400 hover:underline flex items-center gap-1"
           >
-            📋 影视勘误（{drama.factCheckSummaries.length}条）{' '}
+            📋 {t('mediaBridge.fact_check_count', { count: drama.factCheckSummaries.length })}{' '}
             <span className={`transition-transform ${showFactCheck ? 'rotate-90' : ''}`}>▶</span>
           </button>
         )}
@@ -124,23 +128,23 @@ function DramaCard({ drama }: { drama: DramaMapping }) {
 
         {/* 史馆链接 */}
         <div className="mt-3 pt-3 border-t border-ink-100 dark:border-ink-800">
-          <div className="text-xs text-ink-400 mb-1">相关史馆页面：</div>
+          <div className="text-xs text-ink-400 mb-1">{t('mediaBridge.related_pages')}：</div>
           <div className="flex flex-wrap gap-1">
             {drama.matchedEventUids.length > 0 && (
               <Link to="/timeline" className="text-xs px-2 py-0.5 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors">
-                📜 时间轴
+                📜 {t('mediaBridge.timeline')}
               </Link>
             )}
             {drama.matchedPersonUids.length > 0 && (
               <Link to="/persons" className="text-xs px-2 py-0.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors">
-                👤 人物
+                👤 {t('mediaBridge.persons')}
               </Link>
             )}
             <Link to="/knowledge" className="text-xs px-2 py-0.5 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 rounded hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors">
-              💡 知识卡片
+              💡 {t('mediaBridge.knowledge')}
             </Link>
             <Link to="/multi-perspective" className="text-xs px-2 py-0.5 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400 rounded hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors">
-              🎭 多视角
+              🎭 {t('mediaBridge.perspective')}
             </Link>
           </div>
         </div>
@@ -151,20 +155,21 @@ function DramaCard({ drama }: { drama: DramaMapping }) {
 
 /** 勘误卡片 */
 function FactCheckCard({ factCheck }: { factCheck: FactCheckSummary }) {
+  const t = useT();
 
   return (
     <div className="bg-ink-50 dark:bg-ink-800/50 rounded-lg p-3 border border-ink-200 dark:border-ink-700">
       <div className="flex items-center gap-2 mb-1">
         <span className="text-xs font-bold text-red-600 dark:text-red-400">
-          {factCheck.nature === 'fiction' ? '✕ 虚构' :
-           factCheck.nature === 'exaggeration' ? '⚠ 夸大' :
-           factCheck.nature === 'inversion' ? '↔ 颠倒' :
-           '… 省略'}
+          {factCheck.nature === 'fiction' ? `✕ ${t('mediaBridge.fiction')}` :
+           factCheck.nature === 'exaggeration' ? `⚠ ${t('mediaBridge.exaggeration')}` :
+           factCheck.nature === 'inversion' ? `↔ ${t('mediaBridge.inversion')}` :
+           `… ${t('mediaBridge.omission')}`}
         </span>
       </div>
       <div className="text-xs space-y-1">
-        <div><span className="text-ink-500">剧集：</span><span className="text-ink-700 dark:text-ink-300">{factCheck.dramaClaim}</span></div>
-        <div><span className="text-ink-500">史实：</span><span className="text-green-700 dark:text-green-400">{factCheck.historicalFact}</span></div>
+        <div><span className="text-ink-500">{t('mediaBridge.drama_claim')}：</span><span className="text-ink-700 dark:text-ink-300">{factCheck.dramaClaim}</span></div>
+        <div><span className="text-ink-500">{t('mediaBridge.historical_fact')}：</span><span className="text-green-700 dark:text-green-400">{factCheck.historicalFact}</span></div>
         <div className="text-ink-400 dark:text-ink-500 italic">{factCheck.explanation}</div>
       </div>
     </div>
@@ -173,13 +178,14 @@ function FactCheckCard({ factCheck }: { factCheck: FactCheckSummary }) {
 
 /** 史馆快捷入口 */
 function KnowledgeHubLinks({ dynasty }: { dynasty: string }) {
+  const t = useT();
   const links = [
-    { label: '时间轴', path: '/timeline', emoji: '📜', desc: `${dynasty}年表` },
-    { label: '人物志', path: '/persons', emoji: '👤', desc: `${dynasty}人物` },
-    { label: '知识卡片', path: '/knowledge', emoji: '💡', desc: `${dynasty}知识` },
-    { label: '疆域图', path: '/territory', emoji: '🗺️', desc: `${dynasty}疆域` },
-    { label: '战役推演', path: '/battle', emoji: '⚔️', desc: `${dynasty}战役` },
-    { label: '多视角', path: '/multi-perspective', emoji: '🎭', desc: `${dynasty}多角度` },
+    { labelKey: 'mediaBridge.timeline', path: '/timeline', emoji: '📜', descKey: 'mediaBridge.dynasty_chronology' },
+    { labelKey: 'mediaBridge.persons_hub', path: '/persons', emoji: '👤', descKey: 'mediaBridge.dynasty_figures' },
+    { labelKey: 'mediaBridge.knowledge', path: '/knowledge', emoji: '💡', descKey: 'mediaBridge.dynasty_knowledge' },
+    { labelKey: 'mediaBridge.territory', path: '/territory', emoji: '🗺️', descKey: 'mediaBridge.dynasty_territory' },
+    { labelKey: 'mediaBridge.battle', path: '/battle', emoji: '⚔️', descKey: 'mediaBridge.dynasty_battle' },
+    { labelKey: 'mediaBridge.perspective', path: '/multi-perspective', emoji: '🎭', descKey: 'mediaBridge.dynasty_perspective' },
   ];
 
   return (
@@ -192,8 +198,8 @@ function KnowledgeHubLinks({ dynasty }: { dynasty: string }) {
         >
           <span className="text-lg">{link.emoji}</span>
           <div className="text-left min-w-0">
-            <div className="text-xs font-bold text-ink-900 dark:text-ink-100 truncate">{link.label}</div>
-            <div className="text-xs text-ink-400 truncate">{link.desc}</div>
+            <div className="text-xs font-bold text-ink-900 dark:text-ink-100 truncate">{t(link.labelKey)}</div>
+            <div className="text-xs text-ink-400 truncate">{t(link.descKey, { dynasty })}</div>
           </div>
         </Link>
       ))}
@@ -202,6 +208,7 @@ function KnowledgeHubLinks({ dynasty }: { dynasty: string }) {
 }
 
 export default function MediaBridgePage() {
+  const t = useT();
   const dynasties = getDynastiesWithDramas();
   const [selectedDynasty, setSelectedDynasty] = useState(dynasties[0] || '');
 
@@ -215,9 +222,9 @@ export default function MediaBridgePage() {
         {/* 页面标题 */}
         <RevealOnScroll>
           <SectionHeader
-            label="🎬 三联"
-            title="听书 × 看剧 × 史馆"
-            description="按历史朝代对照：听书章节 + 国产历史剧 + 史馆页面，附影视 vs 史实勘误"
+            label={t('mediaBridge.section_label')}
+            title={t('mediaBridge.title')}
+            description={t('mediaBridge.subtitle')}
           />
         </RevealOnScroll>
 
@@ -248,9 +255,9 @@ export default function MediaBridgePage() {
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xl">🎧</span>
-                  <h3 className="font-bold text-ink-900 dark:text-ink-100">听书章节</h3>
+                  <h3 className="font-bold text-ink-900 dark:text-ink-100">{t('mediaBridge.listening')}</h3>
                   <span className="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent">
-                    {chapters.length} 章
+                    {t('mediaBridge.chapters', { count: chapters.length })}
                   </span>
                 </div>
                 {chapters.length > 0 ? (
@@ -262,7 +269,7 @@ export default function MediaBridgePage() {
                 ) : (
                   <div className="text-center py-8 text-ink-400">
                     <p className="text-3xl mb-2">🎧</p>
-                    <p className="text-sm">暂无听书数据</p>
+                    <p className="text-sm">{t('mediaBridge.no_chapter_data')}</p>
                   </div>
                 )}
               </div>
@@ -271,9 +278,9 @@ export default function MediaBridgePage() {
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xl">🎬</span>
-                  <h3 className="font-bold text-ink-900 dark:text-ink-100">历史剧</h3>
+                  <h3 className="font-bold text-ink-900 dark:text-ink-100">{t('mediaBridge.drama')}</h3>
                   <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
-                    {dramas.length} 部
+                    {t('mediaBridge.dramas', { count: dramas.length })}
                   </span>
                 </div>
                 {dramas.length > 0 ? (
@@ -285,7 +292,7 @@ export default function MediaBridgePage() {
                 ) : (
                   <div className="text-center py-8 text-ink-400">
                     <p className="text-3xl mb-2">🎬</p>
-                    <p className="text-sm">暂无剧集数据</p>
+                    <p className="text-sm">{t('mediaBridge.no_drama_data')}</p>
                   </div>
                 )}
               </div>
@@ -294,9 +301,9 @@ export default function MediaBridgePage() {
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xl">📚</span>
-                  <h3 className="font-bold text-ink-900 dark:text-ink-100">史馆页面</h3>
+                  <h3 className="font-bold text-ink-900 dark:text-ink-100">{t('mediaBridge.museum')}</h3>
                   <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
-                    快捷入口
+                    {t('mediaBridge.quick_entry')}
                   </span>
                 </div>
                 <KnowledgeHubLinks dynasty={selectedDynasty} />
@@ -304,7 +311,7 @@ export default function MediaBridgePage() {
                 {/* 推荐观看顺序 */}
                 <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-900/10 rounded-xl border border-amber-200 dark:border-amber-700">
                   <h4 className="font-bold text-sm text-ink-900 dark:text-ink-100 mb-2">
-                    🎯 推荐观看顺序
+                    🎯 {t('mediaBridge.watch_order')}
                   </h4>
                   <ol className="space-y-1">
                     {dramas
@@ -317,7 +324,7 @@ export default function MediaBridgePage() {
                           </span>
                           <span>
                             <span className="font-bold text-ink-900 dark:text-ink-100">{drama.title}</span>
-                            <span className="text-ink-400 ml-1">{drama.doubanRating}分</span>
+                            <span className="text-ink-400 ml-1">{drama.doubanRating}{t('mediaBridge.rating')}</span>
                           </span>
                         </li>
                       ))}
@@ -332,7 +339,7 @@ export default function MediaBridgePage() {
                 <div className="mb-8">
                   <h3 className="font-bold text-lg text-ink-900 dark:text-ink-100 mb-4 flex items-center gap-2">
                     <span className="text-xl">📋</span>
-                    影视勘误汇总
+                    {t('mediaBridge.fact_check_summary')}
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {dramas

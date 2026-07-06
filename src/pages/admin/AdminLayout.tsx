@@ -1,15 +1,17 @@
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAdminStore } from '@/store/adminStore';
+import { useT } from '@/i18n/i18n';
 
 const menuItems = [
-  { label: '仪表盘', path: '/admin', icon: '盘' },
-  { label: '事件管理', path: '/admin/events', icon: '事' },
-  { label: '人物管理', path: '/admin/persons', icon: '人' },
-  { label: '朝代管理', path: '/admin/dynasties', icon: '朝' },
-  { label: '知识卡片', path: '/admin/knowledge', icon: '知' },
+  { labelKey: 'admin.dashboard', path: '/admin', icon: '盘' },
+  { labelKey: 'admin.events_manage', path: '/admin/events', icon: '事' },
+  { labelKey: 'admin.persons_manage', path: '/admin/persons', icon: '人' },
+  { labelKey: 'admin.dynasties_manage', path: '/admin/dynasties', icon: '朝' },
+  { labelKey: 'admin.knowledge_cards', path: '/admin/knowledge', icon: '知' },
 ];
 
 export default function AdminLayout() {
+  const t = useT();
   const navigate = useNavigate();
   const location = useLocation();
   const logout = useAdminStore((s) => s.logout);
@@ -26,9 +28,9 @@ export default function AdminLayout() {
         <div className="p-4 border-b border-ink-800">
           <Link to="/" className="flex items-center gap-2 mb-1">
             <span className="text-2xl">史</span>
-            <span className="text-white font-bold text-sm">五千年史馆</span>
+            <span className="text-white font-bold text-sm">{t('home.title')}</span>
           </Link>
-          <span className="text-xs text-ink-500">管理后台</span>
+          <span className="text-xs text-ink-500">{t('admin.title')}</span>
         </div>
 
         <nav className="flex-1 p-2 space-y-1">
@@ -45,7 +47,7 @@ export default function AdminLayout() {
                 }`}
               >
                 <span>{item.icon}</span>
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             );
           })}
@@ -57,14 +59,14 @@ export default function AdminLayout() {
             className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-ink-400 hover:bg-ink-800 hover:text-ink-200 transition-colors"
           >
             <span>语</span>
-            返回前台
+            {t('admin.back_to_frontend')}
           </Link>
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-red-400 hover:bg-red-900/30 transition-colors"
           >
             <span>🚪</span>
-            退出登录
+            {t('auth.logout')}
           </button>
         </div>
       </aside>

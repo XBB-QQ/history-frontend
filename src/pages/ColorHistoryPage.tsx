@@ -7,8 +7,10 @@ import { useState } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { DYNASTY_PALETTES, ALL_HISTORICAL_COLORS, COLORS_BY_CATEGORY, type DynastyPalette } from '@/data/features/colorHistory';
+import { useT } from '@/i18n/i18n';
 
 export default function ColorHistoryPage() {
+  const t = useT();
   const [activeTab, setActiveTab] = useState<'dynasty' | 'color' | 'category'>('dynasty');
   const [selectedDynasty, setSelectedDynasty] = useState<DynastyPalette | null>(null);
   const [copiedHex, setCopiedHex] = useState('');
@@ -23,7 +25,7 @@ export default function ColorHistoryPage() {
   const handleShare = (palette: DynastyPalette) => {
     const text = `【${palette.dynasty}色谱】${palette.colors.map(c => `${c.name}(${c.hex})`).join(' · ')}`;
     navigator.clipboard.writeText(text);
-    alert('色谱信息已复制到剪贴板！');
+    alert(t('colorHistory.shareSuccess'));
   };
 
   return (
@@ -33,8 +35,8 @@ export default function ColorHistoryPage() {
         <RevealOnScroll>
           <SectionHeader
             label="HISTORICAL COLOR"
-            title="历史色谱"
-            description="从商代玄黑到清代明黄，探索中国古代色彩美学"
+            title={t('colorHistory.title')}
+            description={t('colorHistory.description')}
           />
         </RevealOnScroll>
 
@@ -42,9 +44,9 @@ export default function ColorHistoryPage() {
         <RevealOnScroll delay={100}>
           <div className="flex gap-2 mt-6 mb-8">
             {[
-              { id: 'dynasty' as const, label: '朝代色盘', emoji: '🎨' },
-              { id: 'color' as const, label: '颜色大全', emoji: '🌈' },
-              { id: 'category' as const, label: '按用途分类', emoji: '📂' },
+              { id: 'dynasty' as const, labelKey: 'colorHistory.tabDynasty', emoji: '🎨' },
+              { id: 'color' as const, labelKey: 'colorHistory.tabColor', emoji: '🌈' },
+              { id: 'category' as const, labelKey: 'colorHistory.tabCategory', emoji: '📂' },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -55,7 +57,7 @@ export default function ColorHistoryPage() {
                     : 'bg-white/70 dark:bg-ink-900/70 text-ink-600 dark:text-ink-400 hover:bg-ink-100 dark:hover:bg-ink-800'
                 }`}
               >
-                {tab.emoji} {tab.label}
+                {tab.emoji} {t(tab.labelKey)}
               </button>
             ))}
           </div>
@@ -140,7 +142,7 @@ export default function ColorHistoryPage() {
                         onClick={() => handleShare(selectedDynasty)}
                         className="px-4 py-2 rounded-lg bg-accent text-white font-bold text-sm hover:bg-accent/90"
                       >
-                        📤 分享
+                        📤 {t('colorHistory.share')}
                       </button>
                     </div>
 
@@ -157,7 +159,7 @@ export default function ColorHistoryPage() {
                             className="h-20 cursor-pointer"
                             style={{ backgroundColor: color.hex }}
                             onClick={() => handleCopyHex(color.hex)}
-                            title="点击复制色值"
+                            title={t('colorHistory.clickToCopy')}
                           />
                           <div className="p-3 bg-white dark:bg-ink-800">
                             <div className="flex items-center justify-between">
@@ -166,7 +168,7 @@ export default function ColorHistoryPage() {
                                 onClick={() => handleCopyHex(color.hex)}
                                 className="text-xs px-2 py-1 rounded bg-ink-100 dark:bg-ink-700 text-ink-600 dark:text-ink-400 hover:bg-accent hover:text-white transition-colors"
                               >
-                                {copiedHex === color.hex ? '✓ 已复制' : '复制'}
+                                {copiedHex === color.hex ? `✓ ${t('colorHistory.copied')}` : t('colorHistory.copy')}
                               </button>
                             </div>
                             <p className="text-xs text-ink-500 font-mono mt-1">{color.hex}</p>
@@ -179,7 +181,7 @@ export default function ColorHistoryPage() {
 
                     {/* 染料方法 */}
                     <div>
-                      <h4 className="font-bold text-ink-900 dark:text-ink-100 mb-2">🧪 染料方法</h4>
+                      <h4 className="font-bold text-ink-900 dark:text-ink-100 mb-2">🧪 {t('colorHistory.dyeMethods')}</h4>
                       <div className="flex flex-wrap gap-2">
                         {selectedDynasty.dyeMethods.map(method => (
                           <span key={method} className="px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400 text-sm">
@@ -191,7 +193,7 @@ export default function ColorHistoryPage() {
 
                     {/* 文化含义 */}
                     <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
-                      <h4 className="font-bold text-ink-900 dark:text-ink-100 mb-1">📜 文化含义</h4>
+                      <h4 className="font-bold text-ink-900 dark:text-ink-100 mb-1">📜 {t('colorHistory.culturalMeaning')}</h4>
                       <p className="text-sm text-ink-600 dark:text-ink-400">{selectedDynasty.culturalMeaning}</p>
                     </div>
 
@@ -199,7 +201,7 @@ export default function ColorHistoryPage() {
                       onClick={() => setSelectedDynasty(null)}
                       className="w-full py-3 rounded-xl bg-ink-100 dark:bg-ink-800 font-bold text-ink-700 dark:text-ink-300 hover:bg-ink-200 dark:hover:bg-ink-700"
                     >
-                      关闭
+                      {t('common.close')}
                     </button>
                   </div>
                 </div>
@@ -212,7 +214,7 @@ export default function ColorHistoryPage() {
         {activeTab === 'color' && (
           <RevealOnScroll direction="up" delay={200}>
             <div className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-6 shadow-lg">
-              <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-6">🌈 全部 {ALL_HISTORICAL_COLORS.length} 种历史颜色</h3>
+              <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-6">🌈 {t('colorHistory.allColorsTitle', { count: ALL_HISTORICAL_COLORS.length })}</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {ALL_HISTORICAL_COLORS.map(color => (
                   <div
@@ -232,7 +234,7 @@ export default function ColorHistoryPage() {
                         onClick={() => handleCopyHex(color.hex)}
                         className="mt-2 w-full text-xs py-1 rounded bg-ink-100 dark:bg-ink-700 text-ink-600 dark:text-ink-400 hover:bg-accent hover:text-white transition-colors"
                       >
-                        {copiedHex === color.hex ? '✓ 已复制' : '复制色值'}
+                        {copiedHex === color.hex ? `✓ ${t('colorHistory.copied')}` : t('colorHistory.copyColorValue')}
                       </button>
                     </div>
                   </div>
@@ -247,17 +249,17 @@ export default function ColorHistoryPage() {
           <RevealOnScroll direction="up" delay={200}>
             <div className="space-y-6">
               {[
-                { key: 'royal', label: '皇家专用', emoji: '👑', desc: '帝王后妃专属用色', color: 'from-red-500 to-orange-500' },
-                { key: 'common', label: '民间常用', emoji: '🏠', desc: '百姓日常染色用色', color: 'from-green-500 to-teal-500' },
-                { key: 'ritual', label: '祭祀礼器', emoji: '🏛️', desc: '祭祀和礼仪用色', color: 'from-purple-500 to-indigo-500' },
-                { key: 'dyed', label: '染料工艺', emoji: '🧪', desc: '通过特殊染料工艺获得的色彩', color: 'from-blue-500 to-cyan-500' },
+                { key: 'royal', labelKey: 'colorHistory.catRoyal', emoji: '👑', descKey: 'colorHistory.catRoyalDesc', color: 'from-red-500 to-orange-500' },
+                { key: 'common', labelKey: 'colorHistory.catCommon', emoji: '🏠', descKey: 'colorHistory.catCommonDesc', color: 'from-green-500 to-teal-500' },
+                { key: 'ritual', labelKey: 'colorHistory.catRitual', emoji: '🏛️', descKey: 'colorHistory.catRitualDesc', color: 'from-purple-500 to-indigo-500' },
+                { key: 'dyed', labelKey: 'colorHistory.catDyed', emoji: '🧪', descKey: 'colorHistory.catDyedDesc', color: 'from-blue-500 to-cyan-500' },
               ].map(cat => {
                 const colors = COLORS_BY_CATEGORY[cat.key as keyof typeof COLORS_BY_CATEGORY];
                 return (
                   <div key={cat.key} className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 shadow-lg overflow-hidden">
                     <div className={`bg-gradient-to-r ${cat.color} p-4 text-white`}>
-                      <h3 className="text-lg font-bold">{cat.emoji} {cat.label}</h3>
-                      <p className="text-sm opacity-90">{cat.desc}（{colors.length}色）</p>
+                      <h3 className="text-lg font-bold">{cat.emoji} {t(cat.labelKey)}</h3>
+                      <p className="text-sm opacity-90">{t(cat.descKey)}（{t('colorHistory.colorCount', { count: colors.length })}）</p>
                     </div>
                     <div className="flex h-16">
                       {colors.map(color => (

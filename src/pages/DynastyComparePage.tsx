@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react';
 import { DYNASTY_METRICS, METRIC_LABELS } from '@/data/features/dynastyCompare';
 import type { DynastyMetrics } from '@/data/features/dynastyCompare';
+import { useT } from '@/i18n/i18n';
 
 export default function DynastyComparePage() {
+  const t = useT();
   const [leftId, setLeftId] = useState<string>('tang');
   const [rightId, setRightId] = useState<string>('song');
 
@@ -34,17 +36,17 @@ export default function DynastyComparePage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            比 朝代雷达对比
+            比 {t('dynastyCompare.title')}
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
-            选两个朝代，8 维度雷达图对比谁更强
+            {t('dynastyCompare.subtitle')}
           </p>
         </div>
 
         {/* 朝代选择 */}
         <div className="flex gap-4 mb-8 justify-center">
           <div>
-            <label className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 block">左方朝代</label>
+            <label className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 block">{t('dynastyCompare.leftDynasty')}</label>
             <select
               value={leftId}
               onChange={e => setLeftId(e.target.value)}
@@ -55,7 +57,7 @@ export default function DynastyComparePage() {
           </div>
           <div className="text-2xl font-serif font-bold text-accent self-end pb-2">VS</div>
           <div>
-            <label className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 block">右方朝代</label>
+            <label className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 block">{t('dynastyCompare.rightDynasty')}</label>
             <select
               value={rightId}
               onChange={e => setRightId(e.target.value)}
@@ -103,10 +105,10 @@ export default function DynastyComparePage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-ink-200 dark:border-ink-700">
-                <th className="py-3 px-4 text-left text-ink-400">维度</th>
-                <th className="py-3 px-4 text-center font-bold text-red-700">{left.dynastyName}朝</th>
-                <th className="py-3 px-4 text-center font-bold text-blue-700">{right.dynastyName}朝</th>
-                <th className="py-3 px-4 text-center text-ink-400">差距</th>
+                <th className="py-3 px-4 text-left text-ink-400">{t('dynastyCompare.dimension')}</th>
+                <th className="py-3 px-4 text-center font-bold text-red-700">{left.dynastyName}{t('dynastyCompare.dynastySuffix')}</th>
+                <th className="py-3 px-4 text-center font-bold text-blue-700">{right.dynastyName}{t('dynastyCompare.dynastySuffix')}</th>
+                <th className="py-3 px-4 text-center text-ink-400">{t('dynastyCompare.gap')}</th>
               </tr>
             </thead>
             <tbody>
@@ -135,16 +137,16 @@ export default function DynastyComparePage() {
         {/* 综合评分 */}
         <div className="mt-6 p-4 rounded-xl border border-ink-200 dark:border-ink-700 flex justify-center gap-8">
           <div className="text-center">
-            <div className="text-2xl font-serif font-bold text-red-700">{left.dynastyName}朝</div>
-            <div className="text-sm text-ink-400">综合分</div>
+            <div className="text-2xl font-serif font-bold text-red-700">{left.dynastyName}{t('dynastyCompare.dynastySuffix')}</div>
+            <div className="text-sm text-ink-400">{t('dynastyCompare.totalScore')}</div>
             <div className="text-3xl font-bold text-red-600">
               {dimensions.reduce((sum, dim) => sum + left[dim], 0)}
             </div>
           </div>
           <div className="text-2xl font-serif font-bold text-accent">VS</div>
           <div className="text-center">
-            <div className="text-2xl font-serif font-bold text-blue-700">{right.dynastyName}朝</div>
-            <div className="text-sm text-ink-400">综合分</div>
+            <div className="text-2xl font-serif font-bold text-blue-700">{right.dynastyName}{t('dynastyCompare.dynastySuffix')}</div>
+            <div className="text-sm text-ink-400">{t('dynastyCompare.totalScore')}</div>
             <div className="text-3xl font-bold text-blue-600">
               {dimensions.reduce((sum, dim) => sum + right[dim], 0)}
             </div>

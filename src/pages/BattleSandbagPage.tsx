@@ -8,23 +8,25 @@ import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { BATTLE_LIST, calculateBattle, type BattleTemplate, type TacticalOption, type BattleResult } from '@/data/features/battleSandbag';
+import { useT } from '@/i18n/i18n';
 
 type Phase = 'select' | 'deploy' | 'result';
 
-const TERRAIN_LABELS: Record<string, { emoji: string; label: string }> = {
-  river: { emoji: '水', label: '水战' },
-  mountain: { emoji: '山', label: '山地' },
-  plain: { emoji: '原', label: '平原' },
-  city: { emoji: '🏯', label: '城战' },
+const TERRAIN_LABELS: Record<string, { emoji: string; labelKey: string }> = {
+  river: { emoji: '水', labelKey: 'battleSandbag.terrain_river' },
+  mountain: { emoji: '山', labelKey: 'battleSandbag.terrain_mountain' },
+  plain: { emoji: '原', labelKey: 'battleSandbag.terrain_plain' },
+  city: { emoji: '🏯', labelKey: 'battleSandbag.terrain_city' },
 };
 
-const OUTCOME_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  victory: { bg: 'bg-green-500/10 dark:bg-green-700/10', text: 'text-green-700 dark:text-green-400', label: '胜利' },
-  defeat: { bg: 'bg-red-500/10 dark:bg-red-700/10', text: 'text-red-700 dark:text-red-400', label: '失败' },
-  draw: { bg: 'bg-amber-500/10 dark:bg-amber-700/10', text: 'text-amber-700 dark:text-amber-400', label: '僵持' },
+const OUTCOME_STYLES: Record<string, { bg: string; text: string; labelKey: string }> = {
+  victory: { bg: 'bg-green-500/10 dark:bg-green-700/10', text: 'text-green-700 dark:text-green-400', labelKey: 'battleSandbag.outcome_victory' },
+  defeat: { bg: 'bg-red-500/10 dark:bg-red-700/10', text: 'text-red-700 dark:text-red-400', labelKey: 'battleSandbag.outcome_defeat' },
+  draw: { bg: 'bg-amber-500/10 dark:bg-amber-700/10', text: 'text-amber-700 dark:text-amber-400', labelKey: 'battleSandbag.outcome_draw' },
 };
 
 export default function BattleSandbagPage() {
+  const t = useT();
   const [phase, setPhase] = useState<Phase>('select');
   const [battle, setBattle] = useState<BattleTemplate | null>(null);
   const [selectedTactic, setSelectedTactic] = useState<TacticalOption | null>(null);
@@ -50,8 +52,8 @@ export default function BattleSandbagPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="BATTLE SIMULATOR"
-            title="战役推演沙盘"
-            description="用兵棋推演重现经典战役"
+            title={t('battleSandbag.title')}
+            description={t('battleSandbag.description')}
           />
         </RevealOnScroll>
 
@@ -74,7 +76,7 @@ export default function BattleSandbagPage() {
                       </h3>
                       <span className="text-sm text-ink-500">{b.yearDisplay} · {b.dynasty}</span>
                       <span className="text-xs px-2 py-0.5 rounded-full bg-ink-100 dark:bg-ink-800 text-ink-600">
-                        {terrain.emoji} {terrain.label}
+                        {terrain.emoji} {t(terrain.labelKey)}
                       </span>
                     </div>
                     <p className="text-sm text-ink-600 dark:text-ink-400">{b.description}</p>
@@ -110,11 +112,11 @@ export default function BattleSandbagPage() {
                   <span className="text-lg font-bold text-green-700 dark:text-green-400">🛡️ {battle.redForce.name}</span>
                 </div>
                 <div className="space-y-1 text-sm">
-                  <div className="flex justify-between"><span>统帅</span><span className="font-bold">{battle.redForce.commander}</span></div>
-                  <div className="flex justify-between"><span>步兵</span><span className="font-bold">{battle.redForce.infantry}万</span></div>
-                  <div className="flex justify-between"><span>骑兵</span><span className="font-bold">{battle.redForce.cavalry}万</span></div>
-                  {battle.redForce.navy > 0 && <div className="flex justify-between"><span>水军</span><span className="font-bold">{battle.redForce.navy}万</span></div>}
-                  <div className="flex justify-between"><span>士气</span><span className="font-bold text-green-600">{battle.redForce.morale}</span></div>
+                  <div className="flex justify-between"><span>{t('battleSandbag.commander')}</span><span className="font-bold">{battle.redForce.commander}</span></div>
+                  <div className="flex justify-between"><span>{t('battleSandbag.infantry')}</span><span className="font-bold">{battle.redForce.infantry}万</span></div>
+                  <div className="flex justify-between"><span>{t('battleSandbag.cavalry')}</span><span className="font-bold">{battle.redForce.cavalry}万</span></div>
+                  {battle.redForce.navy > 0 && <div className="flex justify-between"><span>{t('battleSandbag.navy')}</span><span className="font-bold">{battle.redForce.navy}万</span></div>}
+                  <div className="flex justify-between"><span>{t('battleSandbag.morale')}</span><span className="font-bold text-green-600">{battle.redForce.morale}</span></div>
                   <div className="text-xs text-ink-400 mt-1">{battle.redForce.special}</div>
                 </div>
               </div>
@@ -124,11 +126,11 @@ export default function BattleSandbagPage() {
                   <span className="text-lg font-bold text-red-700 dark:text-red-400">战 {battle.blueForce.name}</span>
                 </div>
                 <div className="space-y-1 text-sm">
-                  <div className="flex justify-between"><span>统帅</span><span className="font-bold">{battle.blueForce.commander}</span></div>
-                  <div className="flex justify-between"><span>步兵</span><span className="font-bold">{battle.blueForce.infantry}万</span></div>
-                  <div className="flex justify-between"><span>骑兵</span><span className="font-bold">{battle.blueForce.cavalry}万</span></div>
-                  {battle.blueForce.navy > 0 && <div className="flex justify-between"><span>水军</span><span className="font-bold">{battle.blueForce.navy}万</span></div>}
-                  <div className="flex justify-between"><span>士气</span><span className="font-bold text-red-600">{battle.blueForce.morale}</span></div>
+                  <div className="flex justify-between"><span>{t('battleSandbag.commander')}</span><span className="font-bold">{battle.blueForce.commander}</span></div>
+                  <div className="flex justify-between"><span>{t('battleSandbag.infantry')}</span><span className="font-bold">{battle.blueForce.infantry}万</span></div>
+                  <div className="flex justify-between"><span>{t('battleSandbag.cavalry')}</span><span className="font-bold">{battle.blueForce.cavalry}万</span></div>
+                  {battle.blueForce.navy > 0 && <div className="flex justify-between"><span>{t('battleSandbag.navy')}</span><span className="font-bold">{battle.blueForce.navy}万</span></div>}
+                  <div className="flex justify-between"><span>{t('battleSandbag.morale')}</span><span className="font-bold text-red-600">{battle.blueForce.morale}</span></div>
                   <div className="text-xs text-ink-400 mt-1">{battle.blueForce.special}</div>
                 </div>
               </div>
@@ -137,30 +139,30 @@ export default function BattleSandbagPage() {
             {/* 战术选择 */}
             <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
               <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-                战 选择战术
+                战 {t('battleSandbag.select_tactic')}
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {battle.tactics.map(t => (
+                {battle.tactics.map(tactic => (
                   <button
-                    key={t.id}
-                    onClick={() => setSelectedTactic(t)}
+                    key={tactic.id}
+                    onClick={() => setSelectedTactic(tactic)}
                     className={`p-4 rounded-lg text-left transition-all ${
-                      selectedTactic?.id === t.id
+                      selectedTactic?.id === tactic.id
                         ? 'bg-accent text-white font-bold shadow-lg'
                         : 'bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-600 hover:border-accent'
                     }`}
                   >
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-lg">{t.emoji}</span>
-                      <span className={`font-bold ${selectedTactic?.id === t.id ? 'text-white' : 'text-ink-900 dark:text-ink-100'}`}>
-                        {t.label}
+                      <span className="text-lg">{tactic.emoji}</span>
+                      <span className={`font-bold ${selectedTactic?.id === tactic.id ? 'text-white' : 'text-ink-900 dark:text-ink-100'}`}>
+                        {tactic.label}
                       </span>
                     </div>
-                    <p className={`text-sm ${selectedTactic?.id === t.id ? 'text-white/80' : 'text-ink-600 dark:text-ink-400'}`}>
-                      {t.description}
+                    <p className={`text-sm ${selectedTactic?.id === tactic.id ? 'text-white/80' : 'text-ink-600 dark:text-ink-400'}`}>
+                      {tactic.description}
                     </p>
-                    <div className={`text-xs mt-2 ${selectedTactic?.id === t.id ? 'text-white/60' : 'text-ink-400'}`}>
-                      地形适配：{t.terrainBonus > 1.5 ? '极佳' : t.terrainBonus > 1 ? '良好' : '一般'} · 风险：{t.risk}
+                    <div className={`text-xs mt-2 ${selectedTactic?.id === tactic.id ? 'text-white/60' : 'text-ink-400'}`}>
+                      {t('battleSandbag.terrain_fit')}{tactic.terrainBonus > 1.5 ? t('battleSandbag.fit_excellent') : tactic.terrainBonus > 1 ? t('battleSandbag.fit_good') : t('battleSandbag.fit_normal')} · {t('battleSandbag.risk')}{tactic.risk}
                     </div>
                   </button>
                 ))}
@@ -174,10 +176,10 @@ export default function BattleSandbagPage() {
                 disabled={!selectedTactic}
                 className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg disabled:opacity-50 transition-all"
               >
-                战 开战
+                战 {t('battleSandbag.start_battle')}
               </button>
               <button onClick={() => setPhase('select')} className="px-6 py-3 rounded-lg border-2 border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-300 font-bold hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors">
-                返回选择
+                {t('battleSandbag.back_to_select')}
               </button>
             </div>
           </div>
@@ -189,10 +191,10 @@ export default function BattleSandbagPage() {
             {/* 结局 */}
             <div className={`p-6 rounded-xl ${OUTCOME_STYLES[result.outcome].bg} text-center`}>
               <div className="text-4xl mb-2">
-                {result.outcome === 'victory' ? '胜' : result.outcome === 'defeat' ? '败' : '战'}
+                {result.outcome === 'victory' ? t('battleSandbag.outcome_victory_short') : result.outcome === 'defeat' ? t('battleSandbag.outcome_defeat_short') : t('battleSandbag.outcome_draw_short')}
               </div>
               <h2 className={`text-xl font-bold ${OUTCOME_STYLES[result.outcome].text}`}>
-                {OUTCOME_STYLES[result.outcome].label}！
+                {t(OUTCOME_STYLES[result.outcome].labelKey)}！
               </h2>
               <p className="text-ink-800 dark:text-ink-200 mt-2">{result.narrative}</p>
             </div>
@@ -200,7 +202,7 @@ export default function BattleSandbagPage() {
             {/* 战力对比图 */}
             <div className="p-4 bg-ink-50/50 dark:bg-ink-900/30 rounded-lg border border-ink-200 dark:border-ink-700">
               <h4 className="text-xs font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-                力 战力对比
+                力 {t('battleSandbag.force_compare')}
               </h4>
               <div className="flex items-center gap-4">
                 <div className="text-right">
@@ -223,17 +225,17 @@ export default function BattleSandbagPage() {
             {/* 你 vs 历史 */}
             <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
               <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-                史 你的决策 vs 历史实际
+                史 {t('battleSandbag.your_vs_history')}
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="p-3 bg-accent/10 rounded-lg">
-                  <div className="text-xs text-accent font-bold mb-1">你的战术</div>
+                  <div className="text-xs text-accent font-bold mb-1">{t('battleSandbag.your_tactic')}</div>
                   <div className="text-sm font-bold">{selectedTactic.emoji} {selectedTactic.label}</div>
                   <div className="text-xs text-ink-400">{selectedTactic.description}</div>
-                  <div className="text-xs text-accent mt-1">结果：{OUTCOME_STYLES[result.outcome].label}</div>
+                  <div className="text-xs text-accent mt-1">{t('battleSandbag.result')}{t(OUTCOME_STYLES[result.outcome].labelKey)}</div>
                 </div>
                 <div className="p-3 bg-amber-50/60 dark:bg-amber-900/10 rounded-lg">
-                  <div className="text-xs text-amber-700 dark:text-amber-400 font-bold mb-1">历史实际</div>
+                  <div className="text-xs text-amber-700 dark:text-amber-400 font-bold mb-1">{t('battleSandbag.historical_actual')}</div>
                   <div className="text-xs text-ink-600 dark:text-ink-400">{battle.historicalResult}</div>
                 </div>
               </div>
@@ -242,7 +244,7 @@ export default function BattleSandbagPage() {
             {/* 历史教训 */}
             <div className="p-5 bg-gradient-to-br from-amber-500/10 to-accent/10 dark:from-amber-700/15 dark:to-accent/15 rounded-lg">
               <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                注 历史教训
+                注 {t('battleSandbag.lesson')}
               </h3>
               <p className="text-ink-800 dark:text-ink-200 leading-loose italic">{battle.lesson}</p>
             </div>
@@ -250,12 +252,12 @@ export default function BattleSandbagPage() {
             {/* 操作 */}
             <div className="flex gap-3 justify-center">
               <button onClick={() => { setPhase('deploy'); setSelectedTactic(null); setResult(null); }} className="px-6 py-3 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg transition-all">
-                重新选择战术
+                {t('battleSandbag.reselect_tactic')}
               </button>
               <button onClick={() => setPhase('select')} className="px-6 py-3 rounded-lg border-2 border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-300 font-bold hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors">
-                其他战役
+                {t('battleSandbag.other_battles')}
               </button>
-              <Link to="/" className="btn-secondary">返回首页</Link>
+              <Link to="/" className="btn-secondary">{t('battleSandbag.back_home')}</Link>
             </div>
           </div>
         )}

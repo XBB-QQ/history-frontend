@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchAllPersons, fetchPersonCompare, type BackendPersonDTO } from '@/services/api';
 import { CardSkeleton } from '@/components/common/Skeleton';
+import { useT } from '@/i18n/i18n';
 
 function ComparePage() {
+  const t = useT();
   const navigate = useNavigate();
   const [persons, setPersons] = useState<BackendPersonDTO[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,19 +61,19 @@ function ComparePage() {
         {/* Header */}
         <div className="text-center mb-8">
           <span className="text-4xl mb-4 block text-ink-300 dark:text-ink-600">⚖</span>
-          <h1 className="text-3xl font-black text-ink-900 dark:text-ink-100">人物对比</h1>
-          <p className="text-sm text-ink-500 mt-2">选择两位历史人物进行对比</p>
+          <h1 className="text-3xl font-black text-ink-900 dark:text-ink-100">{t('compare.title')}</h1>
+          <p className="text-sm text-ink-500 mt-2">{t('compare.subtitle')}</p>
         </div>
 
         {/* Selector */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Slot 1 */}
           <div className="relative">
-            <label className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 block">人物 A</label>
+            <label className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 block">{t('compare.person_a')}</label>
             <div className="relative">
               <input
                 type="text"
-                placeholder="搜索人物..."
+                placeholder={t('compare.search_placeholder')}
                 value={searchTerm || (persons.find((p) => p.uid === selected1)?.name || '')}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
@@ -84,7 +86,7 @@ function ComparePage() {
               {showDropdown && searchTerm && (
                 <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-700 rounded-xl shadow-xl z-30 max-h-48 overflow-y-auto">
                   {filteredPersons.length === 0 ? (
-                    <div className="px-4 py-3 text-sm text-ink-400">无匹配结果</div>
+                    <div className="px-4 py-3 text-sm text-ink-400">{t('compare.no_match')}</div>
                   ) : (
                     filteredPersons.map((p) => (
                       <button
@@ -106,11 +108,11 @@ function ComparePage() {
 
           {/* Slot 2 */}
           <div>
-            <label className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 block">人物 B</label>
+            <label className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 block">{t('compare.person_b')}</label>
             <div className="relative">
               <input
                 type="text"
-                placeholder="搜索人物..."
+                placeholder={t('compare.search_placeholder')}
                 value={searchTerm === '' && selected2 ? persons.find((p) => p.uid === selected2)?.name || '' : searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
@@ -147,14 +149,14 @@ function ComparePage() {
             disabled={!selected1 || !selected2}
             className="px-8 py-3 bg-accent text-white rounded-xl font-bold hover:bg-red-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            开始对比
+            {t('compare.compare_btn')}
           </button>
           {compareResult && (
             <button
               onClick={resetCompare}
               className="ml-4 px-4 py-3 text-ink-500 hover:text-accent transition-colors"
             >
-              重置
+              {t('compare.reset_btn')}
             </button>
           )}
         </div>
@@ -180,7 +182,7 @@ function ComparePage() {
                 {/* Bio */}
                 {person.bio && (
                   <div className="mb-4">
-                    <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1">简介</h4>
+                    <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1">{t('compare.bio')}</h4>
                     <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">{person.bio}</p>
                   </div>
                 )}
@@ -188,7 +190,7 @@ function ComparePage() {
                 {/* Quote */}
                 {person.quote && (
                   <div className="mb-4">
-                    <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1">名言</h4>
+                    <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1">{t('compare.quote')}</h4>
                     <blockquote className="text-sm italic text-ink-600 dark:text-ink-400 border-l-2 border-ink-300 dark:border-ink-600 pl-3">
                       "{person.quote}"
                     </blockquote>
@@ -198,7 +200,7 @@ function ComparePage() {
                 {/* Roles */}
                 {person.roles && person.roles.length > 0 && (
                   <div className="mb-4">
-                    <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1">身份</h4>
+                    <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1">{t('compare.roles')}</h4>
                     <div className="flex flex-wrap gap-1">
                       {person.roles.map((r) => (
                         <span key={r} className="text-xs px-2 py-0.5 bg-ink-100 dark:bg-ink-800 rounded-full text-ink-500">
@@ -212,7 +214,7 @@ function ComparePage() {
                 {/* Tags */}
                 {person.tags && person.tags.length > 0 && (
                   <div>
-                    <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1">标签</h4>
+                    <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1">{t('compare.tags')}</h4>
                     <div className="flex flex-wrap gap-1">
                       {person.tags.map((t) => (
                         <span key={t} className="text-xs px-2 py-0.5 bg-ink-50 dark:bg-ink-800/50 rounded-full text-ink-400">
@@ -229,7 +231,7 @@ function ComparePage() {
                     onClick={() => navigate(`/persons?id=${person.id}`)}
                     className="text-sm text-accent hover:underline"
                   >
-                    查看详情 →
+                    {t('compare.view_detail')} →
                   </button>
                 </div>
               </div>

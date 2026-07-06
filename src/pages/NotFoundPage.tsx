@@ -1,16 +1,18 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useT } from '@/i18n/i18n';
 
 const pages = [
-  { path: '/timeline', label: '时间轴', icon: '事' },
-  { path: '/dynasties', label: '历代朝代', icon: '朝' },
-  { path: '/persons', label: '人物志', icon: '人' },
-  { path: '/knowledge', label: '史海钩沉', icon: '知' },
-  { path: '/map', label: '历史地图', icon: '图' },
-  { path: '/favorites', label: '我的收藏', icon: '藏' },
+  { path: '/timeline', labelKey: 'nav.timeline', icon: '事' },
+  { path: '/dynasties', labelKey: 'dynasties.title', icon: '朝' },
+  { path: '/persons', labelKey: 'nav.persons', icon: '人' },
+  { path: '/knowledge', labelKey: 'nav.knowledge', icon: '知' },
+  { path: '/map', labelKey: 'nav.map', icon: '图' },
+  { path: '/favorites', labelKey: 'favorite.title', icon: '藏' },
 ];
 
 function NotFoundPage() {
+  const t = useT();
   const navigate = useNavigate();
   const [hoveredIndex, setHoveredIndex] = useState(-1);
   const [countdown, setCountdown] = useState(10);
@@ -42,18 +44,18 @@ function NotFoundPage() {
 
         {/* 标题 */}
         <h1 className="text-4xl md:text-5xl font-black text-ink-900 dark:text-ink-100 mb-3 tracking-wider">
-          史册无此页
+          {t('notfound.title')}
         </h1>
         <p className="text-lg text-ink-500 dark:text-ink-400 mb-2">
-          您访问的页面尚未载入史册，或地址有误
+          {t('notfound.desc')}
         </p>
         <p className="text-sm text-ink-400 dark:text-ink-500 mb-8">
           {countdown > 0 ? (
             <span>
-              <span className="text-accent font-bold">{countdown}</span> 秒后自动返回首页
+              <span className="text-accent font-bold">{countdown}</span> {t('notfound.countdown')}
             </span>
           ) : (
-            <span>正在跳转...</span>
+            <span>{t('notfound.redirecting')}</span>
           )}
         </p>
 
@@ -72,7 +74,7 @@ function NotFoundPage() {
               }`}
             >
               <span className="text-2xl">{page.icon}</span>
-              <span className="text-sm text-ink-700 dark:text-ink-300 font-medium">{page.label}</span>
+              <span className="text-sm text-ink-700 dark:text-ink-300 font-medium">{t(page.labelKey)}</span>
             </Link>
           ))}
         </div>
@@ -82,7 +84,7 @@ function NotFoundPage() {
           <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          返回首页
+          {t('notfound.back_home')}
         </Link>
       </div>
     </div>

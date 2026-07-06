@@ -8,12 +8,14 @@ import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { MIGRATION_EVENTS, MIGRATION_TYPE_LABELS, type MigrationEvent } from '@/data/features/migrationData';
+import { useT } from '@/i18n/i18n';
 
 function formatYear(y: number): string {
   return y < 0 ? `公元前${Math.abs(y)}年` : `公元${y}年`;
 }
 
 export default function MigrationMapPage() {
+  const t = useT();
   const [selectedId, setSelectedId] = useState<string>(MIGRATION_EVENTS[0].id);
   const [showAll, setShowAll] = useState(false);
 
@@ -69,8 +71,8 @@ export default function MigrationMapPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="MIGRATION MAP"
-            title="历史人口迁徙图"
-            description="历史人口迁徙"
+            title={t('migrationMap.title')}
+            description={t('migrationMap.description')}
           />
         </RevealOnScroll>
 
@@ -85,7 +87,7 @@ export default function MigrationMapPage() {
                   : 'bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400 hover:bg-accent hover:text-white'
               }`}
             >
-              {showAll ? '显 全部显示中' : '显 显示全部'}
+              {showAll ? `显 ${t('migrationMap.showingAll')}` : `显 ${t('migrationMap.showAll')}`}
             </button>
             {MIGRATION_EVENTS.map(e => {
               const typeColor = MIGRATION_TYPE_LABELS[e.type].color;
@@ -223,7 +225,7 @@ export default function MigrationMapPage() {
               {/* 图例 */}
               <g transform={`translate(${MAP_W - 130}, 20)`}>
                 <rect x="0" y="0" width="120" height="100" rx="6" fill="#0d1f3c" stroke="#2a4060" strokeWidth="1" />
-                <text x="10" y="16" fill="#7a9fc0" fontSize="9" fontWeight="bold">迁徙类型</text>
+                <text x="10" y="16" fill="#7a9fc0" fontSize="9" fontWeight="bold">{t('migrationMap.migrationType')}</text>
                 {Object.entries(MIGRATION_TYPE_LABELS).map(([key, val], idx) => (
                   <g key={key} transform={`translate(10, ${28 + idx * 16})`}>
                     <circle cx="0" cy="0" r="3" fill={val.color} />
@@ -234,7 +236,7 @@ export default function MigrationMapPage() {
 
               {/* 标题水印 */}
               <text x={10} y={MAP_H - 10} fill="#3a5070" fontSize="12" fontWeight="bold">
-                {showAll ? '中国历史人口大迁徙全景' : `${selectedEvent.title} · ${selectedEvent.yearDisplay}`}
+                {showAll ? t('migrationMap.panorama') : `${selectedEvent.title} · ${selectedEvent.yearDisplay}`}
               </text>
             </svg>
           </div>
@@ -262,10 +264,10 @@ export default function MigrationMapPage() {
                 </div>
                 <div className="flex items-center gap-4 text-sm">
                   <span className="text-ink-700 dark:text-ink-300">
-                    迁徙规模：<b className="text-accent">{selectedEvent.scale}万人</b>
+                    {t('migrationMap.scale')}：<b className="text-accent">{selectedEvent.scale}{t('migrationMap.wan')}</b>
                   </span>
                   <span className="text-ink-700 dark:text-ink-300">
-                    路线数量：<b>{selectedEvent.routes.length}条</b>
+                    {t('migrationMap.routes')}：<b>{selectedEvent.routes.length}{t('migrationMap.tiao')}</b>
                   </span>
                 </div>
               </div>
@@ -273,7 +275,7 @@ export default function MigrationMapPage() {
               {/* 描述 */}
               <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-lg border border-ink-200 dark:border-ink-700">
                 <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                  详 事件详情
+                  详 {t('migrationMap.eventDetail')}
                 </h3>
                 <p className="text-ink-800 dark:text-ink-200 leading-loose">
                   {selectedEvent.description}
@@ -283,7 +285,7 @@ export default function MigrationMapPage() {
               {/* 原因 */}
               <div className="p-4 bg-red-500/5 dark:bg-red-700/10 rounded-lg border-l-4 border-red-500">
                 <h3 className="text-sm font-bold text-red-700 dark:text-red-400 mb-1 tracking-widest">
-                  注 迁徙原因
+                  注 {t('migrationMap.cause')}
                 </h3>
                 <p className="text-ink-800 dark:text-ink-200 text-sm">{selectedEvent.cause}</p>
               </div>
@@ -291,7 +293,7 @@ export default function MigrationMapPage() {
               {/* 影响 */}
               <div className="p-4 bg-green-500/5 dark:bg-green-700/10 rounded-lg border-l-4 border-green-500">
                 <h3 className="text-sm font-bold text-green-700 dark:text-green-400 mb-1 tracking-widest">
-                  响 历史影响
+                  响 {t('migrationMap.impact')}
                 </h3>
                 <p className="text-ink-800 dark:text-ink-200 text-sm leading-relaxed">{selectedEvent.impact}</p>
               </div>
@@ -299,7 +301,7 @@ export default function MigrationMapPage() {
               {/* 路线详情 */}
               <div className="p-4 bg-ink-50/50 dark:bg-ink-900/30 rounded-lg border border-ink-200 dark:border-ink-700">
                 <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                  图 迁徙路线
+                  图 {t('migrationMap.migrationRoutes')}
                 </h3>
                 <div className="space-y-2">
                   {selectedEvent.routes.map((route, idx) => (
@@ -334,7 +336,7 @@ export default function MigrationMapPage() {
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-lg">{e.emoji}</span>
                       <span className="font-bold text-ink-900 dark:text-ink-100">{e.title}</span>
-                      <span className="text-xs text-ink-400 ml-auto">{e.scale}万人</span>
+                      <span className="text-xs text-ink-400 ml-auto">{e.scale}{t('migrationMap.wan')}</span>
                     </div>
                     <div className="text-xs text-ink-500 dark:text-ink-400 mb-1">
                       {e.yearDisplay} · {e.dynasty}
@@ -352,7 +354,7 @@ export default function MigrationMapPage() {
         {/* 底部 */}
         <RevealOnScroll direction="fade" delay={400}>
           <div className="mt-12 text-center">
-            <Link to="/" className="btn-secondary">返回首页</Link>
+            <Link to="/" className="btn-secondary">{t('common.back_home')}</Link>
           </div>
         </RevealOnScroll>
       </div>

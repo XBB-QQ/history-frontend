@@ -9,6 +9,7 @@ import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { searchDict, CLASSICAL_DICT, type DictEntry } from '@/data/features/classicalDict';
 import { callLLM, type LLMMessage } from '@/utils/llmClient';
+import { useT } from '@/i18n/i18n';
 
 type Mode = 'dict' | 'llm';
 
@@ -19,6 +20,7 @@ export default function ClassicalAnnotationPage() {
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<Mode>('dict');
   const [hoverWord, setHoverWord] = useState<DictEntry | null>(null);
+  const t = useT();
 
   const handleDictSearch = useCallback(() => {
     const results = searchDict(inputText);
@@ -55,7 +57,7 @@ export default function ClassicalAnnotationPage() {
       const result = await callLLM(messages, { maxTokens: 1500, temperature: 0.3 });
       setLlmAnnotation(result);
     } catch (e) {
-      setLlmAnnotation('注解生成失败：' + (e instanceof Error ? e.message : '未知错误'));
+      setLlmAnnotation(t('classicalAnnotation.annotate_failed_prefix') + (e instanceof Error ? e.message : t('classicalAnnotation.unknown_error')));
     } finally {
       setLoading(false);
     }
@@ -70,8 +72,8 @@ export default function ClassicalAnnotationPage() {
         <RevealOnScroll direction="fade">
           <SectionHeader
             label="CLASSICAL ANNOTATION"
-            title="古文注解"
-            description="古文逐字注解"
+            title={t('classicalAnnotation.title')}
+            description={t('classicalAnnotation.description')}
           />
         </RevealOnScroll>
 
@@ -84,20 +86,20 @@ export default function ClassicalAnnotationPage() {
                 onClick={() => setMode('dict')}
                 className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${mode === 'dict' ? 'bg-accent text-white' : 'bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400'}`}
               >
-                典 词典检索
+                {t('classicalAnnotation.mode_dict')}
               </button>
               <button
                 onClick={() => setMode('llm')}
                 className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${mode === 'llm' ? 'bg-accent text-white' : 'bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400'}`}
               >
-                机 AI 注解
+                {t('classicalAnnotation.mode_llm')}
               </button>
             </div>
 
             <textarea
               value={inputText}
               onChange={e => setInputText(e.target.value)}
-              placeholder="输入古文… 例如：朕为始皇帝，后世以计数，二世三世至于万世，传之无穷"
+              placeholder={t('classicalAnnotation.input_placeholder')}
               className="w-full px-4 py-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-600 text-ink-900 dark:text-ink-100 placeholder:text-ink-400 focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none transition-all resize-none"
               rows={4}
             />
@@ -106,7 +108,7 @@ export default function ClassicalAnnotationPage() {
             {annotatedWords.length > 0 && (
               <div className="mt-3">
                 <div className="text-xs text-ink-500 dark:text-ink-400 mb-1">
-                  查 检测到古汉语词汇（悬浮查看）：
+                  {t('classicalAnnotation.detected_title')}
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {annotatedWords.map(e => (
@@ -123,10 +125,10 @@ export default function ClassicalAnnotationPage() {
                 {hoverWord && (
                   <div className="mt-2 p-3 bg-accent/5 dark:bg-accent/10 rounded-lg border border-accent/30 text-sm animate-fade-in">
                     <div className="font-bold text-accent mb-1">{hoverWord.word}</div>
-                    <div>古义：{hoverWord.classicalMeaning}</div>
-                    <div>今义：{hoverWord.modernEquivalent}</div>
-                    {hoverWord.example && <div className="text-ink-400 mt-1">例：{hoverWord.example}（{hoverWord.source}）</div>}
-                    {hoverWord.allusion && <div className="text-amber-600 dark:text-amber-400 mt-1">典故：{hoverWord.allusion}</div>}
+                    <div>{t('classicalAnnotation.classical_meaning')}{hoverWord.classicalMeaning}</div>
+                    <div>{t('classicalAnnotation.modern_meaning')}{hoverWord.modernEquivalent}</div>
+                    {hoverWord.example && <div className="text-ink-400 mt-1">{t('classicalAnnotation.example_prefix')}{hoverWord.example}（{hoverWord.source}）</div>}
+                    {hoverWord.allusion && <div className="text-amber-600 dark:text-amber-400 mt-1">{t('classicalAnnotation.allusion_prefix')}{hoverWord.allusion}</div>}
                   </div>
                 )}
               </div>
@@ -138,7 +140,7 @@ export default function ClassicalAnnotationPage() {
                   onClick={handleDictSearch}
                   className="px-6 py-2 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg transition-all"
                 >
-                  典 查词典
+                  {t('classicalAnnotation.search_dict_btn')}
                 </button>
               )}
               {mode === 'llm' && (
@@ -147,20 +149,20 @@ export default function ClassicalAnnotationPage() {
                   disabled={loading}
                   className="px-6 py-2 rounded-lg bg-gradient-to-r from-accent to-amber-600 text-white font-bold hover:shadow-lg disabled:opacity-50 transition-all"
                 >
-                  {loading ? '注解中…' : '机 AI 注解'}
+                  {loading ? t('classicalAnnotation.annotating') : t('classicalAnnotation.annotate_btn')}
                 </button>
               )}
               <button
                 onClick={() => { setInputText('朕为始皇帝，后世以计数，二世三世至于万世，传之无穷'); }}
                 className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400 text-sm hover:bg-ink-200 transition-colors"
               >
-                示例1：秦始皇
+                {t('classicalAnnotation.example_1')}
               </button>
               <button
                 onClick={() => { setInputText('鞠躬尽瘁，死而后已。至于成败利钝，非臣之明所能逆睹也'); }}
                 className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400 text-sm hover:bg-ink-200 transition-colors"
               >
-                示例2：诸葛亮
+                {t('classicalAnnotation.example_2')}
               </button>
             </div>
           </div>
@@ -174,17 +176,17 @@ export default function ClassicalAnnotationPage() {
                 <div key={e.word} className="p-4 bg-white/70 dark:bg-ink-900/70 rounded-lg border border-ink-200 dark:border-ink-700 hover:border-accent transition-all">
                   <div className="flex items-center gap-3 mb-2">
                     <span className="text-xl font-bold text-accent">{e.word}</span>
-                    <span className="text-sm text-ink-500">古义：{e.classicalMeaning}</span>
-                    <span className="text-sm text-green-600 dark:text-green-400">今义：{e.modernEquivalent}</span>
+                    <span className="text-sm text-ink-500">{t('classicalAnnotation.classical_meaning')}{e.classicalMeaning}</span>
+                    <span className="text-sm text-green-600 dark:text-green-400">{t('classicalAnnotation.modern_meaning')}{e.modernEquivalent}</span>
                   </div>
                   {e.example && (
                     <div className="text-sm text-ink-600 dark:text-ink-400 mb-1">
-                      例：{e.example}（{e.source}）
+                      {t('classicalAnnotation.example_prefix')}{e.example}（{e.source}）
                     </div>
                   )}
                   {e.allusion && (
                     <div className="text-sm text-amber-600 dark:text-amber-400 bg-amber-50/40 dark:bg-amber-900/10 rounded px-2 py-1">
-                      典 {e.allusion}
+                      {t('classicalAnnotation.allusion_label')} {e.allusion}
                     </div>
                   )}
                 </div>
@@ -198,9 +200,9 @@ export default function ClassicalAnnotationPage() {
           <RevealOnScroll direction="fade">
             <div className="mt-6 p-6 bg-gradient-to-br from-white/80 to-accent/5 dark:from-ink-900/80 dark:to-accent/10 rounded-xl border border-ink-200 dark:border-ink-700 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-accent text-lg">机</span>
-                <span className="font-bold text-ink-900 dark:text-ink-100">AI 古文注解</span>
-                <span className="text-xs text-ink-400">基于 GLM-4-Flash</span>
+                <span className="text-accent text-lg">{t('classicalAnnotation.machine_icon')}</span>
+                <span className="font-bold text-ink-900 dark:text-ink-100">{t('classicalAnnotation.llm_result_title')}</span>
+                <span className="text-xs text-ink-400">{t('classicalAnnotation.llm_result_subtitle')}</span>
               </div>
               <div className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line">
                 {llmAnnotation}
@@ -213,7 +215,7 @@ export default function ClassicalAnnotationPage() {
         <RevealOnScroll direction="up" delay={400}>
           <div className="mt-8 p-4 bg-ink-50/50 dark:bg-ink-900/30 rounded-lg border border-ink-200 dark:border-ink-700">
             <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-              览 古汉语词典速览
+              {t('classicalAnnotation.dict_browse_title')}
             </h3>
             <div className="flex flex-wrap gap-2">
               {CLASSICAL_DICT.slice(0, 20).map(e => (
@@ -232,7 +234,7 @@ export default function ClassicalAnnotationPage() {
         {/* 底部 */}
         <RevealOnScroll direction="fade" delay={500}>
           <div className="mt-12 text-center">
-            <Link to="/" className="btn-secondary">返回首页</Link>
+            <Link to="/" className="btn-secondary">{t('common.back_home')}</Link>
           </div>
         </RevealOnScroll>
       </div>

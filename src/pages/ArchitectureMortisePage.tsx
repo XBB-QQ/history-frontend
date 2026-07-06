@@ -3,8 +3,10 @@ import { MORTISE_TYPES, BUILDING_TYPES, ANCIENT_STRUCTURES, MortiseTenon, Buildi
 import SectionHeader from '../components/common/SectionHeader';
 import RevealOnScroll from '../components/common/RevealOnScroll';
 import { FaBuilding, FaTools, FaLightbulb, FaHistory, FaCubes, FaUndo } from 'react-icons/fa';
+import { useT } from '@/i18n/i18n';
 
 const ArchitectureMortisePage: React.FC = () => {
+  const t = useT();
   const [selectedCategory, setSelectedCategory] = useState<string>('全部');
   const [selectedDynasty, setSelectedDynasty] = useState<string>('全部');
   const [selectedStructureType, setSelectedStructureType] = useState<string>('全部');
@@ -62,9 +64,9 @@ const ArchitectureMortisePage: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <RevealOnScroll>
           <SectionHeader
-            label="ARCHITECTURE"
-            title="古建筑榫卯拆解器"
-            description="探索中国古代建筑的智慧结晶，了解榫卯结构的奥秘"
+            label={t('architectureMortise.label')}
+            title={t('architectureMortise.title')}
+            description={t('architectureMortise.description')}
           />
         </RevealOnScroll>
 
@@ -72,7 +74,7 @@ const ArchitectureMortisePage: React.FC = () => {
           <div className="mb-8 bg-white rounded-2xl shadow-lg p-6">
             <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
               <FaTools className="text-orange-500" />
-              榫卯类型筛选
+              {t('architectureMortise.filter_title')}
             </h3>
             <div className="flex flex-wrap gap-3">
               {categories.map(category => (
@@ -85,7 +87,7 @@ const ArchitectureMortisePage: React.FC = () => {
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  {category}
+                  {category === '全部' ? t('architectureMortise.all') : category}
                 </button>
               ))}
               {dynasties.map(dynasty => (
@@ -98,7 +100,7 @@ const ArchitectureMortisePage: React.FC = () => {
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  {dynasty}
+                  {dynasty === '全部' ? t('architectureMortise.all') : dynasty}
                 </button>
               ))}
               {structureTypes.map(type => (
@@ -111,7 +113,7 @@ const ArchitectureMortisePage: React.FC = () => {
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  {type}
+                  {type === '全部' ? t('architectureMortise.all') : type}
                 </button>
               ))}
             </div>
@@ -124,10 +126,10 @@ const ArchitectureMortisePage: React.FC = () => {
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
                   <FaCubes className="text-orange-500" />
-                  榫卯类型
+                  {t('architectureMortise.types_title')}
                 </h3>
                 <span className="text-sm bg-orange-100 text-orange-600 px-3 py-1 rounded-full">
-                  {filteredMortiseTypes.length} 个类型
+                  {t('architectureMortise.types_count', { count: filteredMortiseTypes.length })}
                 </span>
               </div>
 
@@ -166,10 +168,10 @@ const ArchitectureMortisePage: React.FC = () => {
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
                   <FaHistory className="text-orange-500" />
-                  古代建筑结构
+                  {t('architectureMortise.structures_title')}
                 </h3>
                 <span className="text-sm bg-amber-100 text-amber-600 px-3 py-1 rounded-full">
-                  {filteredStructures.length} 个建筑
+                  {t('architectureMortise.structures_count', { count: filteredStructures.length })}
                 </span>
               </div>
 
@@ -221,24 +223,24 @@ const ArchitectureMortisePage: React.FC = () => {
           <div className="mt-8 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl shadow-lg p-6 text-white">
             <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
               <FaLightbulb className="text-yellow-300" />
-              榫卯结构的特点
+              {t('architectureMortise.features_title')}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-white/10 backdrop-blur rounded-xl p-4">
-                <h4 className="font-bold text-lg mb-2">无需钉子</h4>
-                <p className="text-sm opacity-90">完全依靠木材自身的形状和连接，体现了工匠的精湛技艺</p>
+                <h4 className="font-bold text-lg mb-2">{t('architectureMortise.feature_1_title')}</h4>
+                <p className="text-sm opacity-90">{t('architectureMortise.feature_1_desc')}</p>
               </div>
               <div className="bg-white/10 backdrop-blur rounded-xl p-4">
-                <h4 className="font-bold text-lg mb-2">抗震性能</h4>
-                <p className="text-sm opacity-90">木质的柔性能够吸收地震能量，使建筑在地震中不易倒塌</p>
+                <h4 className="font-bold text-lg mb-2">{t('architectureMortise.feature_2_title')}</h4>
+                <p className="text-sm opacity-90">{t('architectureMortise.feature_2_desc')}</p>
               </div>
               <div className="bg-white/10 backdrop-blur rounded-xl p-4">
-                <h4 className="font-bold text-lg mb-2">整体稳固</h4>
-                <p className="text-sm opacity-90">榫卯连接使建筑成为整体，每个构件都参与受力</p>
+                <h4 className="font-bold text-lg mb-2">{t('architectureMortise.feature_3_title')}</h4>
+                <p className="text-sm opacity-90">{t('architectureMortise.feature_3_desc')}</p>
               </div>
               <div className="bg-white/10 backdrop-blur rounded-xl p-4">
-                <h4 className="font-bold text-lg mb-2">便于维护</h4>
-                <p className="text-sm opacity-90">榫卯结构可以轻松拆卸和重组，便于维修和更换构件</p>
+                <h4 className="font-bold text-lg mb-2">{t('architectureMortise.feature_4_title')}</h4>
+                <p className="text-sm opacity-90">{t('architectureMortise.feature_4_desc')}</p>
               </div>
             </div>
           </div>
@@ -261,6 +263,7 @@ const AncientStructureModal: React.FC<{
   structure: AncientStructure;
   onClose: () => void;
 }> = ({ structure, onClose }) => {
+  const t = useT();
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div
@@ -296,7 +299,7 @@ const AncientStructureModal: React.FC<{
             </p>
 
             <h3 className="text-xl font-bold text-gray-800 mb-3 border-l-4 border-orange-500 pl-3">
-              技术特点
+              {t('architectureMortise.technical_features')}
             </h3>
             <ul className="space-y-2 mb-6">
               {structure.technicalFeatures.map((feature, index) => (
@@ -308,12 +311,12 @@ const AncientStructureModal: React.FC<{
             </ul>
 
             <h3 className="text-xl font-bold text-gray-800 mb-3 border-l-4 border-amber-500 pl-3">
-              建筑特点
+              {t('architectureMortise.building_features')}
             </h3>
             <p className="text-gray-700 mb-4">{structure.highlight}</p>
 
             <h3 className="text-xl font-bold text-gray-800 mb-3 border-l-4 border-amber-600 pl-3">
-              游客体验
+              {t('architectureMortise.visitor_experience')}
             </h3>
             <ul className="space-y-2 mb-6">
               {structure.visitorExperience.map((experience, index) => (
@@ -327,7 +330,7 @@ const AncientStructureModal: React.FC<{
             <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-4 border-2 border-orange-200">
               <h3 className="text-lg font-bold text-gray-800 mb-2 flex items-center gap-2">
                 <FaLightbulb className="text-orange-500" />
-                建筑挑战
+                {t('architectureMortise.construction_challenge')}
               </h3>
               <p className="text-gray-700">{structure.constructionChallenge}</p>
             </div>

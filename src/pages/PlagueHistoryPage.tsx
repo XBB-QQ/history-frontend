@@ -9,8 +9,10 @@ import React, { useState, useMemo } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { PLAGUE_EPIDEMICS, PLAGUES_BY_DYNASTY, HIGH_IMPACT_PLAGUES, MEDIUM_IMPACT_PLAGUES, LOW_IMPACT_PLAGUES } from '@/data/features/plagueData';
+import { useT } from '@/i18n/i18n';
 
 export default function PlagueHistoryPage() {
+  const t = useT();
   const [selectedDynasty, setSelectedDynasty] = useState<string>('全部');
   const [selectedType, setSelectedType] = useState<string>('全部');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -44,11 +46,11 @@ export default function PlagueHistoryPage() {
 
   const getImpactBadge = (plague: any) => {
     if (plague.casualties && parseInt(plague.casualties) > 1000000) {
-      return <span className="badge-high">特大</span>;
+      return <span className="badge-high">{t('plagueHistory.badge_high')}</span>;
     } else if (plague.casualties && parseInt(plague.casualties) >= 100000) {
-      return <span className="badge-medium">重大</span>;
+      return <span className="badge-medium">{t('plagueHistory.badge_medium')}</span>;
     } else {
-      return <span className="badge-low">一般</span>;
+      return <span className="badge-low">{t('plagueHistory.badge_low')}</span>;
     }
   };
 
@@ -65,9 +67,9 @@ export default function PlagueHistoryPage() {
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
       <SectionHeader
-        label="PLAGUE"
-        title="历史瘟疫与文明"
-        description="了解中国历史上的重大疫情及其对文明的影响"
+        label={t('plagueHistory.label')}
+        title={t('plagueHistory.title')}
+        description={t('plagueHistory.description')}
       />
 
       <RevealOnScroll>
@@ -77,20 +79,20 @@ export default function PlagueHistoryPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">
-                  搜索
+                  {t('plagueHistory.search_label')}
                 </label>
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="搜索瘟疫名称、朝代、地点..."
+                  placeholder={t('plagueHistory.search_placeholder')}
                   className="input-field w-full"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">
-                  选择朝代
+                  {t('plagueHistory.select_dynasty')}
                 </label>
                 <select
                   value={selectedDynasty}
@@ -107,17 +109,17 @@ export default function PlagueHistoryPage() {
 
               <div>
                 <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">
-                  疫情等级
+                  {t('plagueHistory.plague_level')}
                 </label>
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
                   className="input-field w-full"
                 >
-                  <option value="全部">全部等级</option>
-                  <option value="high">特大疫情</option>
-                  <option value="medium">重大疫情</option>
-                  <option value="low">一般疫情</option>
+                  <option value="全部">{t('plagueHistory.all_level')}</option>
+                  <option value="high">{t('plagueHistory.level_high')}</option>
+                  <option value="medium">{t('plagueHistory.level_medium')}</option>
+                  <option value="low">{t('plagueHistory.level_low')}</option>
                 </select>
               </div>
             </div>
@@ -130,25 +132,25 @@ export default function PlagueHistoryPage() {
                 <div className="text-2xl font-bold text-ink-900 dark:text-ink-100">
                   {PLAGUE_EPIDEMICS.length}
                 </div>
-                <div className="text-xs text-ink-500">记录疫情</div>
+                <div className="text-xs text-ink-500">{t('plagueHistory.recorded_plagues')}</div>
               </div>
               <div>
                 <div className="text-2xl font-bold text-red-600 dark:text-red-400">
                   {HIGH_IMPACT_PLAGUES.length}
                 </div>
-                <div className="text-xs text-ink-500">特大疫情</div>
+                <div className="text-xs text-ink-500">{t('plagueHistory.high_plagues')}</div>
               </div>
               <div>
                 <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
                   {MEDIUM_IMPACT_PLAGUES.length}
                 </div>
-                <div className="text-xs text-ink-500">重大疫情</div>
+                <div className="text-xs text-ink-500">{t('plagueHistory.medium_plagues')}</div>
               </div>
               <div>
                 <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                   {LOW_IMPACT_PLAGUES.length}
                 </div>
-                <div className="text-xs text-ink-500">一般疫情</div>
+                <div className="text-xs text-ink-500">{t('plagueHistory.low_plagues')}</div>
               </div>
             </div>
           </div>
@@ -202,7 +204,7 @@ export default function PlagueHistoryPage() {
             <div className="text-center py-12">
               <div className="text-4xl mb-2">🔍</div>
               <div className="text-ink-600 dark:text-ink-400">
-                没有找到符合条件的瘟疫
+                {t('plagueHistory.no_match')}
               </div>
             </div>
           )}
@@ -251,7 +253,7 @@ export default function PlagueHistoryPage() {
                   {/* 基本信息卡片 */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
-                      <div className="text-sm text-ink-500 mb-1">📍 发生地点</div>
+                      <div className="text-sm text-ink-500 mb-1">{t('plagueHistory.location_label')}</div>
                       <div className="text-lg font-bold text-ink-900 dark:text-ink-100">
                         {selectedPlague.location}
                       </div>
@@ -259,7 +261,7 @@ export default function PlagueHistoryPage() {
 
                     {selectedPlague.deathRate && (
                       <div className="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700">
-                        <div className="text-sm text-red-500 mb-1">💀 死亡率</div>
+                        <div className="text-sm text-red-500 mb-1">{t('plagueHistory.death_rate_label')}</div>
                         <div className="text-lg font-bold text-red-600 dark:text-red-400">
                           {selectedPlague.deathRate}
                         </div>
@@ -268,7 +270,7 @@ export default function PlagueHistoryPage() {
 
                     {selectedPlague.duration && (
                       <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700">
-                        <div className="text-sm text-blue-500 mb-1">⏱️ 持续时间</div>
+                        <div className="text-sm text-blue-500 mb-1">{t('plagueHistory.duration_label')}</div>
                         <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
                           {selectedPlague.duration}
                         </div>
@@ -277,7 +279,7 @@ export default function PlagueHistoryPage() {
 
                     {selectedPlague.casualties && (
                       <div className="p-4 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700">
-                        <div className="text-sm text-orange-500 mb-1">👥 伤亡人数</div>
+                        <div className="text-sm text-orange-500 mb-1">{t('plagueHistory.casualties_label')}</div>
                         <div className="text-lg font-bold text-orange-600 dark:text-orange-400">
                           {selectedPlague.casualties}
                         </div>
@@ -288,7 +290,7 @@ export default function PlagueHistoryPage() {
                   {/* 症状 */}
                   <div className="mb-6">
                     <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2">
-                      🤒 主要症状
+                      {t('plagueHistory.symptoms')}
                     </h3>
                     <div className="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700">
                       <p className="text-ink-700 dark:text-ink-300">
@@ -300,7 +302,7 @@ export default function PlagueHistoryPage() {
                   {/* 病因 */}
                   <div className="mb-6">
                     <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2">
-                      🔬 病因分析
+                      {t('plagueHistory.cause')}
                     </h3>
                     <p className="text-ink-600 dark:text-ink-400">
                       {selectedPlague.cause}
@@ -310,7 +312,7 @@ export default function PlagueHistoryPage() {
                   {/* 影响 */}
                   <div className="mb-6">
                     <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2">
-                      ⚡ 历史影响
+                      {t('plagueHistory.impact')}
                     </h3>
                     <p className="text-ink-600 dark:text-ink-400 leading-relaxed">
                       {selectedPlague.impact}
@@ -321,7 +323,7 @@ export default function PlagueHistoryPage() {
                   {selectedPlague.casualties && (
                     <div className="mb-6 p-4 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700">
                       <h3 className="text-lg font-bold text-orange-800 dark:text-orange-200 mb-2">
-                        👥 死亡人数
+                        {t('plagueHistory.death_count')}
                       </h3>
                       <p className="text-orange-700 dark:text-orange-300">
                         {selectedPlague.casualties}
@@ -333,7 +335,7 @@ export default function PlagueHistoryPage() {
                   {selectedPlague.famousPeople && selectedPlague.famousPeople.length > 0 && (
                     <div className="mb-6">
                       <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2">
-                        📜 伤亡名人
+                        {t('plagueHistory.famous_victims')}
                       </h3>
                       <div className="flex flex-wrap gap-2">
                         {selectedPlague.famousPeople.map((person: string, idx: number) => (
@@ -351,7 +353,7 @@ export default function PlagueHistoryPage() {
                   {/* 后果 */}
                   <div className="mb-6">
                     <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2">
-                      🏛️ 历史后果
+                      {t('plagueHistory.consequences')}
                     </h3>
                     <ul className="space-y-2">
                       {selectedPlague.consequences.map((consequence: string, idx: number) => (
@@ -366,10 +368,10 @@ export default function PlagueHistoryPage() {
                   {/* 预防措施 */}
                   <div className="mb-6 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700">
                     <h3 className="text-lg font-bold text-green-800 dark:text-green-200 mb-2">
-                      🛡️ 预防措施
+                      {t('plagueHistory.prevention')}
                     </h3>
                     <p className="text-green-700 dark:text-green-300">
-                      {selectedPlague.prevention || '未记录'}
+                      {selectedPlague.prevention || t('plagueHistory.prevention_default')}
                     </p>
                   </div>
 
@@ -377,7 +379,7 @@ export default function PlagueHistoryPage() {
                   {selectedPlague.afterEffects && (
                     <div className="mb-6 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700">
                       <h3 className="text-lg font-bold text-blue-800 dark:text-blue-200 mb-2">
-                        🌱 后续影响
+                        {t('plagueHistory.after_effects')}
                       </h3>
                       <p className="text-blue-700 dark:text-blue-300">
                         {selectedPlague.afterEffects}
@@ -390,7 +392,7 @@ export default function PlagueHistoryPage() {
                     className="w-full py-3 rounded-xl bg-accent text-white font-bold hover:bg-accent/90 transition-colors"
                     onClick={() => setSelectedPlague(null)}
                   >
-                    返回列表
+                    {t('plagueHistory.back_to_list')}
                   </button>
                 </div>
               </div>
@@ -400,14 +402,14 @@ export default function PlagueHistoryPage() {
           {/* 关键瘟疫统计 */}
           <div className="mt-12 p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg">
             <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100 mb-6">
-              📊 历史瘟疫统计
+              {t('plagueHistory.statistics')}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* 按朝代分布 */}
               <div>
                 <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-3">
-                  📅 按朝代分布
+                  {t('plagueHistory.by_dynasty')}
                 </h3>
                 <div className="space-y-3">
                   {Object.entries(PLAGUES_BY_DYNASTY).sort((a, b) => {
@@ -423,7 +425,7 @@ export default function PlagueHistoryPage() {
                     >
                       <div>
                         <div className="font-bold text-ink-900 dark:text-ink-100">{dynasty}</div>
-                        <div className="text-sm text-ink-500"> plague(s)</div>
+                        <div className="text-sm text-ink-500">{t('plagueHistory.plague_count')}</div>
                       </div>
                       <div className="text-2xl font-bold text-accent">{plagues.length}</div>
                     </div>
@@ -434,7 +436,7 @@ export default function PlagueHistoryPage() {
               {/* 疫情趋势 */}
               <div>
                 <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-3">
-                  📈 疫情趋势（按年份）
+                  {t('plagueHistory.by_year')}
                 </h3>
                 <div className="space-y-3">
                   {PLAGUE_EPIDEMICS.sort((a, b) => {
@@ -465,13 +467,13 @@ export default function PlagueHistoryPage() {
             {/* 历史教训 */}
             <div className="mt-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700">
               <h3 className="text-lg font-bold text-red-800 dark:text-red-200 mb-2">
-                📚 历史教训
+                {t('plagueHistory.lessons')}
               </h3>
               <div className="text-red-700 dark:text-red-300 space-y-2">
-                <p>1. 疫情与社会动荡密切相关，饥荒、战乱会加剧疫情爆发</p>
-                <p>2. 中医在疫情防治中发挥了重要作用，但现代医学更为有效</p>
-                <p>3. 公共卫生体系是疫情防控的关键</p>
-                <p>4. 早期隔离和预防措施能显著降低死亡率</p>
+                <p>{t('plagueHistory.lesson_1')}</p>
+                <p>{t('plagueHistory.lesson_2')}</p>
+                <p>{t('plagueHistory.lesson_3')}</p>
+                <p>{t('plagueHistory.lesson_4')}</p>
               </div>
             </div>
           </div>

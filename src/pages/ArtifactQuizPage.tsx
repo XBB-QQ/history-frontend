@@ -6,6 +6,7 @@
 import { useState, useCallback } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import { useT } from '@/i18n/i18n';
 import {
   ARTIFACT_QUESTIONS,
   type ArtifactQuestion,
@@ -15,6 +16,7 @@ import { getRandomQuestions, calculateScore, saveScore, getScores, type AnswerRe
 type GameState = 'menu' | 'playing' | 'result';
 
 export default function ArtifactQuizPage() {
+  const t = useT();
   const [gameState, setGameState] = useState<GameState>('menu');
   const [questions, setQuestions] = useState<ArtifactQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -79,10 +81,10 @@ export default function ArtifactQuizPage() {
   const progress = questions.length > 0 ? ((currentIndex + (showResult ? 1 : 0)) / questions.length) * 100 : 0;
 
   /* 难度标签 */
-  const difficultyLabel: Record<string, string> = {
-    easy: '⭐ 简单',
-    medium: '⭐⭐ 中等',
-    hard: '⭐⭐⭐ 困难',
+  const difficultyLabelKey: Record<string, string> = {
+    easy: 'artifactQuiz.difficulty_easy',
+    medium: 'artifactQuiz.difficulty_medium',
+    hard: 'artifactQuiz.difficulty_hard',
   };
 
   return (
@@ -92,8 +94,8 @@ export default function ArtifactQuizPage() {
         <RevealOnScroll>
           <SectionHeader
             label="ARTIFACT QUIZ"
-            title="历史信物鉴定"
-            description="认识文物，辨明真伪，挑战你的历史知识"
+            title={t('artifactQuiz.title')}
+            description={t('artifactQuiz.description')}
           />
         </RevealOnScroll>
 
@@ -103,9 +105,9 @@ export default function ArtifactQuizPage() {
             <div className="mt-12 text-center space-y-8">
               <div className="text-8xl mb-4">🏺</div>
               <div>
-                <h2 className="text-3xl font-bold text-ink-900 dark:text-ink-100 mb-2">准备好鉴定了吗？</h2>
+                <h2 className="text-3xl font-bold text-ink-900 dark:text-ink-100 mb-2">{t('artifactQuiz.ready')}</h2>
                 <p className="text-ink-600 dark:text-ink-400">
-                  共 {ARTIFACT_QUESTIONS.length} 道题目，随机抽取 5 道
+                  {t('artifactQuiz.total_questions', { total: ARTIFACT_QUESTIONS.length })}
                 </p>
               </div>
 
@@ -113,15 +115,15 @@ export default function ArtifactQuizPage() {
               <div className="grid grid-cols-3 gap-4 max-w-md mx-auto">
                 <div className="p-4 rounded-xl bg-white dark:bg-ink-900 border-2 border-ink-200 dark:border-ink-700">
                   <div className="text-2xl font-bold text-accent">{ARTIFACT_QUESTIONS.length}</div>
-                  <div className="text-sm text-ink-500">总题库</div>
+                  <div className="text-sm text-ink-500">{t('artifactQuiz.total_bank')}</div>
                 </div>
                 <div className="p-4 rounded-xl bg-white dark:bg-ink-900 border-2 border-ink-200 dark:border-ink-700">
                   <div className="text-2xl font-bold text-green-600">5</div>
-                  <div className="text-sm text-ink-500">每局题数</div>
+                  <div className="text-sm text-ink-500">{t('artifactQuiz.per_round')}</div>
                 </div>
                 <div className="p-4 rounded-xl bg-white dark:bg-ink-900 border-2 border-ink-200 dark:border-ink-700">
                   <div className="text-2xl font-bold text-amber-600">{historyScores.length}</div>
-                  <div className="text-sm text-ink-500">历史次数</div>
+                  <div className="text-sm text-ink-500">{t('artifactQuiz.history_count')}</div>
                 </div>
               </div>
 
@@ -129,7 +131,7 @@ export default function ArtifactQuizPage() {
                 onClick={handleStart}
                 className="px-12 py-4 rounded-xl bg-accent text-white font-bold text-xl hover:bg-accent/90 shadow-xl transform hover:scale-105 transition-all"
               >
-                🎯 开始鉴定
+                {t('artifactQuiz.start')}
               </button>
             </div>
           </RevealOnScroll>
@@ -172,10 +174,10 @@ export default function ArtifactQuizPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs px-2 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-400 font-bold">
-                        {difficultyLabel[currentQuestion.difficulty]}
+                        {t(difficultyLabelKey[currentQuestion.difficulty])}
                       </span>
                       <span className="text-xs px-2 py-1 rounded-full bg-accent/10 text-accent font-bold">
-                        +{currentQuestion.points} 分
+                        {t('artifactQuiz.points_value', { points: currentQuestion.points })}
                       </span>
                     </div>
                   </div>
@@ -184,7 +186,7 @@ export default function ArtifactQuizPage() {
                   <div className="p-4 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700">
                     <p className="text-sm text-ink-700 dark:text-ink-300">{currentQuestion.description}</p>
                     <p className="text-xs text-ink-500 mt-2">
-                      材质：{currentQuestion.material} · 用途：{currentQuestion.function}
+                      {t('artifactQuiz.material')}{currentQuestion.material} · {t('artifactQuiz.function')}{currentQuestion.function}
                     </p>
                   </div>
 
@@ -225,7 +227,7 @@ export default function ArtifactQuizPage() {
                   {/* 解析 */}
                   {showResult && (
                     <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800">
-                      <h4 className="font-bold text-blue-800 dark:text-blue-400 mb-1">💡 解析</h4>
+                      <h4 className="font-bold text-blue-800 dark:text-blue-400 mb-1">{t('artifactQuiz.analysis')}</h4>
                       <p className="text-sm text-ink-700 dark:text-ink-300">{currentQuestion.explanation}</p>
                     </div>
                   )}
@@ -238,14 +240,14 @@ export default function ArtifactQuizPage() {
                         disabled={!selectedOption}
                         className="flex-1 py-3 rounded-xl bg-accent text-white font-bold hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        提交鉴定
+                        {t('artifactQuiz.submit')}
                       </button>
                     ) : (
                       <button
                         onClick={handleNext}
                         className="flex-1 py-3 rounded-xl bg-green-500 text-white font-bold hover:bg-green-600"
                       >
-                        {currentIndex + 1 >= questions.length ? '查看结果' : '下一题 →'}
+                        {currentIndex + 1 >= questions.length ? t('artifactQuiz.view_result') : t('artifactQuiz.next')}
                       </button>
                     )}
                   </div>
@@ -264,7 +266,7 @@ export default function ArtifactQuizPage() {
               </div>
 
               <div>
-                <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100 mb-2">鉴定完成！</h2>
+                <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100 mb-2">{t('artifactQuiz.complete')}</h2>
                 <p className="text-4xl font-bold text-accent">{score.accuracy}%</p>
                 <p className="text-sm text-ink-500 mt-1">{score.grade}</p>
               </div>
@@ -272,15 +274,15 @@ export default function ArtifactQuizPage() {
               <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto">
                 <div className="p-3 rounded-xl bg-green-50 dark:bg-green-900/20">
                   <div className="text-xl font-bold text-green-600">{score.correct}</div>
-                  <div className="text-xs text-ink-500">正确</div>
+                  <div className="text-xs text-ink-500">{t('artifactQuiz.correct')}</div>
                 </div>
                 <div className="p-3 rounded-xl bg-red-50 dark:bg-red-900/20">
                   <div className="text-xl font-bold text-red-600">{score.wrong}</div>
-                  <div className="text-xs text-ink-500">错误</div>
+                  <div className="text-xs text-ink-500">{t('artifactQuiz.wrong')}</div>
                 </div>
                 <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20">
                   <div className="text-xl font-bold text-amber-600">{score.total}</div>
-                  <div className="text-xs text-ink-500">总分</div>
+                  <div className="text-xs text-ink-500">{t('artifactQuiz.total_score')}</div>
                 </div>
               </div>
 
@@ -289,13 +291,13 @@ export default function ArtifactQuizPage() {
                   onClick={handleStart}
                   className="px-8 py-3 rounded-xl bg-accent text-white font-bold hover:bg-accent/90 shadow-lg"
                 >
-                  🔄 再来一局
+                  {t('artifactQuiz.play_again')}
                 </button>
                 <button
                   onClick={() => setGameState('menu')}
                   className="px-8 py-3 rounded-xl bg-ink-100 dark:bg-ink-800 font-bold text-ink-700 dark:text-ink-300"
                 >
-                  返回首页
+                  {t('artifactQuiz.back_home')}
                 </button>
               </div>
             </div>

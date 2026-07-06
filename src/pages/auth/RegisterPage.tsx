@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { registerUser } from '@/services/userApi';
 import { useUserStore } from '@/store/userStore';
+import { useT } from '@/i18n/i18n';
 
 export default function RegisterPage() {
+  const t = useT();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [nickname, setNickname] = useState('');
@@ -27,13 +29,13 @@ export default function RegisterPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
-      if (!loginRes.ok) throw new Error('注册成功但自动登录失败');
+      if (!loginRes.ok) throw new Error(t('auth.auto_login_failed'));
       const loginData = await loginRes.json();
       setUser(loginData.user);
       setToken(loginData.token);
       navigate('/');
     } catch (err: any) {
-      setError(err.message || '注册失败');
+      setError(err.message || t('auth.register_failed'));
     } finally {
       setLoading(false);
     }
@@ -44,9 +46,9 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="text-2xl font-bold text-ink-900 dark:text-ink-100">
-            五千年史馆
+            {t('home.title')}
           </Link>
-          <p className="text-ink-500 dark:text-ink-400 mt-2">创建新账号，开始探索历史</p>
+          <p className="text-ink-500 dark:text-ink-400 mt-2">{t('auth.register_welcome')}</p>
         </div>
 
         <div className="bg-white/80 dark:bg-ink-900/80 rounded-2xl shadow-lg p-8 border border-ink-200 dark:border-ink-700">
@@ -58,13 +60,13 @@ export default function RegisterPage() {
             )}
 
             <div>
-              <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">用户名</label>
+              <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">{t('auth.username')}</label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 text-ink-900 dark:text-ink-100 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
-                placeholder="3-50个字符"
+                placeholder={t('auth.username_rule')}
                 required
                 minLength={3}
                 maxLength={50}
@@ -72,26 +74,26 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">昵称</label>
+              <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">{t('auth.nickname')}</label>
               <input
                 type="text"
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 text-ink-900 dark:text-ink-100 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
-                placeholder="最多20个字"
+                placeholder={t('auth.nickname_rule')}
                 required
                 maxLength={20}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">密码</label>
+              <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">{t('auth.password')}</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 text-ink-900 dark:text-ink-100 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
-                placeholder="至少6位"
+                placeholder={t('auth.password_rule')}
                 required
                 minLength={6}
                 autoComplete="new-password"
@@ -100,23 +102,23 @@ export default function RegisterPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">邮箱</label>
+                <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">{t('auth.email')}</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 text-ink-900 dark:text-ink-100 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
-                  placeholder="可选"
+                  placeholder={t('auth.optional')}
                 />
               </div>
               <div>
-                <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">手机号</label>
+                <label className="block text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">{t('auth.phone')}</label>
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="w-full px-4 py-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 text-ink-900 dark:text-ink-100 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
-                  placeholder="可选"
+                  placeholder={t('auth.optional')}
                 />
               </div>
             </div>
@@ -126,15 +128,15 @@ export default function RegisterPage() {
               disabled={loading}
               className="w-full py-3 rounded-lg bg-accent text-white font-bold hover:bg-red-700 disabled:opacity-50 transition-colors"
             >
-              {loading ? '注册中...' : '注 册'}
+              {loading ? t('auth.registering') : t('auth.register')}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-ink-500 dark:text-ink-400">
-              已有账号？{' '}
+              {t('auth.has_account')}{' '}
               <Link to="/login" className="text-accent hover:underline font-bold">
-                立即登录
+                {t('auth.login_now')}
               </Link>
             </p>
           </div>

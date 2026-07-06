@@ -1,4 +1,5 @@
 import EntityEditor from './EntityEditor';
+import { useT } from '@/i18n/i18n';
 import { adminGetDynasties, adminSaveDynasty, adminDeleteDynasty, type AdminDynastyDTO } from '@/services/adminApi';
 
 const fields = [
@@ -19,10 +20,11 @@ const fields = [
 ];
 
 export default function DynastiesEditor() {
+  const t = useT();
   return (
     <EntityEditor
       type="dynasties"
-      title="朝代管理"
+      title={t('admin.dynasties_manage')}
       listFn={adminGetDynasties as any}
       saveFn={adminSaveDynasty as any}
       deleteFn={adminDeleteDynasty as any}

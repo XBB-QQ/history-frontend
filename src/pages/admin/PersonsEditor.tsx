@@ -1,4 +1,5 @@
 import EntityEditor from './EntityEditor';
+import { useT } from '@/i18n/i18n';
 import { adminGetPersons, adminSavePerson, adminDeletePerson, type AdminPersonDTO } from '@/services/adminApi';
 
 const fields = [
@@ -17,10 +18,11 @@ const fields = [
 ];
 
 export default function PersonsEditor() {
+  const t = useT();
   return (
     <EntityEditor
       type="persons"
-      title="人物管理"
+      title={t('admin.persons_manage')}
       listFn={adminGetPersons as any}
       saveFn={adminSavePerson as any}
       deleteFn={adminDeletePerson as any}

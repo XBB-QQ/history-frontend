@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { DYNASTY_FOODS } from '@/data/features/dynastyFood';
 import type { FoodItem } from '@/data/features/dynastyFood';
+import { useT } from '@/i18n/i18n';
 
 export default function DynastyFoodPage() {
+  const t = useT();
   const [selectedDynasty, setSelectedDynasty] = useState<string>('tang');
   const [selectedDish, setSelectedDish] = useState<FoodItem | null>(null);
 
@@ -17,10 +19,10 @@ export default function DynastyFoodPage() {
         {/* 标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            🍜 历代饮食食谱
+            {t('dynastyFood.title')}
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
-            "吃"是最接地气的历史入口 — 从汉朝胡饼到清代满汉全席
+            {t('dynastyFood.subtitle')}
           </p>
         </div>
 
@@ -45,7 +47,7 @@ export default function DynastyFoodPage() {
         {/* 朝代概述 */}
         <div className="p-5 rounded-xl border border-ink-200 dark:border-ink-700 bg-ink-50/50 dark:bg-ink-800/50 mb-6">
           <h2 className="text-xl font-serif font-bold text-ink-900 dark:text-ink-100 mb-2">
-            {dynastyData.icon} {dynastyData.dynastyName}朝饮食文化
+            {dynastyData.icon} {dynastyData.dynastyName}{t('dynastyFood.dynasty_culture_suffix')}
           </h2>
           <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed">
             {dynastyData.description}
@@ -78,7 +80,7 @@ export default function DynastyFoodPage() {
           </div>
 
           <div className="mb-4">
-            <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">🥘 食材</h4>
+            <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2">{t('dynastyFood.ingredients')}</h4>
             <div className="flex flex-wrap gap-2">
               {dish.ingredients.map(ing => (
                 <span key={ing} className="px-3 py-1 rounded-lg bg-ink-100 dark:bg-ink-700 text-ink-600 dark:text-ink-400 text-xs font-bold">
@@ -93,7 +95,7 @@ export default function DynastyFoodPage() {
           </p>
 
           <div className="p-4 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50/30 dark:bg-amber-900/20">
-            <h4 className="text-sm font-bold text-amber-700 dark:text-amber-300 mb-2">历史注记</h4>
+            <h4 className="text-sm font-bold text-amber-700 dark:text-amber-300 mb-2">{t('dynastyFood.historical_note')}</h4>
             <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed italic">
               {dish.historicalNote}
             </p>

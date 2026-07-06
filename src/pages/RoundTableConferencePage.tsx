@@ -6,8 +6,10 @@ import {
 import SectionHeader from '../components/common/SectionHeader';
 import RevealOnScroll from '../components/common/RevealOnScroll';
 import { FaUsers, FaComments, FaLightbulb, FaHistory, FaGlobe } from 'react-icons/fa';
+import { useT } from '@/i18n/i18n';
 
 const RoundTableConferencePage: React.FC = () => {
+  const t = useT();
   const [selectedTopic, setSelectedTopic] = useState<string>('yin-yang');
   const [participants, setParticipants] = useState<string[]>([]);
   const [showDiscussion, setShowDiscussion] = useState(false);
@@ -52,9 +54,9 @@ const RoundTableConferencePage: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <RevealOnScroll>
           <SectionHeader
-            label="圆桌会议"
-            title="跨朝代圆桌会议"
-            description="穿越时空与历史对话，感受先贤的思想碰撞"
+            label={t('roundTableConference.label')}
+            title={t('roundTableConference.title')}
+            description={t('roundTableConference.description')}
           />
         </RevealOnScroll>
 
@@ -62,7 +64,7 @@ const RoundTableConferencePage: React.FC = () => {
           <div className="mb-8 bg-white rounded-2xl shadow-lg p-6">
             <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
               <FaComments className="text-purple-500" />
-              选择圆桌话题
+              {t('roundTableConference.select_topic')}
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[400px] overflow-y-auto">
@@ -107,12 +109,12 @@ const RoundTableConferencePage: React.FC = () => {
                   </div>
 
                   <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-4 mb-6">
-                    <h4 className="font-bold text-gray-800 mb-2">讨论问题：</h4>
+                    <h4 className="font-bold text-gray-800 mb-2">{t('roundTableConference.discussion_question')}</h4>
                     <p className="text-gray-700 italic">"{currentTopic.question}"</p>
                   </div>
 
                   <div className="mb-6">
-                    <h4 className="font-bold text-gray-800 mb-3">历史背景：</h4>
+                    <h4 className="font-bold text-gray-800 mb-3">{t('roundTableConference.historical_background')}</h4>
                     <p className="text-gray-600">{currentTopic.historicalContext}</p>
                   </div>
 
@@ -131,11 +133,11 @@ const RoundTableConferencePage: React.FC = () => {
                   <div className="bg-white rounded-2xl shadow-lg p-6">
                     <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                       <FaUsers className="text-purple-500" />
-                      选择参与者
+                      {t('roundTableConference.select_participants')}
                     </h3>
 
                     <p className="text-sm text-gray-600 mb-4">
-                      请选择 2-5 位历史人物加入圆桌会议
+                      {t('roundTableConference.select_participants_tip')}
                     </p>
 
                     <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
@@ -167,7 +169,7 @@ const RoundTableConferencePage: React.FC = () => {
 
                     <div className="mt-4 p-4 bg-purple-50 rounded-xl">
                       <p className="text-sm text-purple-800">
-                        已选择 <strong>{participants.length}</strong> 位参与者
+                        {t('roundTableConference.participants_count', { count: participants.length })}
                       </p>
                     </div>
                   </div>
@@ -175,7 +177,7 @@ const RoundTableConferencePage: React.FC = () => {
                   <div className="bg-white rounded-2xl shadow-lg p-6">
                     <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                       <FaHistory className="text-purple-500" />
-                      参与者信息
+                      {t('roundTableConference.participants_info')}
                     </h3>
 
                     {availableParticipants.length > 0 ? (
@@ -199,17 +201,17 @@ const RoundTableConferencePage: React.FC = () => {
                             </div>
 
                             <div className="mb-3">
-                              <p className="text-sm text-gray-500">核心观点：</p>
+                              <p className="text-sm text-gray-500">{t('roundTableConference.core_opinion')}</p>
                               <p className="text-gray-700 text-sm italic">"{figure.keyOpinion}"</p>
                             </div>
 
                             <div className="mb-3">
-                              <p className="text-sm text-gray-500">关键概念：</p>
+                              <p className="text-sm text-gray-500">{t('roundTableConference.key_concept')}</p>
                               <p className="text-gray-700">{figure.keyConcept}</p>
                             </div>
 
                             <div className="mb-3">
-                              <p className="text-sm text-gray-500">现代意义：</p>
+                              <p className="text-sm text-gray-500">{t('roundTableConference.modern_relevance')}</p>
                               <p className="text-gray-600 text-sm">{figure.modernRelevance}</p>
                             </div>
 
@@ -229,7 +231,7 @@ const RoundTableConferencePage: React.FC = () => {
                     ) : (
                       <div className="text-center text-gray-500 py-12">
                         <FaUsers className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                        <p>请选择至少 2 位参与者</p>
+                        <p>{t('roundTableConference.min_participants')}</p>
                       </div>
                     )}
                   </div>
@@ -246,7 +248,7 @@ const RoundTableConferencePage: React.FC = () => {
                     }`}
                   >
                     <FaComments className="inline mr-2" />
-                    开始圆桌讨论
+                    {t('roundTableConference.start_discussion')}
                   </button>
                 </div>
               </RevealOnScroll>
@@ -271,6 +273,7 @@ const DiscussionSession: React.FC<{
   participants: any[];
   onClose: () => void;
 }> = ({ topic, participants, onClose }) => {
+  const t = useT();
   const [discussionPoints, setDiscussionPoints] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -332,21 +335,21 @@ const DiscussionSession: React.FC<{
             </div>
 
             <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-4 mb-6">
-              <p className="text-gray-700 text-lg">讨论问题："{topic.question}"</p>
+              <p className="text-gray-700 text-lg">{t('roundTableConference.discussion_question')}"{topic.question}"</p>
             </div>
           </div>
 
           <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
             <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
               <FaComments className="text-purple-500" />
-              圆桌讨论
+              {t('roundTableConference.discussion_title')}
             </h3>
 
             {discussionPoints.length === 0 ? (
               <div className="text-center py-12">
                 <FaUsers className="w-20 h-20 mx-auto mb-4 text-gray-300" />
-                <p className="text-gray-500 text-lg">点击"继续"让参与者发表意见</p>
-                <p className="text-gray-400 mt-2">每次点击一位参与者发言</p>
+                <p className="text-gray-500 text-lg">{t('roundTableConference.discussion_empty')}</p>
+                <p className="text-gray-400 mt-2">{t('roundTableConference.discussion_empty_tip')}</p>
               </div>
             ) : (
               <div className="space-y-6 mb-6">
@@ -375,7 +378,7 @@ const DiscussionSession: React.FC<{
                             </span>
                           </div>
                           {isPast && (
-                            <span className="text-xs text-gray-500">第 {point.timestamp + 1} 位发言</span>
+                            <span className="text-xs text-gray-500">{t('roundTableConference.speaker_no', { no: point.timestamp + 1 })}</span>
                           )}
                         </div>
                       </div>
@@ -385,7 +388,7 @@ const DiscussionSession: React.FC<{
                       {isCurrent && (
                         <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-3">
                           <p className="text-sm text-yellow-800">
-                            🤔 "你如何思考这个问题？"
+                            {t('roundTableConference.think_question')}
                           </p>
                         </div>
                       )}
@@ -395,7 +398,7 @@ const DiscussionSession: React.FC<{
                             onClick={() => goToSpeaker(point.timestamp)}
                             className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded hover:bg-purple-200"
                           >
-                            回看
+                            {t('roundTableConference.review')}
                           </button>
                         </div>
                       )}
@@ -412,7 +415,7 @@ const DiscussionSession: React.FC<{
                   disabled={currentIndex >= participants.length}
                   className="px-8 py-3 rounded-xl font-bold text-white transition-all bg-gradient-to-r from-purple-500 to-blue-500 hover:shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {currentIndex >= participants.length ? '讨论完成' : '下一位发言'}
+                  {currentIndex >= participants.length ? t('roundTableConference.discussion_complete') : t('roundTableConference.next_speaker')}
                 </button>
               </div>
             )}
@@ -422,23 +425,23 @@ const DiscussionSession: React.FC<{
             <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl shadow-lg p-6 mb-6">
               <h3 className="text-xl font-bold text-green-800 mb-4 flex items-center gap-2">
                 <FaGlobe className="text-green-500" />
-                思想碰撞总结
+                {t('roundTableConference.summary_title')}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-white rounded-xl p-4">
-                  <h4 className="font-bold text-gray-800 mb-2">核心主题</h4>
+                  <h4 className="font-bold text-gray-800 mb-2">{t('roundTableConference.summary_theme')}</h4>
                   <p className="text-gray-700">{topic.title}</p>
                 </div>
                 <div className="bg-white rounded-xl p-4">
-                  <h4 className="font-bold text-gray-800 mb-2">讨论人数</h4>
-                  <p className="text-gray-700">{participants.length} 位历史人物</p>
+                  <h4 className="font-bold text-gray-800 mb-2">{t('roundTableConference.discussion_count_label')}</h4>
+                  <p className="text-gray-700">{t('roundTableConference.summary_count', { count: participants.length })}</p>
                 </div>
               </div>
               <button
                 onClick={resetDiscussion}
                 className="mt-4 px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl hover:shadow-lg"
               >
-                重新开始
+                {t('roundTableConference.restart')}
               </button>
             </div>
           )}

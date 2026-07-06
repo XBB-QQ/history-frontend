@@ -12,8 +12,10 @@ import {
   playNote, playDrum, playBell, playNoise,
   type SoundType, type SoundPreset,
 } from '@/features/historicalSound';
+import { useT } from '@/i18n/i18n';
 
 export default function SoundMuseumPage() {
+  const t = useT();
   const [activeSound, setActiveSound] = useState<SoundType | null>(null);
   const [activeDynasty, setActiveDynasty] = useState<string | null>(null);
 
@@ -76,16 +78,16 @@ export default function SoundMuseumPage() {
       <div className="max-w-4xl mx-auto">
         <RevealOnScroll direction="fade">
           <SectionHeader
-            label="SOUND MUSEUM"
-            title="历史声音博物馆"
-            description="历史声音复原"
+            label={t('soundMuseum.label')}
+            title={t('soundMuseum.title')}
+            description={t('soundMuseum.description')}
           />
         </RevealOnScroll>
 
         {/* 提示 */}
         <RevealOnScroll direction="up" delay={200}>
           <div className="mt-8 p-4 bg-amber-50/60 dark:bg-amber-900/10 rounded-lg border-l-4 border-amber-500 text-sm text-ink-700 dark:text-ink-300">
-            注 点击下方按钮，聆听千年前的声音。
+            {t('soundMuseum.tip')}
           </div>
         </RevealOnScroll>
 
@@ -93,7 +95,7 @@ export default function SoundMuseumPage() {
         <RevealOnScroll direction="up" delay={300}>
           <div className="mt-6 p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
             <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-              音 基础音效
+              {t('soundMuseum.basic_sounds')}
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {SOUND_PRESETS.map(preset => (
@@ -128,13 +130,13 @@ export default function SoundMuseumPage() {
           <div className="mt-4 p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 tracking-widest">
-                🎶 古琴五声音阶 — 宫商角徵羽
+                {t('soundMuseum.pentatonic_title')}
               </h3>
               <button
                 onClick={playMelody}
                 className="px-3 py-1 rounded-lg bg-accent text-white text-xs font-bold hover:shadow-lg transition-all"
               >
-                播 播放旋律
+                {t('soundMuseum.play_melody')}
               </button>
             </div>
             <div className="flex gap-2 justify-center">
@@ -154,7 +156,7 @@ export default function SoundMuseumPage() {
               })}
             </div>
             <div className="mt-2 text-center text-xs text-ink-400">
-              中国传统五声音阶，对应"宫商角徵羽"，缺少 Fa 和 Si（半音），故听感和谐悠扬
+              {t('soundMuseum.pentatonic_desc')}
             </div>
           </div>
         </RevealOnScroll>
@@ -163,7 +165,7 @@ export default function SoundMuseumPage() {
         <RevealOnScroll direction="up">
           <div className="mt-4 p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
             <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-              朝 朝代声景
+              {t('soundMuseum.dynasty_soundscape')}
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {DYNASTY_SOUNDSCAPES.map(d => (
@@ -177,7 +179,7 @@ export default function SoundMuseumPage() {
                   }`}
                 >
                   <div className="text-3xl mb-1">{d.emoji}</div>
-                  <div className="font-bold text-ink-900 dark:text-ink-100">{d.name}朝</div>
+                  <div className="font-bold text-ink-900 dark:text-ink-100">{d.name}{t('soundMuseum.dynasty_suffix')}</div>
                   <div className="text-xs text-ink-500 dark:text-ink-400 mt-1">{d.description}</div>
                   <div className="flex gap-1 mt-2 justify-center">
                     {d.sounds.map(s => {
@@ -186,7 +188,7 @@ export default function SoundMuseumPage() {
                     })}
                   </div>
                   {activeDynasty === d.dynasty && (
-                    <div className="mt-2 text-xs text-accent font-bold animate-pulse">音 播放中…</div>
+                    <div className="mt-2 text-xs text-accent font-bold animate-pulse">{t('soundMuseum.playing')}</div>
                   )}
                 </button>
               ))}
@@ -198,7 +200,7 @@ export default function SoundMuseumPage() {
         <RevealOnScroll direction="up">
           <div className="mt-4 p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
             <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-3 tracking-widest">
-              演 场景音效
+              {t('soundMuseum.scene_sounds')}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <button
@@ -206,24 +208,24 @@ export default function SoundMuseumPage() {
                 className="p-4 rounded-xl bg-gradient-to-br from-red-500/10 to-amber-500/10 border border-red-500/30 hover:shadow-lg transition-all"
               >
                 <div className="text-3xl mb-1">战</div>
-                <div className="font-bold text-ink-900 dark:text-ink-100">战场场景</div>
-                <div className="text-xs text-ink-500">连续鼓点 + 钟声</div>
+                <div className="font-bold text-ink-900 dark:text-ink-100">{t('soundMuseum.war_scene')}</div>
+                <div className="text-xs text-ink-500">{t('soundMuseum.war_scene_desc')}</div>
               </button>
               <button
                 onClick={() => playNoise('rain', 8)}
                 className="p-4 rounded-xl bg-gradient-to-br from-blue-500/10 to-green-500/10 border border-blue-500/30 hover:shadow-lg transition-all"
               >
                 <div className="text-3xl mb-1">雨</div>
-                <div className="font-bold text-ink-900 dark:text-ink-100">江南烟雨</div>
-                <div className="text-xs text-ink-500">8秒雨声白噪</div>
+                <div className="font-bold text-ink-900 dark:text-ink-100">{t('soundMuseum.rain_scene')}</div>
+                <div className="text-xs text-ink-500">{t('soundMuseum.rain_scene_desc')}</div>
               </button>
               <button
                 onClick={() => playNoise('market', 8)}
                 className="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/30 hover:shadow-lg transition-all"
               >
                 <div className="text-3xl mb-1">🏪</div>
-                <div className="font-bold text-ink-900 dark:text-ink-100">宋代夜市</div>
-                <div className="text-xs text-ink-500">8秒市井喧嚣</div>
+                <div className="font-bold text-ink-900 dark:text-ink-100">{t('soundMuseum.market_scene')}</div>
+                <div className="text-xs text-ink-500">{t('soundMuseum.market_scene_desc')}</div>
               </button>
             </div>
           </div>

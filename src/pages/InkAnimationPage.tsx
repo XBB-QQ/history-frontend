@@ -8,10 +8,12 @@ import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { INK_ANIMATIONS, type InkAnimation, type InkScene } from '@/data/features/inkAnimations';
+import { useT } from '@/i18n/i18n';
 
 type Phase = 'select' | 'playing' | 'ended';
 
 export default function InkAnimationPage() {
+  const t = useT();
   const [phase, setPhase] = useState<Phase>('select');
   const [animation, setAnimation] = useState<InkAnimation | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
@@ -96,9 +98,9 @@ export default function InkAnimationPage() {
       <div className="max-w-4xl mx-auto">
         <RevealOnScroll direction="fade">
           <SectionHeader
-            label="INK ANIMATION"
-            title="水墨动画短片"
-            description="水墨风格的动画短片"
+            label={t('inkAnimation.label')}
+            title={t('inkAnimation.title')}
+            description={t('inkAnimation.description')}
           />
         </RevealOnScroll>
 
@@ -244,20 +246,20 @@ export default function InkAnimationPage() {
             {/* 播放控制 */}
             <div className="flex items-center gap-3 justify-center">
               <button onClick={togglePlay} className="px-4 py-2 rounded-lg bg-accent text-white font-bold text-sm hover:shadow-lg transition-all">
-                {isPlaying ? '停 暂停' : '播 播放'}
+                {isPlaying ? t('inkAnimation.pause') : t('inkAnimation.play')}
               </button>
               <button onClick={restart} className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-700 dark:text-ink-300 font-bold text-sm transition-all">
-                🔁 重播
+                {t('inkAnimation.replay')}
               </button>
               <button onClick={() => setPhase('select')} className="px-4 py-2 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-700 dark:text-ink-300 font-bold text-sm transition-all">
-                返回选择
+                {t('inkAnimation.back_to_select')}
               </button>
             </div>
 
             {/* 分镜脚本 */}
             <div className="p-4 bg-ink-50/50 dark:bg-ink-900/30 rounded-lg border border-ink-200 dark:border-ink-700">
               <h4 className="text-xs font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                演 分镜脚本
+                {t('inkAnimation.storyboard')}
               </h4>
               <div className="flex gap-1">
                 {animation.scenes.map(s => (
@@ -279,7 +281,7 @@ export default function InkAnimationPage() {
             {/* 旁白全文 */}
             <div className="p-4 bg-white/70 dark:bg-ink-900/70 rounded-lg border border-ink-200 dark:border-ink-700">
               <h4 className="text-xs font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
-                旁 旁白全文
+                {t('inkAnimation.narration_full')}
               </h4>
               <p className="text-sm text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line font-serif"
                 style={{ fontFamily: 'var(--font-heading), serif' }}
@@ -290,7 +292,7 @@ export default function InkAnimationPage() {
 
             {/* 历史背景 */}
             <div className="p-4 bg-accent/5 dark:bg-accent/10 rounded-lg border-l-4 border-accent">
-              <h4 className="text-xs font-bold text-accent mb-1 tracking-widest">历史背景</h4>
+              <h4 className="text-xs font-bold text-accent mb-1 tracking-widest">{t('inkAnimation.historical_background')}</h4>
               <p className="text-sm text-ink-800 dark:text-ink-200">{animation.background}</p>
             </div>
           </div>
@@ -299,7 +301,7 @@ export default function InkAnimationPage() {
         {/* 底部 */}
         <RevealOnScroll direction="fade" delay={400}>
           <div className="mt-12 text-center">
-            <Link to="/" className="btn-secondary">返回首页</Link>
+            <Link to="/" className="btn-secondary">{t('inkAnimation.back_home')}</Link>
           </div>
         </RevealOnScroll>
       </div>

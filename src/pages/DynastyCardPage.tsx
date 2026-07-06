@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DYNASTY_CARD_TEMPLATES } from '@/data/games/dynastyCards';
 import type { DynastyCardProfile } from '@/data/games/dynastyCards';
+import { useT } from '@/i18n/i18n';
 
 export default function DynastyCardPage() {
+  const t = useT();
   const navigate = useNavigate();
   const templates = Object.values(DYNASTY_CARD_TEMPLATES);
   const [selectedId, setSelectedId] = useState<string>(templates[0].dynastyId);
@@ -30,10 +32,10 @@ export default function DynastyCardPage() {
         {/* 页面标题 */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
-            殿 朝代名片
+            殿 {t('dynastyCard.title')}
           </h1>
           <p className="mt-2 text-sm text-ink-500 dark:text-ink-400">
-            学完一个朝代，生成专属名片，分享你的历史足迹
+            {t('dynastyCard.subtitle')}
           </p>
         </div>
 
@@ -62,7 +64,7 @@ export default function DynastyCardPage() {
               onClick={() => setShowCard(true)}
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-accent to-amber-600 text-white font-bold text-lg hover:shadow-xl transition-all"
             >
-              生成名片 生
+              {t('dynastyCard.generate')} 生
             </button>
           </div>
         ) : (
@@ -97,7 +99,7 @@ export default function DynastyCardPage() {
                   className="text-4xl font-serif font-bold mb-1"
                   style={{ color: card.colorPrimary }}
                 >
-                  {card.dynastyName}朝
+                  {t('dynastyCard.dynasty_full', { name: card.dynastyName })}
                 </h2>
                 <p className="text-sm text-ink-500 dark:text-ink-400 mb-4">
                   {card.period}
@@ -118,19 +120,19 @@ export default function DynastyCardPage() {
                 {/* 关键信息 */}
                 <div className="grid grid-cols-2 gap-3 mb-4">
                   <div className="text-xs">
-                    <span className="text-ink-400">都城</span>
+                    <span className="text-ink-400">{t('dynastyCard.capital')}</span>
                     <span className="ml-2 font-bold text-ink-700 dark:text-ink-300">{card.capital}</span>
                   </div>
                   <div className="text-xs">
-                    <span className="text-ink-400">开国</span>
+                    <span className="text-ink-400">{t('dynastyCard.founding_emperor')}</span>
                     <span className="ml-2 font-bold text-ink-700 dark:text-ink-300">{card.foundingEmperor}</span>
                   </div>
                   <div className="text-xs">
-                    <span className="text-ink-400">代表</span>
+                    <span className="text-ink-400">{t('dynastyCard.peak_event')}</span>
                     <span className="ml-2 font-bold text-ink-700 dark:text-ink-300">{card.peakEvent}</span>
                   </div>
                   <div className="text-xs">
-                    <span className="text-ink-400">印章</span>
+                    <span className="text-ink-400">{t('dynastyCard.seal_style')}</span>
                     <span className="ml-2 font-bold text-ink-700 dark:text-ink-300">{card.sealStyle}</span>
                   </div>
                 </div>
@@ -138,7 +140,7 @@ export default function DynastyCardPage() {
                 {/* 学习进度 */}
                 <div className="border-t border-ink-200/30 dark:border-ink-700/30 pt-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-ink-500">学习进度</span>
+                    <span className="text-xs text-ink-500">{t('dynastyCard.learning_progress')}</span>
                     <span className="text-xs font-bold" style={{ color: card.colorPrimary }}>
                       {progress}%
                     </span>
@@ -150,15 +152,15 @@ export default function DynastyCardPage() {
                     />
                   </div>
                   <div className="flex justify-between mt-2 text-xs text-ink-400">
-                    <span>事件 {card.learnedEvents}/{card.totalEvents}</span>
-                    <span>答题 {card.quizCorrect}/{card.quizTotal}</span>
+                    <span>{t('dynastyCard.events_progress', { learned: card.learnedEvents, total: card.totalEvents })}</span>
+                    <span>{t('dynastyCard.quiz_progress', { correct: card.quizCorrect, total: card.quizTotal })}</span>
                   </div>
                 </div>
 
                 {/* 底部 */}
                 <div className="mt-4 text-center text-xs text-ink-400">
                   <p>{card.userName} · {card.generatedAt}</p>
-                  <p className="mt-1 text-ink-300">五千年史馆 · 历史足迹名片</p>
+                  <p className="mt-1 text-ink-300">{t('dynastyCard.footer')}</p>
                 </div>
               </div>
             </div>
@@ -169,13 +171,13 @@ export default function DynastyCardPage() {
         {showCard && (
           <div className="mt-6 text-center">
             <p className="text-sm text-ink-500 dark:text-ink-400 mb-4">
-              名片生成完成！长按图片保存或截图分享朋友圈
+              {t('dynastyCard.share_tip')}
             </p>
             <button
               onClick={() => navigate('/dynasties')}
               className="px-6 py-3 rounded-lg border border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-300 font-bold hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors"
             >
-              继续探索朝代 →
+              {t('dynastyCard.continue_explore')}
             </button>
           </div>
         )}

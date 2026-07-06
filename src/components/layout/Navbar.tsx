@@ -4,127 +4,127 @@ import { useThemeStore, applyTheme } from '@/store/themeStore';
 import { useSearchStore } from '@/store/searchStore';
 import { useFavoriteStore } from '@/store/favoriteStore';
 import { useUserStore } from '@/store/userStore';
-import { useI18nStore } from '@/i18n/i18n';
+import { useT } from '@/i18n/i18n';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 import type { UserDTO } from '@/services/userApi';
 
 /** 导航分组：核心入口直接显示，次要功能收纳到下拉菜单 */
 interface NavGroup {
   id: string;
-  label: string;
+  labelKey: string;
   emoji: string;
-  items: { label: string; path: string }[];
+  items: { labelKey: string; path: string }[];
 }
 
 /** 核心导航项（始终显示在顶栏） */
 const PRIMARY_NAV = [
-  { label: '首页', path: '/' },
-  { label: '时间轴', path: '/timeline-hub' },
-  { label: '朝代', path: '/dynasties' },
-  { label: '人物', path: '/persons' },
-  { label: '史海钩沉', path: '/knowledge' },
-  { label: '地图', path: '/map' },
-  { label: '收藏', path: '/favorites' },
+  { labelKey: 'nav.home', path: '/' },
+  { labelKey: 'nav.timeline', path: '/timeline-hub' },
+  { labelKey: 'nav.dynasties', path: '/dynasties' },
+  { labelKey: 'nav.persons', path: '/persons' },
+  { labelKey: 'nav.knowledge', path: '/knowledge' },
+  { labelKey: 'nav.map', path: '/map' },
+  { labelKey: 'nav.favorites', path: '/favorites' },
 ];
 
 /** 分组导航项（收纳到"更多"下拉菜单） */
 const NAV_GROUPS: NavGroup[] = [
   {
     id: 'ai',
-    label: 'AI 智能',
+    labelKey: 'nav.group_ai',
     emoji: '智',
     items: [
-      { label: '问答', path: '/rag-qa' },
-      { label: '跨时空辩论', path: '/cross-debate' },
-      { label: 'AI 史官', path: '/ai-historian' },
-      { label: '每日问候', path: '/greeting' },
-      { label: '时间胶囊', path: '/time-capsule' },
-      { label: '时空邮筒', path: '/letter' },
-      { label: '历史朋友圈', path: '/moments' },
-      { label: '古文注解', path: '/classical-annotation' },
-      { label: '人物对话', path: '/dialog' },
+      { labelKey: 'nav.ai_rag_qa', path: '/rag-qa' },
+      { labelKey: 'nav.ai_cross_debate', path: '/cross-debate' },
+      { labelKey: 'nav.ai_historian', path: '/ai-historian' },
+      { labelKey: 'nav.ai_greeting', path: '/greeting' },
+      { labelKey: 'nav.ai_time_capsule', path: '/time-capsule' },
+      { labelKey: 'nav.ai_letter', path: '/letter' },
+      { labelKey: 'nav.ai_moments', path: '/moments' },
+      { labelKey: 'nav.ai_classical', path: '/classical-annotation' },
+      { labelKey: 'nav.ai_dialog', path: '/dialog' },
     ],
   },
   {
     id: 'game',
-    label: '游戏化',
+    labelKey: 'nav.group_game',
     emoji: '🎮',
     items: [
-      { label: '历史抉择', path: '/simulator' },
-      { label: '朝代沙盘', path: '/dynasty-economy' },
-      { label: '战役推演', path: '/battle' },
-      { label: '人物卡牌', path: '/cards' },
-      { label: '朝代名片', path: '/dynasty-card' },
-      { label: '答题挑战', path: '/leaderboard' },
-      { label: '信物鉴定', path: '/artifact-quiz' },
+      { labelKey: 'nav.game_simulator', path: '/simulator' },
+      { labelKey: 'nav.game_dynasty_economy', path: '/dynasty-economy' },
+      { labelKey: 'nav.game_battle', path: '/battle' },
+      { labelKey: 'nav.game_cards', path: '/cards' },
+      { labelKey: 'nav.game_dynasty_card', path: '/dynasty-card' },
+      { labelKey: 'nav.game_leaderboard', path: '/leaderboard' },
+      { labelKey: 'nav.game_artifact_quiz', path: '/artifact-quiz' },
     ],
   },
   {
     id: 'viz',
-    label: '可视化',
+    labelKey: 'nav.group_viz',
     emoji: '视',
     items: [
-      { label: '知识图谱', path: '/knowledge-graph' },
-      { label: '因果链', path: '/causal-chain' },
-      { label: '朝代雷达', path: '/dynasty-compare' },
-      { label: '疆域地图', path: '/territory' },
-      { label: '人口迁徙', path: '/migration' },
-      { label: '寻根问祖', path: '/surname' },
-      { label: '货币换算', path: '/currency' },
-      { label: '气候变迁', path: '/climate' },
-      { label: '天象推算', path: '/sky-events' },
-      { label: '中外对照', path: '/world-compare' },
-      { label: '度量衡换算', path: '/measure' },
-      { label: '历史色谱', path: '/color-history' },
-      { label: '奏折生成器', path: '/document-generator' },
-      { label: '影视勘误', path: '/drama-fact-check' },
-      { label: '信物鉴定', path: '/artifact-quiz' },
-      { label: '年度报告', path: '/annual-report' },
+      { labelKey: 'nav.viz_knowledge_graph', path: '/knowledge-graph' },
+      { labelKey: 'nav.viz_causal_chain', path: '/causal-chain' },
+      { labelKey: 'nav.viz_dynasty_compare', path: '/dynasty-compare' },
+      { labelKey: 'nav.viz_territory', path: '/territory' },
+      { labelKey: 'nav.viz_migration', path: '/migration' },
+      { labelKey: 'nav.viz_surname', path: '/surname' },
+      { labelKey: 'nav.viz_currency', path: '/currency' },
+      { labelKey: 'nav.viz_climate', path: '/climate' },
+      { labelKey: 'nav.viz_sky_events', path: '/sky-events' },
+      { labelKey: 'nav.viz_world_compare', path: '/world-compare' },
+      { labelKey: 'nav.viz_measure', path: '/measure' },
+      { labelKey: 'nav.viz_color_history', path: '/color-history' },
+      { labelKey: 'nav.viz_document_generator', path: '/document-generator' },
+      { labelKey: 'nav.viz_drama_fact_check', path: '/drama-fact-check' },
+      { labelKey: 'nav.viz_artifact_quiz', path: '/artifact-quiz' },
+      { labelKey: 'nav.viz_annual_report', path: '/annual-report' },
     ],
   },
   {
     id: 'culture',
-    label: '文化',
+    labelKey: 'nav.group_culture',
     emoji: '景',
     items: [
-      { label: '科技树', path: '/tech-tree' },
-      { label: '汉字演变', path: '/char-evolution' },
-      { label: '历代食谱', path: '/dynasty-food' },
-      { label: '古代职业', path: '/jobs' },
-      { label: '瘟疫与文明', path: '/plague-history' },
-      { label: '历史审判庭', path: '/historical-trial' },
-      { label: '个人史册', path: '/personal-history' },
-      { label: '科举考试', path: '/examination' },
-      { label: '历史气味博物馆', path: '/scent-museum' },
-      { label: '谥号生成器', path: '/title-generator' },
-      { label: '甲骨文识读', path: '/oracle-game' },
-{ label: '古代交通', path: '/transport-timeline' },
-{ label: '古建筑榫卯', path: '/architecture-mortise' },
-{ label: '跨朝代圆桌', path: '/roundtable' },
-{ label: '历史剧本杀', path: '/script-killer' },
-{ label: '文明兴衰', path: '/entropy-model' },
-{ label: '听书看剧', path: '/media-bridge' },
-{ label: '历史预言板', path: '/future-prediction' },
-      { label: '水墨动画', path: '/ink-animation' },
-      { label: '声音博物馆', path: '/sound-museum' },
-      { label: '历史播客', path: '/podcast' },
-      { label: '多视角叙事', path: '/multi-perspective' },
-      { label: '辩论场', path: '/debate' },
+      { labelKey: 'nav.culture_tech_tree', path: '/tech-tree' },
+      { labelKey: 'nav.culture_char_evolution', path: '/char-evolution' },
+      { labelKey: 'nav.culture_dynasty_food', path: '/dynasty-food' },
+      { labelKey: 'nav.culture_jobs', path: '/jobs' },
+      { labelKey: 'nav.culture_plague', path: '/plague-history' },
+      { labelKey: 'nav.culture_historical_trial', path: '/historical-trial' },
+      { labelKey: 'nav.culture_personal_history', path: '/personal-history' },
+      { labelKey: 'nav.culture_examination', path: '/examination' },
+      { labelKey: 'nav.culture_scent_museum', path: '/scent-museum' },
+      { labelKey: 'nav.culture_title_generator', path: '/title-generator' },
+      { labelKey: 'nav.culture_oracle_game', path: '/oracle-game' },
+      { labelKey: 'nav.culture_transport', path: '/transport-timeline' },
+      { labelKey: 'nav.culture_architecture', path: '/architecture-mortise' },
+      { labelKey: 'nav.culture_roundtable', path: '/roundtable' },
+      { labelKey: 'nav.culture_script_killer', path: '/script-killer' },
+      { labelKey: 'nav.culture_entropy', path: '/entropy-model' },
+      { labelKey: 'nav.culture_media_bridge', path: '/media-bridge' },
+      { labelKey: 'nav.culture_future_prediction', path: '/future-prediction' },
+      { labelKey: 'nav.culture_ink_animation', path: '/ink-animation' },
+      { labelKey: 'nav.culture_sound_museum', path: '/sound-museum' },
+      { labelKey: 'nav.culture_podcast', path: '/podcast' },
+      { labelKey: 'nav.culture_multi_perspective', path: '/multi-perspective' },
+      { labelKey: 'nav.culture_debate', path: '/debate' },
     ],
   },
   {
     id: 'learn',
-    label: '学习',
+    labelKey: 'nav.group_learn',
     emoji: '知',
     items: [
-      { label: '课程路径', path: '/learning-path' },
-      { label: '课本对齐', path: '/k12' },
-      { label: '主题研学', path: '/story-quest' },
-      { label: '日历转换', path: '/calendar' },
-      { label: '学习中心', path: '/learning' },
-      { label: '知识贡献', path: '/contribution' },
-      { label: '专题长文', path: '/topics' },
-      { label: '人物对比', path: '/compare' },
+      { labelKey: 'nav.learn_learning_path', path: '/learning-path' },
+      { labelKey: 'nav.learn_k12', path: '/k12' },
+      { labelKey: 'nav.learn_story_quest', path: '/story-quest' },
+      { labelKey: 'nav.learn_calendar', path: '/calendar' },
+      { labelKey: 'nav.learn_learning', path: '/learning' },
+      { labelKey: 'nav.learn_contribution', path: '/contribution' },
+      { labelKey: 'nav.learn_topics', path: '/topics' },
+      { labelKey: 'nav.learn_compare', path: '/compare' },
     ],
   },
 ];
@@ -140,6 +140,7 @@ export default function Navbar() {
   const openSearch = useSearchStore((s) => s.openSearch);
   const favoriteCount = useFavoriteStore((s) => s.favorites.length);
   const { user, isAuthenticated, logout } = useUserStore();
+  const t = useT();
 
   // 初始化时同步主题到 DOM
   useEffect(() => {
@@ -181,7 +182,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
             <div className="seal-stamp text-xs w-7 h-7">史</div>
-            <span className="font-bold text-lg tracking-widest hidden sm:block">五千年史馆</span>
+            <span className="font-bold text-lg tracking-widest hidden sm:block">{t('home.title')}</span>
           </Link>
 
           {/* Desktop Nav — 核心导航 + 分组下拉 */}
@@ -197,7 +198,7 @@ export default function Navbar() {
                     : 'text-ink-600 dark:text-ink-400 hover:text-ink-900 dark:hover:text-ink-200'
                 }`}
               >
-                {item.label}
+                {t(item.labelKey)}
                 {item.path === '/favorites' && favoriteCount > 0 && (
                   <span className="text-xs px-1.5 py-0.5 rounded-full bg-accent/10 text-accent font-bold">
                     {favoriteCount}
@@ -226,7 +227,7 @@ export default function Navbar() {
                   }`}
                 >
                   <span>{group.emoji}</span>
-                  <span>{group.label}</span>
+                  <span>{t(group.labelKey)}</span>
                   <svg className={`w-3 h-3 transition-transform ${openGroup === group.id ? 'rotate-180' : ''}`}
                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -248,7 +249,7 @@ export default function Navbar() {
                           }`}
                           onClick={() => setOpenGroup(null)}
                         >
-                          {item.label}
+                          {t(item.labelKey)}
                         </Link>
                       ))}
                     </div>
@@ -264,8 +265,8 @@ export default function Navbar() {
             <button
               onClick={openSearch}
               className="text-ink-600 dark:text-ink-400 p-2 hover:text-ink-900 dark:hover:text-ink-200 transition-colors flex items-center gap-1.5"
-              aria-label="搜索"
-              title="搜索 (Ctrl+K)"
+              aria-label={t('nav.search')}
+              title={t('nav.search_title')}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -282,8 +283,8 @@ export default function Navbar() {
             <button
               onClick={toggleTheme}
               className="text-ink-600 dark:text-ink-400 p-2 hover:text-ink-900 dark:hover:text-ink-200 transition-colors"
-              aria-label="切换主题"
-              title={theme === 'dark' ? '切换为浅色模式' : '切换为深色模式'}
+              aria-label={t('nav.theme_toggle')}
+              title={theme === 'dark' ? t('theme.light') : t('theme.dark')}
             >
               {theme === 'dark' ? (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -304,7 +305,7 @@ export default function Navbar() {
                 to="/login"
                 className="text-ink-600 dark:text-ink-400 hover:text-accent dark:hover:text-accent transition-colors text-sm font-bold px-3 py-2 rounded-lg hover:bg-ink-100 dark:hover:bg-ink-800"
               >
-                登录
+                {t('auth.login')}
               </Link>
             )}
 
@@ -312,7 +313,7 @@ export default function Navbar() {
             <button
               className="md:hidden text-ink-600 dark:text-ink-400 p-2"
               onClick={() => setMobileOpen(!mobileOpen)}
-              aria-label="菜单"
+              aria-label={t('nav.menu')}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileOpen ? (
@@ -339,7 +340,7 @@ export default function Navbar() {
                     : 'text-ink-600 hover:bg-ink-50 dark:hover:bg-ink-800'
                 }`}
               >
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             ))}
 
@@ -347,7 +348,7 @@ export default function Navbar() {
             {NAV_GROUPS.map(group => (
               <div key={group.id}>
                 <div className="px-4 py-2 text-xs font-bold text-ink-400 tracking-widest bg-ink-50/50 dark:bg-ink-900/50">
-                  {group.emoji} {group.label}
+                  {group.emoji} {t(group.labelKey)}
                 </div>
                 {group.items.map(item => (
                   <Link
@@ -359,7 +360,7 @@ export default function Navbar() {
                         : 'text-ink-600 hover:bg-ink-50 dark:hover:bg-ink-800'
                     }`}
                   >
-                    {item.label}
+                    {t(item.labelKey)}
                   </Link>
                 ))}
               </div>
@@ -373,6 +374,7 @@ export default function Navbar() {
 
 /** 用户头像下拉菜单 */
 function UserMenu({ user, onLogout }: { user: UserDTO | null; onLogout: () => void }) {
+  const t = useT();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
@@ -380,7 +382,7 @@ function UserMenu({ user, onLogout }: { user: UserDTO | null; onLogout: () => vo
       <button
         onClick={() => setDropdownOpen(!dropdownOpen)}
         className="w-9 h-9 rounded-full bg-accent/20 flex items-center justify-center text-accent hover:bg-accent/30 transition-colors"
-        aria-label="用户菜单"
+        aria-label={t('nav.user_menu')}
       >
         {user?.nickname?.charAt(0) || 'U'}
       </button>
@@ -399,20 +401,20 @@ function UserMenu({ user, onLogout }: { user: UserDTO | null; onLogout: () => vo
               className="block px-4 py-2 text-sm text-ink-700 dark:text-ink-300 hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors"
               onClick={() => setDropdownOpen(false)}
             >
-              个人资料
+              {t('profile.title')}
             </Link>
             <Link
               to="/favorites"
               className="block px-4 py-2 text-sm text-ink-700 dark:text-ink-300 hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors"
               onClick={() => setDropdownOpen(false)}
             >
-              我的收藏
+              {t('favorite.title')}
             </Link>
             <button
               onClick={() => { setDropdownOpen(false); onLogout(); }}
               className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
             >
-              退出登录
+              {t('auth.logout')}
             </button>
           </div>
         </>
