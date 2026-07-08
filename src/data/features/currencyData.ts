@@ -352,7 +352,6 @@ export const DYNASTY_CURRENCIES: DynastyCurrency[] = [
 export function calculatePurchasingPower(
   amount: number,
   dynasty: string,
-  type: 'rice' | 'flour' | 'cloth' | 'meat' | 'wine' | 'custom' = 'custom'
 ): PurchasingPower {
   const currency = DYNASTY_CURRENCIES.find(c => c.dynasty === dynasty);
   if (!currency) {

@@ -2,12 +2,24 @@
  * 统一时间轴 Hub 页面
  * 聚合所有时间轴相关功能，提供统一的视觉导航
  * @see ITERATIONS.md #87
+ *
+ * T087 升级：集成年份 scrubber + 跨模块同年份快照引擎
  */
 
-import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import UnifiedTimelineHub from '@/components/hub/UnifiedTimelineHub';
 import { useT } from '@/i18n/i18n';
+import { loadEvents, loadPersons, loadDynasties } from '@/utils';
+import {
+  getSnapshotAtYear,
+  getSnapshotYearRange,
+  DEFAULT_SNAPSHOT_YEAR_RANGE,
+  type SnapshotInput,
+  type YearSnapshot,
+} from '@/utils/timelineSnapshot';
 
 interface TimelineFeature {
   id: string;
@@ -120,8 +132,65 @@ function TimelineMiniPreview() {
   );
 }
 
+/** 把年份格式化为"公元前/公元"短文本（用于滑块旁的标签） */
+function formatYearShort(year: number): string {
+  if (year < 0) return `前 ${Math.abs(year)}`;
+  return `公元 ${year}`;
+}
+
 export default function TimelineHubPage() {
   const t = useT();
+  const [searchParams] = useSearchParams();
+
+  // ─── 快照引擎状态 ───
+  const [input, setInput] = useState<SnapshotInput | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // 从 URL ?year= 初始化年份（支持 TimeTravelBar "在 Hub 中查看" 联动跳转）
+  const initialYear = (() => {
+    const y = searchParams.get('year');
+    if (y === null) return 750; // 默认唐玄宗时期
+    const n = parseInt(y, 10);
+    return isNaN(n) ? 750 : n;
+  })();
+  const [year, setYear] = useState<number>(initialYear);
+
+  // 加载本地数据（events/persons/dynasties）
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const [events, persons, dynasties] = await Promise.all([
+          loadEvents(),
+          loadPersons(),
+          loadDynasties(),
+        ]);
+        if (!cancelled) {
+          setInput({ events, persons, dynasties });
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error('[TimelineHub] 数据加载失败:', err);
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // 计算 scrubber 范围
+  const yearRange = useMemo<[number, number]>(() => {
+    if (input) return getSnapshotYearRange(input);
+    return DEFAULT_SNAPSHOT_YEAR_RANGE;
+  }, [input]);
+
+  // 计算当前年份的快照
+  const snapshot: YearSnapshot | null = useMemo(() => {
+    if (!input) return null;
+    return getSnapshotAtYear(year, input);
+  }, [year, input]);
+
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
       <div className="max-w-5xl mx-auto">
@@ -134,8 +203,59 @@ export default function TimelineHubPage() {
           />
         </RevealOnScroll>
 
+        {/* ─── T087: 年份 Scrubber + 跨模块快照 ─── */}
+        <RevealOnScroll direction="up" delay={80}>
+          <div className="mt-8 p-6 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
+            {/* Scrubber 头部 */}
+            <div className="flex items-baseline justify-between mb-3 gap-4 flex-wrap">
+              <div>
+                <span className="text-xs text-ink-500 dark:text-ink-400 tracking-widest">
+                  {t('timelineHub.snapshot_scrubber_label')}
+                </span>
+                <div className="text-2xl font-bold text-accent mt-0.5">
+                  {formatYearShort(year)}
+                </div>
+              </div>
+              <div className="text-xs text-ink-400">
+                {formatYearShort(yearRange[0])} ↔ {formatYearShort(yearRange[1])}
+              </div>
+            </div>
+
+            {/* 滑块 */}
+            <input
+              type="range"
+              min={yearRange[0]}
+              max={yearRange[1]}
+              value={year}
+              onChange={(e) => setYear(Number(e.target.value))}
+              className="w-full h-2 bg-ink-200 dark:bg-ink-700 rounded-lg appearance-none cursor-pointer accent-accent"
+              aria-label={t('timelineHub.snapshot_scrubber_label')}
+            />
+
+            {/* 快速跳转按钮 */}
+            <div className="flex flex-wrap gap-2 mt-3">
+              {[-221, -138, 100, 350, 627, 755, 960, 1127, 1368, 1644, 1840].map((y) => (
+                <button
+                  key={y}
+                  onClick={() => setYear(y)}
+                  className={`text-xs px-2.5 py-1 rounded-full transition-colors ${
+                    year === y
+                      ? 'bg-accent text-white'
+                      : 'bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400 hover:bg-accent/20'
+                  }`}
+                >
+                  {formatYearShort(y)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 快照卡片网格 */}
+          <UnifiedTimelineHub snapshot={snapshot} loading={loading} />
+        </RevealOnScroll>
+
         {/* 功能网格 */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {TIMELINE_FEATURES.map((feature, index) => (
             <RevealOnScroll direction="up" delay={100 + index * 80} key={feature.id}>
               <Link

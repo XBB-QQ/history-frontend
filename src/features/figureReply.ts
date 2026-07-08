@@ -53,7 +53,7 @@ export function generateFigureReply(
 function generateTopicReply(
   figure: HistoricalFigure,
   topic: string,
-  userMsg: string
+  _userMsg: string
 ): string {
   // 通用模板，但加入人物特色
   const templates: Record<string, string> = {
@@ -69,7 +69,7 @@ function generateTopicReply(
 }
 
 /** 通用回复（兜底） */
-function generateGenericReply(figure: HistoricalFigure, userMsg: string): string {
+function generateGenericReply(figure: HistoricalFigure, _userMsg: string): string {
   const genericReplies: Record<string, string[]> = {
     '孔子': [
       '善哉斯言。吾闻之：知之为知之，不知为不知，是知也。汝当深思。',

@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { MORTISE_TYPES, BUILDING_TYPES, ANCIENT_STRUCTURES, MortiseTenon, BuildingType, AncientStructure } from '../data/features/architectureData';
+import { MORTISE_TYPES, BUILDING_TYPES, ANCIENT_STRUCTURES, AncientStructure } from '../data/features/architectureData';
 import SectionHeader from '../components/common/SectionHeader';
 import RevealOnScroll from '../components/common/RevealOnScroll';
-import { FaBuilding, FaTools, FaLightbulb, FaHistory, FaCubes, FaUndo } from 'react-icons/fa';
+import { FaTools, FaLightbulb, FaHistory, FaCubes, FaUndo } from 'react-icons/fa';
 import { useT } from '@/i18n/i18n';
 
 const ArchitectureMortisePage: React.FC = () => {
@@ -10,7 +10,7 @@ const ArchitectureMortisePage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('全部');
   const [selectedDynasty, setSelectedDynasty] = useState<string>('全部');
   const [selectedStructureType, setSelectedStructureType] = useState<string>('全部');
-  const [selectedBuildingType, setSelectedBuildingType] = useState<string | BuildingType>('全部');
+  const [selectedBuildingType, setSelectedBuildingType] = useState<string>('全部');
   const [selectedStructure, setSelectedStructure] = useState<AncientStructure | null>(null);
 
   const categories = useMemo(() => {
@@ -23,10 +23,6 @@ const ArchitectureMortisePage: React.FC = () => {
 
   const structureTypes = useMemo(() => {
     return ['全部', ...new Set(MORTISE_TYPES.map(m => m.structureType))];
-  }, []);
-
-  const buildingTypes = useMemo(() => {
-    return ['全部', ...BUILDING_TYPES.map(b => b.id)];
   }, []);
 
   const filteredMortiseTypes = useMemo(() => {
@@ -134,7 +130,7 @@ const ArchitectureMortisePage: React.FC = () => {
               </div>
 
               <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
-                {filteredMortiseTypes.map((mortise, index) => (
+                {filteredMortiseTypes.map((mortise) => (
                   <div
                     key={mortise.id}
                     className={`p-4 rounded-xl cursor-pointer transition-all duration-300 ${
@@ -182,16 +178,16 @@ const ArchitectureMortisePage: React.FC = () => {
                   className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none"
                 >
                   {buildingTypeOptions.map(bt => {
-                    const type = BUILDING_TYPES.find(b => b.id === bt);
+                    const type = BUILDING_TYPES.find(b => b.id === bt.id);
                     return type ? (
-                      <option key={bt} value={bt as string}>{type.name}</option>
+                      <option key={bt.id} value={bt.id}>{type.name}</option>
                     ) : null;
                   })}
                 </select>
               </div>
 
               <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
-                {filteredStructures.map((structure, index) => (
+                {filteredStructures.map((structure) => (
                   <div
                     key={structure.id}
                     onClick={() => handleStructureClick(structure)}

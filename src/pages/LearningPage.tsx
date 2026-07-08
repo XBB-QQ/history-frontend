@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLearningStore, type ReadingListItem, type ModuleProgress } from '@/store/learningStore';
+import { useLearningStore } from '@/store/learningStore';
 import { useUserStore } from '@/store/userStore';
 import { useT } from '@/i18n/i18n';
 
@@ -34,7 +34,7 @@ function ProgressBar({ percent, label, icon }: { percent: number; label: string;
 
 function LearningPage() {
   const t = useT();
-  const { lists, fetchLists, createList, addResource, removeResource, moduleProgress, fetchProgress } = useLearningStore();
+  const { lists, fetchLists, createList, removeResource, moduleProgress, fetchProgress } = useLearningStore();
   const { user, isAuthenticated } = useUserStore();
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState('');

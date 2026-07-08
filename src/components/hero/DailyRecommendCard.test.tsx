@@ -3,6 +3,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { ReactElement } from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import DailyRecommendCard from './DailyRecommendCard';
@@ -41,7 +42,7 @@ vi.mock('@/store/questStore', () => ({
   useQuestStore: { getState: () => ({ progress: {} }) },
 }));
 
-const renderWithRouter = (ui) => ({
+const renderWithRouter = (ui: ReactElement) => ({
   ...render(<MemoryRouter>{ui}</MemoryRouter>),
 });
 

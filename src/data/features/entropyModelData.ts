@@ -370,7 +370,7 @@ export function calculateEntropy(
 }
 
 // 预测熵值变化函数
-export function predictEntropyChange(currentEntropy: number, factors: {
+export function predictEntropyChange(_currentEntropy: number, factors: {
   innovation: number;
   organization: number;
   stability: number;

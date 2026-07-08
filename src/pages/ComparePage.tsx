@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchAllPersons, fetchPersonCompare, type BackendPersonDTO } from '@/services/api';
+import { fetchAllPersons, type BackendPersonDTO } from '@/services/api';
 import { CardSkeleton } from '@/components/common/Skeleton';
 import { useT } from '@/i18n/i18n';
 

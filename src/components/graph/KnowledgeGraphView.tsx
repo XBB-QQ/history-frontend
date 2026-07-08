@@ -7,7 +7,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import type {
   GraphNode,
-  GraphLink,
   KnowledgeGraph,
   NodeType,
 } from '@/types/knowledgeGraph';
@@ -114,7 +113,7 @@ export default function KnowledgeGraphView({
       });
 
       nodes.forEach((n) => {
-        if (n.fx !== undefined) {
+        if (n.fx !== undefined && n.fy !== undefined) {
           n.x = n.fx;
           n.y = n.fy;
           return;

@@ -20,7 +20,7 @@ const mockCard = {
   description: '中国古代四大发明之一',
   startYear: 105,
   tags: ['四大发明', '科技', '东汉'],
-};
+} as any;
 
 describe('KnowledgeCard', () => {
   beforeEach(() => {

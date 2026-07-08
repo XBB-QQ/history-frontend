@@ -12,7 +12,7 @@ interface UserState {
   updateQuizScore: (points: number) => void;
 }
 
-export const useUserStore = create<UserState>((set, get) => ({
+export const useUserStore = create<UserState>((set) => ({
   user: null,
   token: null,
   isAuthenticated: false,

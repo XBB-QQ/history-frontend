@@ -5,10 +5,9 @@ interface PersonGridProps {
   persons: PersonItem[];
 }
 
-// 朝代排序顺序
 const DYNASTY_ORDER = [
   '先秦', '春秋', '战国', '秦', '汉', '三国', '晋', '南北朝',
-  '隋', '唐', '宋', '元', '明', '清', '近代'
+  '隋', '唐', '宋', '元', '明', '清', '近代', '其他'
 ];
 
 function getDynastyGroup(dynasty: string): string {
@@ -19,7 +18,6 @@ function getDynastyGroup(dynasty: string): string {
 }
 
 export default function PersonGrid({ persons }: PersonGridProps) {
-  // 按朝代分组
   const groups: Record<string, PersonItem[]> = {};
   persons.forEach(p => {
     const group = getDynastyGroup(p.dynasty);
@@ -27,7 +25,6 @@ export default function PersonGrid({ persons }: PersonGridProps) {
     groups[group].push(p);
   });
 
-  // 按朝代顺序输出
   const orderedGroups = DYNASTY_ORDER.filter(d => groups[d]);
 
   return (

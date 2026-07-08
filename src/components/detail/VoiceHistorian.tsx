@@ -4,7 +4,6 @@ import {
   stopSpeaking,
   pauseSpeaking,
   resumeSpeaking,
-  isSpeaking,
   isVoiceSupported,
   VoiceStyle,
   VOICE_STYLES,

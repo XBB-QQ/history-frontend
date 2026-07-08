@@ -436,7 +436,6 @@ function Recommendations({ type, data }: { type: string | null; data: FrontendEv
             filterValue = personData.dynasty;
           }
         } else if (type === 'dynasty') {
-          const dynastyData = data as FrontendDynasty;
           const allDynasties = await fetchDynasties();
           allItems = allDynasties.map((d: any) => ({ id: Number(d.id), title: d.name }));
         } else if (type === 'knowledge') {
@@ -519,6 +518,7 @@ function FavoriteButton({ type, id, title }: { type: string; id: string; title: 
   const isFav = useFavoriteStore((s) => s.isFavorite(id));
   const toggle = useFavoriteStore((s) => s.toggleFavorite);
   const { isAuthenticated } = useUserStore();
+  const [popping, setPopping] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -527,20 +527,23 @@ function FavoriteButton({ type, id, title }: { type: string; id: string; title: 
       return;
     }
     toggle({ type: type as 'event' | 'person' | 'dynasty' | 'knowledge', id, title });
+    // 触发"心跳"动画：缩放放大 + 颜色脉冲
+    setPopping(true);
+    setTimeout(() => setPopping(false), 500);
   };
 
   return (
     <button
       onClick={handleClick}
-      className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
+      className={`w-8 h-8 flex items-center justify-center rounded-full transition-all duration-300 ${
         isFav
           ? 'text-accent hover:bg-red-50 dark:hover:bg-red-900/30'
           : 'text-ink-400 dark:text-ink-500 hover:bg-ink-100 dark:hover:bg-ink-800 hover:text-accent'
-      }`}
+      } ${popping ? 'scale-125 animate-pulse-once' : 'scale-100'}`}
       aria-label={isFav ? '取消收藏' : '收藏'}
       title={isFav ? '取消收藏' : '收藏'}
     >
-      <svg className="w-5 h-5" fill={isFav ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-5 h-5 transition-transform duration-300" fill={isFav ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
       </svg>
     </button>
@@ -658,7 +661,7 @@ export default function DetailModal() {
         <div className="flex items-center justify-between px-6 py-4 border-b border-ink-200 dark:border-ink-700">
           <div className="flex items-center gap-3 min-w-0">
             <span className="text-sm px-2 py-0.5 bg-accent/10 dark:bg-accent/20 rounded-full text-accent flex-shrink-0">
-              {typeLabels[type] || type}
+              {type ? (typeLabels[type] || type) : null}
             </span>
             <h2 className="text-xl font-bold truncate">
               {type === 'event' && (data as FrontendEvent)?.title}
@@ -669,8 +672,8 @@ export default function DetailModal() {
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             {/* 收藏按钮 */}
-            {data && (
-              <FavoriteButton type={type} id={String(data.id)} title={type === 'event' ? (data as FrontendEvent).title : type === 'person' ? (data as FrontendPerson).name : type === 'dynasty' ? (data as FrontendDynasty).name : (data as FrontendKnowledge).title || ''} />
+            {data && type && (
+              <FavoriteButton type={type} id={String(data.id ?? '')} title={type === 'event' ? (data as FrontendEvent).title : type === 'person' ? (data as FrontendPerson).name : type === 'dynasty' ? (data as FrontendDynasty).name : (data as FrontendKnowledge).title || ''} />
             )}
             {/* 分享按钮 */}
             <button
@@ -702,9 +705,9 @@ export default function DetailModal() {
           <Recommendations type={type} data={data} />
 
           {/* 评论区 */}
-          {data && (
+          {data && type && (
             <CommentSection
-              resourceId={String(data.id)}
+              resourceId={String(data.id ?? '')}
               resourceType={type}
             />
           )}

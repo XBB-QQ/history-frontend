@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import type { EventItem } from '@/types';
 import TimelineEvent from './TimelineEvent';
 import { CardSkeleton } from '@/components/common/Skeleton';

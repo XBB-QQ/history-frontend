@@ -3,16 +3,12 @@
  * @see history-museum/design/002-innovation-brainstorm.md §20
  */
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { MIGRATION_EVENTS, MIGRATION_TYPE_LABELS, type MigrationEvent } from '@/data/features/migrationData';
 import { useT } from '@/i18n/i18n';
-
-function formatYear(y: number): string {
-  return y < 0 ? `公元前${Math.abs(y)}年` : `公元${y}年`;
-}
 
 export default function MigrationMapPage() {
   const t = useT();

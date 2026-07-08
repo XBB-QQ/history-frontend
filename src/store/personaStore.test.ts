@@ -3,7 +3,7 @@
  * @see ITERATIONS.md #88
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { usePersonaStore } from './personaStore';
 
 beforeEach(() => {

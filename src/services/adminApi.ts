@@ -2,11 +2,6 @@
 
 const ADMIN_BASE_URL = import.meta.env.VITE_ADMIN_API_BASE_URL || 'http://localhost:8080/api/admin';
 
-interface ApiResponse<T> {
-  data?: T;
-  message?: string;
-}
-
 async function adminFetch<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(url, {
     headers: { 'Content-Type': 'application/json', ...(options?.headers as Record<string, string>) },

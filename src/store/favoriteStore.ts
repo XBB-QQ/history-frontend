@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { addFavorite as apiAdd, removeFavorite as apiRemove, togglePinFavorite as apiTogglePin, fetchFavorites, type FavoriteEntry } from '@/services/api';
+import { addFavorite as apiAdd, removeFavorite as apiRemove, togglePinFavorite as apiTogglePin, fetchFavorites } from '@/services/api';
 
 interface LocalFavoriteEntry {
   id: string;

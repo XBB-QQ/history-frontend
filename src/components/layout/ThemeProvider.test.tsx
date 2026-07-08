@@ -2,8 +2,8 @@
  * ThemeProvider — L2 组件单元测试
  */
 
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import { render, screen, act } from '@testing-library/react';
 import { ThemeProvider, useTheme } from './ThemeProvider';
 
 describe('ThemeProvider', () => {

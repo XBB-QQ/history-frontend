@@ -18,6 +18,8 @@ interface TimeTravelState {
   precision: TimePrecision;
   /** 是否激活时间旅行模式 */
   active: boolean;
+  /** 高亮事件 ID（跳转后短暂高亮，3 秒后自动清除） */
+  highlightEventId: string | null;
 
   setYear: (year: number) => void;
   setPrecision: (precision: TimePrecision) => void;
@@ -26,6 +28,8 @@ interface TimeTravelState {
   arrowAdjust: (delta: number) => void;
   /** 快速跳转到重大年代 */
   jumpTo: (year: number) => void;
+  /** 设置高亮事件 ID（用于跳转后闪烁） */
+  setHighlightEventId: (id: string | null) => void;
 }
 
 /** 重大历史年代快捷按钮 */
@@ -45,6 +49,7 @@ export const useTimeTravelStore = create<TimeTravelState>((set) => ({
   year: new Date().getFullYear(),
   precision: 'century',
   active: false,
+  highlightEventId: null,
 
   setYear: (year) => set({ year }),
 
@@ -67,6 +72,8 @@ export const useTimeTravelStore = create<TimeTravelState>((set) => ({
     }),
 
   jumpTo: (year) => set({ year }),
+
+  setHighlightEventId: (id) => set({ highlightEventId: id }),
 }));
 
 export { PRECISION_CONFIG, MILESTONE_YEARS };

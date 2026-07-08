@@ -60,7 +60,6 @@ describe('RevealOnScroll', () => {
   });
 
   it('减少动画偏好时自动显示', () => {
-    const mockMatches = vi.fn().mockReturnValue(true);
     vi.spyOn(window, 'matchMedia').mockImplementation((query) => {
       if (query.includes('prefers-reduced-motion')) {
         return { matches: true, addEventListener: () => {}, removeEventListener: () => {} } as any;

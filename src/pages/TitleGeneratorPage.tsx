@@ -4,7 +4,6 @@ import RevealOnScroll from '@/components/common/RevealOnScroll';
 import {
   POSTHUMOUS_TITLE_CATEGORIES,
   ERA_TEMPLATES,
-  POSTHUMOUS_TITLE_COMBINATIONS,
   FAMOUS_POSTHUMOUS_TITLES,
   getRandomPosthumousTitle,
   getRandomEraName,
@@ -24,7 +23,7 @@ const TitleGeneratorPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const categoryOptions = [
-    { value: 'all', label: t('titleGenerator.all_category') },
+    { value: 'all', label: t('titleGenerator.all_category'), icon: '' },
     ...POSTHUMOUS_TITLE_CATEGORIES.map(cat => ({
       value: cat.id,
       label: `${cat.full} - ${cat.name}`,
@@ -34,14 +33,12 @@ const TitleGeneratorPage = () => {
 
   const eraOptions = [
     { value: 'all', label: t('titleGenerator.all_era') },
-    ...POSTHUMOUS_TITLE_CATEGORIES.reduce((acc, cat) => {
-      if (cat.dynasty) {
-        cat.dynasty.forEach(d => {
-          if (!acc.find(e => e.value === d)) {
-            acc.push({ value: d, label: d });
-          }
-        });
-      }
+    ...ERA_TEMPLATES.reduce((acc, template) => {
+      template.dynasty.forEach(d => {
+        if (!acc.find(e => e.value === d)) {
+          acc.push({ value: d, label: d });
+        }
+      });
       return acc;
     }, [] as { value: string; label: string }[])
   ];
@@ -193,7 +190,7 @@ const TitleGeneratorPage = () => {
                 >
                   {categoryOptions.map(opt => (
                     <option key={opt.value} value={opt.value}>
-                      {opt.icon} {opt.label}
+                      {opt.icon ?? ''} {opt.label}
                     </option>
                   ))}
                 </select>
@@ -240,7 +237,7 @@ const TitleGeneratorPage = () => {
           <SectionHeader label={t('titleGenerator.posthumous_label')} title={t('titleGenerator.posthumous_title')} description={t('titleGenerator.posthumous_desc')} />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {FAMOUS_POSTHUMOUS_TITLES.map((title, index) => (
+            {FAMOUS_POSTHUMOUS_TITLES.map((title) => (
               <TitleCard
                 key={title.id}
                 title={title}
@@ -258,7 +255,7 @@ const TitleGeneratorPage = () => {
           <SectionHeader label={t('titleGenerator.era_label_section')} title={t('titleGenerator.era_title')} description={t('titleGenerator.era_desc')} />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {ERA_TEMPLATES.slice(0, 6).map((template, index) => (
+            {ERA_TEMPLATES.slice(0, 6).map((template) => (
               <EraTemplateCard
                 key={template.id}
                 template={template}
@@ -299,7 +296,7 @@ const TitleCard = ({ title, onClick, getCategoryIcon }: TitleCardProps) => {
         {title.meaning}
       </div>
       <div className="flex flex-wrap gap-2 mb-3">
-        {title.dynasty.slice(0, 3).map(d => (
+        {title.dynasty.slice(0, 3).map((d: string) => (
           <span key={d} className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded text-xs">
             {d}
           </span>
@@ -329,7 +326,7 @@ const EraTemplateCard = ({ template, onClick }: EraTemplateCardProps) => {
         {template.meaning}
       </div>
       <div className="flex flex-wrap gap-2 mb-3">
-        {template.variants.slice(0, 3).map(v => (
+        {template.variants.slice(0, 3).map((v: string) => (
           <span key={v} className="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 rounded text-xs">
             {v}
           </span>

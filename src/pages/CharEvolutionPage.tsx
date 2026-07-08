@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
 import { CHAR_EVOLUTIONS, getCharEvolution } from '@/data/features/charEvolution';
-import type { CharEvolution, CharStage } from '@/data/features/charEvolution';
 import { useT } from '@/i18n/i18n';
 
 export default function CharEvolutionPage() {

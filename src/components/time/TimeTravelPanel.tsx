@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useRef } from 'react';
 import { useTimeTravelStore } from '@/store/timeTravelStore';
 import type { EventItem } from '@/types';
 
@@ -22,9 +22,11 @@ const LABEL_MAP: Record<string, string> = {
 /**
  * 时间旅行联动面板
  * 在选中年代附近展示事件卡片
+ * - 跳转后自动高亮第一个最接近的事件 3 秒
  */
 export default function TimeTravelPanel({ events }: TimeTravelPanelProps) {
-  const { year, precision, active } = useTimeTravelStore();
+  const { year, precision, active, highlightEventId, setHighlightEventId } = useTimeTravelStore();
+  const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const nearbyEvents = useMemo(() => {
     if (!active) return [];
@@ -35,10 +37,39 @@ export default function TimeTravelPanel({ events }: TimeTravelPanelProps) {
       .filter((e) => e.year && Math.abs(e.year - year) <= tolerance)
       .sort((a, b) => {
         if (!a.year || !b.year) return 0;
-        return a.year - b.year;
+        // 按距选中年份的远近排序，最近的在前
+        return Math.abs(a.year - year) - Math.abs(b.year - year);
       })
       .slice(0, 8);
   }, [events, year, precision, active]);
+
+  // 年份变化时自动高亮最近的事件 3 秒
+  useEffect(() => {
+    if (!active || nearbyEvents.length === 0) {
+      if (highlightTimerRef.current) {
+        clearTimeout(highlightTimerRef.current);
+        highlightTimerRef.current = null;
+      }
+      setHighlightEventId(null);
+      return;
+    }
+
+    const closest = nearbyEvents[0];
+    setHighlightEventId(closest.id);
+
+    if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+    highlightTimerRef.current = setTimeout(() => {
+      setHighlightEventId(null);
+      highlightTimerRef.current = null;
+    }, 3000);
+
+    return () => {
+      if (highlightTimerRef.current) {
+        clearTimeout(highlightTimerRef.current);
+        highlightTimerRef.current = null;
+      }
+    };
+  }, [year, active]); // 故意不依赖 nearbyEvents/setHighlightEventId，避免重复触发
 
   if (!active || nearbyEvents.length === 0) return null;
 
@@ -60,37 +91,42 @@ export default function TimeTravelPanel({ events }: TimeTravelPanelProps) {
 
       {/* 事件卡片网格 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {nearbyEvents.map((event, i) => (
-          <div
-            key={event.id}
-            className="bg-white/60 dark:bg-ink-900/60 backdrop-blur-sm rounded-xl p-4 border border-ink-200 dark:border-ink-700
-                       hover:border-accent/50 hover:shadow-lg transition-all duration-300 cursor-pointer
-                       animate-fade-in"
-            style={{ animationDelay: `${i * 50}ms` }}
-          >
-            {event.year && (
-              <div className="text-xs font-mono text-accent dark:text-accent/80 mb-1">
-                {event.year < 0 ? `${Math.abs(event.year)} BC` : `${event.year} AD`}
-              </div>
-            )}
-            <h4 className="text-sm font-bold text-ink-900 dark:text-ink-100 mb-1 line-clamp-2">
-              {event.title}
-            </h4>
-            <p className="text-xs text-ink-500 dark:text-ink-400 line-clamp-2 mb-2">
-              {event.description}
-            </p>
-            <div className="flex flex-wrap gap-1">
-              <span className="text-[10px] px-1.5 py-0.5 bg-ink-100 dark:bg-ink-800 rounded-full text-ink-500">
-                {event.category}
-              </span>
-              {event.dynasty && (
-                <span className="text-[10px] px-1.5 py-0.5 bg-ink-100 dark:bg-ink-800 rounded-full text-ink-500">
-                  {event.dynasty}
-                </span>
+        {nearbyEvents.map((event, i) => {
+          const isHighlighted = highlightEventId === event.id;
+          return (
+            <div
+              key={event.id}
+              className={`bg-white/60 dark:bg-ink-900/60 backdrop-blur-sm rounded-xl p-4 border transition-all duration-300 cursor-pointer
+                         hover:border-accent/50 hover:shadow-lg animate-fade-in
+                         ${isHighlighted
+                           ? 'border-accent shadow-xl ring-4 ring-accent/30 animate-pulse-once'
+                           : 'border-ink-200 dark:border-ink-700'}`}
+              style={{ animationDelay: `${i * 50}ms` }}
+            >
+              {event.year && (
+                <div className="text-xs font-mono text-accent dark:text-accent/80 mb-1">
+                  {event.year < 0 ? `${Math.abs(event.year)} BC` : `${event.year} AD`}
+                </div>
               )}
+              <h4 className="text-sm font-bold text-ink-900 dark:text-ink-100 mb-1 line-clamp-2">
+                {event.title}
+              </h4>
+              <p className="text-xs text-ink-500 dark:text-ink-400 line-clamp-2 mb-2">
+                {event.description}
+              </p>
+              <div className="flex flex-wrap gap-1">
+                <span className="text-[10px] px-1.5 py-0.5 bg-ink-100 dark:bg-ink-800 rounded-full text-ink-500">
+                  {event.category}
+                </span>
+                {event.dynasty && (
+                  <span className="text-[10px] px-1.5 py-0.5 bg-ink-100 dark:bg-ink-800 rounded-full text-ink-500">
+                    {event.dynasty}
+                  </span>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* 空状态提示 */}

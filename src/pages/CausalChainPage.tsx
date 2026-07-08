@@ -125,7 +125,7 @@ export default function CausalChainPage() {
   );
 }
 
-function EventNode({ name, id, active }: { name: string; id: string; active: boolean }) {
+function EventNode({ name, active }: { name: string; id: string; active: boolean }) {
   return (
     <button className={`px-3 py-1 rounded-lg text-xs font-bold shrink-0 transition-all ${
       active ? 'bg-accent text-white' : 'bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-400'

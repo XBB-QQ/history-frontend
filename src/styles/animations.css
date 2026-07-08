@@ -54,6 +54,30 @@
   100% { opacity: 1; transform: scale(1); }
 }
 
+/* 一次性脉冲（用于时间旅行高亮闪烁） */
+@keyframes pulseOnce {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+  50% { box-shadow: 0 0 0 12px rgba(220, 38, 38, 0.15); }
+}
+
+/* 毛笔书写效果（用于加载动画） */
+@keyframes brushWrite {
+  0% { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+/* 墨滴扩散（用于加载动画背景） */
+@keyframes inkDropSpread {
+  0% { transform: scale(0); opacity: 0.8; }
+  100% { transform: scale(8); opacity: 0; }
+}
+
+/* 视差滚动山峦呼吸（用于 MountainMist 多层视差） */
+@keyframes parallaxSway {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(8px); }
+}
+
 /* 移动端抽屉滑入 */
 @keyframes drawerSlideUp {
   from { transform: translateY(100%); }
@@ -64,6 +88,7 @@
 .animate-slide-up { animation: slideUp 0.6s ease forwards; }
 .animate-slide-down { animation: slideDown 0.5s ease forwards; }
 .animate-scale-in { animation: scaleIn 0.4s ease forwards; }
+.animate-pulse-once { animation: pulseOnce 1.2s ease-out 2; }
 
 /* Hero 动画类 */
 .hero-seal-drop { animation: sealDrop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }

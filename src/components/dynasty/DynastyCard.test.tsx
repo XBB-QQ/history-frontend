@@ -31,7 +31,7 @@ vi.mock('@/store/sceneStore', () => ({
 
 import { useTheme } from '@/components/layout/ThemeProvider';
 
-const mockDynasty = {
+const mockDynasty: any = {
   id: 1,
   name: '唐代',
   periodStart: '618年',
@@ -41,7 +41,7 @@ const mockDynasty = {
 
 describe('DynastyCard', () => {
   beforeEach(() => {
-    vi.mocked(useTheme).mockImplementation(() => ({ setDynasty: vi.fn(), dynasty: null }));
+    vi.mocked(useTheme).mockImplementation(() => ({ setDynasty: vi.fn(), dynasty: null, primaryColor: '', isDefault: true } as any));
     vi.mocked(useDetailStore).mockImplementation(() => ({ openDetail: vi.fn() }));
     vi.mocked(useSceneStore).mockImplementation(() => ({ setSceneByDynasty: vi.fn(), restoreScene: vi.fn() }));
   });

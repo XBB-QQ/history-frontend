@@ -7,7 +7,7 @@ import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { DYNASTY_TERRITORIES, TIMELINE_YEARS, getTerritoryAtYear, type DynastyTerritory } from '@/data/features/dynastyTerritory';
+import { DYNASTY_TERRITORIES, TIMELINE_YEARS, getTerritoryAtYear } from '@/data/features/dynastyTerritory';
 import { useT } from '@/i18n/i18n';
 
 function formatYear(y: number, t: (key: string, params?: Record<string, string | number>) => string): string {

@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { fetchPersonRelationships, type RelationshipEntry } from '@/services/api';
-import { fetchPersonByUid, type BackendPersonDTO } from '@/services/api';
 
 interface RelationshipNode {
   id: string;
@@ -13,13 +12,6 @@ interface RelationshipNode {
   isCenter: boolean;
   color: string;
   dynasty?: string;
-}
-
-interface RelationshipLink {
-  source: string;
-  target: string;
-  relation: string;
-  label: string;
 }
 
 const relationColors: Record<string, string> = {

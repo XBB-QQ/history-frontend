@@ -6,7 +6,7 @@
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { STUDY_ROUTES, getRoutesByDifficulty, type StudyRoute } from '@/data/features/storyQuests';
+import { STUDY_ROUTES, getRoutesByDifficulty, getRoutesByDynasty, type StudyRoute } from '@/data/features/storyQuests';
 import { useQuestStore } from '@/store/questStore';
 import SealStamp from '@/components/common/SealStamp';
 import { useT } from '@/i18n/i18n';
@@ -324,7 +324,7 @@ export default function StoryQuestPage() {
   const t = useT();
   const [filterType, setFilterType] = useState<FilterType>('all');
   const [filterValue, setFilterValue] = useState<string>('');
-  const [expandedRoute, setExpandedRoute] = useState<string | null>(null);
+  const [expandedRoute] = useState<string | null>(null);
 
   // 收集所有朝代标签
   const allDynasties = Array.from(new Set(STUDY_ROUTES.flatMap((r) => r.dynasties))).sort();
@@ -337,10 +337,6 @@ export default function StoryQuestPage() {
     filtered = getRoutesByDynasty(filterValue);
   }
   filtered.sort((a, b) => a.featuredOrder - b.featuredOrder);
-
-  const toggleExpand = (routeId: string) => {
-    setExpandedRoute(expandedRoute === routeId ? null : routeId);
-  };
 
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950">
@@ -444,7 +440,7 @@ export default function StoryQuestPage() {
               <div className="text-2xl font-bold text-purple-500">
                 {Math.round(
                   Object.entries(useQuestStore.getState().progress).reduce(
-                    (sum, [id, p]) => sum + (p.nodeStatuses.filter((n) => n.completed).length / p.nodeStatuses.length) * 100,
+                    (sum, [, p]) => sum + (p.nodeStatuses.filter((n) => n.completed).length / p.nodeStatuses.length) * 100,
                     0
                   ) / STUDY_ROUTES.length
                 ) || 0}

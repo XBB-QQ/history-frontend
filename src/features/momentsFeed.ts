@@ -4,7 +4,6 @@
  */
 
 import { callLLM, type LLMMessage } from '@/utils/llmClient';
-import type { HistoricalFigure } from '@/types/figure';
 import { FIGURES } from '@/data/scenarios/figures';
 
 const LIKED_KEY = 'moments-liked';

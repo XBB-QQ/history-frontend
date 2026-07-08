@@ -41,9 +41,6 @@ export const VOICE_STYLES: Record<VoiceStyle, VoiceConfig> = {
   },
 };
 
-let synthesis: SpeechSynthesis | null = null;
-let currentUtterance: SpeechSynthesisUtterance | null = null;
-
 function getSynthesis(): SpeechSynthesis | null {
   if (typeof window === 'undefined') return null;
   if (!window.speechSynthesis) return null;
@@ -86,7 +83,6 @@ export function speakText(
   if (voice) utterance.voice = voice;
 
   utterance.onend = () => {
-    currentUtterance = null;
     onEnd?.();
   };
 
@@ -95,10 +91,8 @@ export function speakText(
   };
 
   utterance.onerror = () => {
-    currentUtterance = null;
   };
 
-  currentUtterance = utterance;
   synth.speak(utterance);
   return true;
 }
@@ -108,7 +102,6 @@ export function stopSpeaking(): void {
   const synth = getSynthesis();
   if (!synth) return;
   synth.cancel();
-  currentUtterance = null;
 }
 
 /** 暂停朗读 */

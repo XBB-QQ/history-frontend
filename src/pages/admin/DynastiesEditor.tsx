@@ -1,6 +1,6 @@
 import EntityEditor from './EntityEditor';
 import { useT } from '@/i18n/i18n';
-import { adminGetDynasties, adminSaveDynasty, adminDeleteDynasty, type AdminDynastyDTO } from '@/services/adminApi';
+import { adminGetDynasties, adminSaveDynasty, adminDeleteDynasty } from '@/services/adminApi';
 
 const fields = [
   { key: 'uid', label: '唯一标识', placeholder: '如: tang' },

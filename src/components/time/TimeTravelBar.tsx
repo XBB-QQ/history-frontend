@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTimeTravelStore, PRECISION_CONFIG, MILESTONE_YEARS, type TimePrecision } from '@/store/timeTravelStore';
 
 /** 格式化年份显示 */
@@ -76,12 +77,61 @@ function YearSlider() {
   );
 }
 
-/** 重大年代快捷跳转 */
-function MilestoneButtons() {
-  const { year, jumpTo } = useTimeTravelStore();
+/** 精确年份输入框 */
+function YearInput() {
+  const { setYear } = useTimeTravelStore();
+  const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = inputValue.trim();
+    if (!trimmed) return;
+
+    // 解析输入：支持 "前221" / "-221" / "221" / "公元前221"
+    let year: number;
+    const negative = /^(前|公元前|-)/.test(trimmed);
+    const numericPart = trimmed.replace(/^(前|公元前|-|公元|AD|BC)/gi, '').trim();
+    year = parseInt(numericPart, 10);
+    if (isNaN(year)) return;
+    if (negative) year = -Math.abs(year);
+
+    const clamped = Math.max(-3000, Math.min(3000, year));
+    setYear(clamped);
+    setInputValue('');
+  };
 
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <form onSubmit={handleSubmit} className="flex items-center gap-2">
+      <span className="text-xs text-ink-500 dark:text-ink-400 flex-shrink-0">精确跳转：</span>
+      <input
+        ref={inputRef}
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        placeholder="如：前221 / 618 / -100"
+        className="flex-1 px-3 py-1.5 text-sm bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-lg
+                   focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent transition-all
+                   placeholder:text-ink-300 dark:placeholder:text-ink-600"
+        aria-label="精确输入年份"
+      />
+      <button
+        type="submit"
+        className="px-3 py-1.5 text-xs font-bold bg-accent text-white rounded-lg hover:bg-red-800 transition-colors flex-shrink-0"
+      >
+        跳转
+      </button>
+    </form>
+  );
+}
+
+/** 重大年代快捷跳转 + Hub 联动入口 */
+function MilestoneButtons() {
+  const { year, jumpTo } = useTimeTravelStore();
+  const navigate = useNavigate();
+
+  return (
+    <div className="flex flex-wrap items-center gap-1.5">
       {MILESTONE_YEARS.map(({ year: mYear, label }) => (
         <button
           key={mYear}
@@ -95,6 +145,19 @@ function MilestoneButtons() {
           {label}
         </button>
       ))}
+      {/* 分隔线 */}
+      <span className="text-ink-200 dark:text-ink-700 mx-1">|</span>
+      {/* 联动 TimelineHub */}
+      <button
+        onClick={() => navigate(`/timeline-hub?year=${year}`)}
+        className="px-2.5 py-1 text-xs rounded-full border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all flex items-center gap-1"
+        title="在统一时间轴 Hub 中查看该年份的跨模块快照"
+      >
+        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+        在 Hub 中查看
+      </button>
     </div>
   );
 }
@@ -102,15 +165,25 @@ function MilestoneButtons() {
 /**
  * 时间旅行栏组件
  * 顶部固定，展示年代滑块和快捷跳转
+ * - Ctrl+G 快捷键打开/关闭
+ * - ESC 关闭
  */
 export default function TimeTravelBar() {
   const { active, toggleActive } = useTimeTravelStore();
 
-  // ESC 关闭
+  // 全局快捷键：Ctrl+G 打开/关闭，ESC 关闭
   useEffect(() => {
-    if (!active) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') toggleActive();
+      // Ctrl+G / Cmd+G 切换面板
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'g') {
+        e.preventDefault();
+        toggleActive();
+        return;
+      }
+      // ESC 关闭（仅当面板打开时）
+      if (e.key === 'Escape' && active) {
+        toggleActive();
+      }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
@@ -126,7 +199,7 @@ export default function TimeTravelBar() {
             ? 'bg-accent text-white hover:bg-red-800'
             : 'bg-paper dark:bg-ink-900 text-ink-600 dark:text-ink-300 hover:text-accent border border-ink-200 dark:border-ink-700'
           }`}
-        title="时间旅行"
+        title="时间旅行 (Ctrl+G)"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -158,14 +231,23 @@ export default function TimeTravelBar() {
           {/* 滑块 */}
           <YearSlider />
 
-          {/* 快捷跳转 */}
+          {/* 精确年份输入 */}
+          <YearInput />
+
+          {/* 快捷跳转 + Hub 联动 */}
           <MilestoneButtons />
 
           {/* 键盘提示 */}
-          <div className="text-[10px] text-ink-400 dark:text-ink-600 flex items-center gap-2">
+          <div className="text-[10px] text-ink-400 dark:text-ink-600 flex items-center gap-2 flex-wrap">
+            <kbd className="px-1.5 py-0.5 bg-ink-100 dark:bg-ink-800 rounded text-xs font-mono">Ctrl+G</kbd>
+            <span>开关</span>
+            <span className="text-ink-200 dark:text-ink-700">·</span>
             <kbd className="px-1.5 py-0.5 bg-ink-100 dark:bg-ink-800 rounded text-xs font-mono">←</kbd>
             <kbd className="px-1.5 py-0.5 bg-ink-100 dark:bg-ink-800 rounded text-xs font-mono">→</kbd>
-            <span>方向键微调 | 点击精度切换刻度</span>
+            <span>方向键微调</span>
+            <span className="text-ink-200 dark:text-ink-700">·</span>
+            <kbd className="px-1.5 py-0.5 bg-ink-100 dark:bg-ink-800 rounded text-xs font-mono">ESC</kbd>
+            <span>关闭</span>
           </div>
         </div>
       </div>

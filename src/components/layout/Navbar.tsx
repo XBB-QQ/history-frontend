@@ -78,7 +78,6 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: 'nav.viz_color_history', path: '/color-history' },
       { labelKey: 'nav.viz_document_generator', path: '/document-generator' },
       { labelKey: 'nav.viz_drama_fact_check', path: '/drama-fact-check' },
-      { labelKey: 'nav.viz_artifact_quiz', path: '/artifact-quiz' },
       { labelKey: 'nav.viz_annual_report', path: '/annual-report' },
     ],
   },
@@ -102,6 +101,7 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: 'nav.culture_architecture', path: '/architecture-mortise' },
       { labelKey: 'nav.culture_roundtable', path: '/roundtable' },
       { labelKey: 'nav.culture_script_killer', path: '/script-killer' },
+      { labelKey: 'nav.culture_mystery_multi', path: '/mystery-multi' },
       { labelKey: 'nav.culture_entropy', path: '/entropy-model' },
       { labelKey: 'nav.culture_media_bridge', path: '/media-bridge' },
       { labelKey: 'nav.culture_future_prediction', path: '/future-prediction' },
@@ -130,7 +130,6 @@ const NAV_GROUPS: NavGroup[] = [
 ];
 
 /** 所有路径集合（用于移动端展开列表） */
-const ALL_NAV_ITEMS = [...PRIMARY_NAV, ...NAV_GROUPS.flatMap(g => g.items)];
 
 export default function Navbar() {
   const location = useLocation();

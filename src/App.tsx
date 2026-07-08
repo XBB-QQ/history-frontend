@@ -78,6 +78,9 @@ const EntropyModelPage = lazy(() => import('./pages/EntropyModelPage'));
 const FuturePredictionPage = lazy(() => import('./pages/FuturePredictionPage'));
 const StoryQuestPage = lazy(() => import('./pages/StoryQuestPage'));
 const MediaBridgePage = lazy(() => import('./pages/MediaBridgePage'));
+const MultiplayerMysteryPage = lazy(() => import('./pages/MultiplayerMysteryPage'));
+const TeacherDashboardPage = lazy(() => import('./pages/classroom/TeacherDashboard'));
+const StudentAssignmentPage = lazy(() => import('./pages/classroom/StudentAssignmentPage'));
 
 // 后台管理页面（不用 lazy，避免 SSR 问题）
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -98,6 +101,7 @@ import DetailModal from './components/detail/DetailModal';
 import BackgroundLayer from './components/background/BackgroundLayer';
 import SceneSwitcher from './components/scene/SceneSwitcher';
 import SceneTransition from './components/scene/SceneTransition';
+import PageLoader from './components/loading/PageLoader';
 import { useSceneStore } from './store/sceneStore';
 import { preloadAllSceneFonts } from './utils/fontLoader';
 
@@ -125,6 +129,7 @@ function App() {
 
   return (
     <BackgroundLayer>
+      <PageLoader />
       <ScrollProgress />
       <ScrollToTop />
       <Navbar />
@@ -216,6 +221,9 @@ function App() {
 <Route path="/architecture-mortise" element={<ArchitectureMortisePage />} />
 <Route path="/roundtable" element={<RoundTableConferencePage />} />
 <Route path="/script-killer" element={<ScriptKillerPage />} />
+<Route path="/mystery-multi" element={<MultiplayerMysteryPage />} />
+<Route path="/classroom/teacher" element={<TeacherDashboardPage />} />
+<Route path="/classroom/student" element={<StudentAssignmentPage />} />
 <Route path="/entropy-model" element={<EntropyModelPage />} />
 <Route path="/future-prediction" element={<FuturePredictionPage />} />
           <Route path="/story-quest" element={<StoryQuestPage />} />

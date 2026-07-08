@@ -20,7 +20,7 @@ const mockPerson = {
   dynasty: '唐',
   courtesyName: '世民',
   quote: '以铜为镜，可以正衣冠',
-};
+} as any;
 
 describe('PersonCard', () => {
   beforeEach(() => {

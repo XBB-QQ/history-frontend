@@ -52,7 +52,7 @@ export default function DailyRecommendCard() {
         tags: event.tags,
         relatedEvents: event.relatedEvents,
         relatedPersons: event.relatedPersons,
-      });
+      } as any);
     }
   };
 

@@ -1,13 +1,11 @@
 import { useState, useMemo } from 'react';
 import { INVENTIONS, CATEGORY_STYLE, IMPORTANCE_STYLE } from '@/data/features/techTree';
-import type { InventionNode } from '@/data/features/techTree';
 import { useT } from '@/i18n/i18n';
 
 export default function TechTreePage() {
   const t = useT();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
-  const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set());
 
   const filtered = useMemo(() => {
     if (selectedCategory === 'all') return INVENTIONS;

@@ -277,6 +277,32 @@ export const STUDY_ROUTES: StudyRoute[] = [
     },
     featuredOrder: 8,
   },
+  {
+    id: 'blind-spot',
+    name: '补盲视角：女性·边疆·海洋',
+    emoji: '🔭',
+    description: '传统史观的中原叙事之外，还有三条被忽视的主线——女性政治家、边疆民族交融、海洋贸易网络。这条研学线带你看见"另一个中国"。',
+    difficulty: 4,
+    estimatedMinutes: 35,
+    dynasties: ['汉', '唐', '宋', '元', '明', '清'],
+    nodes: [
+      { id: 'n1', title: '帘后天下：古代女性政治家', path: '/topic/topic-women-history', type: 'page', condition: 'visit', order: 1, description: '从吕后到慈禧，女性如何掌控帝国？' },
+      { id: 'n2', title: '丝路千年：边疆与中原的交融', path: '/topic/topic-frontier-history', type: 'page', condition: 'visit', order: 2, description: '丝绸之路上的民族交融如何塑造中国？' },
+      { id: 'n3', title: '帆影千年：海上丝绸之路', path: '/topic/topic-maritime-history', type: 'page', condition: 'visit', order: 3, description: '泉州、月港、郑和——另一个海洋中国' },
+      { id: 'n4', title: '姓氏中的民族密码', path: '/surname', type: 'page', condition: 'visit', order: 4, description: '拓跋→元、呼延→呼，姓氏里藏着民族交融' },
+      { id: 'n5', title: '古代交通与丝路驿站', path: '/transport-timeline', type: 'page', condition: 'visit', order: 5, description: '从驰道到茶马古道，交通网络连接帝国' },
+      { id: 'n6', title: '跨朝代圆桌：中原vs边疆', path: '/roundtable', type: 'page', condition: 'visit', order: 6, description: '让不同朝代的边疆政策制定者对话' },
+      { id: 'n7', title: '补盲知识挑战', path: '/leaderboard', type: 'quiz', condition: 'quiz_pass', order: 7, conditionMeta: { topic: '补盲视角' } },
+    ],
+    seal: { name: '补盲先锋', icon: '🔭', obtainText: '完成补盲视角全部节点' },
+    briefing: {
+      title: '线报：历史的盲区',
+      content: '历史不只有帝王将相。女性、边疆民族、海洋商人——他们的故事被正史淡化，却深刻塑造了今天的中国。补盲视角，看见完整的历史图景。',
+      linkPath: '/topics',
+      linkLabel: '浏览补盲专题',
+    },
+    featuredOrder: 9,
+  },
 ];
 
 /** 按难度分组 */

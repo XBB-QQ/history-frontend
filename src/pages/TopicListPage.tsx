@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import { TOPICS } from '@/data/topics';
+import { TOPICS, BLIND_SPOT_TAGS } from '@/data/topics';
 import { useNavigate } from 'react-router-dom';
 import { useT } from '@/i18n/i18n';
 
@@ -27,10 +27,13 @@ export default function TopicListPage() {
   const navigate = useNavigate();
   const t = useT();
   const [activeCategory, setActiveCategory] = useState('全部');
+  const [activeTag, setActiveTag] = useState<string | null>(null);
 
-  const filtered = activeCategory === '全部'
-    ? TOPICS
-    : TOPICS.filter(topic => topic.category === activeCategory);
+  const filtered = activeTag
+    ? TOPICS.filter(topic => topic.tags.includes(activeTag))
+    : activeCategory === '全部'
+      ? TOPICS
+      : TOPICS.filter(topic => topic.category === activeCategory);
 
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950">
@@ -52,18 +55,36 @@ export default function TopicListPage() {
 
       {/* 分类筛选 */}
       <div className="max-w-6xl mx-auto px-6 -mt-6">
-        <div className="flex flex-wrap gap-2 justify-center mb-8">
+        <div className="flex flex-wrap gap-2 justify-center mb-4">
           {CATEGORIES.map(cat => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => { setActiveCategory(cat); setActiveTag(null); }}
               className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
-                activeCategory === cat
+                !activeTag && activeCategory === cat
                   ? 'bg-accent text-white shadow-lg'
                   : 'bg-white dark:bg-ink-800 text-ink-600 dark:text-ink-400 hover:bg-ink-100 dark:hover:bg-ink-700'
               }`}
             >
               {t(CATEGORY_LABEL_KEYS[cat] || cat)}
+            </button>
+          ))}
+        </div>
+
+        {/* 补盲视角筛选 */}
+        <div className="flex flex-wrap gap-2 justify-center mb-8">
+          <span className="text-xs text-ink-400 dark:text-ink-500 self-center mr-1">补盲视角:</span>
+          {BLIND_SPOT_TAGS.map(tag => (
+            <button
+              key={tag}
+              onClick={() => setActiveTag(activeTag === tag ? null : tag)}
+              className={`px-3 py-1 rounded-full text-xs font-bold transition-all border ${
+                activeTag === tag
+                  ? 'bg-amber-500 text-white border-amber-500 shadow-md'
+                  : 'bg-transparent text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/20'
+              }`}
+            >
+              {tag}
             </button>
           ))}
         </div>

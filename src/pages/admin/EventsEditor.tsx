@@ -1,6 +1,6 @@
 import EntityEditor from './EntityEditor';
 import { useT } from '@/i18n/i18n';
-import { adminGetEvents, adminSaveEvent, adminDeleteEvent, type AdminEventDTO } from '@/services/adminApi';
+import { adminGetEvents, adminSaveEvent, adminDeleteEvent } from '@/services/adminApi';
 
 const fields = [
   { key: 'uid', label: '唯一标识', placeholder: '如: qin-unify' },

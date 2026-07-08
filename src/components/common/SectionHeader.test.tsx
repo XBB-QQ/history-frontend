@@ -35,6 +35,6 @@ describe('SectionHeader', () => {
     const { container } = render(
       <SectionHeader label="L" title="T" className="custom-class" />
     );
-    expect(container.firstChild!.className).toContain('custom-class');
+    expect((container.firstChild as HTMLElement)!.className).toContain('custom-class');
   });
 });

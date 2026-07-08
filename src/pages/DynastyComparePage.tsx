@@ -1,6 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { DYNASTY_METRICS, METRIC_LABELS } from '@/data/features/dynastyCompare';
-import type { DynastyMetrics } from '@/data/features/dynastyCompare';
 import { useT } from '@/i18n/i18n';
 
 export default function DynastyComparePage() {

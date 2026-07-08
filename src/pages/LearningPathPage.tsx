@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { LEARNING_PATHS, DIFFICULTY_STYLE } from '@/data/features/learningPaths';
-import type { LearningPath, PathDay } from '@/data/features/learningPaths';
 import { useT } from '@/i18n/i18n';
 
 export default function LearningPathPage() {

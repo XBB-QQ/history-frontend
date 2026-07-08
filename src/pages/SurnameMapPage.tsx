@@ -6,11 +6,10 @@
  * 使用 src/components/layout/Navbar.tsx 的路由功能
  */
 
-import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useMemo } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
-import { SURNAMES, SURNAMES_BY_INITIAL, SURNAMES_INITIALS } from '@/data/features/surnameData';
+import { SURNAMES, SURNAMES_BY_INITIAL, SURNAMES_INITIALS, type Surname } from '@/data/features/surnameData';
 import { useT } from '@/i18n/i18n';
 
 import './SurnameMapPage.module.css';
@@ -19,8 +18,8 @@ export default function SurnameMapPage() {
   const t = useT();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedInitial, setSelectedInitial] = useState<string>(SURNAMES_INITIALS[0]);
-  const [selectedSurname, setSelectedSurname] = useState<Surname | null>(() => 
-    SURNAMES.find(s => s.pinyin.charAt(0).toUpperCase() === selectedInitial)?.[0] || SURNAMES[0]
+  const [selectedSurname, setSelectedSurname] = useState<Surname | null>(() =>
+    SURNAMES.find(s => s.pinyin.charAt(0).toUpperCase() === selectedInitial) || SURNAMES[0]
   );
 
   // 过滤姓氏

@@ -1,6 +1,6 @@
 import EntityEditor from './EntityEditor';
 import { useT } from '@/i18n/i18n';
-import { adminGetPersons, adminSavePerson, adminDeletePerson, type AdminPersonDTO } from '@/services/adminApi';
+import { adminGetPersons, adminSavePerson, adminDeletePerson } from '@/services/adminApi';
 
 const fields = [
   { key: 'uid', label: '唯一标识', placeholder: '如: confucius' },

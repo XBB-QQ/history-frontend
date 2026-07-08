@@ -6,7 +6,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getDynastyThemeByUid, getDynastyTheme, type DynastyTheme } from '@/data/themes/dynastyThemes';
+import { getDynastyThemeByUid, type DynastyTheme } from '@/data/themes/dynastyThemes';
 
 /** 从 URL 路径中提取朝代 UID */
 function extractDynastyUid(pathname: string): string | null {

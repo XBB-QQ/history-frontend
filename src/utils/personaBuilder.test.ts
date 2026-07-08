@@ -61,7 +61,7 @@ describe('buildPersonaContext', () => {
   });
 
   it('辩论记录超过 3 条只取最近 3 条', () => {
-    const stances = Array.from({ length: 5 }, (_, i) => ({
+    const stances: any = Array.from({ length: 5 }, (_, i) => ({
       topicId: `topic-${i}`,
       topicName: `话题${i}`,
       stance: i % 2 === 0 ? 'pro' : 'con',
@@ -103,7 +103,7 @@ describe('buildPersonaPrompt', () => {
 
   it('有辩论记录时包含辩论行', () => {
     const persona = createMockPersona({
-      debateStances: [{ topic: 't', topicName: '测试', stance: 'agree', reasoning: 'r', timestamp: 0 }],
+      debateStances: [{ topic: 't', topicName: '测试', stance: 'agree', reasoning: 'r', timestamp: 0 }] as any,
     });
     const prompt = buildPersonaPrompt(persona);
     expect(prompt).toContain('辩论记录');
@@ -120,10 +120,10 @@ describe('buildPersonaPrompt', () => {
       favoritePersons: Array.from({ length: 50 }, (_, i) => `person-${i}`),
       debateStances: Array.from({ length: 50 }, (_, i) => ({
         topic: `t-${i}`, topicName: `话题${i}`, stance: 'agree', reasoning: 'r', timestamp: i,
-      })),
+      })) as any,
       simulatorChoices: Array.from({ length: 50 }, (_, i) => ({
         scenarioId: `s-${i}`, scenarioName: `场景${i}`, choice: 'c',
-      })),
+      })) as any,
     });
     const prompt = buildPersonaPrompt(persona);
     expect(prompt.split('\n').length).toBeLessThanOrEqual(6);
@@ -170,8 +170,8 @@ describe('getPersonaStats', () => {
       debateStances: [
         { topic: 't1', topicName: 'a', stance: 'x', reasoning: 'r', timestamp: 0 },
         { topic: 't2', topicName: 'b', stance: 'x', reasoning: 'r', timestamp: 0 },
-      ],
-      simulatorChoices: [{ scenarioId: 's1', scenarioName: 'x', choice: 'y' }],
+      ] as any,
+      simulatorChoices: [{ scenarioId: 's1', scenarioName: 'x', choice: 'y' }] as any,
       browseSummary: {
         ...createMockPersona().browseSummary,
         eventsViewed: 5,

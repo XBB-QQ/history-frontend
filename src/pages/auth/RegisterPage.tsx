@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { registerUser } from '@/services/userApi';
 import { useUserStore } from '@/store/userStore';
 import { useT } from '@/i18n/i18n';
 
@@ -22,7 +21,6 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      const data = await registerUser({ username, password, nickname, email: email || undefined, phone: phone || undefined });
       // 注册后自动登录
       const loginRes = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'}/api/auth/login`, {
         method: 'POST',

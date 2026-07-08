@@ -179,10 +179,10 @@ interface ScentCardProps {
   getEnergyBadge: (energy: string) => { bg: string; icon: string };
 }
 
-const ScentCard = ({ scent, index, onClick, getEnergyBadge }: ScentCardProps) => {
+const ScentCard = ({ scent, onClick, getEnergyBadge }: ScentCardProps) => {
   const t = useT();
   const energyBadge = getEnergyBadge(scent.energy);
-  const gradientClass = ENERGY_COLORS[scent.energy] || ENERGY_COLORS.calm;
+  const gradientClass = ENERGY_COLORS[scent.energy as keyof typeof ENERGY_COLORS] || ENERGY_COLORS.calm;
 
   return (
     <div
@@ -225,7 +225,7 @@ const ScentCard = ({ scent, index, onClick, getEnergyBadge }: ScentCardProps) =>
         </p>
 
         <div className="flex flex-wrap gap-2 mb-4">
-          {scent.accords.slice(0, 3).map(accord => (
+          {scent.accords.slice(0, 3).map((accord: string) => (
             <span key={accord} className="px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 rounded-md text-xs">
               {accord}
             </span>
@@ -258,7 +258,7 @@ interface ScentDetailModalProps {
 const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalProps) => {
   const t = useT();
   const energyBadge = getEnergyBadge(scent.energy);
-  const gradientClass = ENERGY_COLORS[scent.energy] || ENERGY_COLORS.calm;
+  const gradientClass = ENERGY_COLORS[scent.energy as keyof typeof ENERGY_COLORS] || ENERGY_COLORS.calm;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

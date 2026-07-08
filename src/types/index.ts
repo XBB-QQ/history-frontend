@@ -1,3 +1,10 @@
+import type {
+  FrontendEvent,
+  FrontendPerson,
+  FrontendDynasty,
+  FrontendKnowledge,
+} from '@/services/api';
+
 // 五千年史馆 — TypeScript 类型定义
 // 所有类型从 API 服务层统一导出，确保前后端数据结构一致
 

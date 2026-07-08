@@ -6,7 +6,7 @@
  * 支持多种朝代、货币类型与实物价格对比
  */
 
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { DYNASTY_CURRENCIES, calculatePurchasingPower, type PurchasingPower } from '@/data/features/currencyData';
@@ -19,25 +19,24 @@ export default function CurrencyConverterPage() {
   const [amount, setAmount] = useState<string>('');
   const [dynasty, setDynasty] = useState<string>(DYNASTY_CURRENCIES[DYNASTY_CURRENCIES.length - 1].dynasty);
   const [type, setType] = useState<'rice' | 'flour' | 'cloth' | 'meat' | 'wine' | 'custom'>('rice');
-  const [customItem, setCustomItem] = useState<string>('');
   const [customPrice, setCustomPrice] = useState<string>('1000');
   
   // 计算购买力
-  const result = useMemo<PurchasingPower>(() => {
+  const result = useMemo<PurchasingPower | null>(() => {
     const numAmount = parseFloat(amount);
     if (isNaN(numAmount) || numAmount <= 0) {
       return null;
     }
-    
+
     if (type === 'custom') {
       const numPrice = parseFloat(customPrice);
       if (isNaN(numPrice) || numPrice <= 0) {
         return null;
       }
-      return calculatePurchasingPower(numAmount, dynasty, 'custom');
+      return calculatePurchasingPower(numAmount, dynasty);
     }
-    
-    return calculatePurchasingPower(numAmount, dynasty, type);
+
+    return calculatePurchasingPower(numAmount, dynasty);
   }, [amount, dynasty, type, customPrice]);
 
   return (

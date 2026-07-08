@@ -15,6 +15,7 @@ describe('InkDivider', () => {
   });
 
   it('不渲染子元素', () => {
+    // @ts-expect-error 测试 InkDivider 不接受 children
     const { container } = render(<InkDivider>不应该出现</InkDivider>);
     expect(container.textContent).toBe('');
   });

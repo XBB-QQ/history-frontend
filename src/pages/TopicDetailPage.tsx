@@ -5,7 +5,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { findTopicByUid } from '@/data/topics';
-import type { Topic } from '@/types/topic';
 import { useT } from '@/i18n/i18n';
 
 const CATEGORY_COLORS: Record<string, string> = {

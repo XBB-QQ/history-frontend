@@ -2,7 +2,7 @@ import { useTheme } from '@/components/layout/ThemeProvider';
 import { useDetailStore } from '@/store/detailStore';
 import { useSceneStore } from '@/store/sceneStore';
 import type { DynastyItem } from '@/types';
-import { getDynastyColor, getDynastyColorDark } from '@/data/themes/dynastyThemes';
+import { getDynastyColor } from '@/data/themes/dynastyThemes';
 
 interface DynastyCardProps {
   dynasty: DynastyItem;
@@ -14,7 +14,6 @@ export default function DynastyCard({ dynasty }: DynastyCardProps) {
   const { setSceneByDynasty, restoreScene } = useSceneStore();
 
   const color = getDynastyColor(dynasty.name);
-  const colorDark = getDynastyColorDark(dynasty.name);
 
   const handleHover = () => {
     setDynasty(dynasty.name);

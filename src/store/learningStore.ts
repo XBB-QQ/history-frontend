@@ -94,7 +94,7 @@ export const useLearningStore = create<LearningState>((set, get) => ({
       const token = localStorage.getItem('user_token');
       if (!token) return;
       const res = await fetch(`/api/learning/lists`, {
-        headers: { 'X-User-Id': token },
+        headers: { 'X-User-Id': token || '' },
       });
       if (res.ok) {
         const data = await res.json();
@@ -108,7 +108,7 @@ export const useLearningStore = create<LearningState>((set, get) => ({
       const token = localStorage.getItem('user_token');
       if (!token) return;
       const res = await fetch(`/api/learning/progress`, {
-        headers: { 'X-User-Id': token },
+        headers: { 'X-User-Id': token || '' },
       });
       if (res.ok) {
         const data = await res.json();
@@ -123,7 +123,7 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     const res = await fetch(`/api/learning/lists`, {
       method: 'POST',
       headers: {
-        'X-User-Id': token,
+        'X-User-Id': token || '',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ name, description }),
@@ -138,7 +138,7 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     await fetch(`/api/learning/lists/${listId}/resources`, {
       method: 'POST',
       headers: {
-        'X-User-Id': token,
+        'X-User-Id': token || '',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ resourceType: type, resourceId: id, title }),
@@ -151,7 +151,7 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     const token = localStorage.getItem('user_token');
     await fetch(`/api/learning/lists/${listId}/resources/${resourceId}`, {
       method: 'DELETE',
-      headers: { 'X-User-Id': token },
+      headers: { 'X-User-Id': token || '' },
     });
     await get().fetchLists();
   },

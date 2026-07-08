@@ -16,14 +16,6 @@ export const SCENE_FONTS: Record<SceneId, string[]> = {
   'seal': ['ZCOOL XiaoWei'],
 };
 
-/** Google Fonts URL 构造器 */
-function buildGoogleFontsUrl(fonts: string[]): string {
-  const families = fonts
-    .map((f) => `family=${encodeURIComponent(f).replace(/%20/g, '+')}:wght@400;700`)
-    .join('&');
-  return `https://fonts.googleapis.com/css2?${families}&display=swap`;
-}
-
 /** 已加载的字体集合（去重） */
 const loadedFonts = new Set<string>();
 

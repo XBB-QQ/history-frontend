@@ -319,8 +319,8 @@ export const getEraByDynasty = (dynasty: string): TransportEra | undefined => {
  */
 export const sortErasByTimeline = (eras: TransportEra[]): TransportEra[] => {
   return eras.sort((a, b) => {
-    const [yearA, ...restA] = a.era.split('-').map(s => parseInt(s) || 0);
-    const [yearB, ...restB] = b.era.split('-').map(s => parseInt(s) || 0);
+    const [yearA] = a.era.split('-').map(s => parseInt(s) || 0);
+    const [yearB] = b.era.split('-').map(s => parseInt(s) || 0);
     return yearA - yearB;
   });
 };

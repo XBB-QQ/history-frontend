@@ -2,12 +2,6 @@
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
-interface ApiResponse<T> {
-  data?: T;
-  message?: string;
-  error?: string;
-  token?: string;
-}
 
 async function userFetch<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(url, {

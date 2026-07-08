@@ -4,8 +4,6 @@ import RevealOnScroll from '@/components/common/RevealOnScroll';
 import {
   ORACLE_BONE_CHARS,
   getRandomOracleChars,
-  getOracleCharById,
-  calculateScore,
   getOracleCharsByCategory,
   getOracleCharsByDifficulty
 } from '@/data/features/oracleData';
@@ -28,16 +26,6 @@ const OracleBoneGamePage = () => {
   const currentQuestionData = useMemo(() => {
     return questions[currentQuestion];
   }, [currentQuestion, questions]);
-
-  const shuffleAnswers = (correctChar: any): string[] => {
-    const wrongAnswers = ORACLE_BONE_CHARS
-      .filter(char => char.id !== correctChar.id)
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3)
-      .map(char => char.traditional);
-
-    return [correctChar.traditional, ...wrongAnswers].sort(() => Math.random() - 0.5);
-  };
 
   const handleAnswer = (answer: string) => {
     if (!selectedAnswer) {
@@ -69,7 +57,7 @@ const OracleBoneGamePage = () => {
     if (selectedCategory !== 'all' && selectedCategory !== 'all') {
       quiz = getOracleCharsByCategory(selectedCategory);
     } else if (selectedDifficulty !== 'all') {
-      quiz = getOracleCharsByDifficulty(selectedDifficulty);
+      quiz = getOracleCharsByDifficulty(selectedDifficulty as 'easy' | 'medium' | 'hard');
     } else {
       quiz = getRandomOracleChars(5);
     }
@@ -153,7 +141,7 @@ const OracleBoneGamePage = () => {
 
                 {/* Answer Options */}
                 <div className="grid grid-cols-2 gap-4">
-                  {currentAnswers.length > 0 && selectedAnswer ? (
+                  {Object.keys(currentAnswers).length > 0 && selectedAnswer ? (
                     <>
                       <button
                         onClick={() => handleAnswer(currentAnswers[currentQuestion] || '')}
@@ -300,7 +288,7 @@ const OracleBoneGamePage = () => {
           <SectionHeader label={t('oracleBoneGame.dictionary_label')} title={t('oracleBoneGame.dictionary_title')} description={t('oracleBoneGame.dictionary_desc')} />
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {ORACLE_BONE_CHARS.slice(0, 10).map((char, index) => (
+            {ORACLE_BONE_CHARS.slice(0, 10).map((char) => (
               <div
                 key={char.id}
                 className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 text-center hover:shadow-xl transition-all transform hover:scale-105 cursor-pointer"

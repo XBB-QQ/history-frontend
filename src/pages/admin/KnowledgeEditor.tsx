@@ -1,6 +1,6 @@
 import EntityEditor from './EntityEditor';
 import { useT } from '@/i18n/i18n';
-import { adminGetKnowledge, adminSaveKnowledge, adminDeleteKnowledge, type AdminKnowledgeDTO } from '@/services/adminApi';
+import { adminGetKnowledge, adminSaveKnowledge, adminDeleteKnowledge } from '@/services/adminApi';
 
 const fields = [
   { key: 'uid', label: '唯一标识', placeholder: '如: four-inventions' },

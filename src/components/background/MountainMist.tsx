@@ -7,9 +7,18 @@ interface MountainMistProps {
 /**
  * 山水云雾装饰层
  * 用 SVG 绘制远处的山峦剪影和缓慢流动的云雾
+ *
+ * 视差滚动深化：
+ * - 多层山峦以不同速度位移（远山慢、近山快）
+ * - requestAnimationFrame + 节流（每帧最多更新一次）
+ * - 移动端（<768px）减弱效果（位移幅度减半）
+ * - 尊重 prefers-reduced-motion：完全禁用视差
  */
 export default function MountainMist({ className = '' }: MountainMistProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const farMountainRef = useRef<SVGSVGElement>(null);
+  const nearMountainRef = useRef<SVGSVGElement>(null);
+  const mistLayerRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
   // 懒加载：进入视口时才渲染
@@ -30,6 +39,64 @@ export default function MountainMist({ className = '' }: MountainMistProps) {
 
     return () => observer.disconnect();
   }, []);
+
+  // 视差滚动：多层山峦以不同速度位移
+  useEffect(() => {
+    if (!visible) return;
+
+    // 减少动画偏好：完全禁用视差
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let rafId: number | null = null;
+    let lastScrollY = window.scrollY;
+    let isTicking = false;
+
+    const handleScroll = () => {
+      lastScrollY = window.scrollY;
+      if (!isTicking) {
+        isTicking = true;
+        rafId = requestAnimationFrame(() => {
+          applyParallax(lastScrollY);
+          isTicking = false;
+        });
+      }
+    };
+
+    const applyParallax = (scrollY: number) => {
+      // 移动端减弱：位移幅度减半
+      const isMobile = window.innerWidth < 768;
+      const factor = isMobile ? 0.5 : 1;
+
+      // 不同层不同速度：远山最慢，近山中速，云雾最快
+      const farTranslate = scrollY * 0.05 * factor;   // 远山：5%
+      const nearTranslate = scrollY * 0.12 * factor;  // 近山：12%
+      const mistTranslate = scrollY * 0.18 * factor;  // 云雾：18%
+
+      if (farMountainRef.current) {
+        farMountainRef.current.style.transform = `translateY(${farTranslate}px)`;
+      }
+      if (nearMountainRef.current) {
+        nearMountainRef.current.style.transform = `translateY(${nearTranslate}px)`;
+      }
+      if (mistLayerRef.current) {
+        mistLayerRef.current.style.transform = `translateY(${mistTranslate}px)`;
+      }
+    };
+
+    // 初始应用一次
+    applyParallax(window.scrollY);
+
+    // 节流：passive 监听器 + rAF
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // 窗口尺寸变化时重新计算（移动端切换桌面端）
+    window.addEventListener('resize', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
+  }, [visible]);
 
   // 云雾漂浮动画
   const mistKeyframes = useCallback(() => {
@@ -65,12 +132,13 @@ export default function MountainMist({ className = '' }: MountainMistProps) {
       {/* 注入动画样式 */}
       <style dangerouslySetInnerHTML={{ __html: mistKeyframes() }} />
 
-      {/* 远处山峦剪影 */}
+      {/* 远处山峦剪影 — 多层视差 */}
       <svg
-        className="absolute bottom-0 left-0 w-full"
+        ref={farMountainRef}
+        className="absolute bottom-0 left-0 w-full will-change-transform"
         viewBox="0 0 1440 400"
         preserveAspectRatio="none"
-        style={{ height: '40vh', opacity: 0.05 }}
+        style={{ height: '40vh', opacity: 0.05, transition: 'transform 100ms ease-out' }}
         aria-hidden="true"
       >
         <defs>
@@ -89,7 +157,17 @@ export default function MountainMist({ className = '' }: MountainMistProps) {
           fill="url(#mountainGrad1)"
           style={{ animation: 'mountainBreath 12s ease-in-out infinite' }}
         />
-        {/* 近山层 */}
+      </svg>
+
+      {/* 近山层 — 独立 SVG，更快视差速度 */}
+      <svg
+        ref={nearMountainRef}
+        className="absolute bottom-0 left-0 w-full will-change-transform"
+        viewBox="0 0 1440 400"
+        preserveAspectRatio="none"
+        style={{ height: '35vh', opacity: 0.06, transition: 'transform 100ms ease-out' }}
+        aria-hidden="true"
+      >
         <path
           d="M0,400 L0,320 Q150,260 300,300 Q450,240 600,280 Q750,220 900,270 Q1050,230 1200,280 Q1350,250 1440,300 L1440,400 Z"
           fill="url(#mountainGrad2)"
@@ -97,8 +175,13 @@ export default function MountainMist({ className = '' }: MountainMistProps) {
         />
       </svg>
 
-      {/* 云雾层 */}
-      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+      {/* 云雾层 — 最快视差速度 */}
+      <div
+        ref={mistLayerRef}
+        className="absolute inset-0 overflow-hidden will-change-transform"
+        style={{ transition: 'transform 100ms ease-out' }}
+        aria-hidden="true"
+      >
         <div
           className="absolute -bottom-20 left-0 w-[120%] h-40 rounded-full"
           style={{

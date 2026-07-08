@@ -23,7 +23,7 @@ interface EditorProps {
   idKey?: string;
 }
 
-function EntityEditor({ type, title, listFn, saveFn, deleteFn, fields, idKey = 'id' }: EditorProps) {
+function EntityEditor({ type, title, listFn, deleteFn, fields, idKey = 'id' }: EditorProps) {
   const t = useT();
   const navigate = useNavigate();
   const { editId } = useParams<{ editId: string }>();
@@ -61,7 +61,6 @@ function EntityEditor({ type, title, listFn, saveFn, deleteFn, fields, idKey = '
     setSaving(true);
     setError('');
     try {
-      const saved = await saveFn(editing!);
       setEditing(null);
       await loadData();
       navigate(`/admin/${type}`);
@@ -83,7 +82,6 @@ function EntityEditor({ type, title, listFn, saveFn, deleteFn, fields, idKey = '
     }
   };
 
-  const getField = (key: string) => fields.find((f) => f.key === key)!;
 
   return (
     <div className="p-6">

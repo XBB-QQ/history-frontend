@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { K12_PATHS } from '@/data/features/k12Paths';
-import type { K12Chapter } from '@/data/features/k12Paths';
 import { useT } from '@/i18n/i18n';
 
 export default function K12PathPage() {

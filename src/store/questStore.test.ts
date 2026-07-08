@@ -3,7 +3,7 @@
  * @see ITERATIONS.md #85
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { useQuestStore } from './questStore';
 
 // 清空 localStorage 并重置 store
@@ -140,5 +140,79 @@ describe('questStore', () => {
 
     expect(useQuestStore.getState().sealsObtained).toHaveLength(1);
     expect(useQuestStore.getState().sealsObtained[0].routeId).toBe('anshi');
+  });
+});
+
+describe('questStore 持久化', () => {
+  const STORAGE_KEY = 'history_museum_quest_progress';
+
+  it('startRoute 后数据写入 localStorage', () => {
+    useQuestStore.getState().startRoute('anshi');
+    const raw = localStorage.getItem(STORAGE_KEY);
+    expect(raw).not.toBeNull();
+    const stored = JSON.parse(raw!);
+    expect(stored['anshi']).toBeDefined();
+    expect(stored['anshi'].routeId).toBe('anshi');
+    expect(stored['anshi'].nodeStatuses.length).toBeGreaterThan(0);
+  });
+
+  it('markNodeComplete 后 localStorage 数据更新', () => {
+    useQuestStore.getState().startRoute('anshi');
+    const firstNodeId = useQuestStore.getState().progress['anshi']!.nodeStatuses[0].nodeId;
+
+    useQuestStore.getState().markNodeComplete('anshi', firstNodeId);
+
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const stored = JSON.parse(raw!);
+    const storedNode = stored['anshi'].nodeStatuses.find(
+      (n: { nodeId: string; completed: boolean }) => n.nodeId === firstNodeId
+    );
+    expect(storedNode.completed).toBe(true);
+    expect(storedNode.completedAt).toBeGreaterThan(0);
+  });
+
+  it('readBriefing 后 localStorage 数据更新', () => {
+    useQuestStore.getState().startRoute('anshi');
+    useQuestStore.getState().readBriefing('anshi');
+
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const stored = JSON.parse(raw!);
+    expect(stored['anshi'].briefingRead).toBe(true);
+  });
+
+  it('resetRoute 后 localStorage 中对应数据被删除', () => {
+    useQuestStore.getState().startRoute('anshi');
+    useQuestStore.getState().startRoute('three-kingdoms');
+    useQuestStore.getState().resetRoute('anshi');
+
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const stored = JSON.parse(raw!);
+    expect(stored['anshi']).toBeUndefined();
+    expect(stored['three-kingdoms']).toBeDefined();
+  });
+
+  it('resetAll 清除 localStorage 中的数据', () => {
+    useQuestStore.getState().startRoute('anshi');
+    expect(localStorage.getItem(STORAGE_KEY)).not.toBeNull();
+
+    useQuestStore.getState().resetAll();
+    expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+  });
+
+  it('store 初始化时从 localStorage 恢复数据', async () => {
+    useQuestStore.getState().startRoute('anshi');
+    const firstNodeId = useQuestStore.getState().progress['anshi']!.nodeStatuses[0].nodeId;
+    useQuestStore.getState().markNodeComplete('anshi', firstNodeId);
+
+    vi.resetModules();
+    vi.doMock('@/data/features/storyQuests', () => ({ STUDY_ROUTES: [] }));
+    const { useQuestStore: freshStore } = await import('./questStore');
+    vi.doUnmock('@/data/features/storyQuests');
+
+    const restored = freshStore.getState().progress['anshi'];
+    expect(restored).toBeDefined();
+    expect(restored!.routeId).toBe('anshi');
+    const restoredNode = restored!.nodeStatuses.find((n) => n.nodeId === firstNodeId);
+    expect(restoredNode!.completed).toBe(true);
   });
 });

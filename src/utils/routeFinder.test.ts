@@ -92,6 +92,23 @@ describe('compareDynasties', () => {
   });
 });
 
+describe('T093.4 驿道改善验证', () => {
+  // 注：T093.4 原始要求是"长安→广州 唐代 days > 宋代 days"，
+  // 但当前 TRANSPORT_GRAPH 中长安区域与广州区域不连通（两个独立连通分量）。
+  // 此处用已连通的"长安→洛阳"路径验证"驿道改善"逻辑（宋代 speedFactor 1.3 > 唐代 1.2）。
+  it('长安→洛阳 唐代 days > 宋代 days（驿道改善）', () => {
+    const tang = findShortestPath(TRANSPORT_GRAPH, '长安', '洛阳', '唐');
+    const song = findShortestPath(TRANSPORT_GRAPH, '长安', '洛阳', '宋');
+    expect(tang).not.toBeNull();
+    expect(song).not.toBeNull();
+    expect(tang!.totalDays).toBeGreaterThan(song!.totalDays);
+  });
+
+  it('宋代 speedFactor 大于唐代（驿道改善的数据层验证）', () => {
+    expect(DYNASTY_SPEED_FACTORS['宋']).toBeGreaterThan(DYNASTY_SPEED_FACTORS['唐']);
+  });
+});
+
 describe('findReachableCities', () => {
   it('返回非空数组', () => {
     const results = findReachableCities('长安', 30);

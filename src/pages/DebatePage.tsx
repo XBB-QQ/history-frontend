@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { DEBATE_TOPICS } from '@/data/scenarios/debateTopics';
-import type { DebateTopic } from '@/data/scenarios/debateTopics';
 import { useT } from '@/i18n/i18n';
 
 export default function DebatePage() {

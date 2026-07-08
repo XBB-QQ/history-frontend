@@ -49,7 +49,6 @@ export default function ExportDropdown() {
       try {
         let data: Record<string, unknown>[] = [];
         let filename = '';
-        let mimeType = 'text/csv';
 
         switch (type) {
           case 'events': {

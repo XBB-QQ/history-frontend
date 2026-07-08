@@ -14,7 +14,6 @@ import {
   getOpenedCapsules,
   getPendingCapsules,
   canOpen,
-  isReadyToOpen,
   openCapsule,
   deleteCapsule,
   type TimeCapsule,
@@ -155,7 +154,7 @@ export default function TimeCapsulePage() {
                   ))}
                 </div>
                 <p className="mt-2 text-xs text-ink-500 dark:text-ink-400">
-                  {t('timeCapsule.guard_hint', { name: FIGURES.find(f => f.id === guardFigureId)?.name })}
+                  {t('timeCapsule.guard_hint', { name: FIGURES.find(f => f.id === guardFigureId)?.name ?? '' })}
                 </p>
               </div>
 

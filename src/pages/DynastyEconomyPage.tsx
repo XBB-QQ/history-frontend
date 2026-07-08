@@ -3,7 +3,7 @@
  * @see history-museum/design/002-innovation-brainstorm.md §14
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
@@ -51,7 +51,7 @@ export default function DynastyEconomyPage() {
     checkEvent(1, t, initial);
   }
 
-  function checkEvent(turn: number, t: DynastyEconomyTemplate, state: TurnState) {
+  function checkEvent(turn: number, t: DynastyEconomyTemplate, _state: TurnState) {
     const event = t.events.find(e => e.turn === turn);
     if (event) {
       setPendingEvent(event);
@@ -287,7 +287,7 @@ export default function DynastyEconomyPage() {
                         <div className="font-bold">{opt.label}</div>
                         <div className="text-xs opacity-80">{opt.description}</div>
                         <div className="text-xs mt-1">
-                          {t('dynastyEconomy.effects')}{Object.entries(opt.effects).filter(([k,v]) => v !== 0).map(([k,v]) => `${k} ${v>0?'+':''}${v}`).join(' / ')}
+                          {t('dynastyEconomy.effects')}{Object.entries(opt.effects).filter(([,v]) => v !== 0).map(([k,v]) => `${k} ${v>0?'+':''}${v}`).join(' / ')}
                         </div>
                       </button>
                     ))}
@@ -300,7 +300,7 @@ export default function DynastyEconomyPage() {
                   </div>
                 ) : (
                   <div className="text-xs text-ink-400">
-                    {t('dynastyEconomy.no_options')}{Object.entries(pendingEvent.effects).filter(([k,v]) => v !== 0).map(([k,v]) => `${k} ${v>0?'+':''}${v}`).join(' / ')}
+                    {t('dynastyEconomy.no_options')}{Object.entries(pendingEvent.effects).filter(([,v]) => v !== 0).map(([k,v]) => `${k} ${v>0?'+':''}${v}`).join(' / ')}
                   </div>
                 )}
               </div>

@@ -163,7 +163,7 @@ export default function LetterPage() {
             <div className="mt-6 p-6 bg-gradient-to-br from-accent/5 to-purple-500/5 dark:from-accent/10 dark:to-purple-700/10 rounded-xl border border-accent/30">
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-2xl">{selectedFigure?.emoji}</span>
-                <span className="font-bold text-accent">{t('letter.reply_title', { name: selectedFigure?.name })}</span>
+                <span className="font-bold text-accent">{t('letter.reply_title', { name: selectedFigure?.name ?? '' })}</span>
                 <span className="inline-block w-2 h-2 bg-accent animate-pulse rounded-full" />
               </div>
               <div ref={replyRef} className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line font-serif"

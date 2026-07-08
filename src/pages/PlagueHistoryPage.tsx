@@ -5,7 +5,7 @@
  * 展示中国历史上的重大瘟疫及其影响
  */
 
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { PLAGUE_EPIDEMICS, PLAGUES_BY_DYNASTY, HIGH_IMPACT_PLAGUES, MEDIUM_IMPACT_PLAGUES, LOW_IMPACT_PLAGUES } from '@/data/features/plagueData';

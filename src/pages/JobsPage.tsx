@@ -5,7 +5,7 @@
  * 展示各个朝代的典型职业，帮助用户了解古代生活
  */
 
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { ANCIENT_JOBS, ANCIENT_JOBS_BY_DYNASTY, POPULAR_JOBS, UNCOMMON_JOBS, type AncientJob } from '@/data/features/jobsData';

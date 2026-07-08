@@ -8,13 +8,13 @@ import ClassicalTextPanel from './ClassicalTextPanel';
 
 describe('ClassicalTextPanel', () => {
   it('渲染组件不报错', () => {
-    const { container } = render(<ClassicalTextPanel text="学而时习之" />);
+    const { container } = render(<ClassicalTextPanel classicalText="学而时习之" />);
     // 组件可能返回 null 或空内容，只要不抛错即可
     expect(container).toBeTruthy();
   });
 
-  it('接受 text prop', () => {
-    const { container } = render(<ClassicalTextPanel text="天地君亲师" />);
+  it('接受 classicalText prop', () => {
+    const { container } = render(<ClassicalTextPanel classicalText="天地君亲师" />);
     // 组件可能返回 null，只要不抛错即可
     expect(container).toBeTruthy();
   });

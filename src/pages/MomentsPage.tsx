@@ -14,11 +14,9 @@ import {
   toggleLike,
   addUserComment,
   replyToUserComment,
-  getAllComments,
   type Scene,
   type MomentFeed,
   type MomentPost,
-  type MomentComment,
 } from '@/features/momentsFeed';
 import { useT } from '@/i18n/i18n';
 

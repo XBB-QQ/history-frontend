@@ -74,19 +74,19 @@ export default function SearchModal() {
 
       const mapped: SearchResult[] = [
         ...events.map((e: FrontendEvent) => ({
-          type: 'event',
+          type: 'event' as const,
           id: Number(e.id),
           title: e.title,
           subtitle: `${e.dynasty} · ${e.category}`,
         })),
         ...persons.map((p: FrontendPerson) => ({
-          type: 'person',
+          type: 'person' as const,
           id: Number(p.id),
           title: p.name,
           subtitle: `${p.dynasty}${p.courtesyName ? ` · 字${p.courtesyName}` : ''}`,
         })),
         ...knowledge.map((k: FrontendKnowledge) => ({
-          type: 'knowledge',
+          type: 'knowledge' as const,
           id: Number(k.id),
           title: k.title,
           subtitle: k.dynasty || k.startYearDisplay || '',

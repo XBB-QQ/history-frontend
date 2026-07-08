@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { PODCAST_EPISODES, CATEGORY_ICON } from '@/data/features/podcastList';
 import { speakText, stopSpeaking, isVoiceSupported } from '@/features/voiceHistorian';
-import type { PodcastEpisode } from '@/data/features/podcastList';
 import { useT } from '@/i18n/i18n';
 
 export default function PodcastPage() {

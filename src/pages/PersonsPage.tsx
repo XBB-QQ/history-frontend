@@ -12,11 +12,11 @@ function PersonsPage() {
   const t = useT();
   const [persons, setPersons] = useState<PersonItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     fetchAllPersons()
       .then((data) => {
-        // 按出生年份排序（从古到今）
         const sorted = [...data].sort((a, b) => {
           const yearA = a.years?.[0] ?? 9999;
           const yearB = b.years?.[0] ?? 9999;
@@ -26,11 +26,12 @@ function PersonsPage() {
         setLoading(false);
       })
       .catch(() => {
+        setError(true);
         setLoading(false);
       });
   }, []);
 
-  if (loading || persons.length === 0) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
         <div className="max-w-5xl mx-auto text-center">
@@ -50,6 +51,28 @@ function PersonsPage() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
+        <div className="max-w-5xl mx-auto text-center">
+          <RevealOnScroll direction="fade">
+            <SectionHeader
+              label="PERSONS"
+              title={t('persons.title')}
+              description={t('persons.list_desc')}
+            />
+          </RevealOnScroll>
+          <div className="text-center py-12 text-ink-400">
+            <p>{t('persons.load_failed')}</p>
+          </div>
+          <RevealOnScroll direction="fade" delay={200}>
+            <Link to="/" className="btn-secondary mt-12 inline-flex">{t('common.back_home')}</Link>
+          </RevealOnScroll>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
       <div className="max-w-5xl mx-auto text-center">
@@ -60,9 +83,9 @@ function PersonsPage() {
             description={t('persons.description')}
           />
         </RevealOnScroll>
-        <RevealOnScroll direction="up" delay={200}>
+        <div className="mt-8">
           {loading ? <GridSkeleton count={8} /> : <PersonGrid persons={persons} />}
-        </RevealOnScroll>
+        </div>
         <RevealOnScroll direction="fade" delay={400}>
           <Link to="/" className="btn-secondary mt-12 inline-flex">{t('common.back_home')}</Link>
         </RevealOnScroll>

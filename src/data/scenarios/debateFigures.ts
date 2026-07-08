@@ -3,7 +3,6 @@
  * 每个辩论话题配两个历史人物，作为正反方辩手
  */
 
-import type { DebateTopic } from '@/data/scenarios/debateTopics';
 
 export interface DebateFigurePair {
   topicId: string;

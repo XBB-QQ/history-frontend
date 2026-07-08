@@ -4,12 +4,9 @@ import RevealOnScroll from '../components/common/RevealOnScroll';
 import {
   CIVILIZATIONS,
   CIVILIZATION_STATUS,
-  calculateEntropy,
-  predictEntropyChange,
   getEntropyLevel,
   predictTimeline,
   PREDICTION_SCENARIOS,
-  ENTROPY_LEVELS,
   type PredictionScenario,
 } from '../data/features/entropyModelData';
 import { useT } from '@/i18n/i18n';
@@ -18,7 +15,7 @@ const EntropyModelPage: React.FC = () => {
   const t = useT();
   const [selectedCivilization, setSelectedCivilization] = useState<string | null>(null);
   const [selectedScenario, setSelectedScenario] = useState<PredictionScenario | null>(null);
-  const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
+  const [currentYear] = useState<number>(new Date().getFullYear());
   const [predictionYears, setPredictionYears] = useState<number>(100);
   const [predictedTimeline, setPredictedTimeline] = useState<any[]>([]);
 

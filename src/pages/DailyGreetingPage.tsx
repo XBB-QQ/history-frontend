@@ -10,7 +10,6 @@ import { FIGURES } from '@/data/scenarios/figures';
 import {
   getFollowedFigures,
   toggleFollow,
-  isFollowed,
   generateTodayGreetings,
   getTodayGreetings,
   getGreetingHistory,

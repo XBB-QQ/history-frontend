@@ -5,7 +5,7 @@
  * 沉浸式模拟古代科举考试，体验科举制度
  */
 
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { EXAM_PAPERS, TYPE_STATS, CATEGORY_STATS, type ExamPaper } from '@/data/features/examinationData';
@@ -24,7 +24,7 @@ export default function ImperialExaminationPage() {
   const currentQuestion = selectedPaper?.questions[currentQuestionIndex];
 
   const calculateScore = useMemo(() => {
-    if (!selectedPaper || answers.length === 0) return 0;
+    if (!selectedPaper || Object.keys(answers).length === 0) return 0;
 
     let totalScore = 0;
     selectedPaper.questions.forEach((question: any) => {

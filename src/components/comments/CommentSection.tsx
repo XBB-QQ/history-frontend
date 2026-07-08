@@ -49,7 +49,7 @@ const MOCK_COMMENTS: Comment[] = [
   { id: 3, author: '小明', authorAvatar: '小', content: '希望能有更多相关内容', timestamp: '5小时前', likes: 2 },
 ];
 
-export default function CommentSection({ resourceId, resourceType }: CommentSectionProps) {
+export default function CommentSection({ resourceId: _resourceId, resourceType: _resourceType }: CommentSectionProps) {
   const [comments, setComments] = useState<Comment[]>(MOCK_COMMENTS);
   const [newComment, setNewComment] = useState('');
   const [sortBy, setSortBy] = useState<'latest' | 'hot'>('latest');

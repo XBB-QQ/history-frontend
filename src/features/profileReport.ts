@@ -29,22 +29,6 @@ export interface ProfileReport {
   hasData: boolean;
 }
 
-/** 事件分类 → 维度映射 */
-const CATEGORY_TO_DIMENSION: Record<string, DimensionKey> = {
-  // 文治类
-  '政治': 'governance',
-  '改革': 'governance',
-  '盛世': 'governance',
-  '经济': 'governance',
-  '朝代更迭': 'governance',
-  // 武功类
-  '战争': 'martial',
-  '革命': 'martial',
-  '屈辱': 'martial',
-  // 文化类 → 博学
-  '文化': 'erudition',
-};
-
 /** 从事件标题/分类推断维度（简化版，因为收藏数据里只有 title） */
 function inferDimensionFromTitle(title: string): DimensionKey | null {
   // 关键词匹配
