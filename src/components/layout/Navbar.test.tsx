@@ -96,7 +96,7 @@ describe('Navbar', () => {
   it('点击搜索按钮调用 openSearch', () => {
     const mockOpenSearch = vi.fn();
     vi.mocked(useSearchStore).mockImplementation((selector) => {
-      const store = { openSearch: mockOpenSearch };
+      const store = { isOpen: false, openSearch: mockOpenSearch, closeSearch: vi.fn() };
       return selector ? selector(store) : store;
     });
     renderWithRouter(<Navbar />);
@@ -112,7 +112,7 @@ describe('Navbar', () => {
   it('点击主题切换按钮调用 toggleTheme', () => {
     const mockToggleTheme = vi.fn();
     vi.mocked(useThemeStore).mockImplementation((selector) => {
-      const store = { theme: 'light', initialized: true, toggleTheme: mockToggleTheme };
+      const store = { theme: 'light' as const, initialized: true, toggleTheme: mockToggleTheme, setTheme: vi.fn() };
       return selector ? selector(store) : store;
     });
     renderWithRouter(<Navbar />);
@@ -129,8 +129,13 @@ describe('Navbar', () => {
     vi.mocked(useUserStore).mockImplementation((selector) => {
       const store = {
         user: { nickname: '测试用户', username: 'tester' } as any,
+        token: null,
         isAuthenticated: true,
+        setUser: vi.fn(),
+        setToken: vi.fn(),
         logout: vi.fn(),
+        init: vi.fn(),
+        updateQuizScore: vi.fn(),
       };
       return selector ? selector(store) : store;
     });
@@ -140,7 +145,15 @@ describe('Navbar', () => {
 
   it('收藏数大于 0 时显示徽章', () => {
     vi.mocked(useFavoriteStore).mockImplementation((selector) => {
-      const store = { favorites: [1, 2, 3] };
+      const store = {
+        favorites: [1, 2, 3] as any[],
+        isFavorite: vi.fn(),
+        addFavorite: vi.fn(),
+        removeFavorite: vi.fn(),
+        togglePin: vi.fn(),
+        toggleFavorite: vi.fn(),
+        loadFavorites: vi.fn(),
+      };
       return selector ? selector(store) : store;
     });
     renderWithRouter(<Navbar />);

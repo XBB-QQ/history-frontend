@@ -136,6 +136,7 @@ export default function Navbar() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const { theme, initialized, toggleTheme } = useThemeStore();
   const openSearch = useSearchStore((s) => s.openSearch);
   const favoriteCount = useFavoriteStore((s) => s.favorites.length);
@@ -215,11 +216,11 @@ export default function Navbar() {
               <div
                 key={group.id}
                 className="relative"
-                onMouseEnter={() => setOpenGroup(group.id)}
+                onMouseEnter={() => { setOpenGroup(group.id); setSearchQuery(''); }}
                 onMouseLeave={() => setOpenGroup(prev => prev === group.id ? null : prev)}
               >
                 <button
-                  onClick={() => setOpenGroup(openGroup === group.id ? null : group.id)}
+                  onClick={() => { const next = openGroup === group.id ? null : group.id; setOpenGroup(next); setSearchQuery(''); }}
                   className={`text-sm tracking-wide transition-colors flex items-center gap-0.5 whitespace-nowrap ${
                     isGroupActive(group)
                       ? 'text-accent font-bold'
@@ -236,22 +237,38 @@ export default function Navbar() {
 
                 {/* 下拉面板 */}
                 {openGroup === group.id && (
-                  <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2 w-48 z-50">
+                  <div className="absolute left-1/2 -translate-x-1/2 top-full pt-2 w-56 z-50">
                     <div className="bg-white dark:bg-ink-900 rounded-xl shadow-xl border border-ink-200 dark:border-ink-700 py-2 animate-slide-down">
-                      {group.items.map(item => (
-                        <Link
-                          key={item.path}
-                          to={item.path}
-                          className={`block px-4 py-2 text-sm transition-colors ${
-                            isActive(item.path)
-                              ? 'text-accent font-bold bg-accent/5'
-                              : 'text-ink-700 dark:text-ink-300 hover:bg-ink-50 dark:hover:bg-ink-800'
-                          }`}
-                          onClick={() => setOpenGroup(null)}
-                        >
-                          {t(item.labelKey)}
-                        </Link>
-                      ))}
+                      {group.items.length > 8 && (
+                        <input
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder="搜索..."
+                          className="w-full px-3 py-1.5 text-sm border-b border-ink-100 dark:border-ink-700 bg-transparent text-ink-700 dark:text-ink-300 outline-none placeholder:text-ink-400"
+                          autoFocus
+                        />
+                      )}
+                      {group.items
+                        .filter(item => {
+                          if (!searchQuery) return true;
+                          const q = searchQuery.toLowerCase();
+                          return t(item.labelKey).toLowerCase().includes(q) || item.path.includes(q);
+                        })
+                        .map(item => (
+                          <Link
+                            key={item.path}
+                            to={item.path}
+                            className={`block px-4 py-2 text-sm transition-colors ${
+                              isActive(item.path)
+                                ? 'text-accent font-bold bg-accent/5'
+                                : 'text-ink-700 dark:text-ink-300 hover:bg-ink-50 dark:hover:bg-ink-800'
+                            }`}
+                            onClick={() => setOpenGroup(null)}
+                          >
+                            {t(item.labelKey)}
+                          </Link>
+                        ))}
                     </div>
                   </div>
                 )}

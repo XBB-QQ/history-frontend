@@ -7,6 +7,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { STUDY_ROUTES } from '@/data/features/storyQuests';
+import { useQuestStore } from '@/store/questStore';
 import { useT } from '@/i18n/i18n';
 
 interface Assignment {
@@ -57,6 +58,8 @@ export default function StudentAssignmentPage() {
   const [entered, setEntered] = useState(false);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [progress, setProgress] = useState<StudentProgress[]>([]);
+  const questProgress = useQuestStore((s) => s.progress);
+  const markNodeComplete = useQuestStore((s) => s.markNodeComplete);
 
   useEffect(() => {
     const saved = localStorage.getItem(CURRENT_STUDENT_KEY);
@@ -67,6 +70,44 @@ export default function StudentAssignmentPage() {
     setAssignments(loadAssignments());
     setProgress(loadProgress());
   }, []);
+
+  // T102.5: questStore 进度回传 — 把研学线实际完成状态同步到 classroom_progress
+  useEffect(() => {
+    if (!entered || !studentName) return;
+    const myAsgs = assignments.filter(a => a.studentNames.includes(studentName));
+    const current = loadProgress();
+    let updated = [...current];
+    let changed = false;
+
+    for (const a of myAsgs) {
+      const qp = questProgress[a.routeId];
+      if (!qp) continue;
+      const questCompleted = qp.nodeStatuses.filter(n => n.completed).map(n => n.nodeId);
+      if (questCompleted.length === 0) continue;
+
+      const idx = updated.findIndex(p => p.assignmentId === a.id && p.studentName === studentName);
+      if (idx >= 0) {
+        const merged = Array.from(new Set([...updated[idx].completedNodes, ...questCompleted]));
+        if (merged.length !== updated[idx].completedNodes.length) {
+          updated[idx] = { ...updated[idx], completedNodes: merged, lastActiveAt: new Date().toISOString() };
+          changed = true;
+        }
+      } else {
+        updated.push({
+          studentName,
+          assignmentId: a.id,
+          completedNodes: questCompleted,
+          lastActiveAt: new Date().toISOString(),
+        });
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      setProgress(updated);
+      saveProgress(updated);
+    }
+  }, [questProgress, entered, studentName, assignments]);
 
   const handleEnter = () => {
     if (!studentName.trim()) return;
@@ -80,7 +121,7 @@ export default function StudentAssignmentPage() {
     return progress.find(p => p.assignmentId === assignmentId && p.studentName === studentName);
   };
 
-  const toggleNode = (assignmentId: string, nodeId: string) => {
+  const toggleNode = (assignmentId: string, routeId: string, nodeId: string) => {
     const existing = progress.find(p => p.assignmentId === assignmentId && p.studentName === studentName);
     let updated: StudentProgress[];
     if (existing) {
@@ -101,6 +142,12 @@ export default function StudentAssignmentPage() {
     }
     setProgress(updated);
     saveProgress(updated);
+
+    // 同步到 questStore（仅标记完成，不取消）
+    const wasCompleted = existing?.completedNodes.includes(nodeId) ?? false;
+    if (!wasCompleted) {
+      markNodeComplete(routeId, nodeId);
+    }
   };
 
   if (!entered) {
@@ -182,7 +229,7 @@ export default function StudentAssignmentPage() {
                     return (
                       <div key={node.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-ink-50 dark:hover:bg-ink-800">
                         <button
-                          onClick={() => toggleNode(a.id, node.id)}
+                          onClick={() => toggleNode(a.id, a.routeId, node.id)}
                           className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
                             done
                               ? 'bg-accent border-accent text-white'

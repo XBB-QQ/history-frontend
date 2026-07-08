@@ -24,7 +24,7 @@ describe('CommentSection', () => {
   it('渲染不报错', () => {
     const { container } = render(
       <MemoryRouter>
-        <CommentSection eventId={1} />
+        <CommentSection resourceId="1" resourceType="event" />
       </MemoryRouter>
     );
     expect(container.firstChild).toBeTruthy();

@@ -689,7 +689,7 @@ export async function fetchRandomQuiz(page = 0, size = 10): Promise<{ content: Q
 /** 获取排行榜 */
 export async function fetchQuizLeaderboard(page = 0, size = 20): Promise<{ content: LeaderboardEntry[]; total: number }> {
   const data = await fetchJSON<{ content: LeaderboardEntry[]; totalElements: number }>(
-    `${BASE_URL}/quiz/ranking?page=${page}&size=${size}`
+    `${BASE_URL}/user/quiz/ranking?page=${page}&size=${size}`
   );
   return {
     content: data.content,
