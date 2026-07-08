@@ -4,11 +4,29 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import CommentSection from './CommentSection';
+
+vi.mock('@/store/userStore', () => ({
+  useUserStore: vi.fn((selector?: (v: any) => any) => {
+    const store = { user: null, isAuthenticated: false, logout: vi.fn() };
+    return selector ? selector(store) : store;
+  }),
+}));
+
+vi.stubGlobal('fetch', vi.fn(() =>
+  Promise.resolve({
+    json: () => Promise.resolve([]),
+  })
+));
 
 describe('CommentSection', () => {
   it('渲染不报错', () => {
-    const { container } = render(<CommentSection eventId={1} />);
+    const { container } = render(
+      <MemoryRouter>
+        <CommentSection eventId={1} />
+      </MemoryRouter>
+    );
     expect(container.firstChild).toBeTruthy();
   });
 });

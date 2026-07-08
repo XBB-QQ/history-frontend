@@ -3,14 +3,13 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Navbar from './Navbar';
 import { useThemeStore } from '@/store/themeStore';
 import { useSearchStore } from '@/store/searchStore';
 import { useFavoriteStore } from '@/store/favoriteStore';
 import { useUserStore } from '@/store/userStore';
-import { useI18nStore } from '@/i18n/i18n';
 
 vi.mock('@/store/themeStore', () => ({
   useThemeStore: vi.fn((selector?: (v: any) => any) => {
@@ -46,10 +45,28 @@ vi.mock('@/i18n/i18n', () => ({
     const store = { locale: 'zh', setLocale: vi.fn() };
     return selector ? selector(store) : store;
   }),
+  useT: () => {
+    const map: Record<string, string> = {
+      'home.title': '史馆',
+      'nav.home': '首页',
+      'nav.timeline': '时间轴',
+      'nav.dynasties': '朝代',
+      'nav.persons': '人物',
+      'nav.knowledge': '知识',
+      'nav.map': '地图',
+      'nav.favorites': '收藏',
+      'nav.menu': '菜单',
+      'nav.user_menu': '用户菜单',
+      'nav.search': '搜索',
+      'nav.theme_toggle': '切换主题',
+      'nav.login': '登录',
+    };
+    return (key: string) => map[key] || key;
+  },
 }));
 
 vi.mock('@/components/common/LanguageSwitcher', () => ({
-  default: () => require('html').createElement('button', { 'aria-label': 'lang-switch' }),
+  default: () => null,
 }));
 
 const renderWithRouter = (ui: React.ReactNode) => ({
@@ -133,7 +150,7 @@ describe('Navbar', () => {
   it('移动端汉堡按钮存在', () => {
     vi.stubGlobal('innerWidth', 375);
     renderWithRouter(<Navbar />);
-    expect(screen.getByLabelText(/菜单|menu/i)).toBeTruthy();
+    expect(screen.getByRole('button', { name: /^(菜单|menu)$/i })).toBeTruthy();
     vi.unstubAllGlobals();
   });
 });

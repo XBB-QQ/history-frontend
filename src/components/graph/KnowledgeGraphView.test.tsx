@@ -15,7 +15,9 @@ vi.mock('@/store/detailStore', () => ({
 
 describe('KnowledgeGraphView', () => {
   it('渲染不报错', () => {
-    const { container } = render(<KnowledgeGraphView nodes={[]} edges={[]} />);
+    const { container } = render(
+      <KnowledgeGraphView graph={{ nodes: [], links: [] }} width={400} height={300} />
+    );
     expect(container.firstChild).toBeTruthy();
   });
 });

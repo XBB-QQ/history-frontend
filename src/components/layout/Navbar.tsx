@@ -125,6 +125,7 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: 'nav.learn_contribution', path: '/contribution' },
       { labelKey: 'nav.learn_topics', path: '/topics' },
       { labelKey: 'nav.learn_compare', path: '/compare' },
+      { labelKey: 'nav.learn_classroom_teacher', path: '/classroom/teacher' },
     ],
   },
 ];

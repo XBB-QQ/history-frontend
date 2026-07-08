@@ -3,12 +3,25 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Footer from './Footer';
 
 vi.mock('@/components/export/ExportDropdown', () => ({
-  default: () => require('html').createElement('div', { 'data-testid': 'export-dropdown' }),
+  default: () => null,
+}));
+
+vi.mock('@/i18n/i18n', () => ({
+  useT: () => {
+    const map: Record<string, string> = {
+      'footer.brand_desc': '五千年史馆',
+      'footer.quick_nav': '快速导航',
+      'footer.tech_stack': '技术栈',
+      'footer.version_info': 'Copyright v0.1.0',
+      'nav.timeline': '时间轴',
+    };
+    return (key: string) => map[key] || key;
+  },
 }));
 
 const renderWithRouter = (ui: React.ReactNode) => ({

@@ -2,8 +2,8 @@
  * ExportDropdown — L2 组件单元测试
  */
 
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import ExportDropdown from './ExportDropdown';
 
 describe('ExportDropdown', () => {
