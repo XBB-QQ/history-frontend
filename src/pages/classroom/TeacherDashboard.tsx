@@ -1,98 +1,84 @@
 /**
  * 班级史馆 — 教师仪表板
  * 教师创建作业（关联研学线）、查看学生进度
- * 无后端，用 localStorage mock
+ * 数据层：API 优先，localStorage 降级（由 classroomApi 内部处理）
  */
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { STUDY_ROUTES } from '@/data/features/storyQuests';
 import { useT } from '@/i18n/i18n';
+import { classroomApi } from '@/services/classroomApi';
+import type { Assignment, StudentProgress } from '@/services/classroomStorage';
 
-/** 作业数据 */
-interface Assignment {
-  id: string;
-  title: string;
-  routeId: string;
-  routeName: string;
-  studentNames: string[];
-  createdAt: string;
-}
-
-/** 学生进度 */
-interface StudentProgress {
-  studentName: string;
-  assignmentId: string;
-  completedNodes: string[];
-  lastActiveAt: string;
-}
-
-const ASSIGNMENTS_KEY = 'classroom_assignments';
-const PROGRESS_KEY = 'classroom_progress';
-
-function loadAssignments(): Assignment[] {
-  try {
-    const raw = localStorage.getItem(ASSIGNMENTS_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveAssignments(items: Assignment[]) {
-  localStorage.setItem(ASSIGNMENTS_KEY, JSON.stringify(items));
-}
-
-function loadProgress(): StudentProgress[] {
-  try {
-    const raw = localStorage.getItem(PROGRESS_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
+const TEACHER_NAME_KEY = 'classroom_teacher_name';
 
 export default function TeacherDashboard() {
   const t = useT();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
-  const [progress, setProgress] = useState<StudentProgress[]>([]);
+  const [progressMap, setProgressMap] = useState<Record<string, StudentProgress[]>>({});
   const [title, setTitle] = useState('');
   const [routeId, setRouteId] = useState(STUDY_ROUTES[0]?.id ?? '');
   const [studentNames, setStudentNames] = useState('');
+  const [teacherName, setTeacherName] = useState(
+    () => localStorage.getItem(TEACHER_NAME_KEY) || ''
+  );
+
+  const loadData = async (teacher: string) => {
+    const list = await classroomApi.listAssignments(
+      teacher ? { teacherName: teacher } : undefined
+    );
+    setAssignments(list);
+    const entries = await Promise.all(
+      list.map(async a => {
+        const ps = await classroomApi.listProgress(a.id);
+        return [a.id, ps] as const;
+      })
+    );
+    setProgressMap(Object.fromEntries(entries));
+  };
 
   useEffect(() => {
-    setAssignments(loadAssignments());
-    setProgress(loadProgress());
-  }, []);
+    if (teacherName.trim()) loadData(teacherName.trim());
+    else loadData('');
+  }, [teacherName]);
 
-  const handleCreate = () => {
-    if (!title.trim() || !routeId) return;
+  const handleCreate = async () => {
+    if (!title.trim() || !routeId || !teacherName.trim()) return;
     const route = STUDY_ROUTES.find(r => r.id === routeId);
     if (!route) return;
     const names = studentNames.split(/[，,\n]/).map(s => s.trim()).filter(Boolean);
-    const newAssignment: Assignment = {
-      id: `asg-${Date.now()}`,
+    const created = await classroomApi.createAssignment({
       title: title.trim(),
       routeId,
       routeName: route.name,
       studentNames: names,
-      createdAt: new Date().toISOString(),
-    };
-    const updated = [...assignments, newAssignment];
-    setAssignments(updated);
-    saveAssignments(updated);
+      teacherName: teacherName.trim(),
+    });
+    setAssignments(prev => [...prev, created]);
+    setProgressMap(prev => ({ ...prev, [created.id]: [] }));
     setTitle('');
     setStudentNames('');
   };
 
-  const handleDelete = (id: string) => {
-    const updated = assignments.filter(a => a.id !== id);
-    setAssignments(updated);
-    saveAssignments(updated);
+  const handleDelete = async (id: string) => {
+    await classroomApi.deleteAssignment(id);
+    setAssignments(prev => prev.filter(a => a.id !== id));
+    setProgressMap(prev => {
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+  };
+
+  const handleTeacherNameBlur = () => {
+    if (teacherName.trim()) {
+      localStorage.setItem(TEACHER_NAME_KEY, teacherName.trim());
+    }
   };
 
   const getProgressFor = (assignmentId: string, studentName: string): StudentProgress | undefined => {
-    return progress.find(p => p.assignmentId === assignmentId && p.studentName === studentName);
+    return progressMap[assignmentId]?.find(p => p.studentName === studentName);
   };
 
   return (
@@ -105,6 +91,16 @@ export default function TeacherDashboard() {
         <div className="bg-white dark:bg-ink-900 rounded-xl shadow-md p-6 mb-8 border border-ink-100 dark:border-ink-700">
           <h2 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-4">创建新作业</h2>
           <div className="space-y-3">
+            <div>
+              <label className="text-sm text-ink-500 dark:text-ink-400 block mb-1">教师姓名</label>
+              <input
+                value={teacherName}
+                onChange={e => setTeacherName(e.target.value)}
+                onBlur={handleTeacherNameBlur}
+                placeholder="例：王老师"
+                className="w-full px-3 py-2 rounded-lg border border-ink-200 dark:border-ink-600 bg-transparent text-ink-800 dark:text-ink-200"
+              />
+            </div>
             <div>
               <label className="text-sm text-ink-500 dark:text-ink-400 block mb-1">作业标题</label>
               <input
@@ -138,7 +134,7 @@ export default function TeacherDashboard() {
             </div>
             <button
               onClick={handleCreate}
-              disabled={!title.trim() || !routeId}
+              disabled={!title.trim() || !routeId || !teacherName.trim()}
               className="px-4 py-2 bg-accent text-white rounded-lg font-bold disabled:opacity-40 hover:opacity-90 transition-opacity"
             >
               发布作业

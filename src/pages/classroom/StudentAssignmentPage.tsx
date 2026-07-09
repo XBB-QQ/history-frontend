@@ -1,7 +1,7 @@
 /**
  * 班级史馆 — 学生作业页
  * 学生查看分配给自己的作业，标记节点完成
- * 无后端，用 localStorage mock
+ * 数据层：API 优先，localStorage 降级（由 classroomApi 内部处理）
  */
 
 import { useState, useEffect } from 'react';
@@ -9,48 +9,9 @@ import { Link } from 'react-router-dom';
 import { STUDY_ROUTES } from '@/data/features/storyQuests';
 import { useQuestStore } from '@/store/questStore';
 import { useT } from '@/i18n/i18n';
-
-interface Assignment {
-  id: string;
-  title: string;
-  routeId: string;
-  routeName: string;
-  studentNames: string[];
-  createdAt: string;
-}
-
-interface StudentProgress {
-  studentName: string;
-  assignmentId: string;
-  completedNodes: string[];
-  lastActiveAt: string;
-}
-
-const ASSIGNMENTS_KEY = 'classroom_assignments';
-const PROGRESS_KEY = 'classroom_progress';
-const CURRENT_STUDENT_KEY = 'classroom_current_student';
-
-function loadAssignments(): Assignment[] {
-  try {
-    const raw = localStorage.getItem(ASSIGNMENTS_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
-function loadProgress(): StudentProgress[] {
-  try {
-    const raw = localStorage.getItem(PROGRESS_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveProgress(items: StudentProgress[]) {
-  localStorage.setItem(PROGRESS_KEY, JSON.stringify(items));
-}
+import { classroomApi } from '@/services/classroomApi';
+import { classroomStorage } from '@/services/classroomStorage';
+import type { Assignment, StudentProgress } from '@/services/classroomStorage';
 
 export default function StudentAssignmentPage() {
   const t = useT();
@@ -61,23 +22,31 @@ export default function StudentAssignmentPage() {
   const questProgress = useQuestStore((s) => s.progress);
   const markNodeComplete = useQuestStore((s) => s.markNodeComplete);
 
+  const loadData = async (name: string) => {
+    const list = await classroomApi.listAssignments({ studentName: name });
+    setAssignments(list);
+    const progressEntries = await Promise.all(
+      list.map(async a => {
+        const ps = await classroomApi.listProgress(a.id);
+        return ps.filter(p => p.studentName === name);
+      })
+    );
+    setProgress(progressEntries.flat());
+  };
+
   useEffect(() => {
-    const saved = localStorage.getItem(CURRENT_STUDENT_KEY);
+    const saved = classroomStorage.getCurrentStudent();
     if (saved) {
       setStudentName(saved);
       setEntered(true);
+      loadData(saved);
     }
-    setAssignments(loadAssignments());
-    setProgress(loadProgress());
   }, []);
 
-  // T102.5: questStore 进度回传 — 把研学线实际完成状态同步到 classroom_progress
+  // T102.5: questStore 进度回传 — 把研学线实际完成状态同步到后端
   useEffect(() => {
     if (!entered || !studentName) return;
     const myAsgs = assignments.filter(a => a.studentNames.includes(studentName));
-    const current = loadProgress();
-    let updated = [...current];
-    let changed = false;
 
     for (const a of myAsgs) {
       const qp = questProgress[a.routeId];
@@ -85,34 +54,35 @@ export default function StudentAssignmentPage() {
       const questCompleted = qp.nodeStatuses.filter(n => n.completed).map(n => n.nodeId);
       if (questCompleted.length === 0) continue;
 
-      const idx = updated.findIndex(p => p.assignmentId === a.id && p.studentName === studentName);
-      if (idx >= 0) {
-        const merged = Array.from(new Set([...updated[idx].completedNodes, ...questCompleted]));
-        if (merged.length !== updated[idx].completedNodes.length) {
-          updated[idx] = { ...updated[idx], completedNodes: merged, lastActiveAt: new Date().toISOString() };
-          changed = true;
-        }
-      } else {
-        updated.push({
-          studentName,
-          assignmentId: a.id,
-          completedNodes: questCompleted,
-          lastActiveAt: new Date().toISOString(),
-        });
-        changed = true;
-      }
-    }
+      const existing = progress.find(p => p.assignmentId === a.id && p.studentName === studentName);
+      const existingNodes = existing?.completedNodes ?? [];
+      const merged = Array.from(new Set([...existingNodes, ...questCompleted]));
+      if (merged.length === existingNodes.length) continue;
 
-    if (changed) {
-      setProgress(updated);
-      saveProgress(updated);
+      classroomApi.upsertProgress(a.id, {
+        studentName,
+        completedNodes: merged,
+      }).then(updated => {
+        setProgress(prev => {
+          const idx = prev.findIndex(p =>
+            p.assignmentId === updated.assignmentId && p.studentName === updated.studentName
+          );
+          if (idx >= 0) {
+            const next = [...prev];
+            next[idx] = updated;
+            return next;
+          }
+          return [...prev, updated];
+        });
+      });
     }
   }, [questProgress, entered, studentName, assignments]);
 
   const handleEnter = () => {
     if (!studentName.trim()) return;
-    localStorage.setItem(CURRENT_STUDENT_KEY, studentName.trim());
+    classroomStorage.setCurrentStudent(studentName.trim());
     setEntered(true);
+    loadData(studentName.trim());
   };
 
   const myAssignments = assignments.filter(a => a.studentNames.includes(studentName));
@@ -121,31 +91,32 @@ export default function StudentAssignmentPage() {
     return progress.find(p => p.assignmentId === assignmentId && p.studentName === studentName);
   };
 
-  const toggleNode = (assignmentId: string, routeId: string, nodeId: string) => {
+  const toggleNode = async (assignmentId: string, routeId: string, nodeId: string) => {
     const existing = progress.find(p => p.assignmentId === assignmentId && p.studentName === studentName);
-    let updated: StudentProgress[];
-    if (existing) {
-      const has = existing.completedNodes.includes(nodeId);
-      const completedNodes = has
-        ? existing.completedNodes.filter(n => n !== nodeId)
-        : [...existing.completedNodes, nodeId];
-      updated = progress.map(p =>
-        p === existing ? { ...p, completedNodes, lastActiveAt: new Date().toISOString() } : p
-      );
-    } else {
-      updated = [...progress, {
-        studentName,
-        assignmentId,
-        completedNodes: [nodeId],
-        lastActiveAt: new Date().toISOString(),
-      }];
-    }
-    setProgress(updated);
-    saveProgress(updated);
+    const existingNodes = existing?.completedNodes ?? [];
+    const has = existingNodes.includes(nodeId);
+    const newNodes = has
+      ? existingNodes.filter(n => n !== nodeId)
+      : [...existingNodes, nodeId];
 
-    // 同步到 questStore（仅标记完成，不取消）
-    const wasCompleted = existing?.completedNodes.includes(nodeId) ?? false;
-    if (!wasCompleted) {
+    const updated = await classroomApi.upsertProgress(assignmentId, {
+      studentName,
+      completedNodes: newNodes,
+    });
+
+    setProgress(prev => {
+      const idx = prev.findIndex(p =>
+        p.assignmentId === assignmentId && p.studentName === studentName
+      );
+      if (idx >= 0) {
+        const next = [...prev];
+        next[idx] = updated;
+        return next;
+      }
+      return [...prev, updated];
+    });
+
+    if (!has) {
       markNodeComplete(routeId, nodeId);
     }
   };
@@ -188,7 +159,7 @@ export default function StudentAssignmentPage() {
             <p className="text-ink-500 dark:text-ink-400 text-sm">你的研学作业</p>
           </div>
           <button
-            onClick={() => { localStorage.removeItem(CURRENT_STUDENT_KEY); setEntered(false); setStudentName(''); }}
+            onClick={() => { classroomStorage.clearCurrentStudent(); setEntered(false); setStudentName(''); }}
             className="text-sm text-ink-400 hover:text-accent"
           >
             切换学生
