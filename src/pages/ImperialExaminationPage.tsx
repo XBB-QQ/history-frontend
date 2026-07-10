@@ -118,7 +118,7 @@ export default function ImperialExaminationPage() {
                     </h3>
 
                     <div className="space-y-2 text-sm text-ink-600 dark:text-ink-400 mb-4">
-                      <div>📅 {paper.dynasty} · {paper.period}</div>
+                      <div>🗓️ {paper.dynasty} · {paper.period}</div>
                       {paper.year && <div>{paper.year}</div>}
                       <div>{t('imperialExamination.duration_label', { duration: paper.duration })}</div>
                       <div>{t('imperialExamination.passing_rate_label', { rate: paper.passingRate })}</div>
@@ -341,7 +341,7 @@ export default function ImperialExaminationPage() {
             <div className="result-card p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg mb-6">
               <div className="text-center mb-6">
                 <div className="text-6xl mb-4">
-                  {passed ? '🎉' : '📚'}
+                  {passed ? '及第' : '落第'}
                 </div>
 
                 <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100 mb-2">

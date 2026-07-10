@@ -33,7 +33,7 @@ function LeaderboardPage() {
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-24 pb-12 px-4">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
-          <span className="text-4xl mb-4 block">榜</span>
+          <span className="text-4xl mb-4 block font-black text-accent">榜</span>
           <h1 className="text-3xl font-black text-ink-900 dark:text-ink-100">{t('leaderboard.title')}</h1>
           <p className="text-sm text-ink-500 mt-2">{t('leaderboard.subtitle')}</p>
         </div>
@@ -67,11 +67,11 @@ function LeaderboardPage() {
                   </span>
                 );
                 if (rank === 1) {
-                  rankBadge = <span className="text-xl w-8 text-center">🥇</span>;
+                  rankBadge = <span className="text-sm w-8 text-center font-bold text-amber-600">壹</span>;
                 } else if (rank === 2) {
-                  rankBadge = <span className="text-xl w-8 text-center">🥈</span>;
+                  rankBadge = <span className="text-sm w-8 text-center font-bold text-ink-500">贰</span>;
                 } else if (rank === 3) {
-                  rankBadge = <span className="text-xl w-8 text-center">🥉</span>;
+                  rankBadge = <span className="text-sm w-8 text-center font-bold text-amber-800 dark:text-amber-500">叁</span>;
                 }
 
                 return (

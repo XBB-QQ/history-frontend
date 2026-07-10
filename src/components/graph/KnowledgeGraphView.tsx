@@ -51,6 +51,8 @@ export default function KnowledgeGraphView({
   const [tick, setTick] = useState(0);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const draggingNode = useRef<SimNode | null>(null);
+  const animateRef = useRef<() => void>(() => {});
+  const isRunningRef = useRef(false);
 
   useEffect(() => {
     const cx = width / 2;
@@ -78,6 +80,11 @@ export default function KnowledgeGraphView({
     const SPRING_LENGTH = 100;
     const CENTER = 0.01;
     const DAMPING = 0.85;
+    // 使用平均动能（每节点）作为收敛判据，避免阈值受节点数量影响
+    const ENERGY_THRESHOLD = 0.1;
+    // 时间兜底：无论帧率如何，3 秒后强制停止动画
+    const startTime = performance.now();
+    const MAX_DURATION = 3000;
 
     const animate = () => {
       const nodes = nodesRef.current;
@@ -112,6 +119,7 @@ export default function KnowledgeGraphView({
         if (!b.fx) { b.vx -= fx; b.vy -= fy; }
       });
 
+      let totalEnergy = 0;
       nodes.forEach((n) => {
         if (n.fx !== undefined && n.fy !== undefined) {
           n.x = n.fx;
@@ -125,16 +133,24 @@ export default function KnowledgeGraphView({
         n.x += n.vx;
         n.y += n.vy;
         const padding = 30;
-        if (n.x < padding) n.x = padding;
-        if (n.x > width - padding) n.x = width - padding;
-        if (n.y < padding) n.y = padding;
-        if (n.y > height - padding) n.y = height - padding;
+        if (n.x < padding) { n.x = padding; n.vx = 0; }
+        if (n.x > width - padding) { n.x = width - padding; n.vx = 0; }
+        if (n.y < padding) { n.y = padding; n.vy = 0; }
+        if (n.y > height - padding) { n.y = height - padding; n.vy = 0; }
+        totalEnergy += n.vx * n.vx + n.vy * n.vy;
       });
 
       setTick((t) => t + 1);
+
+      if (performance.now() - startTime > MAX_DURATION || totalEnergy / nodes.length < ENERGY_THRESHOLD) {
+        isRunningRef.current = false;
+        return;
+      }
       animRef.current = requestAnimationFrame(animate);
     };
 
+    animateRef.current = animate;
+    isRunningRef.current = true;
     animRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animRef.current);
   }, [graph, width, height]);
@@ -171,7 +187,15 @@ export default function KnowledgeGraphView({
     if (draggingNode.current) {
       draggingNode.current.fx = undefined;
       draggingNode.current.fy = undefined;
+      // 给节点一个微小速度，打破平衡以便重新触发收敛
+      draggingNode.current.vx = (Math.random() - 0.5) * 2;
+      draggingNode.current.vy = (Math.random() - 0.5) * 2;
       draggingNode.current = null;
+      // 若动画已停止，重新启动以重新布局
+      if (!isRunningRef.current) {
+        isRunningRef.current = true;
+        animRef.current = requestAnimationFrame(animateRef.current);
+      }
     }
   }
 

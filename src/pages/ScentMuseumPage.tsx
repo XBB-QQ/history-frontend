@@ -43,11 +43,11 @@ const ScentMuseumPage = () => {
 
   const getEnergyBadge = (energy: string) => {
     const badges: Record<string, { bg: string; icon: string }> = {
-      calm: { bg: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300', icon: '🍃' },
-      energetic: { bg: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300', icon: '⚡' },
-      grand: { bg: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300', icon: '🏛️' },
-      melancholy: { bg: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300', icon: '🌙' },
-      intimate: { bg: 'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300', icon: '❤️' }
+      calm: { bg: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300', icon: '静' },
+      energetic: { bg: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300', icon: '烈' },
+      grand: { bg: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300', icon: '宏' },
+      melancholy: { bg: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300', icon: '幽' },
+      intimate: { bg: 'bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300', icon: '亲' }
     };
     return badges[energy] || { bg: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300', icon: '✨' };
   };
@@ -141,7 +141,7 @@ const ScentMuseumPage = () => {
 
           {filteredScents.length === 0 ? (
             <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-              <p className="text-6xl mb-4">🔍</p>
+              <p className="text-6xl mb-4 text-ink-400">?</p>
               <p>{t('scentMuseum.no_match')}</p>
             </div>
           ) : (
@@ -196,23 +196,7 @@ const ScentCard = ({ scent, onClick, getEnergyBadge }: ScentCardProps) => {
       <div className="relative p-6">
         <div className="flex justify-between items-start">
           <div className={`text-5xl mb-2 transform group-hover:scale-110 transition-transform`}>
-            {scent.id === 'scent-001' ? '🛡️' :
-             scent.id === 'scent-002' ? '📜' :
-             scent.id === 'scent-003' ? '🐪' :
-             scent.id === 'scent-004' ? '🏯' :
-             scent.id === 'scent-005' ? '🌸' :
-             scent.id === 'scent-006' ? '🍖' :
-             scent.id === 'scent-007' ? '🏪' :
-             scent.id === 'scent-008' ? '🍵' :
-             scent.id === 'scent-009' ? '🏛️' :
-             scent.id === 'scent-010' ? '🌿' :
-             scent.id === 'scent-011' ? '🌊' :
-             scent.id === 'scent-012' ? '☕' :
-             scent.id === 'scent-013' ? '✈️' :
-             scent.id === 'scent-014' ? '📚' :
-             scent.id === 'scent-015' ? '🖨️' :
-             scent.id === 'scent-016' ? '🚀' :
-             '🏭'}
+              香
           </div>
           <span className={`px-3 py-1 rounded-full text-xs font-medium ${energyBadge.bg}`}>
             {energyBadge.icon} {scent.energy === 'calm' ? t('scentMuseum.energy_calm') : scent.energy === 'energetic' ? t('scentMuseum.energy_energetic') : t('scentMuseum.energy_grand')}
@@ -240,7 +224,7 @@ const ScentCard = ({ scent, onClick, getEnergyBadge }: ScentCardProps) => {
       {/* Footer */}
       <div className="relative bg-gray-50 dark:bg-gray-900/50 px-6 py-4">
         <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-          <span>{t('scentMuseum.temperature_label')}{scent.temperature === '极寒' ? '❄️' : scent.temperature === '寒冷' ? '🥶' : scent.temperature === '温暖' ? '☀️' : '🔥'}</span>
+          <span>{t('scentMuseum.temperature_label')}{scent.temperature === '极寒' ? '寒' : scent.temperature === '寒冷' ? '凉' : scent.temperature === '温暖' ? '温' : '热'}</span>
           <span>{t('scentMuseum.intensity_label')}{scent.intensity}/10</span>
           <span>{t('scentMuseum.time_label')}{scent.timeOfDay}</span>
         </div>
@@ -316,17 +300,17 @@ const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalPr
           {/* Info Grid */}
           <div className="grid grid-cols-3 gap-4 mt-6">
             <div className="bg-white/20 rounded-xl p-4 text-center">
-              <div className="text-2xl mb-1">🌡️</div>
+              <div className="text-2xl mb-1">温</div>
               <div className="text-white font-medium">{scent.temperature}</div>
               <div className="text-white/70 text-sm">{t('scentMuseum.temperature')}</div>
             </div>
             <div className="bg-white/20 rounded-xl p-4 text-center">
-              <div className="text-2xl mb-1">💫</div>
+              <div className="text-2xl mb-1">力</div>
               <div className="text-white font-medium">{scent.intensity}/10</div>
               <div className="text-white/70 text-sm">{t('scentMuseum.intensity')}</div>
             </div>
             <div className="bg-white/20 rounded-xl p-4 text-center">
-              <div className="text-2xl mb-1">⏰</div>
+              <div className="text-2xl mb-1">时</div>
               <div className="text-white font-medium">{scent.timeOfDay}</div>
               <div className="text-white/70 text-sm">{t('scentMuseum.time')}</div>
             </div>

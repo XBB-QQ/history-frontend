@@ -16,7 +16,6 @@ export interface DebateTopic {
 
 export interface DebateSide {
   label: string;
-  icon: string;
   arguments: string[];
 }
 
@@ -29,7 +28,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     era: '南宋',
     proSide: {
       label: '应该迎回',
-      icon: '⚔️',
       arguments: [
         '岳家军战斗力强，朱仙镇大捷后金军已溃退',
         '收复中原是民族尊严问题，不应妥协',
@@ -38,7 +36,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     },
     conSide: {
       label: '不该迎回',
-      icon: '🛡️',
       arguments: [
         '南宋国力不足以维持北方战线',
         '迎回二圣会威胁赵构的皇位合法性',
@@ -55,7 +52,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     era: '清朝',
     proSide: {
       label: '合法继位',
-      icon: '📜',
       arguments: [
         '康熙遗诏现存于中国第一历史档案馆，满文版本明确写"雍亲王皇四子胤禛"',
         '满文遗诏无法篡改（"十"和"于"在满文中字形完全不同）',
@@ -64,7 +60,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     },
     conSide: {
       label: '篡位可疑',
-      icon: '🔍',
       arguments: [
         '遗诏公布时间延迟，有可疑之处',
         '雍正即位后立即消灭竞争对手，手段残酷',
@@ -81,7 +76,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     era: '北宋',
     proSide: {
       label: '利大于弊',
-      icon: '📈',
       arguments: [
         '青苗法减轻了农民高利贷负担',
         '国家财政明显改善，国库充盈',
@@ -90,7 +84,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     },
     conSide: {
       label: '弊大于利',
-      icon: '📉',
       arguments: [
         '执行中官员强行放贷，反而加重农民负担',
         '变法加剧了党争，撕裂了北宋政治',
@@ -107,7 +100,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     era: '秦朝',
     proSide: {
       label: '历史进步',
-      icon: '🏗️',
       arguments: [
         '统一文字、度量衡奠定了中华文明基础',
         '郡县制取代分封制是政治制度飞跃',
@@ -116,7 +108,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     },
     conSide: {
       label: '暴政统治',
-      icon: '⛓️',
       arguments: [
         '焚书坑儒摧毁了文化多样性',
         '严刑峻法使人民生活在恐惧中',
@@ -133,7 +124,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     era: '明朝',
     proSide: {
       label: '合理防御',
-      icon: '🛡️',
       arguments: [
         '海禁防止了倭寇和海盗的侵扰',
         '维护了沿海地区的社会稳定',
@@ -142,7 +132,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     },
     conSide: {
       label: '错失机遇',
-      icon: '🚢',
       arguments: [
         '海禁使中国错失了大航海时代',
         '民间走私反而更猖獗，海禁适得其反',
@@ -161,7 +150,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     era: '晚清',
     proSide: {
       label: '自救进步',
-      icon: '🏭',
       arguments: [
         '建立了中国第一批近代工业企业（江南制造总局、汉阳铁厂等）',
         '创建了近代海军和培养了第一批技术人才',
@@ -170,7 +158,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     },
     conSide: {
       label: '自欺欺人',
-      icon: '🎭',
       arguments: [
         '"中学为体，西学为用"的理念本身就有矛盾——技术可以学，制度学不了',
         '官僚腐败严重，大量经费被挪用（颐和园工程）',
@@ -187,7 +174,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     era: '明朝',
     proSide: {
       label: '伟大壮举',
-      icon: '🌊',
       arguments: [
         '船队规模世界第一（200多艘船、27000多人），比哥伦布早近百年',
         '扩大了明朝的国际影响力，建立了朝贡体系',
@@ -196,7 +182,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     },
     conSide: {
       label: '劳民伤财',
-      icon: '💸',
       arguments: [
         '每次出海耗费数百万两白银，国库不堪重负',
         '没有带来实质性的经济收益，纯粹是政治表演',
@@ -213,7 +198,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     era: '清朝',
     proSide: {
       label: '合理保护',
-      icon: '🏯',
       arguments: [
         '防止了西方殖民势力的渗透，保持了国家独立',
         '保护了传统农业经济和社会稳定',
@@ -222,7 +206,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     },
     conSide: {
       label: '自我束缚',
-      icon: '🔒',
       arguments: [
         '错失了工业革命的历史机遇，技术差距越拉越大',
         '只留广州一口通商，严重限制了对外贸易',
@@ -239,7 +222,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     era: '清朝',
     proSide: {
       label: '重大进步',
-      icon: '📊',
       arguments: [
         '取消人头税是中国赋税制度的重大改革',
         '减轻了穷人的负担，促进了人口增长（从1亿到4亿）',
@@ -248,7 +230,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     },
     conSide: {
       label: '执行偏差',
-      icon: '⚖️',
       arguments: [
         '地主通过提高地租转嫁税负，实际受益者是富人',
         '各地执行标准不一，有些地方反而加重了农民负担',
@@ -265,7 +246,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     era: '明朝',
     proSide: {
       label: '挽救了明朝',
-      icon: '💰',
       arguments: [
         '简化了税制，减少了中间环节的贪污',
         '推动了白银货币化，促进了商品经济发展',
@@ -274,7 +254,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     },
     conSide: {
       label: '治标不治本',
-      icon: '📉',
       arguments: [
         '改革依赖个人权威，张居正死后全部废止',
         '白银依赖海外输入（西班牙、日本），受国际市场波动影响',
@@ -291,7 +270,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     era: '晚清',
     proSide: {
       label: '历史必然',
-      icon: '🎓',
       arguments: [
         '八股取士已经不适应现代社会需要',
         '科举制造了大量只会读四书五经的书呆子',
@@ -300,7 +278,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     },
     conSide: {
       label: '文化断裂',
-      icon: '📚',
       arguments: [
         '科举是社会流动的最公平渠道，废除后世家大族重新垄断教育',
         '八股虽僵化，但儒家经典的教育价值不应被全盘否定',
@@ -317,7 +294,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     era: '明清',
     proSide: {
       label: '技术福音',
-      icon: '💥',
       arguments: [
         '红夷大炮在抗击后金（清）战争中发挥了关键作用',
         '促进了中国军事技术的进步',
@@ -326,7 +302,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     },
     conSide: {
       label: '战争升级',
-      icon: '⚠️',
       arguments: [
         '火器让战争更加残酷，伤亡大幅增加',
         '清朝对火器的态度是"用而不研"——只用不学，错失技术革命',
@@ -343,7 +318,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     era: '清朝',
     proSide: {
       label: '维护统一',
-      icon: '🏛️',
       arguments: [
         '清朝作为少数民族政权，需要维护统治合法性',
         '文字狱主要针对的是反清言论，不是所有文学创作',
@@ -352,7 +326,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     },
     conSide: {
       label: '文化暴政',
-      icon: '🔥',
       arguments: [
         '文字狱制造了恐怖氛围，知识分子不敢议政',
         '大量典籍被毁（《四库全书》编纂同时也是销毁），文化损失巨大',
@@ -369,7 +342,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     era: '清朝',
     proSide: {
       label: '历史进步',
-      icon: '🗺️',
       arguments: [
         '土司制度落后腐朽，土司对百姓的压迫不亚于奴隶制',
         '改土归流促进了西南地区的经济发展和文化融合',
@@ -378,7 +350,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     },
     conSide: {
       label: '文化掠夺',
-      icon: '⛏️',
       arguments: [
         '强制同化少数民族文化，破坏了当地传统社会结构',
         '改土归流过程中伴随大量军事镇压和屠杀',
@@ -395,7 +366,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     era: '晚清',
     proSide: {
       label: '洋务实用',
-      icon: '🏭',
       arguments: [
         '洋务运动建立了近代工业基础，没有这个基础维新无从谈起',
         '制度改革需要社会条件，操之过急反而适得其反（戊戌变法的教训）',
@@ -404,7 +374,6 @@ export const DEBATE_TOPICS: DebateTopic[] = [
     },
     conSide: {
       label: '维新根本',
-      icon: '📜',
       arguments: [
         '甲午一战证明只学技术不改制度是徒劳的',
         '维新派主张的君主立宪是日本和欧洲的成功经验',

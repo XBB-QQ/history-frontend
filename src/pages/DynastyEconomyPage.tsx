@@ -172,7 +172,7 @@ export default function DynastyEconomyPage() {
                   className="w-full p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700 hover:border-accent hover:shadow-lg transition-all text-left group"
                 >
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="text-2xl">{tpl.emoji}</span>
+                    <span className="text-sm font-bold text-accent border border-accent px-2 py-0.5 rounded">经</span>
                     <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 group-hover:text-accent transition-colors">
                       {tpl.name}
                     </h3>
@@ -196,7 +196,7 @@ export default function DynastyEconomyPage() {
             {/* 回合信息 */}
             <div className="p-4 bg-gradient-to-br from-accent/5 to-amber-500/5 dark:from-accent/10 dark:to-amber-700/10 rounded-xl border border-accent/20 text-center">
               <div className="text-lg font-bold text-ink-900 dark:text-ink-100">
-                {template.emoji} {template.name} · {t('dynastyEconomy.turn_of', { turn: turnNum, max: MAX_TURNS })}
+                {template.name} · {t('dynastyEconomy.turn_of', { turn: turnNum, max: MAX_TURNS })}
               </div>
             </div>
 
@@ -351,7 +351,7 @@ export default function DynastyEconomyPage() {
         {phase === 'ended' && currentTurn && template && (
           <div className="mt-8 space-y-6">
             <div className="p-6 bg-gradient-to-br from-accent/10 to-amber-500/10 dark:from-accent/15 dark:to-amber-700/15 rounded-xl text-center">
-              <div className="text-3xl mb-2">{template.emoji}</div>
+              <div className="text-2xl mb-2 font-bold text-accent">经</div>
               <h2 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-1">
                 {template.name} · {t('dynastyEconomy.turns_ended', { max: MAX_TURNS })}
               </h2>

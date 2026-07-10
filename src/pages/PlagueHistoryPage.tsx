@@ -176,20 +176,20 @@ export default function PlagueHistoryPage() {
 
                 <div className="space-y-2 text-sm text-ink-600 dark:text-ink-400">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold">📅 {plague.dynasty}</span>
+                    <span className="font-bold">[时] {plague.dynasty}</span>
                     {plague.year && (
                       <span className="text-xs text-ink-500">({plague.year})</span>
                     )}
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span>📍</span>
+                    <span>[地]</span>
                     <span>{plague.location}</span>
                   </div>
 
                   {plague.deathRate && (
                     <div className="flex items-center gap-2">
-                      <span>💀</span>
+                      <span>[亡]</span>
                       <span>{plague.deathRate}</span>
                     </div>
                   )}
@@ -202,7 +202,7 @@ export default function PlagueHistoryPage() {
 
           {filteredPlagues.length === 0 && (
             <div className="text-center py-12">
-              <div className="text-4xl mb-2">🔍</div>
+              <div className="text-4xl mb-2 text-ink-400">?</div>
               <div className="text-ink-600 dark:text-ink-400">
                 {t('plagueHistory.no_match')}
               </div>
@@ -239,7 +239,7 @@ export default function PlagueHistoryPage() {
                           {getImpactBadge(selectedPlague)}
                         </span>
                         <span className="text-ink-600 dark:text-ink-400">
-                          📅 {selectedPlague.dynasty} - {selectedPlague.period}
+                          [时] {selectedPlague.dynasty} - {selectedPlague.period}
                         </span>
                         {selectedPlague.year && (
                           <span className="px-3 py-1 rounded-full text-sm font-bold bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200">

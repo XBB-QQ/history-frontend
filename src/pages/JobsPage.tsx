@@ -130,11 +130,11 @@ export default function JobsPage() {
 
                 <div className="space-y-2 text-sm text-ink-600 dark:text-ink-400">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold">📅 {job.dynasty}</span>
+                    <span className="font-bold">[时] {job.dynasty}</span>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span>💰</span>
+                    <span>[资]</span>
                     <span>{job.salary} {job.salaryUnit}</span>
                   </div>
 
@@ -146,7 +146,7 @@ export default function JobsPage() {
 
           {filteredJobs.length === 0 && (
             <div className="text-center py-12">
-              <div className="text-4xl mb-2">🔍</div>
+              <div className="text-4xl mb-2 text-ink-400">?</div>
               <div className="text-ink-600 dark:text-ink-400">
                 {t('jobs.no_match')}
               </div>
@@ -183,7 +183,7 @@ export default function JobsPage() {
                           {getStatusBadge(selectedJob.status)}
                         </span>
                         <span className="text-ink-600 dark:text-ink-400">
-                          📅 {selectedJob.dynasty} - {selectedJob.period}
+                          [时] {selectedJob.dynasty} - {selectedJob.period}
                         </span>
                       </div>
                     </div>
@@ -297,7 +297,7 @@ export default function JobsPage() {
                       className="flex items-center gap-3 p-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 hover:bg-ink-100 dark:hover:bg-ink-800/50 cursor-pointer transition-colors"
                       onClick={() => setSelectedJob(job)}
                     >
-                      <span className="text-2xl">👔</span>
+                      <span className="text-2xl">冠</span>
                       <div>
                         <div className="font-bold text-ink-900 dark:text-ink-100">{job.title}</div>
                         <div className="text-sm text-ink-600 dark:text-ink-400">
@@ -320,7 +320,7 @@ export default function JobsPage() {
                       className="flex items-center gap-3 p-3 rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 hover:bg-ink-100 dark:hover:bg-ink-800/50 cursor-pointer transition-colors"
                       onClick={() => setSelectedJob(job)}
                     >
-                      <span className="text-2xl">⭐</span>
+                      <span className="text-2xl">星</span>
                       <div>
                         <div className="font-bold text-ink-900 dark:text-ink-100">{job.title}</div>
                         <div className="text-sm text-ink-600 dark:text-ink-400">

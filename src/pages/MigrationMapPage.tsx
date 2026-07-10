@@ -98,7 +98,7 @@ export default function MigrationMapPage() {
                   }`}
                   style={!showAll && selectedId === e.id ? { background: typeColor } : {}}
                 >
-                  {e.emoji} {e.title}
+                  {e.title}
                 </button>
               );
             })}
@@ -225,7 +225,7 @@ export default function MigrationMapPage() {
                 {Object.entries(MIGRATION_TYPE_LABELS).map(([key, val], idx) => (
                   <g key={key} transform={`translate(10, ${28 + idx * 16})`}>
                     <circle cx="0" cy="0" r="3" fill={val.color} />
-                    <text x="8" y="3" fill="#7a9fc0" fontSize="8">{val.emoji} {val.label}</text>
+                    <text x="8" y="3" fill="#7a9fc0" fontSize="8">{val.label}</text>
                   </g>
                 ))}
               </g>
@@ -247,7 +247,7 @@ export default function MigrationMapPage() {
                 style={{ borderColor: MIGRATION_TYPE_LABELS[selectedEvent.type].color, background: `${MIGRATION_TYPE_LABELS[selectedEvent.type].color}10` }}
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="text-2xl">{selectedEvent.emoji}</span>
+                  <span className="text-2xl font-bold text-accent">迁</span>
                   <h2 className="text-xl font-bold text-ink-900 dark:text-ink-100">
                     {selectedEvent.title}
                   </h2>
@@ -255,7 +255,7 @@ export default function MigrationMapPage() {
                   <span className="text-xs px-2 py-0.5 rounded-full text-white font-bold"
                     style={{ background: MIGRATION_TYPE_LABELS[selectedEvent.type].color }}
                   >
-                    {MIGRATION_TYPE_LABELS[selectedEvent.type].emoji} {MIGRATION_TYPE_LABELS[selectedEvent.type].label}
+                    {MIGRATION_TYPE_LABELS[selectedEvent.type].label}
                   </span>
                 </div>
                 <div className="flex items-center gap-4 text-sm">
@@ -330,7 +330,7 @@ export default function MigrationMapPage() {
                     style={{ borderColor: typeColor, background: `${typeColor}08` }}
                   >
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-lg">{e.emoji}</span>
+                      <span className="text-lg font-bold text-accent">迁</span>
                       <span className="font-bold text-ink-900 dark:text-ink-100">{e.title}</span>
                       <span className="text-xs text-ink-400 ml-auto">{e.scale}{t('migrationMap.wan')}</span>
                     </div>

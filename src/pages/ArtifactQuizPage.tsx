@@ -103,7 +103,7 @@ export default function ArtifactQuizPage() {
         {gameState === 'menu' && (
           <RevealOnScroll direction="up" delay={200}>
             <div className="mt-12 text-center space-y-8">
-              <div className="text-8xl mb-4">🏺</div>
+              <div className="text-6xl mb-4 font-bold text-accent">鉴</div>
               <div>
                 <h2 className="text-3xl font-bold text-ink-900 dark:text-ink-100 mb-2">{t('artifactQuiz.ready')}</h2>
                 <p className="text-ink-600 dark:text-ink-400">
@@ -215,8 +215,8 @@ export default function ArtifactQuizPage() {
                         >
                           <div className="flex items-center gap-2 mb-1">
                             <span className="font-bold text-ink-900 dark:text-ink-100">{option.label}</span>
-                            {showCorrect && <span className="text-green-600">✅</span>}
-                            {showWrong && <span className="text-red-600">❌</span>}
+                            {showCorrect && <span className="text-green-600 text-sm">正确</span>}
+                            {showWrong && <span className="text-red-600 text-sm">错误</span>}
                           </div>
                           <p className="text-xs text-ink-500">{option.dynasty} · {option.description}</p>
                         </button>
@@ -261,8 +261,8 @@ export default function ArtifactQuizPage() {
         {gameState === 'result' && score && (
           <RevealOnScroll direction="up" delay={200}>
             <div className="mt-8 bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 p-8 shadow-lg text-center space-y-6">
-              <div className="text-6xl">
-                {score.accuracy >= 80 ? '🏆' : score.accuracy >= 50 ? '👍' : '📚'}
+              <div className="text-6xl mb-2 font-bold text-accent">
+                {score.accuracy >= 80 ? '鉴' : score.accuracy >= 50 ? '优' : '学'}
               </div>
 
               <div>

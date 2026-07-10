@@ -167,7 +167,7 @@ export default function SurnameMapPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div className="info-block">
                       <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">
-                        📜 {t('surnameMap.origin')}
+                        源 {t('surnameMap.origin')}
                       </h3>
                       <p className="text-ink-700 dark:text-ink-300 leading-relaxed">
                         {selected.origin}
@@ -175,7 +175,7 @@ export default function SurnameMapPage() {
                     </div>
                     <div className="info-block">
                       <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">
-                        🏮 {t('surnameMap.originPlace')}
+                        地 {t('surnameMap.originPlace')}
                       </h3>
                       <p className="text-ink-700 dark:text-ink-300 leading-relaxed mb-2">
                         {selected.originPlace.name} ({selected.originPeriod})
@@ -190,7 +190,7 @@ export default function SurnameMapPage() {
                     </div>
                     <div className="info-block">
                       <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">
-                        🏛️ {t('surnameMap.junwang')}
+                        郡 {t('surnameMap.junwang')}
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {selected.junwang.map((junwang, idx) => (
@@ -208,13 +208,13 @@ export default function SurnameMapPage() {
                     </div>
                     <div className="info-block">
                       <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">
-                        🎨 {t('surnameMap.totem')}
+                        图 {t('surnameMap.totem')}
                       </h3>
                       <p className="text-ink-700 dark:text-ink-300">{selected.totem}</p>
                     </div>
                     <div className="info-block">
                       <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">
-                        📖 {t('surnameMap.history')}
+                        史 {t('surnameMap.history')}
                       </h3>
                       <p className="text-ink-700 dark:text-ink-300">{selected.history}</p>
                     </div>
@@ -223,7 +223,7 @@ export default function SurnameMapPage() {
                   {/* 姓氏迁徙地图（SVG） */}
                   <div className="migration-map-section mb-6">
                     <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-3">
-                      🗺️ {t('surnameMap.migrationTrack')}
+                      迁 {t('surnameMap.migrationTrack')}
                     </h3>
                     <div className="map-container relative bg-ink-50 dark:bg-ink-800 rounded-xl overflow-hidden">
                       <svg
@@ -309,7 +309,7 @@ export default function SurnameMapPage() {
 
                       {/* 地图说明 */}
                       <p className="text-xs text-ink-500 mt-2 px-2">
-                        ⚠️ {t('surnameMap.mapNote')}
+                        注 {t('surnameMap.mapNote')}
                       </p>
                     </div>
                   </div>
@@ -318,7 +318,7 @@ export default function SurnameMapPage() {
                   {selected.figures.length > 0 && (
                     <div className="figures-section">
                       <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-3">
-                        👑 {t('surnameMap.figures')}
+                        贤 {t('surnameMap.figures')}
                       </h3>
                       <div className="figures-grid grid grid-cols-1 md:grid-cols-3 gap-3">
                         {selected.figures.map((figure, idx) => (

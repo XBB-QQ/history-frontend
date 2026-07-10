@@ -11,7 +11,6 @@ export const FIGURES: HistoricalFigure[] = [
     name: '孔子',
     dynasty: '春秋·鲁',
     role: '万世师表',
-    emoji: '🧙',
     bio: '名丘字仲尼，儒家学派创始人。开创私学，弟子三千，贤者七十二。周游列国十四年，晚年修订六经。其思想核心是"仁"与"礼"。',
     quotes: [
       '学而时习之，不亦说乎？',
@@ -27,7 +26,6 @@ export const FIGURES: HistoricalFigure[] = [
     name: '李白',
     dynasty: '唐',
     role: '诗仙',
-    emoji: '🍶',
     bio: '字太白，号青莲居士。唐代浪漫主义诗人，与杜甫并称"李杜"。一生好剑术、喜任侠、爱饮酒，足迹遍天下。曾入翰林，因得罪权贵被赐金放还。',
     quotes: [
       '天生我材必有用，千金散尽还复来。',
@@ -43,7 +41,6 @@ export const FIGURES: HistoricalFigure[] = [
     name: '诸葛亮',
     dynasty: '三国·蜀汉',
     role: '丞相',
-    emoji: '🪶',
     bio: '字孔明，号卧龙。蜀汉丞相，杰出的政治家、军事家、文学家。刘备三顾茅庐请其出山，辅佐刘备建立蜀汉。刘备死后，受托孤之重，六出祁山北伐，最终病逝五丈原。',
     quotes: [
       '鞠躬尽瘁，死而后已。',
@@ -59,7 +56,6 @@ export const FIGURES: HistoricalFigure[] = [
     name: '秦始皇',
     dynasty: '秦',
     role: '始皇帝',
-    emoji: '⚔️',
     bio: '嬴姓赵氏，名政。中国历史上第一个统一全国的皇帝。13岁即位秦王，39岁完成统一大业。废分封、立郡县、统一文字度量衡、修长城、建驰道。功过两极，但奠定中国大一统格局。',
     quotes: [
       '朕为始皇帝。后世以计数，二世三世至于万世，传之无穷。',
@@ -74,7 +70,6 @@ export const FIGURES: HistoricalFigure[] = [
     name: '苏轼',
     dynasty: '北宋',
     role: '文豪',
-    emoji: '🎋',
     bio: '字子瞻，号东坡居士。北宋文学家、书画家、政治家。诗词文赋书画皆绝。一生仕途坎坷，屡遭贬谪，足迹至黄州、惠州、儋州。豁达乐观，留下大量传世佳作。',
     quotes: [
       '竹杖芒鞋轻胜马，谁怕？一蓑烟雨任平生。',
@@ -90,7 +85,6 @@ export const FIGURES: HistoricalFigure[] = [
     name: '岳飞',
     dynasty: '南宋',
     role: '将军',
-    emoji: '🛡️',
     bio: '字鹏举，南宋抗金名将。出身贫寒，从军后屡建奇功，麾下岳家军军纪严明，"冻死不拆屋，饿死不掳掠"。郾城大捷后欲直捣黄龙，却被朝廷十二道金牌召回，终以"莫须有"罪名遇害。',
     quotes: [
       '还我河山！',

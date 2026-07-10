@@ -646,7 +646,7 @@ export default function DetailModal() {
     >
       {/* 桌面端：居中弹窗 | 移动端：底部抽屉 */}
       <div
-        className="bg-paper dark:bg-ink-900/90 rounded-t-2xl shadow-2xl w-full max-w-2xl overflow-hidden
+        className="bg-paper dark:bg-ink-900/90 rounded-t-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col
                    max-h-[90vh] md:max-h-[85vh] md:rounded-2xl
                    fixed bottom-0 left-0 right-0 md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2
                    animate-[drawerSlideUp_0.35s_ease-out_forwards] md:animate-slide-up"
@@ -698,7 +698,7 @@ export default function DetailModal() {
         </div>
 
         {/* Body */}
-        <div className="px-6 py-5 overflow-y-auto max-h-[calc(85vh-80px)]">
+        <div className="px-6 py-5 overflow-y-auto flex-1 min-h-0">
           {renderDetail()}
 
           {/* 相关推荐 */}

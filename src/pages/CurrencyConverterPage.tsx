@@ -52,7 +52,7 @@ export default function CurrencyConverterPage() {
           {/* 换算器卡片 */}
           <div className="converter-card p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg mb-8">
             <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100 mb-6">
-              📊 {t('currencyConverter.toolTitle')}
+              {t('currencyConverter.toolTitle')}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -96,12 +96,12 @@ export default function CurrencyConverterPage() {
                     onChange={(e) => setType(e.target.value as any)}
                     className="input-field w-full"
                   >
-                    <option value="rice">🍚 {t('currencyConverter.productRice')}</option>
-                    <option value="flour">🌾 {t('currencyConverter.productFlour')}</option>
-                    <option value="cloth">🧵 {t('currencyConverter.productCloth')}</option>
-                    <option value="meat">🥩 {t('currencyConverter.productMeat')}</option>
-                    <option value="wine">🍶 {t('currencyConverter.productWine')}</option>
-                    <option value="custom">🎯 {t('currencyConverter.productCustom')}</option>
+                    <option value="rice">粟米 {t('currencyConverter.productRice')}</option>
+                    <option value="flour">麦面 {t('currencyConverter.productFlour')}</option>
+                    <option value="cloth">布帛 {t('currencyConverter.productCloth')}</option>
+                    <option value="meat">肉食 {t('currencyConverter.productMeat')}</option>
+                    <option value="wine">酒醴 {t('currencyConverter.productWine')}</option>
+                    <option value="custom">自定义 {t('currencyConverter.productCustom')}</option>
                   </select>
                 </div>
 
@@ -118,7 +118,7 @@ export default function CurrencyConverterPage() {
                       className="input-field w-full"
                     />
                     <p className="text-xs text-ink-500 mt-1">
-                      ⚠️ {t('currencyConverter.customPriceHint')}
+                      注 {t('currencyConverter.customPriceHint')}
                     </p>
                   </div>
                 )}
@@ -158,7 +158,7 @@ export default function CurrencyConverterPage() {
 
                         <div className="p-3 rounded-lg bg-accent/10 border border-accent/30">
                           <div className="text-sm text-ink-700 dark:text-ink-300">
-                            💡 {t('currencyConverter.riceHint', { amount: result.amount, rice: result.riceAmount.toLocaleString() })}
+                            注 {t('currencyConverter.riceHint', { amount: result.amount, rice: result.riceAmount.toLocaleString() })}
                           </div>
                         </div>
                       </>
@@ -167,7 +167,7 @@ export default function CurrencyConverterPage() {
                     {type === 'flour' && (
                       <div className="p-3 rounded-lg bg-accent/10 border border-accent/30">
                         <div className="text-sm text-ink-700 dark:text-ink-300">
-                          💡 {t('currencyConverter.flourHint', { flour: result.flourAmount.toLocaleString(), num: Math.floor(result.flourAmount / 50) })}
+                          注 {t('currencyConverter.flourHint', { flour: result.flourAmount.toLocaleString(), num: Math.floor(result.flourAmount / 50) })}
                         </div>
                       </div>
                     )}
@@ -175,7 +175,7 @@ export default function CurrencyConverterPage() {
                     {type === 'cloth' && (
                       <div className="p-3 rounded-lg bg-accent/10 border border-accent/30">
                         <div className="text-sm text-ink-700 dark:text-ink-300">
-                          💡 {t('currencyConverter.clothHint', { cloth: result.clothAmount.toFixed(2), num: Math.floor(result.clothAmount) })}
+                          注 {t('currencyConverter.clothHint', { cloth: result.clothAmount.toFixed(2), num: Math.floor(result.clothAmount) })}
                         </div>
                       </div>
                     )}
@@ -183,7 +183,7 @@ export default function CurrencyConverterPage() {
                     {type === 'meat' && (
                       <div className="p-3 rounded-lg bg-accent/10 border border-accent/30">
                         <div className="text-sm text-ink-700 dark:text-ink-300">
-                          💡 {t('currencyConverter.meatHint', { meat: result.meatAmount.toFixed(2), num: Math.floor(result.meatAmount / 3) })}
+                          注 {t('currencyConverter.meatHint', { meat: result.meatAmount.toFixed(2), num: Math.floor(result.meatAmount / 3) })}
                         </div>
                       </div>
                     )}
@@ -191,7 +191,7 @@ export default function CurrencyConverterPage() {
                     {type === 'wine' && (
                       <div className="p-3 rounded-lg bg-accent/10 border border-accent/30">
                         <div className="text-sm text-ink-700 dark:text-ink-300">
-                          💡 {t('currencyConverter.wineHint', { wine: result.wineAmount.toFixed(2), num: Math.floor(result.wineAmount / 10) })}
+                          注 {t('currencyConverter.wineHint', { wine: result.wineAmount.toFixed(2), num: Math.floor(result.wineAmount / 10) })}
                         </div>
                       </div>
                     )}
@@ -210,7 +210,7 @@ export default function CurrencyConverterPage() {
                   </>
                 ) : (
                     <div className="p-8 rounded-xl bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700 text-center">
-                      <div className="text-4xl mb-2">⚠️</div>
+                      <div className="text-4xl mb-2">?</div>
                       <div className="text-ink-600 dark:text-ink-400">
                         {t('currencyConverter.inputInvalid')}
                       </div>
@@ -223,7 +223,7 @@ export default function CurrencyConverterPage() {
           {/* 历史价格对比表 */}
           <div className="price-table-card p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 shadow-lg mb-8">
             <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100 mb-6">
-              📈 {t('currencyConverter.priceCompareTitle')}
+              表 {t('currencyConverter.priceCompareTitle')}
             </h2>
 
             <div className="overflow-x-auto">
@@ -273,14 +273,14 @@ export default function CurrencyConverterPage() {
             </div>
 
             <div className="mt-4 text-xs text-ink-500">
-              ⚠️ {t('currencyConverter.priceNote')}
+              注 {t('currencyConverter.priceNote')}
             </div>
           </div>
 
           {/* 货币单位说明 */}
           <div className="info-card p-6 md:p-8 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-ink-50 dark:bg-ink-800">
             <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-100 mb-6">
-              📚 {t('currencyConverter.unitExplainTitle')}
+              释 {t('currencyConverter.unitExplainTitle')}
             </h2>
 
             <div className="space-y-4">

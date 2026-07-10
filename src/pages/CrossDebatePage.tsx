@@ -132,13 +132,13 @@ export default function CrossDebatePage() {
                   >
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
-                        <span className="text-2xl">{pro?.emoji || t('crossDebate.default_figure_emoji')}</span>
+                        <span className="text-sm font-bold text-accent">[正方]</span>
                         <span className="text-sm font-bold text-accent">{pro?.name || t('crossDebate.pro_side')}</span>
                       </div>
                       <span className="text-lg font-bold text-ink-400">{t('crossDebate.vs_label')}</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-2xl">{con?.emoji || t('crossDebate.default_figure_emoji')}</span>
                         <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{con?.name || t('crossDebate.con_side')}</span>
+                        <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">[反方]</span>
                       </div>
                     </div>
                     <div className="mt-2 text-lg font-bold text-ink-900 dark:text-ink-100 group-hover:text-accent transition-colors">
@@ -168,14 +168,14 @@ export default function CrossDebatePage() {
               {proFigure && conFigure && (
                 <div className="mt-3 flex items-center justify-center gap-6">
                   <div className="text-center">
-                    <div className="text-3xl mb-1">{proFigure.emoji}</div>
+                    <div className="text-sm font-bold text-accent">[正方]</div>
                     <div className="text-sm font-bold text-accent">{proFigure.name}</div>
                     <div className="text-xs text-ink-400">{topic.proSide.label}</div>
                   </div>
                   <div className="text-2xl text-ink-400 font-bold">{t('crossDebate.vs_label')}</div>
                   <div className="text-center">
-                    <div className="text-3xl mb-1">{conFigure.emoji}</div>
                     <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{conFigure.name}</div>
+                    <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">[反方]</div>
                     <div className="text-xs text-ink-400">{topic.conSide.label}</div>
                   </div>
                 </div>
@@ -191,7 +191,7 @@ export default function CrossDebatePage() {
                 {/* 正方 */}
                 <div className="p-4 bg-accent/5 dark:bg-accent/10 rounded-lg border-l-4 border-accent">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-lg">{proFigure?.emoji}</span>
+                    <span className="text-sm font-bold text-accent">[正方]</span>
                     <span className="font-bold text-accent">{proFigure?.name || t('crossDebate.pro_side')}</span>
                   </div>
                   <p className="text-ink-800 dark:text-ink-200 leading-relaxed">{r.proArgument}</p>
@@ -212,7 +212,7 @@ export default function CrossDebatePage() {
                 {/* 反方 */}
                 <div className="p-4 bg-indigo-500/5 dark:bg-indigo-700/10 rounded-lg border-l-4 border-indigo-500">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-lg">{conFigure?.emoji}</span>
+                    <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">[反方]</span>
                     <span className="font-bold text-indigo-600 dark:text-indigo-400">{conFigure?.name || t('crossDebate.con_side')}</span>
                   </div>
                   <p className="text-ink-800 dark:text-ink-200 leading-relaxed">{r.conArgument}</p>
@@ -236,7 +236,7 @@ export default function CrossDebatePage() {
             {/* Loading */}
             {loading && (
               <div className="text-center py-4">
-                <div className="inline-block animate-pulse text-2xl">{t('crossDebate.thinking_icon')}</div>
+                <div className="inline-block animate-pulse text-lg text-ink-500 font-bold tracking-widest">{t('crossDebate.thinking_icon')}</div>
                 <div className="text-sm text-ink-500 mt-1">{t('crossDebate.thinking')}</div>
               </div>
             )}
@@ -313,14 +313,14 @@ export default function CrossDebatePage() {
               </h3>
               <div className="flex items-center justify-center gap-8">
                 <div>
-                  <div className="text-2xl">{proFigure?.emoji}</div>
+                  <div className="text-sm font-bold text-accent">[正方]</div>
                   <div className="text-lg font-bold text-accent">{proFigure?.name}</div>
                   <div className="text-3xl font-bold text-accent">{proVotes}</div>
                 </div>
-                <div className="text-4xl text-ink-300">{t('crossDebate.thinking_icon')}</div>
+                <div className="text-4xl text-ink-300 font-bold tracking-widest">{t('crossDebate.thinking_icon')}</div>
                 <div>
-                  <div className="text-2xl">{conFigure?.emoji}</div>
-                  <div className="text-lg font-bold text-indigo-600 dark:text-indigo-400">{conFigure?.name}</div>
+                  <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{conFigure?.name}</div>
+                  <div className="text-sm font-bold text-indigo-600 dark:text-indigo-400">[反方]</div>
                   <div className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{conVotes}</div>
                 </div>
               </div>

@@ -12,11 +12,11 @@ import { useT } from '@/i18n/i18n';
 
 type Phase = 'select' | 'deploy' | 'result';
 
-const TERRAIN_LABELS: Record<string, { emoji: string; labelKey: string }> = {
-  river: { emoji: '水', labelKey: 'battleSandbag.terrain_river' },
-  mountain: { emoji: '山', labelKey: 'battleSandbag.terrain_mountain' },
-  plain: { emoji: '原', labelKey: 'battleSandbag.terrain_plain' },
-  city: { emoji: '🏯', labelKey: 'battleSandbag.terrain_city' },
+const TERRAIN_LABELS: Record<string, { labelKey: string }> = {
+  river: { labelKey: 'battleSandbag.terrain_river' },
+  mountain: { labelKey: 'battleSandbag.terrain_mountain' },
+  plain: { labelKey: 'battleSandbag.terrain_plain' },
+  city: { labelKey: 'battleSandbag.terrain_city' },
 };
 
 const OUTCOME_STYLES: Record<string, { bg: string; text: string; labelKey: string }> = {
@@ -70,19 +70,19 @@ export default function BattleSandbagPage() {
                     className="w-full p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700 hover:border-accent hover:shadow-lg transition-all text-left group"
                   >
                     <div className="flex items-center gap-3 mb-2">
-                      <span className="text-2xl">{b.emoji}</span>
+                      <span className="text-sm font-bold text-accent border border-accent px-2 py-0.5 rounded">战</span>
                       <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 group-hover:text-accent">
                         {b.name}
                       </h3>
                       <span className="text-sm text-ink-500">{b.yearDisplay} · {b.dynasty}</span>
                       <span className="text-xs px-2 py-0.5 rounded-full bg-ink-100 dark:bg-ink-800 text-ink-600">
-                        {terrain.emoji} {t(terrain.labelKey)}
+                        {t(terrain.labelKey)}
                       </span>
                     </div>
                     <p className="text-sm text-ink-600 dark:text-ink-400">{b.description}</p>
                     <div className="mt-2 flex gap-4 text-xs">
-                      <span className="text-green-600">🛡️ {b.redForce.name} ({b.redForce.commander})</span>
-                      <span className="text-red-600">战 {b.blueForce.name} ({b.blueForce.commander})</span>
+                      <span className="text-green-600">防 {b.redForce.name} ({b.redForce.commander})</span>
+                      <span className="text-red-600">攻 {b.blueForce.name} ({b.blueForce.commander})</span>
                     </div>
                   </button>
                 );
@@ -97,7 +97,7 @@ export default function BattleSandbagPage() {
             {/* 战场概况 */}
             <div className="p-5 bg-gradient-to-br from-accent/5 to-red-500/5 dark:from-accent/10 dark:to-red-700/10 rounded-xl border border-accent/20">
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-2xl">{battle.emoji}</span>
+                <span className="text-sm font-bold text-accent border border-accent px-2 py-0.5 rounded">战</span>
                 <h2 className="text-xl font-bold text-ink-900 dark:text-ink-100">{battle.name}</h2>
                 <span className="text-sm text-ink-500">{battle.yearDisplay} · {battle.dynasty}</span>
               </div>
@@ -109,7 +109,7 @@ export default function BattleSandbagPage() {
               {/* 红方 */}
               <div className="p-4 bg-green-500/10 dark:bg-green-700/10 rounded-lg border-l-4 border-green-500">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-lg font-bold text-green-700 dark:text-green-400">🛡️ {battle.redForce.name}</span>
+                  <span className="text-lg font-bold text-green-700 dark:text-green-400">防 {battle.redForce.name}</span>
                 </div>
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between"><span>{t('battleSandbag.commander')}</span><span className="font-bold">{battle.redForce.commander}</span></div>
@@ -153,7 +153,7 @@ export default function BattleSandbagPage() {
                     }`}
                   >
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-lg">{tactic.emoji}</span>
+                      <span className="font-bold text-accent border border-accent px-1.5 py-0.5 rounded text-xs">略</span>
                       <span className={`font-bold ${selectedTactic?.id === tactic.id ? 'text-white' : 'text-ink-900 dark:text-ink-100'}`}>
                         {tactic.label}
                       </span>
@@ -230,7 +230,7 @@ export default function BattleSandbagPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="p-3 bg-accent/10 rounded-lg">
                   <div className="text-xs text-accent font-bold mb-1">{t('battleSandbag.your_tactic')}</div>
-                  <div className="text-sm font-bold">{selectedTactic.emoji} {selectedTactic.label}</div>
+                  <div className="text-sm font-bold">{selectedTactic.label}</div>
                   <div className="text-xs text-ink-400">{selectedTactic.description}</div>
                   <div className="text-xs text-accent mt-1">{t('battleSandbag.result')}{t(OUTCOME_STYLES[result.outcome].labelKey)}</div>
                 </div>

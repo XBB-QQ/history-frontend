@@ -74,7 +74,7 @@ export default function TechTreePage() {
                   : 'border-ink-200 dark:border-ink-700 text-ink-600 dark:text-ink-400 hover:border-accent/50'
               }`}
             >
-              {style.icon} {style.label}
+              {style.label}
             </button>
           ))}
         </div>
@@ -103,10 +103,10 @@ export default function TechTreePage() {
                       style={{ borderColor: isSelected ? catStyle.color : undefined }}
                     >
                       {/* 重要性标记 */}
-                      <div className="absolute -top-2 -right-1 text-sm">{impStyle.icon}</div>
+                      <div className="absolute -top-2 -right-1 text-sm font-bold text-accent">重</div>
                       {/* 内容 */}
                       <div className="text-center">
-                        <span className="text-sm">{catStyle.icon}</span>
+                        <div className="text-sm font-bold text-accent">技</div>
                         <div className="font-bold text-ink-800 dark:text-ink-200 mt-1"
                           style={{ fontSize: `${impStyle.size * 0.6}px` }}>
                           {inv.name}
@@ -145,7 +145,7 @@ export default function TechTreePage() {
           <div className="mt-8 p-6 rounded-xl border-2 bg-ink-50/50 dark:bg-ink-800/50"
             style={{ borderColor: CATEGORY_STYLE[selected.category].color }}>
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-2xl">{CATEGORY_STYLE[selected.category].icon}</span>
+              <span className="text-2xl font-bold text-accent">技</span>
               <h2 className="text-xl font-serif font-bold text-ink-900 dark:text-ink-100">
                 {selected.name}
               </h2>
@@ -154,7 +154,7 @@ export default function TechTreePage() {
                 {CATEGORY_STYLE[selected.category].label}
               </span>
               <span className="px-2 py-1 rounded text-xs font-bold bg-accent/10 text-accent">
-                {IMPORTANCE_STYLE[selected.importance].icon} {IMPORTANCE_STYLE[selected.importance].label}
+                重 {IMPORTANCE_STYLE[selected.importance].label}
               </span>
             </div>
 
@@ -181,7 +181,7 @@ export default function TechTreePage() {
                         onClick={() => setSelectedNode(dep.id)}
                         className="px-3 py-1 rounded-lg text-xs font-bold bg-ink-100 dark:bg-ink-700 text-ink-600 dark:text-ink-400 hover:bg-accent/10 transition-colors"
                       >
-                        {CATEGORY_STYLE[dep.category].icon} {dep.name}
+                        <span className="text-sm font-bold text-accent">技</span> {dep.name}
                       </button>
                     ))}
                   </div>
@@ -199,7 +199,7 @@ export default function TechTreePage() {
                         onClick={() => setSelectedNode(dep.id)}
                         className="px-3 py-1 rounded-lg text-xs font-bold bg-ink-100 dark:bg-ink-700 text-ink-600 dark:text-ink-400 hover:bg-accent/10 transition-colors"
                       >
-                        {CATEGORY_STYLE[dep.category].icon} {dep.name}
+                        <span className="text-sm font-bold text-accent">技</span> {dep.name}
                       </button>
                     ))}
                   </div>

@@ -8,7 +8,7 @@ export interface HistoricalFigure {
   name: string;
   dynasty: string;
   role: string;
-  emoji: string;
+  emoji?: string;
   /** 人物简介 */
   bio: string;
   /** 代表作/名言 */
