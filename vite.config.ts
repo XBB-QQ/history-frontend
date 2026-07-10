@@ -4,9 +4,14 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
+  define: {
+    global: 'globalThis',
+  },
   optimizeDeps: {
-    rolldownOptions: {
-      // 替代旧的 esbuildOptions
+    esbuildOptions: {
+      banner: {
+        js: 'var global = globalThis;',
+      },
     },
   },
   resolve: {

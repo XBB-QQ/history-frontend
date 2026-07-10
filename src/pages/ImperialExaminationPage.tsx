@@ -118,7 +118,7 @@ export default function ImperialExaminationPage() {
                     </h3>
 
                     <div className="space-y-2 text-sm text-ink-600 dark:text-ink-400 mb-4">
-                      <div>🗓️ {paper.dynasty} · {paper.period}</div>
+                      <div>{paper.dynasty} · {paper.period}</div>
                       {paper.year && <div>{paper.year}</div>}
                       <div>{t('imperialExamination.duration_label', { duration: paper.duration })}</div>
                       <div>{t('imperialExamination.passing_rate_label', { rate: paper.passingRate })}</div>

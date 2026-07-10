@@ -501,20 +501,20 @@ export const EXAM_PAPERS: ExamPaper[] = [
 
 // 科目统计
 export const CATEGORY_STATS = {
-  '四书五经': { label: '四书五经', icon: '📖', count: 0 },
-  '历史': { label: '历史', icon: '📜', count: 0 },
-  '诗词': { label: '诗词', icon: '✒️', count: 0 },
-  '政治': { label: '政治', icon: '🏛️', count: 0 },
-  '文学': { label: '文学', icon: '📚', count: 0 },
-  '礼仪': { label: '礼仪', icon: '🎎', count: 0 },
-  '其他': { label: '其他', icon: '📝', count: 0 }
+  '四书五经': { label: '四书五经', icon: '', count: 0 },
+  '历史': { label: '历史', icon: '', count: 0 },
+  '诗词': { label: '诗词', icon: '', count: 0 },
+  '政治': { label: '政治', icon: '', count: 0 },
+  '文学': { label: '文学', icon: '', count: 0 },
+  '礼仪': { label: '礼仪', icon: '', count: 0 },
+  '其他': { label: '其他', icon: '', count: 0 }
 };
 
 // 按类型统计
 export const TYPE_STATS = {
-  'choice': { label: '选择题', icon: '🔘', count: 0 },
-  'fill': { label: '填空题', icon: '□', count: 0 },
-  'essay': { label: '论述题', icon: '📝', count: 0 },
-  'match': { label: '匹配题', icon: '🔗', count: 0 },
-  'true_false': { label: '判断题', icon: '✓✗', count: 0 }
+  'choice': { label: '选择题', icon: '', count: 0 },
+  'fill': { label: '填空题', icon: '', count: 0 },
+  'essay': { label: '论述题', icon: '', count: 0 },
+  'match': { label: '匹配题', icon: '', count: 0 },
+  'true_false': { label: '判断题', icon: '', count: 0 }
 };

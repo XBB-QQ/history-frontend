@@ -98,18 +98,18 @@ const TitleGeneratorPage = () => {
 
   const getCategoryIcon = (id: string) => {
     const icons: Record<string, string> = {
-      hui: '💝',
-      jing: '💫',
-      wen: '📜',
-      wu: '⚔️',
+      hui: '惠',
+      jing: '敬',
+      wen: '文',
+      wu: '武',
       xiao: '孝',
-      miao: '🌟',
-      lie: '🔥',
-      sheng: '👑',
-      kang: '🛡️',
-      xuan: '🏔️'
+      miao: '庙',
+      lie: '烈',
+      sheng: '圣',
+      kang: '康',
+      xuan: '宣'
     };
-    return icons[id] || '✨';
+    return icons[id] || '';
   };
 
   return (
@@ -161,7 +161,7 @@ const TitleGeneratorPage = () => {
             {generatedTitles.length > 0 && (
               <div className="space-y-3">
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  <span>✅</span> {t('titleGenerator.generated')}
+                  {t('titleGenerator.generated')}
                 </h3>
                 <div className="flex flex-wrap gap-3">
                   {generatedTitles.map((title, index) => (
@@ -320,7 +320,7 @@ const EraTemplateCard = ({ template, onClick }: EraTemplateCardProps) => {
       className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-all transform hover:scale-105"
       onClick={() => onClick(template.base)}
     >
-      <div className="text-4xl mb-3">📅</div>
+      <div className="text-4xl mb-3 font-bold text-purple-600 dark:text-purple-400">年</div>
       <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{template.base}</h3>
       <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
         {template.meaning}
@@ -372,8 +372,8 @@ const TitleDetailModal = ({ titleInfo, titleDetail, onClose }: TitleDetailModalP
           </button>
 
           <div className="flex items-center gap-4">
-            <div className="text-6xl">
-              {isPosthumous ? '👑' : '📅'}
+            <div className="text-6xl font-bold">
+              {isPosthumous ? '谥' : '年'}
             </div>
 
             <div>

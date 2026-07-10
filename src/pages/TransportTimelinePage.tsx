@@ -349,12 +349,12 @@ function RouteCard({ route, onClick }: { route: TransportRoute; onClick: () => v
       className="bg-white dark:bg-ink-900 rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition-all transform hover:scale-105 border border-ink-200 dark:border-ink-700"
       onClick={onClick}
     >
-      <div className="text-4xl mb-3">🛣️</div>
+      <div className="text-4xl mb-3 font-bold text-orange-600 dark:text-orange-400">路</div>
       <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-2">{route.name}</h3>
       <div className="flex items-center justify-between text-sm text-ink-600 dark:text-ink-400 mb-3">
-        <span>🏛️ {route.start}</span>
+        <span>{route.start}</span>
         <span>→</span>
-        <span>🏛️ {route.end}</span>
+        <span>{route.end}</span>
       </div>
       <div className="flex flex-wrap gap-2 mb-3">
         {route.keyStops.slice(0, 3).map(stop => (
@@ -365,7 +365,7 @@ function RouteCard({ route, onClick }: { route: TransportRoute; onClick: () => v
       </div>
       <p className="text-sm text-ink-600 dark:text-ink-400 line-clamp-2">{route.description}</p>
       <div className="mt-3 pt-3 border-t border-ink-200 dark:border-ink-700">
-        <span className="text-xs text-ink-500">⏰ {route.timeline}</span>
+        <span className="text-xs text-ink-500">{route.timeline}</span>
       </div>
     </div>
   );
@@ -388,7 +388,7 @@ function EraTimelineCard({ era, isEven, onClick }: {
           className="bg-white dark:bg-ink-900 rounded-xl shadow-lg p-6 hover:shadow-xl transition-all cursor-pointer transform hover:scale-105 border border-ink-200 dark:border-ink-700"
           onClick={onClick}
         >
-          <div className="text-3xl mb-3">🚗</div>
+          <div className="text-3xl mb-3 font-bold text-orange-600 dark:text-orange-400">行</div>
           <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100 mb-2">{era.dynasty}</h3>
           <p className="text-sm text-ink-600 dark:text-ink-400 mb-3">{era.era}</p>
           <div className="space-y-2">
@@ -437,7 +437,7 @@ function TransportDetailModal({ data, onClose }: {
         <div className="bg-gradient-to-r from-orange-500 to-amber-500 p-8 rounded-t-3xl">
           <button onClick={onClose} className="absolute top-4 right-4 text-white/80 hover:text-white text-3xl">✕</button>
           <div className="flex items-center gap-4">
-            <div className="text-6xl">{isRoute ? '🛣️' : '🚗'}</div>
+            <div className="text-6xl font-bold">{isRoute ? '路' : '行'}</div>
             <div>
               <h2 className="text-4xl font-bold text-white mb-2">{(item as TransportRoute).name || (item as TransportEra).dynasty}</h2>
               <p className="text-white/90">{isRoute ? t('transportTimeline.route_card_title') : t('transportTimeline.era_card_title')}</p>
