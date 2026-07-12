@@ -271,4 +271,6 @@ export const DYNASTY_SOUNDSCAPES: DynastySoundscape[] = [
   { dynasty: 'yuan', name: '元', emoji: '🐎', description: '草原风啸，铁骑铮铮', sounds: ['drum', 'wind'] },
   { dynasty: 'ming', name: '明', emoji: '🏯', description: '钟鼓楼声，市井烟火', sounds: ['bell', 'drum', 'market'] },
   { dynasty: 'qing', name: '清', emoji: '🐉', description: '宫廷雅乐，盛世余晖', sounds: ['guqin', 'bell'] },
+  { dynasty: 'nan-bei-chao', name: '南北朝', emoji: '🕯️', description: '佛号梵音，石窟造像', sounds: ['guqin', 'bell'], scale: '羽' },
+  { dynasty: 'wu-dai-shi-guo', name: '五代十国', emoji: '⚔️', description: '烽火连天，词韵初成', sounds: ['drum', 'guqin'], scale: '商' },
 ];

@@ -98,6 +98,25 @@ export const DYNASTY_TERRITORIES: DynastyTerritory[] = [
     ],
   },
   {
+    id: 'nan-bei-chao',
+    name: '南北朝',
+    emoji: '',
+    startYear: 420,
+    endYear: 589,
+    yearDisplay: '420-589',
+    bounds: { north: 42, south: 20, east: 122, west: 100 },
+    color: '#a0522d',
+    description: '南朝宋齐梁陈与北朝北魏对峙，孝文帝汉化改革促进民族融合，佛教石窟艺术鼎盛。',
+    areaEstimate: 280,
+    capitals: ['建康', '平城', '洛阳'],
+    territoryEvents: [
+      { year: 420, title: '刘裕代晋', type: 'stable', description: '南朝宋建立，南北对峙格局形成' },
+      { year: 439, title: '北魏统一北方', type: 'expand', description: '结束十六国割据，北方统一' },
+      { year: 493, title: '孝文帝迁都洛阳', type: 'stable', description: '推行汉化改革，鲜卑南迁' },
+      { year: 534, title: '北魏分裂', type: 'shrink', description: '分裂为东魏西魏，北方再陷对峙' },
+    ],
+  },
+  {
     id: 'tang',
     name: '唐',
     emoji: '🏛️',
@@ -212,5 +231,5 @@ export function getTerritoryAtYear(year: number): DynastyTerritory[] {
 
 /** 年份列表（时间轴关键节点） */
 export const TIMELINE_YEARS = [
-  -221, -138, 8, 25, 220, 618, 630, 755, 960, 1127, 1279, 1368, 1449, 1644, 1840, 1912
+  -221, -138, 8, 25, 220, 420, 589, 618, 630, 755, 907, 960, 1127, 1279, 1368, 1449, 1644, 1840, 1912
 ];

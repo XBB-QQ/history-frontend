@@ -126,6 +126,24 @@
     "relatedPersons": ["wang-xi-zhi", "gu-kaizhi"]
   },
   {
+    "id": "nan-bei-chao",
+    "name": "南北朝",
+    "period": "420 — 589",
+    "periodStart": 420,
+    "periodEnd": 589,
+    "periodPrecision": "exact",
+    "founder": "刘裕（南朝宋）/ 拓跋珪（北魏）",
+    "capital": "建康（南朝）/ 平城、洛阳（北朝）",
+    "duration": "169年",
+    "durationYears": 169,
+    "highlights": "民族大融合、孝文帝汉化改革、佛教兴盛、云冈龙门石窟、魏碑书法",
+    "description": "东晋灭亡后南方经历宋齐梁陈四朝更迭，北方由北魏统一后分裂为东西魏又演变为北齐北周。南朝文化繁荣北朝民族融合，北魏孝文帝推行汉化改革促进鲜卑等北方民族与汉族融合。佛教兴盛云冈石窟龙门石窟举世闻名，魏碑书法刚劲有力影响深远。",
+    "fallReason": "隋文帝杨坚代北周灭陈统一全国",
+    "legacy": "民族大融合为隋唐盛世奠定基础，佛教文化和石窟艺术影响深远",
+    "relatedEvents": ["bei-wei-huaibei"],
+    "relatedPersons": ["hua-mulan", "zu-chongzhi"]
+  },
+  {
     "id": "sui",
     "name": "隋",
     "period": "581 — 618",
@@ -140,8 +158,8 @@
     "description": "杨坚结束近四百年分裂局面建立隋朝，589年灭陈统一全国。创立三省六部制和科举制度，为后世沿用千年。隋炀帝开通大运河连接五大水系。",
     "fallReason": "隋炀帝暴政，农民起义爆发",
     "legacy": "科举制影响中国选官制度1300年，大运河千年受益",
-    "relatedEvents": ["sui-unify", "sui-daqiao", "bei-wei-huaibei"],
-    "relatedPersons": ["zu-chongzhi"]
+    "relatedEvents": ["sui-unify", "sui-daqiao"],
+    "relatedPersons": []
   },
   {
     "id": "tang",
@@ -160,6 +178,24 @@
     "legacy": "唐诗、长安文化成为中华文明最高峰象征",
     "relatedEvents": ["tang-dynasty", "zhenguan-zhi", "kai-yuan-sheng-shi", "an-shi"],
     "relatedPersons": ["tang-taizong", "wu-zetian", "libai", "dufu", "wu-daozi", "yan-li-ben", "liu-gongquan"]
+  },
+  {
+    "id": "wu-dai-shi-guo",
+    "name": "五代十国",
+    "period": "907 — 960",
+    "periodStart": 907,
+    "periodEnd": 960,
+    "periodPrecision": "exact",
+    "founder": "后梁朱温",
+    "capital": "开封、洛阳（五代）/ 各国都城",
+    "duration": "53年",
+    "durationYears": 53,
+    "highlights": "军阀割据、政权更迭、十国并立、南方经济开发、词的兴起",
+    "description": "唐朝灭亡后中原先后经历后梁后唐后晋后汉后周五个短命王朝，南方及山西存在前蜀后蜀吴南唐吴越等十国割据政权。战乱频繁但南方经济文化持续发展，南唐词学兴盛。后周世宗柴荣励精图治为统一奠定基础。石敬瑭割让燕云十六州使中原失去北方屏障。",
+    "fallReason": "赵匡胤陈桥兵变代后周建宋朝，随后统一十国",
+    "legacy": "促成经济重心南移，词的兴起为宋词繁荣奠定基础",
+    "relatedEvents": ["shi-jing-bing-bian", "chen-qiao-bian", "huang-chao"],
+    "relatedPersons": []
   },
   {
     "id": "song",

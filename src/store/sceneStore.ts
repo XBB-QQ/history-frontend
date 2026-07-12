@@ -8,6 +8,7 @@ import type { CulturalScene, SceneId, ScenePreference } from '@/types/scene';
 import { SCENE_CONFIGS, DEFAULT_SCENE } from '@/data/themes/scenes';
 import { loadSceneFonts } from '@/utils/fontLoader';
 import { getSceneByDynasty } from '@/data/themes/dynastySceneMap';
+import { startAmbient, stopAmbient } from '@/features/ambientSoundPlayer';
 
 const STORAGE_KEY = 'history-museum-scene';
 
@@ -101,6 +102,11 @@ export const useSceneStore = create<SceneStore>((set, get) => ({
       previousScene: null, // 手动切换清空 previousScene
     });
 
+    // 如果音效开启，切换到新场景的音效
+    if (get().ambientSound) {
+      startAmbient(id);
+    }
+
     // 持久化
     const pref: ScenePreference = {
       current: id,
@@ -159,6 +165,11 @@ export const useSceneStore = create<SceneStore>((set, get) => ({
   toggleAmbient: () => {
     const next = !get().ambientSound;
     set({ ambientSound: next });
+    if (next) {
+      startAmbient(get().currentScene);
+    } else {
+      stopAmbient();
+    }
     const pref = readPreference();
     if (pref) {
       pref.ambientSound = next;

@@ -40,6 +40,25 @@ export const DYNASTY_FOODS: DynastyFood[] = [
     ],
   },
   {
+    dynastyId: 'nan-bei-chao',
+    dynastyName: '南北朝',
+    icon: '🥘',
+    description: '南北朝饮食胡汉交融，北方胡食盛行酪浆羊肉，南方保留稻鱼传统，《齐民要术》成书系统总结烹饪技法',
+    representativeDish: {
+      name: '胡饼羊肉',
+      ingredients: ['面粉', '芝麻', '羊肉', '酪浆'],
+      description: '北方胡食代表，烤饼夹羊肉佐以发酵酪浆，胡汉饮食融合的典型',
+      historicalNote: '《齐民要术》详细记载了胡饼做法和酪浆制作工艺。北魏贾思勰系统总结了北方农牧交汇的饮食体系。',
+      icon: '🍖',
+    },
+    dishes: [
+      { name: '胡饼羊肉', ingredients: ['面粉', '羊肉', '酪浆'], description: '胡汉融合烤饼夹肉', historicalNote: '《齐民要术》记载的胡饼工艺', icon: '🍖' },
+      { name: '酪浆', ingredients: ['牛羊乳', '发酵'], description: '北方游牧民族发酵乳制品', historicalNote: '北朝酪浆盛行，南朝人初饮不惯', icon: '🥛' },
+      { name: '脍鱼', ingredients: ['鲤鱼肉', '醋', '姜'], description: '南方生鱼片，切成薄片蘸食', historicalNote: '南朝文人雅集必备，"脍炙人口"出处', icon: '🐟' },
+      { name: '菜羹', ingredients: ['时蔬', '稻米', '盐'], description: '南方稻作区蔬菜浓羹', historicalNote: '南朝寺院素斋发展出的清淡饮食', icon: '🥬' },
+    ],
+  },
+  {
     dynastyId: 'tang',
     dynastyName: '唐朝',
     icon: '🍵',
@@ -56,6 +75,25 @@ export const DYNASTY_FOODS: DynastyFood[] = [
       { name: '茶汤', ingredients: ['茶叶', '盐', '姜', '葱'], description: '加盐姜葱煮茶，唐代主流饮法', historicalNote: '陆羽《茶经》前，唐人喝茶加盐姜葱', icon: '🍵' },
       { name: '毕罗', ingredients: ['面粉', '馅料'], description: '唐代馅饼，类似现代馅饼', historicalNote: '韩愈诗"毕罗馅如雪"，唐代特色面食', icon: '🥧' },
       { name: '酥酪', ingredients: ['牛奶', '发酵'], description: '唐代奶酪/酸奶', historicalNote: '唐代已有成熟的奶制品加工技术', icon: '🧈' },
+    ],
+  },
+  {
+    dynastyId: 'wu-dai-shi-guo',
+    dynastyName: '五代十国',
+    icon: '🦆',
+    description: '五代十国战乱频繁但南方经济繁荣，南唐宫廷菜精致典雅，茶文化兴起，南方饮食体系持续发展',
+    representativeDish: {
+      name: '金陵鸭馔',
+      ingredients: ['鸭肉', '姜', '酱', '酒'],
+      description: '南唐金陵宫廷名菜，以鸭为主料精心烹制，开南京鸭肴先河',
+      historicalNote: '南唐宫廷饮食精致，金陵（南京）鸭馔闻名。后蜀花蕊夫人亦有饮食记载。五代时期南方十国偏安一隅，饮食文化反而繁荣。',
+      icon: '🦆',
+    },
+    dishes: [
+      { name: '金陵鸭馔', ingredients: ['鸭肉', '姜', '酱'], description: '南唐宫廷鸭肴', historicalNote: '南京食鸭传统可追溯至南唐宫廷', icon: '🦆' },
+      { name: '蟹黄汤包', ingredients: ['蟹黄', '面粉', '猪肉'], description: '江南精致面点', historicalNote: '五代南方市镇繁荣催生的精细面点', icon: '🥟' },
+      { name: '茶宴', ingredients: ['茶叶', '糕点', '果品'], description: '南唐文人茶会', historicalNote: '南唐茶文化兴盛，开宋代点茶先河', icon: '🍵' },
+      { name: '果脯', ingredients: ['鲜果', '蜂蜜', '糖'], description: '蜜饯果脯', historicalNote: '南方果品丰富，蜜饯工艺成熟', icon: '🍇' },
     ],
   },
   {

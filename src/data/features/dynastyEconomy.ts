@@ -57,6 +57,30 @@ export interface SandbagOption {
 
 export const DYNASTY_ECONOMIES: DynastyEconomyTemplate[] = [
   {
+    id: 'nan-bei-chao',
+    name: '南北朝',
+    emoji: '🕯️',
+    period: '420-589',
+    initialTreasury: 300,
+    initialMorale: 55,
+    initialDefense: 45,
+    initialCulture: 70,
+    populationBase: 3000,
+    incomePerTurn: 80,
+    events: [
+      { turn: 2, title: '孝文帝汉化改革', description: '北魏孝文帝推行全面汉化改革，迁都洛阳，改姓易服，促进民族融合但触动鲜卑贵族利益', effects: { morale: -10, defense: -10, culture: 15 }, options: [
+        { label: '全面汉化', description: '推行汉化政策，促进民族融合', effects: { treasury: -50, morale: 5, defense: -5, culture: 20 } },
+        { label: '维持鲜卑旧制', description: '保留鲜卑传统，稳定但错过融合机遇', effects: { treasury: -10, morale: -5, defense: 5, culture: -10 } },
+      ]},
+      { turn: 4, title: '侯景之乱', description: '侯景叛乱攻破建康，南朝经济文化遭受毁灭性打击', effects: { treasury: -100, morale: -30, defense: -20, population: -800, culture: -15 } },
+      { turn: 6, title: '北方六镇起义', description: '北魏六镇戍卒起义，北方陷入混乱，最终导致东西魏分裂', effects: { treasury: -80, morale: -15, defense: -25, population: -500 }, options: [
+        { label: '调兵镇压', description: '集中兵力镇压起义', effects: { treasury: -60, morale: 5, defense: 10 } },
+        { label: '招抚安抚', description: '招降起义军，缓和矛盾', effects: { treasury: -30, morale: 10, defense: -5, culture: 5 } },
+      ]},
+    ],
+    historicalOutcome: '南北朝对峙近170年，南朝因侯景之乱走向衰亡，北朝因六镇起义分裂为东西魏。最终北周武帝灭佛积蓄国力，杨坚代周建隋，589年灭陈统一全国，结束了近四百年的分裂局面。',
+  },
+  {
     id: 'tang',
     name: '唐朝',
     emoji: '🏛️',
@@ -79,6 +103,30 @@ export const DYNASTY_ECONOMIES: DynastyEconomyTemplate[] = [
       { turn: 7, title: '黄巢起义', description: '黄巢率农民军攻入长安，唐朝根基动摇', effects: { treasury: -100, morale: -25, defense: -20, population: -1000 } },
     ],
     historicalOutcome: '唐朝因安史之乱后藩镇割据、宦官专权，最终在907年被朱温篡位灭亡。从盛世到灭亡，核心转折点是未能有效处理安禄山叛乱后的权力重组。',
+  },
+  {
+    id: 'wu-dai-shi-guo',
+    name: '五代十国',
+    emoji: '⚔️',
+    period: '907-960',
+    initialTreasury: 250,
+    initialMorale: 40,
+    initialDefense: 35,
+    initialCulture: 50,
+    populationBase: 2500,
+    incomePerTurn: 70,
+    events: [
+      { turn: 2, title: '石敬瑭割燕云十六州', description: '后晋石敬瑭为换取契丹支持，割让燕云十六州，自称"儿皇帝"，中原失去北方屏障', effects: { morale: -20, defense: -30, culture: -5 }, options: [
+        { label: '称臣求援', description: '向契丹称臣，换取军事支持', effects: { treasury: 50, morale: -25, defense: -20, culture: -10 } },
+        { label: '独立抵抗', description: '拒绝割地，独立对抗外敌', effects: { treasury: -80, morale: 15, defense: -10, population: -300 } },
+      ]},
+      { turn: 4, title: '后周世宗柴荣改革', description: '后周世宗柴荣推行政治军事改革，南征北战，为统一奠定基础', effects: { treasury: 30, morale: 10, defense: 15, culture: 5 }, options: [
+        { label: '励精图治', description: '全面推行改革，强化中央集权', effects: { treasury: -20, morale: 15, defense: 20, culture: 10 } },
+        { label: '维持现状', description: '谨慎行事，不冒进改革', effects: { treasury: 20, morale: 0, defense: 5 } },
+      ]},
+      { turn: 6, title: '南唐词学兴盛', description: '南唐偏安江南，李煜父子词学兴盛，文化繁荣但军事衰弱', effects: { treasury: 20, culture: 25, defense: -10 } },
+    ],
+    historicalOutcome: '五代十国战乱频繁，中原五十三年换五个王朝。后周世宗柴荣励精图治为统一奠定基础，可惜英年早逝。960年赵匡胤陈桥兵变代后周建宋，随后十年内统一十国，结束了五代十国的分裂局面。石敬瑭割让的燕云十六州成为中原王朝长达四百年的北方隐患。',
   },
   {
     id: 'song',

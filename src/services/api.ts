@@ -288,6 +288,51 @@ function adaptDynasty(dto: BackendDynastyDTO): FrontendDynasty {
   };
 }
 
+/** 将本地 dynasties.json 数据适配为 FrontendDynasty 格式 */
+function adaptLocalDynasty(d: {
+  id: string;
+  name: string;
+  period: string;
+  periodStart?: number | null;
+  periodEnd?: number | null;
+  periodPrecision?: string;
+  founder?: string;
+  capital?: string;
+  duration?: string;
+  durationYears?: number | null;
+  highlights?: string;
+  description?: string;
+  fallReason?: string;
+  legacy?: string;
+  relatedEvents?: string[];
+  relatedPersons?: string[];
+}): FrontendDynasty {
+  return {
+    id: d.id,
+    name: d.name,
+    period: d.period,
+    periodStart: d.periodStart ?? null,
+    periodEnd: d.periodEnd ?? null,
+    periodPrecision: d.periodPrecision || 'exact',
+    founder: d.founder || '',
+    capital: d.capital || '',
+    duration: d.duration || '',
+    durationYears: d.durationYears ?? null,
+    highlights: d.highlights || '',
+    description: d.description || '',
+    fallReason: d.fallReason || '',
+    legacy: d.legacy || '',
+    populationPeak: '',
+    gdpEstimate: '',
+    majorTradeRoutes: '',
+    culturalHighlights: '',
+    relatedEvents: d.relatedEvents || [],
+    relatedPersons: d.relatedPersons || [],
+    source: '',
+    crawlDate: '',
+  };
+}
+
 function adaptKnowledge(dto: BackendKnowledgeDTO): FrontendKnowledge {
   return {
     id: String(dto.id),
@@ -370,12 +415,28 @@ export async function searchEvents(query: string): Promise<FrontendEvent[]> {
 
 /**
  * 获取所有朝代
+ * 后端数据缺失的朝代（如南北朝、五代十国）用本地 dynasties.json 补充
  */
 export async function fetchDynasties(): Promise<FrontendDynasty[]> {
-  const data = await fetchJSON<{ content: BackendDynastyDTO[]; totalElements: number }>(
-    `${BASE_URL}/dynasties?page=0&size=50`
-  );
-  return data.content.map(adaptDynasty);
+  let backendDynasties: FrontendDynasty[] = [];
+  try {
+    const data = await fetchJSON<{ content: BackendDynastyDTO[]; totalElements: number }>(
+      `${BASE_URL}/dynasties?page=0&size=50`
+    );
+    backendDynasties = data.content.map(adaptDynasty);
+  } catch {
+    // 后端不可用时回退到本地数据
+  }
+
+  // 用本地数据补充后端缺失的朝代
+  const backendNames = new Set(backendDynasties.map(d => d.name));
+  const { default: localDynasties } = await import('@/data/core/dynasties.json');
+  const missingDynasties = (localDynasties as any[])
+    .filter(d => !backendNames.has(d.name))
+    .map(adaptLocalDynasty);
+
+  const all = [...backendDynasties, ...missingDynasties];
+  return all.sort((a, b) => (a.periodStart ?? 0) - (b.periodStart ?? 0));
 }
 
 /**

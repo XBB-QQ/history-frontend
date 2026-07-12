@@ -30,6 +30,9 @@ export const DYNASTY_SCENE_MAP: Record<string, SceneId> = {
   '隋': 'silk-scroll',
   '唐': 'silk-scroll',
 
+  // 五代十国 — 战乱更迭
+  '五代十国': 'silk-scroll',
+
   // 宋元 — 瓷器巅峰
   '宋': 'porcelain',
   '北宋': 'porcelain',

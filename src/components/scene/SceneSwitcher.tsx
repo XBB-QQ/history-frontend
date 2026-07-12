@@ -98,7 +98,11 @@ export default function SceneSwitcher() {
                       : 'hover:bg-ink-50 dark:hover:bg-ink-800 border-l-4 border-transparent'
                   }`}
                 >
-                  <span className="text-2xl flex-shrink-0" aria-hidden>
+                  <span
+                    className="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-lg font-bold"
+                    style={{ backgroundColor: scene.theme['--color-accent'], color: scene.theme['--color-paper'] }}
+                    aria-hidden
+                  >
                     {scene.icon}
                   </span>
                   <div className="flex-1 min-w-0">
@@ -129,7 +133,7 @@ export default function SceneSwitcher() {
           <div className="border-t border-ink-200 dark:border-ink-700">
             <label className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors">
               <span className="text-sm text-ink-700 dark:text-ink-300 flex items-center gap-2">
-                <span aria-hidden>{ambientSound ? '音' : '🔇'}</span>
+                <span aria-hidden>{ambientSound ? '音' : '寂'}</span>
                 <span>氛围音效</span>
               </span>
               <input

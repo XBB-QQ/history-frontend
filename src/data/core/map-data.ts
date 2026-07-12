@@ -293,11 +293,25 @@ export const dynastyMapData: DynastyMapData[] = [
     capitalName: '洛阳',
   },
   {
+    dynastyName: '南北朝',
+    regionIds: ['jiangsu', 'anhui', 'hubei', 'hunan', 'sichuan', 'zhejiang', 'fujian', 'guangdong', 'shaanxi', 'gansu', 'henan', 'shanxi', 'hebei', 'shandong', 'qinghai'],
+    period: '420年—589年',
+    capitalPos: [118, 32],
+    capitalName: '建康/平城/洛阳',
+  },
+  {
     dynastyName: '唐',
     regionIds: ['shaanxi', 'gansu', 'xinjiang', 'henan', 'shanxi', 'hebei', 'shandong', 'sichuan', 'hubei', 'hunan', 'jiangxi', 'fujian', 'guangdong', 'jiangsu', 'anhui', 'zhejiang'],
     period: '618年—907年',
     capitalPos: [109, 34],
     capitalName: '长安',
+  },
+  {
+    dynastyName: '五代十国',
+    regionIds: ['henan', 'shanxi', 'hebei', 'shandong', 'shaanxi', 'jiangsu', 'anhui', 'hubei', 'hunan', 'sichuan', 'zhejiang', 'fujian', 'guangdong', 'guangxi', 'jiangxi'],
+    period: '907年—960年',
+    capitalPos: [114, 34],
+    capitalName: '开封',
   },
   {
     dynastyName: '宋',
