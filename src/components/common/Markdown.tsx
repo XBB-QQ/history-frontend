@@ -56,21 +56,22 @@ const components: Components = {
     </blockquote>
   ),
   code: ({ className, children, ...props }) => {
-    const isInline = !className;
-    if (isInline) {
-      return (
-        <code className="px-1.5 py-0.5 rounded bg-ink-100 dark:bg-ink-800 text-accent text-sm font-mono" {...props}>
-          {children}
-        </code>
-      );
+    // 块级代码（有 language-xxx className）由 pre 包裹，不加额外样式
+    if (className) {
+      return <code className={className} {...props}>{children}</code>;
     }
+    // 行内代码
     return (
-      <code className={`block my-2 p-3 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-800 dark:text-ink-200 text-sm font-mono overflow-x-auto ${className || ''}`} {...props}>
+      <code className="px-1.5 py-0.5 rounded bg-ink-100 dark:bg-ink-800 text-accent text-sm font-mono" {...props}>
         {children}
       </code>
     );
   },
-  pre: ({ children }) => <pre className="my-2">{children}</pre>,
+  pre: ({ children }) => (
+    <pre className="my-2 p-3 rounded-lg bg-ink-100 dark:bg-ink-800 overflow-x-auto text-sm font-mono text-ink-800 dark:text-ink-200">
+      {children}
+    </pre>
+  ),
   a: ({ children, href }) => (
     <a href={href} target="_blank" rel="noopener noreferrer" className="text-accent underline hover:text-amber-600">
       {children}
