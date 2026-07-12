@@ -2,6 +2,10 @@
  * 全局知识图谱数据构造
  * 基于现有 data/ 目录下的 JSON 数据聚合
  * @see history-museum/design/000-future-roadmap.md §方向六 §6.4
+ *
+ * 数据来源：history-museum/data/*.json（唯一源）
+ * 通过 history-museum/scripts/sync-to-frontend.ps1 同步到本目录
+ * 不要直接修改本目录的 JSON，应在 museum/data/ 修改后同步
  */
 
 import dynastiesData from '@/data/core/dynasties.json';
