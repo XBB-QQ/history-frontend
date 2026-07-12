@@ -1,20 +1,62 @@
-import { useState, useCallback } from 'react';
-import { CHAR_EVOLUTIONS, getCharEvolution } from '@/data/features/charEvolution';
+import { useState, useEffect, useCallback } from 'react';
+import { CHAR_EVOLUTIONS } from '@/data/features/charEvolution';
+import { fetchCharEvolutions } from '@/services/api';
 import { useT } from '@/i18n/i18n';
+
+/** 统一的汉字演变数据类型（兼容本地数据和后端 API 响应） */
+type CharData = {
+  char: string;
+  meaning: string;
+  stages: Array<{ name: string; era: string; description: string; svgPath: string }>;
+};
+
+/** 汉字分类映射（UI 层概念，不进后端数据） */
+const CHAR_CATEGORIES = ['全部', '自然', '动物', '器物', '人体', '植物'] as const;
+
+const CHAR_CATEGORY_MAP: Record<string, string> = {
+  '日': '自然', '月': '自然', '火': '自然', '水': '自然', '山': '自然',
+  '石': '自然', '田': '自然', '雨': '自然', '云': '自然', '天': '自然',
+  '马': '动物', '牛': '动物', '羊': '动物', '鸟': '动物', '鱼': '动物',
+  '龙': '动物', '虎': '动物',
+  '王': '器物', '车': '器物', '舟': '器物', '门': '器物', '弓': '器物',
+  '矢': '器物', '刀': '器物',
+  '人': '人体', '目': '人体', '手': '人体', '心': '人体',
+  '木': '植物', '禾': '植物',
+};
 
 export default function CharEvolutionPage() {
   const t = useT();
+  const [allChars, setAllChars] = useState<CharData[]>(CHAR_EVOLUTIONS as CharData[]);
   const [selectedChar, setSelectedChar] = useState<string>('王');
   const [activeStage, setActiveStage] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [notFound, setNotFound] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState<string>('全部');
 
-  const evolution = getCharEvolution(selectedChar);
+  useEffect(() => {
+    fetchCharEvolutions()
+      .then((data) => {
+        if (data.length > 0) setAllChars(data as CharData[]);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.warn('后端 char-evolution API 不可用，使用本地数据', err);
+        setLoading(false);
+      });
+  }, []);
+
+  const evolution = allChars.find((e) => e.char === selectedChar);
+  const filteredChars = activeCategory === '全部'
+    ? allChars
+    : allChars.filter((e) => CHAR_CATEGORY_MAP[e.char] === activeCategory);
 
   const startAnimation = useCallback(() => {
     setIsAnimating(true);
     setActiveStage(0);
     const timer = setInterval(() => {
-      setActiveStage(prev => {
+      setActiveStage((prev) => {
         if (prev >= (evolution?.stages.length ?? 1) - 1) {
           clearInterval(timer);
           setIsAnimating(false);
@@ -25,6 +67,20 @@ export default function CharEvolutionPage() {
     }, 1200);
   }, [evolution]);
 
+  const handleSearch = useCallback(() => {
+    const ch = inputValue.trim();
+    if (!ch) return;
+    const found = allChars.find((e) => e.char === ch);
+    if (found) {
+      setSelectedChar(ch);
+      setActiveStage(0);
+      setIsAnimating(false);
+      setNotFound(false);
+    } else {
+      setNotFound(true);
+    }
+  }, [inputValue, allChars]);
+
   if (!evolution) return null;
   const currentStage = evolution.stages[activeStage];
 
@@ -32,7 +88,7 @@ export default function CharEvolutionPage() {
     <div className="min-h-screen bg-gradient-to-b from-rice to-stone-100 dark:from-ink-950 dark:to-ink-900 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* 标题 */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif">
             {t('charEvolution.title')}
           </h1>
@@ -41,13 +97,63 @@ export default function CharEvolutionPage() {
           </p>
         </div>
 
-        {/* 汉字选择 */}
-        <div className="flex gap-3 mb-8 justify-center">
-          {CHAR_EVOLUTIONS.map(e => (
+        {/* 输入框 */}
+        <div className="flex gap-2 mb-4 justify-center">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+            placeholder="输入汉字查询演变（如：马、龙、鱼）"
+            maxLength={1}
+            className="w-64 px-4 py-2 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 text-ink-900 dark:text-ink-100 text-sm focus:outline-none focus:border-accent"
+          />
+          <button
+            onClick={handleSearch}
+            className="px-5 py-2 rounded-lg bg-accent text-white text-sm font-bold hover:shadow-lg transition-all"
+          >
+            查询
+          </button>
+        </div>
+
+        {/* 未收录提示 */}
+        {notFound && (
+          <div className="mb-4 p-3 rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 text-sm text-center">
+            未收录「{inputValue.trim()}」的演变数据，当前共收录 {allChars.length} 个汉字
+          </div>
+        )}
+
+        {/* loading 提示 */}
+        {loading && (
+          <div className="mb-4 text-center text-sm text-ink-400">
+            正在从后端加载汉字数据...
+          </div>
+        )}
+
+        {/* 分类筛选 tab */}
+        <div className="flex flex-wrap gap-2 mb-4 justify-center">
+          {CHAR_CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                activeCategory === cat
+                  ? 'bg-accent text-white'
+                  : 'bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-400 hover:bg-ink-200 dark:hover:bg-ink-700'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* 汉字选择 — 可换行的按钮网格 */}
+        <div className="flex flex-wrap gap-2 mb-8 justify-center max-h-48 overflow-y-auto p-2">
+          {filteredChars.map((e) => (
             <button
               key={e.char}
-              onClick={() => { setSelectedChar(e.char); setActiveStage(0); setIsAnimating(false); }}
-              className={`w-14 h-14 rounded-xl text-2xl font-serif font-bold transition-all border-2 ${
+              onClick={() => { setSelectedChar(e.char); setActiveStage(0); setIsAnimating(false); setNotFound(false); }}
+              className={`w-12 h-12 rounded-lg text-xl font-serif font-bold transition-all border-2 ${
                 selectedChar === e.char
                   ? 'border-accent bg-accent/10 dark:bg-accent/5 scale-110'
                   : 'border-ink-200 dark:border-ink-700 text-ink-600 dark:text-ink-400 hover:border-accent/50'
@@ -60,7 +166,6 @@ export default function CharEvolutionPage() {
 
         {/* 当前汉字展示 */}
         <div className="flex flex-col items-center mb-8">
-          {/* 大字展示 */}
           <div className="w-48 h-48 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-ink-50/30 dark:bg-ink-800/30 flex items-center justify-center mb-4 overflow-hidden">
             <svg viewBox="0 0 60 90" width="160" height="160" className="transition-all duration-500">
               <path
@@ -75,7 +180,6 @@ export default function CharEvolutionPage() {
             </svg>
           </div>
 
-          {/* 当前阶段信息 */}
           <div className="text-center">
             <span className="text-2xl font-serif font-bold text-ink-900 dark:text-ink-100">
               {evolution.char}
@@ -91,7 +195,7 @@ export default function CharEvolutionPage() {
         </div>
 
         {/* 演变阶段时间轴 */}
-        <div className="flex items-center justify-center gap-2 mb-8">
+        <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
           {evolution.stages.map((stage, i) => (
             <div key={i} className="flex items-center">
               <button
@@ -153,7 +257,7 @@ export default function CharEvolutionPage() {
           <h3 className="text-sm font-bold text-ink-600 dark:text-ink-400 mb-4 text-center">
             {t('charEvolution.full_comparison')}
           </h3>
-          <div className="flex justify-center gap-3">
+          <div className="flex justify-center gap-3 flex-wrap">
             {evolution.stages.map((stage, i) => (
               <div
                 key={i}

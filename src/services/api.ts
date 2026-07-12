@@ -803,6 +803,26 @@ export async function fetchDynastyDetails(id: number): Promise<DynastyDetailsRes
   return await fetchJSON<DynastyDetailsResponse>(`${BASE_URL}/dynasties/${id}/details`);
 }
 
+// ──────────────────────────────────────────────
+// 汉字演变
+// ──────────────────────────────────────────────
+
+export interface CharEvolutionData {
+  char: string;
+  meaning: string;
+  stages: Array<{
+    name: string;
+    era: string;
+    description: string;
+    svgPath: string;
+  }>;
+}
+
+/** 获取所有汉字演变数据（后端内置 30 字），失败时抛错 */
+export async function fetchCharEvolutions(): Promise<CharEvolutionData[]> {
+  return await fetchJSON<CharEvolutionData[]>(`${BASE_URL}/char-evolution`);
+}
+
 /** 获取事件关联数据 */
 export async function fetchEventRelated(id: number): Promise<EventRelatedResponse> {
   return await fetchJSON<EventRelatedResponse>(`${BASE_URL}/events/${id}/related`);
