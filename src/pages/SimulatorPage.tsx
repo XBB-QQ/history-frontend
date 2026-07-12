@@ -9,6 +9,7 @@ import { SCENARIOS } from '@/data/scenarios/index';
 import type { Choice } from '@/types/scenario';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import Markdown from '@/components/common/Markdown';
 import ResultView from '@/components/simulator/ResultView';
 import { usePersonaStore } from '@/store/personaStore';
 import { useT } from '@/i18n/i18n';
@@ -221,9 +222,9 @@ function SimulatorPage() {
                 <h3 className="text-sm font-bold text-accent mb-2 tracking-widest">
                   择 {t('simulator.your_dilemma')}
                 </h3>
-                <p className="text-ink-800 dark:text-ink-200 leading-relaxed whitespace-pre-line">
+                <Markdown className="leading-relaxed">
                   {scenario.dilemma}
-                </p>
+                </Markdown>
               </div>
 
               {/* 4 个选项 */}

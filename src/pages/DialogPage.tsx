@@ -10,6 +10,7 @@ import { generateFigureReply, generateGreeting } from '@/features/figureReply';
 import type { HistoricalFigure, ChatMessage } from '@/types/figure';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import Markdown from '@/components/common/Markdown';
 import { useT } from '@/i18n/i18n';
 
 function DialogPage() {
@@ -171,9 +172,9 @@ function DialogPage() {
                         {selectedFigure.name}
                       </div>
                     )}
-                    <p className="whitespace-pre-line text-sm leading-relaxed">
+                    <Markdown className="text-sm leading-relaxed">
                       {msg.content}
-                    </p>
+                    </Markdown>
                   </div>
                 </div>
               ))}

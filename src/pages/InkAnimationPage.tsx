@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import Markdown from '@/components/common/Markdown';
 import { INK_ANIMATIONS, type InkAnimation, type InkScene } from '@/data/features/inkAnimations';
 import { useT } from '@/i18n/i18n';
 
@@ -283,11 +284,11 @@ export default function InkAnimationPage() {
               <h4 className="text-xs font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
                 {t('inkAnimation.narration_full')}
               </h4>
-              <p className="text-sm text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line font-serif"
+              <Markdown className="text-sm leading-loose font-serif"
                 style={{ fontFamily: 'var(--font-heading), serif' }}
               >
                 {animation.narration}
-              </p>
+              </Markdown>
             </div>
 
             {/* 历史背景 */}

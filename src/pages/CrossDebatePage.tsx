@@ -7,6 +7,7 @@ import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import Markdown from '@/components/common/Markdown';
 import { DEBATE_TOPICS } from '@/data/scenarios/debateTopics';
 import { DEBATE_FIGURE_PAIRS } from '@/data/scenarios/debateFigures';
 import { getFigureById } from '@/data/scenarios/figures';
@@ -342,7 +343,7 @@ export default function CrossDebatePage() {
             {conclusion && (
               <div className="p-5 bg-white/70 dark:bg-ink-900/70 rounded-xl border border-ink-200 dark:border-ink-700">
                 <h3 className="text-sm font-bold text-accent mb-3 tracking-widest">{t('crossDebate.conclusion_title')}</h3>
-                <p className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line">{conclusion}</p>
+                <Markdown className="leading-loose">{conclusion}</Markdown>
               </div>
             )}
 

@@ -7,16 +7,22 @@
  */
 
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import SurnameMigrationMap from '@/components/map/SurnameMigrationMap';
 import { SURNAMES, SURNAMES_BY_INITIAL, SURNAMES_INITIALS, type Surname } from '@/data/features/surnameData';
 import { useT } from '@/i18n/i18n';
 
 import './SurnameMapPage.module.css';
 
+type SortBy = 'rank' | 'populationRank' | 'population';
+
 export default function SurnameMapPage() {
   const t = useT();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<SortBy>('rank');
   const [selectedInitial, setSelectedInitial] = useState<string>(SURNAMES_INITIALS[0]);
   const [selectedSurname, setSelectedSurname] = useState<Surname | null>(() =>
     SURNAMES.find(s => s.pinyin.charAt(0).toUpperCase() === selectedInitial) || SURNAMES[0]
@@ -26,7 +32,7 @@ export default function SurnameMapPage() {
   const filteredSurnames = useMemo(() => {
     if (!searchQuery) return SURNAMES;
     const q = searchQuery.toLowerCase();
-    return SURNAMES.filter(s => 
+    return SURNAMES.filter(s =>
       s.surname.includes(q) || s.pinyin.toLowerCase().includes(q)
     );
   }, [searchQuery]);
@@ -42,13 +48,31 @@ export default function SurnameMapPage() {
     return groups;
   }, [filteredSurnames]);
 
+  // 按排序方式分组姓氏（用于正常浏览模式）
+  const sortedSurnamesByInitial = useMemo(() => {
+    const groups: Record<string, Surname[]> = {};
+    Object.entries(SURNAMES_BY_INITIAL).forEach(([initial, list]) => {
+      groups[initial] = [...list].sort((a, b) => {
+        if (sortBy === 'rank') return a.rank - b.rank;
+        if (sortBy === 'populationRank') return a.populationRank - b.populationRank;
+        return b.population - a.population;
+      });
+    });
+    return groups;
+  }, [sortBy]);
+
   // 切换姓氏初始字母
   const handleInitialClick = (initial: string) => {
     setSelectedInitial(initial);
-    const surnames = SURNAMES_BY_INITIAL[initial];
-    if (surnames.length > 0) {
+    const surnames = sortedSurnamesByInitial[initial];
+    if (surnames && surnames.length > 0) {
       setSelectedSurname(surnames[0]);
     }
+  };
+
+  const handleSurnameClick = (surname: Surname) => {
+    setSelectedSurname(surname);
+    navigate(`/surname/${surname.rank}`);
   };
 
   const selected = selectedSurname;
@@ -62,9 +86,9 @@ export default function SurnameMapPage() {
         description={t('surnameMap.description')}
       />
 
-      <RevealOnScroll>
+      <RevealOnScroll threshold={0.01}>
         {/* 搜索框 */}
-        <div className="search-container mb-8">
+        <div className="search-container mb-6">
           <input
             type="text"
             placeholder={t('surnameMap.searchPlaceholder')}
@@ -73,6 +97,28 @@ export default function SurnameMapPage() {
             className="search-input"
           />
         </div>
+
+        {/* 排序选择器（仅正常浏览模式显示） */}
+        {!searchQuery && (
+          <div className="sort-container mb-6 flex items-center gap-2 flex-wrap">
+            <span className="text-sm text-ink-600 dark:text-ink-400">{t('surnameMap.sortBy')}:</span>
+            {(['rank', 'populationRank', 'population'] as SortBy[]).map(mode => (
+              <button
+                key={mode}
+                onClick={() => setSortBy(mode)}
+                className={`px-3 py-1 rounded-lg text-sm border transition-all ${
+                  sortBy === mode
+                    ? 'border-accent bg-accent/10 text-accent font-bold'
+                    : 'border-ink-200 dark:border-ink-700 text-ink-600 dark:text-ink-400 hover:border-accent'
+                }`}
+              >
+                {mode === 'rank' && t('surnameMap.sortByRank')}
+                {mode === 'populationRank' && t('surnameMap.sortByPopulationRank')}
+                {mode === 'population' && t('surnameMap.sortByPopulation')}
+              </button>
+            ))}
+          </div>
+        )}
 
         {searchQuery ? (
           /* 搜索结果 */
@@ -86,7 +132,7 @@ export default function SurnameMapPage() {
                   {surnames.map(surname => (
                     <button
                       key={surname.surname}
-                      onClick={() => setSelectedSurname(surname)}
+                      onClick={() => handleSurnameClick(surname)}
                       className={`surname-card p-3 rounded-xl border-2 transition-all ${
                         selected?.surname === surname.surname
                           ? 'border-accent bg-accent/5'
@@ -108,10 +154,10 @@ export default function SurnameMapPage() {
             <div className="surname-list mb-10">
               {SURNAMES_INITIALS.map(initial => (
                 <div key={initial} className="initial-group mb-6">
-                  <div 
+                  <div
                     className={`initial-header text-lg font-bold cursor-pointer transition-colors ${
-                      selectedInitial === initial 
-                        ? 'text-accent' 
+                      selectedInitial === initial
+                        ? 'text-accent'
                         : 'text-ink-800 dark:text-ink-200 hover:text-accent'
                     }`}
                     onClick={() => handleInitialClick(initial)}
@@ -119,10 +165,10 @@ export default function SurnameMapPage() {
                     {initial}
                   </div>
                   <div className="surname-grid grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mt-2">
-                    {SURNAMES_BY_INITIAL[initial]?.map(surname => (
+                    {sortedSurnamesByInitial[initial]?.map(surname => (
                       <button
                         key={surname.surname}
-                        onClick={() => setSelectedSurname(surname)}
+                        onClick={() => handleSurnameClick(surname)}
                         className={`surname-card p-3 rounded-xl border-2 transition-all ${
                           selected?.surname === surname.surname
                             ? 'border-accent bg-accent/5'
@@ -184,10 +230,6 @@ export default function SurnameMapPage() {
                         {t('surnameMap.longitude')}: {selected.originPlace.lng}°, {t('surnameMap.latitude')}: {selected.originPlace.lat}°
                       </p>
                     </div>
-                    <div className="info-block md:col-span-2">
-           
-
-                    </div>
                     <div className="info-block">
                       <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-2">
                         郡 {t('surnameMap.junwang')}
@@ -220,94 +262,16 @@ export default function SurnameMapPage() {
                     </div>
                   </div>
 
-                  {/* 姓氏迁徙地图（SVG） */}
+                  {/* 姓氏迁徙地图 */}
                   <div className="migration-map-section mb-6">
                     <h3 className="text-lg font-bold text-ink-800 dark:text-ink-200 mb-3">
                       迁 {t('surnameMap.migrationTrack')}
                     </h3>
-                    <div className="map-container relative bg-ink-50 dark:bg-ink-800 rounded-xl overflow-hidden">
-                      <svg
-                        viewBox="0 0 800 400"
-                        className="w-full h-auto"
-                        preserveAspectRatio="xMidYMid meet"
-                      >
-                        {/* 背景：示意中国地图轮廓（简化） */}
-                        <path
-                          d="M 100,150 Q 150,100 200,150 T 300,150 Q 350,200 400,150 T 500,150 Q 550,100 600,150 T 700,150 L 700,250 Q 650,300 600,250 T 500,250 Q 450,300 400,250 T 300,250 Q 250,300 200,250 T 100,250 Z"
-                          fill="none"
-                          stroke="#94a3b8"
-                          strokeWidth="1"
-                          strokeDasharray="5,5"
-                        />
-
-                        {/* 迁徙节点 */}
-                        {selected.migration.map((node, idx) => (
-                          <g key={idx}>
-                            {/* 连接线 */}
-                            {idx > 0 && (
-                              <line
-                                x1={selected.migration[idx-1].lng}
-                                y1={selected.migration[idx-1].lat}
-                                x2={node.lng}
-                                y2={node.lat}
-                                stroke="#f59e0b"
-                                strokeWidth="2"
-                                markerEnd="url(#arrow)"
-                              />
-                            )}
-
-                            {/* 节点圆点 */}
-                            <circle
-                              cx={node.lng}
-                              cy={node.lat}
-                              r="6"
-                              fill={idx === 0 ? '#10b981' : idx === selected.migration.length - 1 ? '#ef4444' : '#f59e0b'}
-                              stroke="white"
-                              strokeWidth="2"
-                              className="node-dot"
-                            />
-
-                            {/* 节点标签 */}
-                            <text
-                              x={node.lng}
-                              y={node.lat - 12}
-                              textAnchor="middle"
-                              className="node-label"
-                            >
-                              {node.name} ({node.period})
-                            </text>
-                          </g>
-                        ))}
-
-                        {/* 箭头标记 */}
-                        <defs>
-                          <marker
-                            id="arrow"
-                            markerWidth="10"
-                            markerHeight="10"
-                            refX="9"
-                            refY="3"
-                            orient="auto"
-                            markerUnits="strokeWidth"
-                          >
-                            <path d="M0,0 L0,6 L9,3 z" fill="#f59e0b" />
-                          </marker>
-                        </defs>
-
-                        {/* 图例 */}
-                        <g transform="translate(20, 350)">
-                          <circle cx="0" cy="0" r="5" fill="#10b981" />
-                          <text x="10" y="4" className="map-legend">{t('surnameMap.originLabel')}</text>
-
-                          <circle cx="80" cy="0" r="5" fill="#f59e0b" />
-                          <text x="90" y="4" className="map-legend">{t('surnameMap.migrationNode')}</text>
-
-                          <circle cx="180" cy="0" r="5" fill="#ef4444" />
-                          <text x="190" y="4" className="map-legend">{t('surnameMap.currentResidence')}</text>
-                        </g>
-                      </svg>
-
-                      {/* 地图说明 */}
+                    <div className="map-container relative bg-ink-50 dark:bg-ink-800 rounded-xl overflow-hidden p-2">
+                      <SurnameMigrationMap
+                        migration={selected.migration}
+                        originPlace={selected.originPlace}
+                      />
                       <p className="text-xs text-ink-500 mt-2 px-2">
                         注 {t('surnameMap.mapNote')}
                       </p>
@@ -340,6 +304,16 @@ export default function SurnameMapPage() {
                       </div>
                     </div>
                   )}
+
+                  {/* 查看完整详情按钮 */}
+                  <div className="mt-6 flex justify-center">
+                    <button
+                      onClick={() => navigate(`/surname/${selected.rank}`)}
+                      className="px-6 py-2.5 rounded-lg bg-accent text-white font-bold hover:bg-accent/90 transition-colors shadow-md"
+                    >
+                      {t('surnameMap.viewDetail')} →
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

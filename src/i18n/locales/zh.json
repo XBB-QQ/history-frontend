@@ -43,6 +43,8 @@
     "viz_world_compare": "中外对照",
     "viz_measure": "度量衡换算",
     "viz_color_history": "历史色谱",
+    "viz_clothing_history": "历代服饰",
+    "viz_dwelling_history": "居住文化",
     "viz_document_generator": "奏折生成器",
     "viz_drama_fact_check": "影视勘误",
     "viz_artifact_quiz": "信物鉴定",
@@ -613,7 +615,20 @@
     "currentResidence": "现居地",
     "mapNote": "红点代表现居地，绿色点代表发源地，黄色点代表迁徙节点",
     "figures": "历代名人",
-    "wan": "万"
+    "wan": "万",
+    "sortBy": "排序方式",
+    "sortByRank": "百家姓排名",
+    "sortByPopulationRank": "人口排名",
+    "sortByPopulation": "人口数量",
+    "viewDetail": "查看详情",
+    "backToList": "返回列表",
+    "notFoundTitle": "姓氏未找到",
+    "notFoundDesc": "未找到排名为 {{rank}} 的姓氏",
+    "migrationAnimation": "迁徙路径动画",
+    "junwangCount": "郡望数量",
+    "figureCount": "名人数量",
+    "prevSurname": "上一姓氏",
+    "nextSurname": "下一姓氏"
   },
   "climate": {
     "title": "历史气候变迁",
@@ -747,6 +762,24 @@
     "catRitualDesc": "祭祀和礼仪用色",
     "catDyedDesc": "通过特殊染料工艺获得的色彩",
     "colorCount": "{{count}}色"
+  },
+  "clothingHistory": {
+    "title": "历代服饰",
+    "description": "从先秦深衣到清代旗袍，追溯中华服饰的演变与文化",
+    "tabDynasty": "朝代服饰",
+    "tabType": "按类型",
+    "features": "时代特征",
+    "items": "代表服饰",
+    "wearers": "穿着者",
+    "materials": "材质",
+    "colorSystem": "色彩制度",
+    "rankSystem": "等级制度",
+    "culturalMeaning": "文化意义"
+  },
+  "dwellingHistory": {
+    "title": "居住文化",
+    "description": "从汉唐长安到明清四合院，探索中华建筑与居住文化的演变",
+    "all": "全部"
   },
   "documentGenerator": {
     "title": "奏折 / 尺牍生成器",

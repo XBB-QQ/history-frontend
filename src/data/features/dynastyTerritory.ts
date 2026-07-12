@@ -135,6 +135,25 @@ export const DYNASTY_TERRITORIES: DynastyTerritory[] = [
     ],
   },
   {
+    id: 'wudai-shiguo',
+    name: '五代十国',
+    emoji: '',
+    startYear: 907,
+    endYear: 960,
+    yearDisplay: '907-960',
+    bounds: { north: 41, south: 22, east: 122, west: 100 },
+    color: '#6b8e23',
+    description: '五代更迭于中原，十国割据于南方。军阀混战，政权频繁更替，南方经济文化持续发展。',
+    areaEstimate: 220,
+    capitals: ['开封', '洛阳'],
+    territoryEvents: [
+      { year: 907, title: '朱温建后梁', type: 'stable', description: '唐亡，五代十国格局形成' },
+      { year: 923, title: '后唐灭后梁', type: 'stable', description: '沙陀族李存勖建立后唐' },
+      { year: 936, title: '石敬瑭割燕云', type: 'shrink', description: '后晋割让燕云十六州予契丹', boundsChange: { north: 40 } },
+      { year: 960, title: '陈桥兵变', type: 'stable', description: '赵匡胤建北宋，五代终' },
+    ],
+  },
+  {
     id: 'song-north',
     name: '北宋',
     emoji: '📜',
@@ -231,5 +250,5 @@ export function getTerritoryAtYear(year: number): DynastyTerritory[] {
 
 /** 年份列表（时间轴关键节点） */
 export const TIMELINE_YEARS = [
-  -221, -138, 8, 25, 220, 420, 589, 618, 630, 755, 907, 960, 1127, 1279, 1368, 1449, 1644, 1840, 1912
+  -221, -138, 8, 25, 220, 420, 589, 618, 630, 755, 907, 936, 960, 1127, 1279, 1368, 1449, 1644, 1840, 1912
 ];

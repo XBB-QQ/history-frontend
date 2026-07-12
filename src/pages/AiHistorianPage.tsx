@@ -7,6 +7,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import Markdown from '@/components/common/Markdown';
 import {
   generateHistorianComment,
   buildUserPortraitFromStorage,
@@ -228,11 +229,11 @@ export default function AiHistorianPage() {
                   </div>
                 </div>
 
-                <div className="text-ink-900 dark:text-ink-100 leading-loose whitespace-pre-line text-lg font-serif"
+                <Markdown className="text-ink-900 dark:text-ink-100 leading-loose text-lg font-serif"
                   style={{ fontFamily: 'var(--font-heading), serif' }}
                 >
                   {comment[activeStyle] || comment.formal}
-                </div>
+                </Markdown>
               </div>
 
               {/* 学习建议 */}

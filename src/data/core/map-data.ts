@@ -34,6 +34,13 @@ function polyPath(points: [number, number][]): string {
   return `M${segments.join(' L')} Z`;
 }
 
+/** 将经纬度映射到 SVG 坐标（viewBox 0 0 800 600） */
+export function lngLatToXY(lng: number, lat: number): { x: number; y: number } {
+  const x = ((lng - 73) / 62) * 800;
+  const y = 600 - ((lat - 18) / 36) * 600;
+  return { x, y };
+}
+
 export const mapRegions: MapRegion[] = [
   // 新疆
   {

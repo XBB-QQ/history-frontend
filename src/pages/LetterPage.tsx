@@ -6,6 +6,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import Markdown from '@/components/common/Markdown';
 import { FIGURES } from '@/data/scenarios/figures';
 import type { HistoricalFigure } from '@/types/figure';
 import {
@@ -166,9 +167,10 @@ export default function LetterPage() {
                 <span className="font-bold text-accent">{t('letter.reply_title', { name: selectedFigure?.name ?? '' })}</span>
                 <span className="inline-block w-2 h-2 bg-accent animate-pulse rounded-full" />
               </div>
-              <div ref={replyRef} className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line font-serif"
-                style={{ fontFamily: 'var(--font-heading), serif' }}>
-                {streamingReply}
+              <div ref={replyRef}>
+                <Markdown className="leading-loose font-serif" style={{ fontFamily: 'var(--font-heading), serif' }}>
+                  {streamingReply}
+                </Markdown>
               </div>
             </div>
           </RevealOnScroll>

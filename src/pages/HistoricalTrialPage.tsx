@@ -12,6 +12,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import Markdown from '@/components/common/Markdown';
 import {
   HISTORICAL_TRIALS,
   TRIALS_BY_DYNASTY,
@@ -613,7 +614,7 @@ export default function HistoricalTrialPage() {
 
                     {education && (
                       <div className="p-5 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/10 dark:to-teal-900/10 border border-emerald-200 dark:border-emerald-800/30">
-                        <p className="text-sm text-emerald-800 dark:text-emerald-300 leading-loose whitespace-pre-line">{education}</p>
+                        <Markdown className="text-sm text-emerald-800 dark:text-emerald-300 leading-loose">{education}</Markdown>
                       </div>
                     )}
                   </div>

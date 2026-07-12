@@ -6,6 +6,7 @@ import { useState } from 'react';
 import type { Choice, Scenario } from '@/types/scenario';
 import OutcomeTree from '@/components/simulator/OutcomeTree';
 import ShareCard from '@/components/simulator/ShareCard';
+import Markdown from '@/components/common/Markdown';
 
 interface ResultViewProps {
   scenario: Scenario;
@@ -64,9 +65,9 @@ export default function ResultView({ scenario, choice, onBranchSwitch }: ResultV
           <h3 className="text-sm font-bold text-indigo-700 dark:text-indigo-400 mb-2 tracking-widest">
             推 平行推演
           </h3>
-          <p className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line">
+          <Markdown className="leading-loose">
             {choice.alternateTimeline}
-          </p>
+          </Markdown>
         </div>
       )}
 
@@ -88,9 +89,9 @@ export default function ResultView({ scenario, choice, onBranchSwitch }: ResultV
         <h3 className="text-sm font-bold text-accent mb-2 tracking-widest">
           史 真实历史
         </h3>
-        <p className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line">
+        <Markdown className="leading-loose">
           {scenario.historicalResult}
-        </p>
+        </Markdown>
       </div>
 
       {/* 历史教训 */}

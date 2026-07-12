@@ -35,6 +35,9 @@ export default function TopicListPage() {
       ? TOPICS
       : TOPICS.filter(topic => topic.category === activeCategory);
 
+  const totalChapters = TOPICS.reduce((sum, t) => sum + t.chapterCount, 0);
+  const totalMinutes = TOPICS.reduce((sum, t) => sum + t.estimatedMinutes, 0);
+
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950">
       {/* Hero */}
@@ -47,14 +50,28 @@ export default function TopicListPage() {
           <h1 className="text-4xl md:text-5xl font-bold text-ink-900 dark:text-ink-100 mb-4">
             {t('topicList.hero_title')}
           </h1>
-          <p className="text-lg text-ink-600 dark:text-ink-400 max-w-2xl mx-auto">
+          <p className="text-lg text-ink-600 dark:text-ink-400 max-w-2xl mx-auto mb-6">
             {t('topicList.hero_subtitle')}
           </p>
+          <div className="flex justify-center gap-8 text-sm">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold text-accent">{TOPICS.length}</span>
+              <span className="text-ink-500 dark:text-ink-400">个专题</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold text-accent">{totalChapters}</span>
+              <span className="text-ink-500 dark:text-ink-400">章节</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold text-accent">{totalMinutes}</span>
+              <span className="text-ink-500 dark:text-ink-400">分钟阅读</span>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* 分类筛选 */}
-      <div className="max-w-6xl mx-auto px-6 -mt-6">
+      <div className="max-w-6xl mx-auto px-6 -mt-6 relative z-10">
         <div className="flex flex-wrap gap-2 justify-center mb-4">
           {CATEGORIES.map(cat => (
             <button
@@ -106,14 +123,29 @@ export default function TopicListPage() {
                 <h3 className="text-lg font-bold text-ink-900 dark:text-ink-100 mb-2 group-hover:text-accent transition-colors">
                   {topic.title}
                 </h3>
-                <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed mb-4 line-clamp-3">
+                <p className="text-sm text-ink-600 dark:text-ink-400 leading-relaxed mb-3 line-clamp-3">
                   {topic.summary}
                 </p>
 
+                {/* 第一章预览 */}
+                {topic.chapters[0] && (
+                  <div className="mb-3 px-3 py-2 bg-amber-50/60 dark:bg-amber-900/10 rounded-lg border-l-2 border-amber-400">
+                    <div className="text-xs text-amber-600 dark:text-amber-400 font-bold mb-0.5">首章预览</div>
+                    <div className="text-xs text-ink-600 dark:text-ink-400 truncate">{topic.chapters[0].title}</div>
+                  </div>
+                )}
+
+                {/* 参考书目 */}
+                {topic.references.length > 0 && (
+                  <div className="mb-3 text-xs text-ink-400 dark:text-ink-500">
+                    <span className="font-bold">参考:</span> {topic.references[0]}
+                  </div>
+                )}
+
                 <div className="flex items-center justify-between text-xs text-ink-400 dark:text-ink-500">
                   <span>{t('topicList.chapter_minutes', { chapters: topic.chapterCount, minutes: topic.estimatedMinutes })}</span>
-                  <span className="flex gap-1">
-                    {topic.tags.slice(0, 2).map(tag => (
+                  <span className="flex gap-1 flex-wrap justify-end">
+                    {topic.tags.map(tag => (
                       <span key={tag} className="px-1.5 py-0.5 bg-ink-50 dark:bg-ink-800 rounded">#{tag}</span>
                     ))}
                   </span>

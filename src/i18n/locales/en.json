@@ -43,6 +43,8 @@
     "viz_world_compare": "World Compare",
     "viz_measure": "Measure Converter",
     "viz_color_history": "Color History",
+    "viz_clothing_history": "Costume History",
+    "viz_dwelling_history": "Dwelling Culture",
     "viz_document_generator": "Document Generator",
     "viz_drama_fact_check": "Drama Fact Check",
     "viz_artifact_quiz": "Artifact Quiz",
@@ -613,7 +615,20 @@
     "currentResidence": "Current Residence",
     "mapNote": "Red dots = current residence, green = origin, yellow = migration nodes",
     "figures": "Famous Figures",
-    "wan": "10k"
+    "wan": "10k",
+    "sortBy": "Sort By",
+    "sortByRank": "Hundred Surnames Rank",
+    "sortByPopulationRank": "Population Rank",
+    "sortByPopulation": "Population",
+    "viewDetail": "View Details",
+    "backToList": "Back to List",
+    "notFoundTitle": "Surname Not Found",
+    "notFoundDesc": "No surname found with rank {{rank}}",
+    "migrationAnimation": "Migration Path Animation",
+    "junwangCount": "Junwang Count",
+    "figureCount": "Famous Figures Count",
+    "prevSurname": "Previous Surname",
+    "nextSurname": "Next Surname"
   },
   "climate": {
     "title": "Historical Climate Change",
@@ -747,6 +762,24 @@
     "catRitualDesc": "Sacrificial and ritual colors",
     "catDyedDesc": "Colors obtained through special dyeing techniques",
     "colorCount": "{{count}} colors"
+  },
+  "clothingHistory": {
+    "title": "Historical Costume",
+    "description": "From pre-Qin shenyi to Qing cheongsam, trace the evolution of Chinese attire",
+    "tabDynasty": "By Dynasty",
+    "tabType": "By Type",
+    "features": "Era Features",
+    "items": "Representative Attire",
+    "wearers": "Wearers",
+    "materials": "Materials",
+    "colorSystem": "Color System",
+    "rankSystem": "Rank System",
+    "culturalMeaning": "Cultural Meaning"
+  },
+  "dwellingHistory": {
+    "title": "Dwelling Culture",
+    "description": "From Han-Tang Chang'an to Ming-Qing siheyuan, explore Chinese architecture and dwelling culture",
+    "all": "All"
   },
   "documentGenerator": {
     "title": "Memorial / Letter Generator",

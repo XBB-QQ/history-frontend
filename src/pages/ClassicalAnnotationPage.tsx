@@ -7,6 +7,7 @@ import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import Markdown from '@/components/common/Markdown';
 import { searchDict, CLASSICAL_DICT, type DictEntry } from '@/data/features/classicalDict';
 import { callLLM, type LLMMessage } from '@/utils/llmClient';
 import { useT } from '@/i18n/i18n';
@@ -204,9 +205,9 @@ export default function ClassicalAnnotationPage() {
                 <span className="font-bold text-ink-900 dark:text-ink-100">{t('classicalAnnotation.llm_result_title')}</span>
                 <span className="text-xs text-ink-400">{t('classicalAnnotation.llm_result_subtitle')}</span>
               </div>
-              <div className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line">
+              <Markdown className="leading-loose">
                 {llmAnnotation}
-              </div>
+              </Markdown>
             </div>
           </RevealOnScroll>
         )}

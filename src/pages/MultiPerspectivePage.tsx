@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import Markdown from '@/components/common/Markdown';
 import { MULTI_PERSPECTIVE_EVENTS, type MultiPerspectiveEvent } from '@/data/features/multiPerspectives';
 import { useT } from '@/i18n/i18n';
 
@@ -185,9 +186,9 @@ export default function MultiPerspectivePage() {
                     <h3 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 tracking-widest">
                       {t('multiPerspective.narrative_title')}
                     </h3>
-                    <p className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line">
+                    <Markdown className="leading-loose">
                       {p.narrative}
-                    </p>
+                    </Markdown>
                   </div>
 
                   {/* 独有信息 */}

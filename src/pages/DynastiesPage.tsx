@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { DynastyItem } from '@/types';
 import { fetchDynasties } from '@/services/api';
+import { loadDynasties } from '@/utils';
 import SectionHeader from '@/components/common/SectionHeader';
 import DynastyGrid from '@/components/dynasty/DynastyGrid';
 import { GridSkeleton } from '@/components/common/Skeleton';
@@ -14,9 +15,22 @@ function DynastiesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchDynasties()
-      .then((data) => {
-        setDynasties(data);
+    // 后端数据与本地数据合并去重，确保南北朝、五代十国等后端缺失的朝代也能显示
+    Promise.all([
+      fetchDynasties().catch(() => [] as DynastyItem[]),
+      loadDynasties().catch(() => [] as DynastyItem[]),
+    ])
+      .then(([backendData, localData]) => {
+        const seen = new Set<string>();
+        const merged: DynastyItem[] = [];
+        for (const d of [...backendData, ...localData]) {
+          if (!seen.has(d.name)) {
+            seen.add(d.name);
+            merged.push(d);
+          }
+        }
+        merged.sort((a, b) => (a.periodStart ?? 0) - (b.periodStart ?? 0));
+        setDynasties(merged);
         setLoading(false);
       })
       .catch(() => {

@@ -6,6 +6,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
+import Markdown from '@/components/common/Markdown';
 import {
   getMomentFeed,
   subscribeFeedUpdate,
@@ -237,9 +238,9 @@ export default function MomentsPage() {
                     </div>
 
                     {/* 正文 */}
-                    <div className="text-ink-800 dark:text-ink-200 leading-relaxed text-sm whitespace-pre-line">
+                    <Markdown className="leading-relaxed text-sm">
                       {post.content}
-                    </div>
+                    </Markdown>
 
                     {/* 互动栏 */}
                     <div className="mt-3 pt-3 border-t border-ink-100 dark:border-ink-700 flex items-center justify-between">

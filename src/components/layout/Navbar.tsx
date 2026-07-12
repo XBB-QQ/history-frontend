@@ -76,6 +76,8 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: 'nav.viz_world_compare', path: '/world-compare' },
       { labelKey: 'nav.viz_measure', path: '/measure' },
       { labelKey: 'nav.viz_color_history', path: '/color-history' },
+      { labelKey: 'nav.viz_clothing_history', path: '/clothing-history' },
+      { labelKey: 'nav.viz_dwelling_history', path: '/dwelling-history' },
       { labelKey: 'nav.viz_document_generator', path: '/document-generator' },
       { labelKey: 'nav.viz_drama_fact_check', path: '/drama-fact-check' },
       { labelKey: 'nav.viz_annual_report', path: '/annual-report' },

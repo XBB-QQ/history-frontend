@@ -50,6 +50,7 @@ const InkAnimationPage = lazy(() => import('./pages/InkAnimationPage'));
 const TerritoryMapPage = lazy(() => import('./pages/TerritoryMapPage'));
 const MigrationMapPage = lazy(() => import('./pages/MigrationMapPage'));
 const SurnameMapPage = lazy(() => import('./pages/SurnameMapPage'));
+const SurnameDetailPage = lazy(() => import('./pages/SurnameDetailPage'));
 const CurrencyConverterPage = lazy(() => import('./pages/CurrencyConverterPage'));
 const JobsPage = lazy(() => import('./pages/JobsPage'));
 const PlagueHistoryPage = lazy(() => import('./pages/PlagueHistoryPage'));
@@ -60,6 +61,8 @@ const ImperialExaminationPage = lazy(() => import('./pages/ImperialExaminationPa
 const SoundMuseumPage = lazy(() => import('./pages/SoundMuseumPage'));
 const ContributionPage = lazy(() => import('./pages/ContributionPage'));
 const ColorHistoryPage = lazy(() => import('./pages/ColorHistoryPage'));
+const ClothingHistoryPage = lazy(() => import('./pages/ClothingHistoryPage'));
+const DwellingHistoryPage = lazy(() => import('./pages/DwellingHistoryPage'));
 const DocumentGeneratorPage = lazy(() => import('./pages/DocumentGeneratorPage'));
 const DramaFactCheckPage = lazy(() => import('./pages/DramaFactCheckPage'));
 const ArtifactQuizPage = lazy(() => import('./pages/ArtifactQuizPage'));
@@ -197,6 +200,7 @@ function App() {
           <Route path="/territory" element={<TerritoryMapPage />} />
           <Route path="/migration" element={<MigrationMapPage />} />
           <Route path="/surname" element={<SurnameMapPage />} />
+          <Route path="/surname/:rank" element={<SurnameDetailPage />} />
           <Route path="/currency" element={<CurrencyConverterPage />} />
           <Route path="/jobs" element={<JobsPage />} />
           <Route path="/plague-history" element={<PlagueHistoryPage />} />
@@ -210,6 +214,8 @@ function App() {
           <Route path="/topic/:uid" element={<TopicDetailPage />} />
           <Route path="/scent-museum" element={<ScentMuseumPage />} />
           <Route path="/color-history" element={<ColorHistoryPage />} />
+          <Route path="/clothing-history" element={<ClothingHistoryPage />} />
+          <Route path="/dwelling-history" element={<DwellingHistoryPage />} />
           <Route path="/document-generator" element={<DocumentGeneratorPage />} />
           <Route path="/drama-fact-check" element={<DramaFactCheckPage />} />
           <Route path="/artifact-quiz" element={<ArtifactQuizPage />} />

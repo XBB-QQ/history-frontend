@@ -16,6 +16,7 @@ import {
 } from '@/services/ragApi';
 import { useDetailStore } from '@/store/detailStore';
 import { useT } from '@/i18n/i18n';
+import Markdown from '@/components/common/Markdown';
 
 const SUGGESTIONS = [
   'ragQa.suggestion_1',
@@ -198,12 +199,13 @@ export default function RagQaPage() {
                   </div>
                 </div>
 
-                <div className="text-ink-800 dark:text-ink-200 leading-loose whitespace-pre-line">
-                  {streamingText || result?.answer || ''}
-                  {loading && !streamingText && (
-                    <span className="inline-block w-2 h-5 bg-accent animate-pulse ml-1" />
-                  )}
-                </div>
+                {(streamingText || result?.answer) ? (
+                  <Markdown className="leading-loose">
+                    {streamingText || result?.answer || ''}
+                  </Markdown>
+                ) : loading ? (
+                  <span className="inline-block w-2 h-5 bg-accent animate-pulse ml-1" />
+                ) : null}
                 <div ref={answerEndRef} />
               </div>
 
