@@ -29,6 +29,7 @@ import { militarySystemTopic } from './military-system';
 import { patriarchalClanTopic } from './patriarchal-clan';
 import { academySystemTopic } from './academy-system';
 import { tcmHistoryTopic } from './tcm-history';
+import { threeSovereignsFiveEmperorsTopic } from './three-sovereigns-five-emperors';
 
 export const TOPICS: Topic[] = [
   junxianTopic,
@@ -55,10 +56,11 @@ export const TOPICS: Topic[] = [
   patriarchalClanTopic,
   academySystemTopic,
   tcmHistoryTopic,
+  threeSovereignsFiveEmperorsTopic,
 ];
 
 /** 补盲专题 tag 列表 */
-export const BLIND_SPOT_TAGS = ['女性史', '边疆史', '海洋史', '疫病史', '民族史'] as const;
+export const BLIND_SPOT_TAGS = ['女性史', '边疆史', '海洋史', '疫病史', '民族史', '上古史'] as const;
 
 export function getTopicsByCategory(category: string): Topic[] {
   return TOPICS.filter(t => t.category === category);

@@ -84,6 +84,7 @@ const MediaBridgePage = lazy(() => import('./pages/MediaBridgePage'));
 const MultiplayerMysteryPage = lazy(() => import('./pages/MultiplayerMysteryPage'));
 const TeacherDashboardPage = lazy(() => import('./pages/classroom/TeacherDashboard'));
 const StudentAssignmentPage = lazy(() => import('./pages/classroom/StudentAssignmentPage'));
+const HuaxiaOriginPage = lazy(() => import('./pages/HuaxiaOriginPage'));
 
 // 后台管理页面（不用 lazy，避免 SSR 问题）
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -212,6 +213,7 @@ function App() {
           <Route path="/contribution" element={<ContributionPage />} />
           <Route path="/topics" element={<TopicListPage />} />
           <Route path="/topic/:uid" element={<TopicDetailPage />} />
+          <Route path="/huaxia-origin" element={<HuaxiaOriginPage />} />
           <Route path="/scent-museum" element={<ScentMuseumPage />} />
           <Route path="/color-history" element={<ColorHistoryPage />} />
           <Route path="/clothing-history" element={<ClothingHistoryPage />} />
