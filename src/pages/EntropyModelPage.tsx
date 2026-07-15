@@ -114,22 +114,22 @@ const EntropyModelPage: React.FC = () => {
                           style={{ width: `${entropyValue}%` }}
                         />
                       </div>
-                      <p className="text-sm text-gray-600 mt-2">
+                      <p className="text-sm text-gray-600 dark:text-ink-300 mt-2">
                         {entropyLevel.description}
                       </p>
                     </div>
 
                     {/* 关键特征 */}
                     <div>
-                      <h3 className="font-bold text-lg text-gray-800 mb-4">{t('entropyModel.key_features')}</h3>
+                      <h3 className="font-bold text-lg text-gray-800 dark:text-ink-100 mb-4">{t('entropyModel.key_features')}</h3>
                       <ul className="space-y-2">
                         {selectedCiv.keyFeatures.map((feature, index) => (
                           <li
                             key={index}
-                            className="flex items-center gap-2 p-2 bg-amber-50 rounded-lg"
+                            className="flex items-center gap-2 p-2 bg-amber-50 dark:bg-ink-700/60 rounded-lg"
                           >
                             <span className="w-2 h-2 rounded-full bg-amber-500" />
-                            <span className="text-sm text-gray-700">{feature}</span>
+                            <span className="text-sm text-gray-700 dark:text-ink-200">{feature}</span>
                           </li>
                         ))}
                       </ul>
@@ -139,29 +139,29 @@ const EntropyModelPage: React.FC = () => {
                   {/* 挑战与创新 */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                     <div>
-                      <h3 className="font-bold text-lg text-gray-800 mb-3">{t('entropyModel.challenges')}</h3>
+                      <h3 className="font-bold text-lg text-gray-800 dark:text-ink-100 mb-3">{t('entropyModel.challenges')}</h3>
                       <ul className="space-y-2">
                         {selectedCiv.challenges.map((challenge, index) => (
                           <li
                             key={index}
-                            className="flex items-center gap-2 p-2 bg-red-50 rounded-lg"
+                            className="flex items-center gap-2 p-2 bg-red-50 dark:bg-red-900/20 rounded-lg"
                           >
                             <span className="w-2 h-2 rounded-full bg-red-500" />
-                            <span className="text-sm text-gray-700">{challenge}</span>
+                            <span className="text-sm text-gray-700 dark:text-ink-200">{challenge}</span>
                           </li>
                         ))}
                       </ul>
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg text-gray-800 mb-3">{t('entropyModel.innovation')}</h3>
+                      <h3 className="font-bold text-lg text-gray-800 dark:text-ink-100 mb-3">{t('entropyModel.innovation')}</h3>
                       <ul className="space-y-2">
                         {selectedCiv.innovation.map((innovation, index) => (
                           <li
                             key={index}
-                            className="flex items-center gap-2 p-2 bg-green-50 rounded-lg"
+                            className="flex items-center gap-2 p-2 bg-green-50 dark:bg-green-900/20 rounded-lg"
                           >
                             <span className="w-2 h-2 rounded-full bg-green-500" />
-                            <span className="text-sm text-gray-700">{innovation}</span>
+                            <span className="text-sm text-gray-700 dark:text-ink-200">{innovation}</span>
                           </li>
                         ))}
                       </ul>
@@ -170,23 +170,23 @@ const EntropyModelPage: React.FC = () => {
 
                   {/* 历史时间线 */}
                   <div className="mt-6">
-                    <h3 className="font-bold text-lg text-gray-800 mb-4">{t('entropyModel.timeline_title')}</h3>
+                    <h3 className="font-bold text-lg text-gray-800 dark:text-ink-100 mb-4">{t('entropyModel.timeline_title')}</h3>
                     <div className="space-y-3">
                       {selectedCiv.timeline.map((event, index) => (
                         <div
                           key={index}
                           className={`flex items-center gap-4 p-3 rounded-lg transition-all ${
-                            index % 2 === 0 ? 'bg-gray-50' : 'bg-amber-50'
+                            index % 2 === 0 ? 'bg-gray-50 dark:bg-ink-700/50' : 'bg-amber-50 dark:bg-ink-700/80'
                           }`}
                         >
                           <div className="flex-shrink-0">
-                            <span className="text-2xl font-bold text-amber-600">
+                            <span className="text-2xl font-bold text-amber-600 dark:text-amber-400">
                               {event.year}
                             </span>
                           </div>
                           <div className="flex-1">
-                            <p className="font-medium text-gray-800">{event.event}</p>
-                            <p className="text-sm text-gray-600">{event.impact}</p>
+                            <p className="font-medium text-gray-800 dark:text-ink-100">{event.event}</p>
+                            <p className="text-sm text-gray-600 dark:text-ink-300">{event.impact}</p>
                           </div>
                           <div className="text-right">
                             <span
@@ -213,15 +213,15 @@ const EntropyModelPage: React.FC = () => {
             {/* 预测功能 */}
             <div className="mb-8">
               <RevealOnScroll>
-                <div className="bg-white rounded-2xl shadow-xl p-8">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                <div className="bg-white dark:bg-ink-800 rounded-2xl shadow-xl p-8">
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-ink-100 mb-6">
                     {t('entropyModel.prediction_title')}
                   </h2>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* 预测参数 */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-ink-200 mb-2">
                         {t('entropyModel.prediction_years_label')}
                       </label>
                       <input
@@ -230,9 +230,9 @@ const EntropyModelPage: React.FC = () => {
                         max="200"
                         value={predictionYears}
                         onChange={(e) => setPredictionYears(Number(e.target.value))}
-                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                        className="w-full h-2 bg-gray-200 dark:bg-ink-700 rounded-lg appearance-none cursor-pointer"
                       />
-                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                      <div className="flex justify-between text-xs text-gray-500 dark:text-ink-400 mt-1">
                         <span>10{t('entropyModel.years_unit')}</span>
                         <span>{predictionYears}{t('entropyModel.years_unit')}</span>
                         <span>200{t('entropyModel.years_unit')}</span>
@@ -362,22 +362,22 @@ const EntropyModelPage: React.FC = () => {
             {selectedScenario && (
               <div className="mb-8">
                 <RevealOnScroll>
-                  <div className="bg-white rounded-2xl shadow-xl p-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                  <div className="bg-white dark:bg-ink-800 rounded-2xl shadow-xl p-8">
+                    <h2 className="text-2xl font-bold text-gray-800 dark:text-ink-100 mb-6">
                       {t('entropyModel.scenario_detail', { name: selectedScenario.name })}
                     </h2>
 
-                    <p className="text-gray-700 mb-6">{selectedScenario.description}</p>
+                    <p className="text-gray-700 dark:text-ink-200 mb-6">{selectedScenario.description}</p>
 
                     {/* 变量调整 */}
                     <div className="mb-6">
-                      <h3 className="font-bold text-lg text-gray-800 mb-4">{t('entropyModel.variables_title')}</h3>
+                      <h3 className="font-bold text-lg text-gray-800 dark:text-ink-100 mb-4">{t('entropyModel.variables_title')}</h3>
                       <div className="space-y-4">
                         {selectedScenario.variables.map((variable: any) => (
                           <div key={variable.name}>
                             <div className="flex justify-between text-sm mb-1">
-                              <span className="font-medium text-gray-700">{variable.name}</span>
-                              <span className="text-amber-600 font-bold">{variable.value}</span>
+                              <span className="font-medium text-gray-700 dark:text-ink-200">{variable.name}</span>
+                              <span className="text-amber-600 dark:text-amber-400 font-bold">{variable.value}</span>
                             </div>
                             <input
                               type="range"
@@ -393,7 +393,7 @@ const EntropyModelPage: React.FC = () => {
                                 };
                                 setSelectedScenario(newScenario);
                               }}
-                              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                              className="w-full h-2 bg-gray-200 dark:bg-ink-700 rounded-lg appearance-none cursor-pointer"
                             />
                           </div>
                         ))}
@@ -403,15 +403,15 @@ const EntropyModelPage: React.FC = () => {
                     {/* 预测结果 */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div>
-                        <h3 className="font-bold text-gray-800 mb-2">{t('entropyModel.predicted_entropy')}</h3>
-                        <p className="text-3xl font-bold text-amber-600">{selectedScenario.predictedEntropy}</p>
+                        <h3 className="font-bold text-gray-800 dark:text-ink-100 mb-2">{t('entropyModel.predicted_entropy')}</h3>
+                        <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">{selectedScenario.predictedEntropy}</p>
                       </div>
                       <div>
-                        <h3 className="font-bold text-gray-800 mb-2">{t('entropyModel.predicted_year')}</h3>
-                        <p className="text-3xl font-bold text-orange-600">{selectedScenario.predictedYear}</p>
+                        <h3 className="font-bold text-gray-800 dark:text-ink-100 mb-2">{t('entropyModel.predicted_year')}</h3>
+                        <p className="text-3xl font-bold text-orange-600 dark:text-orange-400">{selectedScenario.predictedYear}</p>
                       </div>
                       <div>
-                        <h3 className="font-bold text-gray-800 mb-2">{t('entropyModel.predicted_status')}</h3>
+                        <h3 className="font-bold text-gray-800 dark:text-ink-100 mb-2">{t('entropyModel.predicted_status')}</h3>
                         <p className="text-xl font-bold px-4 py-2 rounded-lg bg-gradient-to-r from-amber-400 to-orange-500 text-white">
                           {selectedScenario.predictedStatus.name}
                         </p>
@@ -432,8 +432,8 @@ const EntropyModelPage: React.FC = () => {
             {/* 熵值等级详解 */}
             <div>
               <RevealOnScroll>
-                <div className="bg-white rounded-2xl shadow-xl p-8">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                <div className="bg-white dark:bg-ink-800 rounded-2xl shadow-xl p-8">
+                  <h2 className="text-2xl font-bold text-gray-800 dark:text-ink-100 mb-6">
                     {t('entropyModel.levels_title')}
                   </h2>
 
@@ -442,29 +442,29 @@ const EntropyModelPage: React.FC = () => {
                       <div
                         key={status.level}
                         className={`p-4 rounded-xl transition-all ${
-                          status.level === 5 ? 'bg-gradient-to-br from-red-100 to-orange-100' :
-                          status.level === 4 ? 'bg-gradient-to-br from-yellow-100 to-amber-100' :
-                          'bg-gradient-to-br from-gray-100 to-gray-50'
+                          status.level === 5 ? 'bg-gradient-to-br from-red-100 to-orange-100 dark:from-red-900/30 dark:to-orange-900/30' :
+                          status.level === 4 ? 'bg-gradient-to-br from-yellow-100 to-amber-100 dark:from-yellow-900/30 dark:to-amber-900/30' :
+                          'bg-gradient-to-br from-gray-100 to-gray-50 dark:from-ink-700/60 dark:to-ink-700/30'
                         }`}
                       >
                         <div className="flex items-center gap-3 mb-3">
-                          <span className="text-3xl font-bold text-amber-600">
+                          <span className="text-3xl font-bold text-amber-600 dark:text-amber-400">
                             {status.level}
                           </span>
-                          <h3 className="text-xl font-bold text-gray-800">{status.name}</h3>
+                          <h3 className="text-xl font-bold text-gray-800 dark:text-ink-100">{status.name}</h3>
                         </div>
-                        <p className="text-sm text-gray-600 mb-3">{status.description}</p>
+                        <p className="text-sm text-gray-600 dark:text-ink-300 mb-3">{status.description}</p>
                         <div className="space-y-1">
-                          <p className="text-xs font-medium text-gray-500">{t('entropyModel.characteristics_label')}</p>
+                          <p className="text-xs font-medium text-gray-500 dark:text-ink-400">{t('entropyModel.characteristics_label')}</p>
                           <ul className="text-xs space-y-1">
                             {status.characteristics.map((char, idx) => (
-                              <li key={idx} className="text-gray-600">• {char}</li>
+                              <li key={idx} className="text-gray-600 dark:text-ink-300">• {char}</li>
                             ))}
                           </ul>
-                          <p className="text-xs font-medium text-gray-500 mt-2">{t('entropyModel.examples_label')}</p>
+                          <p className="text-xs font-medium text-gray-500 dark:text-ink-400 mt-2">{t('entropyModel.examples_label')}</p>
                           <ul className="text-xs space-y-1">
                             {status.historicalExamples.map((example, idx) => (
-                              <li key={idx} className="text-gray-600">• {example}</li>
+                              <li key={idx} className="text-gray-600 dark:text-ink-300">• {example}</li>
                             ))}
                           </ul>
                         </div>

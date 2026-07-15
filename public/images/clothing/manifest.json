@@ -1,0 +1,434 @@
+{
+  "success": 61,
+  "failed": 3,
+  "items": [
+    {
+      "dynasty": "shang-zhou",
+      "index": 0,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Bronze_Colossal_Standing_Figure%2C_Sanxingdui_a.jpg/960px-Bronze_Colossal_Standing_Figure%2C_Sanxingdui_a.jpg",
+      "localPath": "/images/clothing/shang-zhou-0-960px-Bronze_Colossal_Standing_Figure__Sanxingdui_a.jpg",
+      "caption": "Bronze Colossal Standing Figure, Sanxingdui a.jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "shang-zhou",
+      "index": 1,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Sanxingdui_Bronze_Standing_Figure_%289950576136%29.jpg/960px-Sanxingdui_Bronze_Standing_Figure_%289950576136%29.jpg",
+      "localPath": "/images/clothing/shang-zhou-1-960px-Sanxingdui_Bronze_Standing_Figure__9950576136_.jpg",
+      "caption": "Sanxingdui Bronze Standing Figure (9950576136).jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "shang-zhou",
+      "index": 2,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Bronze_Figure_with_Headdress%2C_Sanxingdui.jpg/960px-Bronze_Figure_with_Headdress%2C_Sanxingdui.jpg",
+      "localPath": "/images/clothing/shang-zhou-2-960px-Bronze_Figure_with_Headdress__Sanxingdui.jpg",
+      "caption": "Bronze Figure with Headdress, Sanxingdui.jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "shang-zhou",
+      "index": 3,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Ancient_Shu_Altar_Reconstruction%2C_Sanxingdui.jpg/960px-Ancient_Shu_Altar_Reconstruction%2C_Sanxingdui.jpg",
+      "localPath": "/images/clothing/shang-zhou-3-960px-Ancient_Shu_Altar_Reconstruction__Sanxingdui.jpg",
+      "caption": "Ancient Shu Altar Reconstruction, Sanxingdui.jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "shang-zhou",
+      "index": 4,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Pendant_in_the_shape_of_a_Human_Figure%2C_China%2C_Warring_States_period%2C_5th-3rd_century_BC%2C_nephrite_-_Arthur_M._Sackler_Museum%2C_Harvard_University_-_DSC00766.jpg/960px-Pendant_in_the_shape_of_a_Human_Figure%2C_China%2C_Warring_States_period%2C_5th-3rd_century_BC%2C_nephrite_-_Arthur_M._Sackler_Museum%2C_Harvard_University_-_DSC00766.jpg",
+      "localPath": "/images/clothing/shang-zhou-4-960px-Pendant_in_the_shape_of_a_Human_Figure__China__Warring_States_period__.jpg",
+      "caption": "Pendant in the shape of a Human Figure, China, Warring States period, 5th-3rd century BC, nephrite - Arthur M. Sackler Museum, Harvard University - DSC00766.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "qin-han",
+      "index": 0,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/4/42/Dahuting_mural%2C_Eastern_Han_Dynasty.jpg",
+      "localPath": "/images/clothing/qin-han-0-Dahuting_mural__Eastern_Han_Dynasty.jpg",
+      "caption": "Dahuting mural, Eastern Han Dynasty.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "qin-han",
+      "index": 1,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/85/Dahuting_tomb_mural_detail_of_a_woman%2C_Eastern_Han.jpg",
+      "localPath": "/images/clothing/qin-han-1-Dahuting_tomb_mural_detail_of_a_woman__Eastern_Han.jpg",
+      "caption": "Dahuting tomb mural detail of a woman, Eastern Han.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "qin-han",
+      "index": 2,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Dahuting_Eastern_Han_Tombs_Mural_-_29.jpg/960px-Dahuting_Eastern_Han_Tombs_Mural_-_29.jpg",
+      "localPath": "/images/clothing/qin-han-2-960px-Dahuting_Eastern_Han_Tombs_Mural_-_29.jpg",
+      "caption": "Dahuting Eastern Han Tombs Mural - 29.jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "qin-han",
+      "index": 3,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Dahuting_Eastern_Han_Tombs_Mural_-_5.jpg/960px-Dahuting_Eastern_Han_Tombs_Mural_-_5.jpg",
+      "localPath": "/images/clothing/qin-han-3-960px-Dahuting_Eastern_Han_Tombs_Mural_-_5.jpg",
+      "caption": "Dahuting Eastern Han Tombs Mural - 5.jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "qin-han",
+      "index": 4,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Dahuting_Eastern_Han_Tombs_Mural_-_20.jpg/960px-Dahuting_Eastern_Han_Tombs_Mural_-_20.jpg",
+      "localPath": "/images/clothing/qin-han-4-960px-Dahuting_Eastern_Han_Tombs_Mural_-_20.jpg",
+      "caption": "Dahuting Eastern Han Tombs Mural - 20.jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "qin-han",
+      "index": 5,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Dahuting_Eastern_Han_Tombs_Mural_-_30.jpg/960px-Dahuting_Eastern_Han_Tombs_Mural_-_30.jpg",
+      "localPath": "/images/clothing/qin-han-5-960px-Dahuting_Eastern_Han_Tombs_Mural_-_30.jpg",
+      "caption": "Dahuting Eastern Han Tombs Mural - 30.jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "wei-jin",
+      "index": 0,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Pottery_Figurine_of_Wei%2C_Jin%2C_or_Southern-Northern_Dynasties.jpg/960px-Pottery_Figurine_of_Wei%2C_Jin%2C_or_Southern-Northern_Dynasties.jpg",
+      "localPath": "/images/clothing/wei-jin-0-960px-Pottery_Figurine_of_Wei__Jin__or_Southern-Northern_Dynasties.jpg",
+      "caption": "Pottery Figurine of Wei, Jin, or Southern-Northern Dynasties.jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "wei-jin",
+      "index": 1,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Northern_dynasties_soldiers_02.jpg/960px-Northern_dynasties_soldiers_02.jpg",
+      "localPath": "/images/clothing/wei-jin-1-960px-Northern_dynasties_soldiers_02.jpg",
+      "caption": "Northern dynasties soldiers 02.jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "wei-jin",
+      "index": 2,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Pottery_Figurine_of_Wei%2C_Jin%2C_or_Southern-Northern_Dynasties_%2810369815995%29.jpg/960px-Pottery_Figurine_of_Wei%2C_Jin%2C_or_Southern-Northern_Dynasties_%2810369815995%29.jpg",
+      "localPath": "/images/clothing/wei-jin-2-960px-Pottery_Figurine_of_Wei__Jin__or_Southern-Northern_Dynasties__10369815.jpg",
+      "caption": "Pottery Figurine of Wei, Jin, or Southern-Northern Dynasties (10369815995).jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "wei-jin",
+      "index": 3,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Pottery_Figurine_of_Wei%2C_Jin%2C_or_Southern-Northern_Dynasties_%2810369824225%29.jpg/960px-Pottery_Figurine_of_Wei%2C_Jin%2C_or_Southern-Northern_Dynasties_%2810369824225%29.jpg",
+      "localPath": "/images/clothing/wei-jin-3-960px-Pottery_Figurine_of_Wei__Jin__or_Southern-Northern_Dynasties__10369824.jpg",
+      "caption": "Pottery Figurine of Wei, Jin, or Southern-Northern Dynasties (10369824225).jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "wei-jin",
+      "index": 4,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Pottery_Figurine_of_Wei%2C_Jin%2C_or_Southern-Northern_Dynasties_%2810369810824%29.jpg/960px-Pottery_Figurine_of_Wei%2C_Jin%2C_or_Southern-Northern_Dynasties_%2810369810824%29.jpg",
+      "localPath": "/images/clothing/wei-jin-4-960px-Pottery_Figurine_of_Wei__Jin__or_Southern-Northern_Dynasties__10369810.jpg",
+      "caption": "Pottery Figurine of Wei, Jin, or Southern-Northern Dynasties (10369810824).jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "wei-jin",
+      "index": 5,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Northern_dynasties_soldiers_01.jpg/960px-Northern_dynasties_soldiers_01.jpg",
+      "localPath": "/images/clothing/wei-jin-5-960px-Northern_dynasties_soldiers_01.jpg",
+      "caption": "Northern dynasties soldiers 01.jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "tang",
+      "index": 0,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Court_Ladies_Preparing_Newly_Woven_Silk.jpg/960px-Court_Ladies_Preparing_Newly_Woven_Silk.jpg",
+      "localPath": "/images/clothing/tang-0-960px-Court_Ladies_Preparing_Newly_Woven_Silk.jpg",
+      "caption": "Court Ladies Preparing Newly Woven Silk.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "tang",
+      "index": 1,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Court_Ladies_Preparing_Newly-Woven_Silk.jpg/960px-Court_Ladies_Preparing_Newly-Woven_Silk.jpg",
+      "localPath": "/images/clothing/tang-1-960px-Court_Ladies_Preparing_Newly-Woven_Silk.jpg",
+      "caption": "Court Ladies Preparing Newly-Woven Silk.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "tang",
+      "index": 2,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/a/ad/Court_Ladies_of_the_Tang_cropped.jpg",
+      "localPath": "/images/clothing/tang-2-Court_Ladies_of_the_Tang_cropped.jpg",
+      "caption": "Court Ladies of the Tang cropped.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "tang",
+      "index": 3,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Court_Ladies_Preparing_Newly_Woven_Silk_%28%E6%8D%A3%E7%BB%83%E5%9B%BE%29_by_Emperor_Huizong_%281082%E2%80%931135%29.jpg/960px-Court_Ladies_Preparing_Newly_Woven_Silk_%28%E6%8D%A3%E7%BB%83%E5%9B%BE%29_by_Emperor_Huizong_%281082%E2%80%931135%29.jpg",
+      "localPath": "/images/clothing/tang-3-960px-Court_Ladies_Preparing_Newly_Woven_Silk_______by_Emperor_Huizong__1082.jpg",
+      "caption": "Court Ladies Preparing Newly Woven Silk (捣练图) by Emperor Huizong (1082–1135).jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "tang",
+      "index": 4,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Court_ladies_pounding_silk_from_a_painting_%28%E6%8D%A3%E7%BB%83%E5%9B%BE%29_by_Emperor_Huizong.jpg/960px-Court_ladies_pounding_silk_from_a_painting_%28%E6%8D%A3%E7%BB%83%E5%9B%BE%29_by_Emperor_Huizong.jpg",
+      "localPath": "/images/clothing/tang-4-960px-Court_ladies_pounding_silk_from_a_painting_______by_Emperor_Huizong.jpg",
+      "caption": "Court ladies pounding silk from a painting (捣练图) by Emperor Huizong.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "tang",
+      "index": 5,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Court_Ladies_of_the_Tang.jpg/960px-Court_Ladies_of_the_Tang.jpg",
+      "localPath": "/images/clothing/tang-5-960px-Court_Ladies_of_the_Tang.jpg",
+      "caption": "Court Ladies of the Tang.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "song",
+      "index": 0,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Portrait_de_Song_Xuanzu.jpg/960px-Portrait_de_Song_Xuanzu.jpg",
+      "localPath": "/images/clothing/song-0-960px-Portrait_de_Song_Xuanzu.jpg",
+      "caption": "Portrait de Song Xuanzu.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "song",
+      "index": 1,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Portrait_de_Song_Taizu.jpg/960px-Portrait_de_Song_Taizu.jpg",
+      "localPath": "/images/clothing/song-1-960px-Portrait_de_Song_Taizu.jpg",
+      "caption": "Portrait de Song Taizu.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "song",
+      "index": 2,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Portrait_de_Song_Taizong.jpg/960px-Portrait_de_Song_Taizong.jpg",
+      "localPath": "/images/clothing/song-2-960px-Portrait_de_Song_Taizong.jpg",
+      "caption": "Portrait de Song Taizong.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "song",
+      "index": 3,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/SongEmperorAlbumQinzongPortrait.jpg/960px-SongEmperorAlbumQinzongPortrait.jpg",
+      "localPath": "/images/clothing/song-3-960px-SongEmperorAlbumQinzongPortrait.jpg",
+      "caption": "SongEmperorAlbumQinzongPortrait.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "song",
+      "index": 4,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/SongEmperorAlbumZhenzongPortrait.jpg/960px-SongEmperorAlbumZhenzongPortrait.jpg",
+      "localPath": "/images/clothing/song-4-960px-SongEmperorAlbumZhenzongPortrait.jpg",
+      "caption": "SongEmperorAlbumZhenzongPortrait.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "song",
+      "index": 5,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/7/75/Song_court_lady.jpg",
+      "localPath": "/images/clothing/song-5-Song_court_lady.jpg",
+      "caption": "Song court lady.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "yuan",
+      "index": 0,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/YuanEmperorAlbumKhubilaiPortrait.jpg/960px-YuanEmperorAlbumKhubilaiPortrait.jpg",
+      "localPath": "/images/clothing/yuan-0-960px-YuanEmperorAlbumKhubilaiPortrait.jpg",
+      "caption": "YuanEmperorAlbumKhubilaiPortrait.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "yuan",
+      "index": 1,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/YuanEmperorAlbumKhubilaiFull.jpg/960px-YuanEmperorAlbumKhubilaiFull.jpg",
+      "localPath": "/images/clothing/yuan-1-960px-YuanEmperorAlbumKhubilaiFull.jpg",
+      "caption": "YuanEmperorAlbumKhubilaiFull.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "yuan",
+      "index": 3,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4d/Qubilai_Setsen_Khaan.JPG",
+      "localPath": "/images/clothing/yuan-3-Qubilai_Setsen_Khaan.JPG",
+      "caption": "Qubilai Setsen Khaan.JPG",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "yuan",
+      "index": 4,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/2/26/Man_wearing_a_Mongol_robe_with_underarm_openings.JPG",
+      "localPath": "/images/clothing/yuan-4-Man_wearing_a_Mongol_robe_with_underarm_openings.JPG",
+      "caption": "Man wearing a Mongol robe with underarm openings.JPG",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "yuan",
+      "index": 5,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Man_wearing_a_Mongol_robe_with_underarm_openings2.JPG",
+      "localPath": "/images/clothing/yuan-5-Man_wearing_a_Mongol_robe_with_underarm_openings2.JPG",
+      "caption": "Man wearing a Mongol robe with underarm openings2.JPG",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "ming",
+      "index": 0,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Ming_Xuanzong.jpg/960px-Ming_Xuanzong.jpg",
+      "localPath": "/images/clothing/ming-0-960px-Ming_Xuanzong.jpg",
+      "caption": "Ming Xuanzong.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "ming",
+      "index": 1,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Portrait_assis_de_l%27empereur_Ming_Chengzu.jpg/960px-Portrait_assis_de_l%27empereur_Ming_Chengzu.jpg",
+      "localPath": "/images/clothing/ming-1-960px-Portrait_assis_de_l_empereur_Ming_Chengzu.jpg",
+      "caption": "Portrait assis de l'empereur Ming Chengzu.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "ming",
+      "index": 2,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/A_Seated_Portrait_of_Ming_Emperor_Taizu.jpg/960px-A_Seated_Portrait_of_Ming_Emperor_Taizu.jpg",
+      "localPath": "/images/clothing/ming-2-960px-A_Seated_Portrait_of_Ming_Emperor_Taizu.jpg",
+      "caption": "A Seated Portrait of Ming Emperor Taizu.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "ming",
+      "index": 3,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Portrait_assis_de_l%27empereur_Ming_Xuanzong.jpg/960px-Portrait_assis_de_l%27empereur_Ming_Xuanzong.jpg",
+      "localPath": "/images/clothing/ming-3-960px-Portrait_assis_de_l_empereur_Ming_Xuanzong.jpg",
+      "caption": "Portrait assis de l'empereur Ming Xuanzong.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "ming",
+      "index": 4,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Xuanzong_of_Ming.jpg/960px-Xuanzong_of_Ming.jpg",
+      "localPath": "/images/clothing/ming-4-960px-Xuanzong_of_Ming.jpg",
+      "caption": "Xuanzong of Ming.jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "ming",
+      "index": 5,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Ming_Shenzong_%281%29.jpg/960px-Ming_Shenzong_%281%29.jpg",
+      "localPath": "/images/clothing/ming-5-960px-Ming_Shenzong__1_.jpg",
+      "caption": "Ming Shenzong (1).jpg",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "qing",
+      "index": 0,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/20241025_Dragon_Robe_of_Daoguang_Emperor%2C_Qing_Dynasty_02.jpg/960px-20241025_Dragon_Robe_of_Daoguang_Emperor%2C_Qing_Dynasty_02.jpg",
+      "localPath": "/images/clothing/qing-0-960px-20241025_Dragon_Robe_of_Daoguang_Emperor__Qing_Dynasty_02.jpg",
+      "caption": "20241025 Dragon Robe of Daoguang Emperor, Qing Dynasty 02.jpg",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "dynasty": "qing",
+      "index": 1,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Qing_Dragon_Robe_a.jpg/960px-Qing_Dragon_Robe_a.jpg",
+      "localPath": "/images/clothing/qing-1-960px-Qing_Dragon_Robe_a.jpg",
+      "caption": "Qing Dragon Robe a.jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "qing",
+      "index": 2,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Qing_Dragon_Robe_b.jpg/960px-Qing_Dragon_Robe_b.jpg",
+      "localPath": "/images/clothing/qing-2-960px-Qing_Dragon_Robe_b.jpg",
+      "caption": "Qing Dragon Robe b.jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "qing",
+      "index": 3,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Robe%2C_dragon_%28AM_12081-1%29.jpg/960px-Robe%2C_dragon_%28AM_12081-1%29.jpg",
+      "localPath": "/images/clothing/qing-3-960px-Robe__dragon__AM_12081-1_.jpg",
+      "caption": "Robe, dragon (AM 12081-1).jpg",
+      "license": "CC BY 4.0"
+    },
+    {
+      "dynasty": "qing",
+      "index": 4,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/1913.158_-_Emperor%27s_Jifu_%28Semiformal_Court_Robe%29.jpg/960px-1913.158_-_Emperor%27s_Jifu_%28Semiformal_Court_Robe%29.jpg",
+      "localPath": "/images/clothing/qing-4-960px-1913.158_-_Emperor_s_Jifu__Semiformal_Court_Robe_.jpg",
+      "caption": "1913.158 - Emperor's Jifu (Semiformal Court Robe).jpg",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "qing",
+      "index": 5,
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Robe%2C_dragon_%28AM_12081-3%29.jpg/960px-Robe%2C_dragon_%28AM_12081-3%29.jpg",
+      "localPath": "/images/clothing/qing-5-960px-Robe__dragon__AM_12081-3_.jpg",
+      "caption": "Robe, dragon (AM 12081-3).jpg",
+      "license": "CC BY 4.0"
+    },
+    {
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/4/44/Seven_Sages_of_the_Bamboo_Grove_by_Honda_Tenj%C5%8D.jpg",
+      "localPath": "/images/clothing/extra-0-Seven_Sages_of_the_Bamboo_Grove_by_Honda_Tenj_.jpg"
+    },
+    {
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/%E7%AB%B9%E6%9E%97%E4%B8%83%E8%81%96%E5%9B%B3-Seven_Sages_of_the_Bamboo_Grove_MET_DP361155.jpg/960px-%E7%AB%B9%E6%9E%97%E4%B8%83%E8%81%96%E5%9B%B3-Seven_Sages_of_the_Bamboo_Grove_MET_DP361155.jpg",
+      "localPath": "/images/clothing/extra-1-_____-Seven_Sages_of_the_Bamboo_Grove_MET_DP361155.jpg"
+    },
+    {
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Northern_Wei_Painted_Pottery_Female_Musician_03.jpg/960px-Northern_Wei_Painted_Pottery_Female_Musician_03.jpg",
+      "localPath": "/images/clothing/extra-2-Northern_Wei_Painted_Pottery_Female_Musician_03.jpg"
+    },
+    {
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Northern_Wei_Pottery_Musicians_from_Tomb_of_Yuan_Zhao%2C_Luoyang_-_1.jpg/960px-Northern_Wei_Pottery_Musicians_from_Tomb_of_Yuan_Zhao%2C_Luoyang_-_1.jpg",
+      "localPath": "/images/clothing/extra-3-Northern_Wei_Pottery_Musicians_from_Tomb_of_Yuan_Zhao__Luoyang_-_1.jpg"
+    },
+    {
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Tang-PolychromeGlazedFigurineOfWoman-ShanghaiMuseum-May27-08.jpg/960px-Tang-PolychromeGlazedFigurineOfWoman-ShanghaiMuseum-May27-08.jpg",
+      "localPath": "/images/clothing/extra-4-Tang-PolychromeGlazedFigurineOfWoman-ShanghaiMuseum-May27-08.jpg"
+    },
+    {
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/4/40/Tang_Dynasty_woman_with_long_silk_sleeves.JPG",
+      "localPath": "/images/clothing/extra-5-Tang_Dynasty_woman_with_long_silk_sleeves.JPG"
+    },
+    {
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Tomb_figurine_of_a_horse_with_rider%2C_China%2C_Tang_dynasty%2C_618-906_AD%2C_earthenware_with_traces_of_red_and_yellow_glaze_-_%C3%96stasiatiska_museet%2C_Stockholm_-_DSC09585.JPG/960px-thumbnail.jpg",
+      "localPath": "/images/clothing/extra-6-Tomb_figurine_of_a_horse_with_rider__China__Tang_dynasty__618-906_AD__earthenware_with_traces_of.jpg"
+    },
+    {
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Cavalier_en_armure_Yide_Tang_Guimet.jpg/960px-Cavalier_en_armure_Yide_Tang_Guimet.jpg",
+      "localPath": "/images/clothing/extra-7-Cavalier_en_armure_Yide_Tang_Guimet.jpg"
+    },
+    {
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/%E6%96%87%E6%9C%83%E5%9C%96.jpg/960px-%E6%96%87%E6%9C%83%E5%9C%96.jpg",
+      "localPath": "/images/clothing/extra-8-___.jpg"
+    },
+    {
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/3/39/Dame_Guoguo_partant_faire_une_promenade_%C3%A0_cheval%2C_copie_par_Li_Gonglin.jpg",
+      "localPath": "/images/clothing/extra-9-Dame_Guoguo_partant_faire_une_promenade___cheval__copie_par_Li_Gonglin.jpg"
+    },
+    {
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Refusing_the_Seat_-_Anonymous_painter_during_the_Song_dynasty.jpg/960px-Refusing_the_Seat_-_Anonymous_painter_during_the_Song_dynasty.jpg",
+      "localPath": "/images/clothing/extra-10-Refusing_the_Seat_-_Anonymous_painter_during_the_Song_dynasty.jpg"
+    },
+    {
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Liu-Kuan-Tao-Jagd.JPG/960px-Liu-Kuan-Tao-Jagd.JPG",
+      "localPath": "/images/clothing/extra-12-Liu-Kuan-Tao-Jagd.JPG"
+    },
+    {
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/9/94/%D3%A8%D0%B3%D3%A9%D0%B4%D1%8D%D0%B9_%D1%85%D0%B0%D0%B0%D0%BD.jpg",
+      "localPath": "/images/clothing/extra-13-___________.jpg"
+    },
+    {
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Portrait_assis_de_l%27empereur_Tianqi.jpg/960px-Portrait_assis_de_l%27empereur_Tianqi.jpg",
+      "localPath": "/images/clothing/extra-14-Portrait_assis_de_l_empereur_Tianqi.jpg"
+    },
+    {
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Man%27s_semi-formal_court_robe_%28jifu%29_-_Google_Art_Project.jpg/960px-Man%27s_semi-formal_court_robe_%28jifu%29_-_Google_Art_Project.jpg",
+      "localPath": "/images/clothing/extra-16-Man_s_semi-formal_court_robe__jifu__-_Google_Art_Project.jpg"
+    }
+  ]
+}

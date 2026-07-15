@@ -28,6 +28,8 @@ export default function ClothingHistoryPage() {
   const t = useT();
   const [activeTab, setActiveTab] = useState<'dynasty' | 'type'>('dynasty');
   const [selectedDynasty, setSelectedDynasty] = useState<DynastyClothing | null>(null);
+  // 图片预览（点击图片网格时弹出大图）
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-20 pb-12 px-4">
@@ -66,16 +68,30 @@ export default function ClothingHistoryPage() {
             {DYNASTY_CLOTHING.map((dynasty, idx) => (
               <RevealOnScroll key={dynasty.id} delay={idx * 50} threshold={0.01}>
                 <div
-                  className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 shadow-lg overflow-hidden hover:shadow-xl transition-all cursor-pointer h-full"
+                  className="bg-white dark:bg-ink-900 rounded-2xl border-2 border-ink-200 dark:border-ink-700 shadow-lg overflow-hidden hover:shadow-xl transition-all cursor-pointer h-full flex flex-col"
                   onClick={() => setSelectedDynasty(dynasty)}
                 >
-                  <div className="p-5">
+                  {dynasty.images[0] && (
+                    <div className="relative w-full aspect-[4/3] overflow-hidden bg-ink-100 dark:bg-ink-800">
+                      <img
+                        src={dynasty.images[0].url}
+                        alt={dynasty.images[0].caption}
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+                        <p className="text-xs text-white line-clamp-1">{dynasty.images[0].caption}</p>
+                      </div>
+                    </div>
+                  )}
+                  <div className="p-5 flex-1 flex flex-col">
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="text-xl font-bold text-ink-900 dark:text-ink-100">{dynasty.dynasty}</h3>
                       <span className="text-xs text-ink-500">{dynasty.era}</span>
                     </div>
                     <p className="text-sm text-ink-600 dark:text-ink-400 mb-4 line-clamp-2">{dynasty.description}</p>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-1.5 mt-auto">
                       {dynasty.clothingItems.slice(0, 4).map((item, i) => (
                         <span key={i} className="text-xs px-2 py-1 rounded bg-accent/10 text-accent">
                           {TYPE_ICONS[item.type]} {item.name}
@@ -207,7 +223,63 @@ export default function ClothingHistoryPage() {
                   <p className="text-xs text-ink-600 dark:text-ink-400">{selectedDynasty.culturalMeaning}</p>
                 </div>
               </div>
+
+              {selectedDynasty.images.length > 0 && (
+                <div className="mt-6">
+                  <h4 className="text-sm font-bold text-ink-800 dark:text-ink-200 mb-3">
+                    {t('clothingHistory.items')} · 文物图鉴
+                    <span className="ml-2 text-xs text-ink-500 font-normal">（{selectedDynasty.images.length} 张，源自 Wikimedia Commons）</span>
+                  </h4>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {selectedDynasty.images.map((img, i) => (
+                      <figure
+                        key={i}
+                        className="group cursor-pointer rounded-lg overflow-hidden border border-ink-200 dark:border-ink-700 bg-ink-50 dark:bg-ink-800"
+                        onClick={() => setPreviewImage(img.url)}
+                      >
+                        <div className="relative aspect-[4/3] overflow-hidden bg-ink-100 dark:bg-ink-900">
+                          <img
+                            src={img.url}
+                            alt={img.caption}
+                            loading="lazy"
+                            referrerPolicy="no-referrer"
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          />
+                          <span className="absolute top-1 right-1 text-[10px] px-1.5 py-0.5 rounded bg-black/60 text-white">
+                            {img.license}
+                          </span>
+                        </div>
+                        <figcaption className="p-2 text-xs text-ink-600 dark:text-ink-400 line-clamp-2">
+                          {img.caption}
+                        </figcaption>
+                      </figure>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
+          </div>
+        )}
+
+        {previewImage && (
+          <div
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/85 p-4"
+            onClick={() => setPreviewImage(null)}
+          >
+            <button
+              onClick={() => setPreviewImage(null)}
+              className="absolute top-4 right-4 text-white/80 hover:text-white text-3xl leading-none"
+              aria-label="关闭"
+            >
+              ×
+            </button>
+            <img
+              src={previewImage}
+              alt="大图预览"
+              referrerPolicy="no-referrer"
+              className="max-w-[92vw] max-h-[88vh] object-contain rounded-lg shadow-2xl"
+              onClick={e => e.stopPropagation()}
+            />
           </div>
         )}
       </div>

@@ -50,7 +50,7 @@ const RoundTableConferencePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-ink-950 dark:via-ink-950 dark:to-ink-900 py-8 px-4">
       <div className="max-w-7xl mx-auto">
         <RevealOnScroll>
           <SectionHeader
@@ -167,15 +167,15 @@ const RoundTableConferencePage: React.FC = () => {
                       ))}
                     </div>
 
-                    <div className="mt-4 p-4 bg-purple-50 rounded-xl">
-                      <p className="text-sm text-purple-800">
+                    <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
+                      <p className="text-sm text-purple-800 dark:text-purple-300">
                         {t('roundTableConference.participants_count', { count: participants.length })}
                       </p>
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                  <div className="bg-white dark:bg-ink-800 rounded-2xl shadow-lg p-6">
+                    <h3 className="text-xl font-bold text-gray-800 dark:text-ink-100 mb-4 flex items-center gap-2">
                       <FaHistory className="text-purple-500" />
                       {t('roundTableConference.participants_info')}
                     </h3>
@@ -187,32 +187,32 @@ const RoundTableConferencePage: React.FC = () => {
                             key={figure.id}
                             className={`p-4 rounded-xl border-2 ${
                               participants.includes(figure.id)
-                                ? 'border-purple-400 bg-purple-50'
-                                : 'border-gray-200 bg-gray-50 opacity-50'
+                                ? 'border-purple-400 bg-purple-50 dark:bg-purple-900/20'
+                                : 'border-gray-200 dark:border-ink-700 bg-gray-50 dark:bg-ink-700/40 opacity-50'
                             }`}
                           >
                             <div className="flex items-center gap-3 mb-2">
                               <span className="text-3xl">{figure.avatar}</span>
                               <div>
-                                <h4 className="font-bold text-gray-800">{figure.displayName}</h4>
-                                <p className="text-sm text-gray-600">{figure.role}</p>
-                                <p className="text-xs text-purple-600">{figure.dynasty}·{figure.era}</p>
+                                <h4 className="font-bold text-gray-800 dark:text-ink-100">{figure.displayName}</h4>
+                                <p className="text-sm text-gray-600 dark:text-ink-300">{figure.role}</p>
+                                <p className="text-xs text-purple-600 dark:text-purple-400">{figure.dynasty}·{figure.era}</p>
                               </div>
                             </div>
 
                             <div className="mb-3">
-                              <p className="text-sm text-gray-500">{t('roundTableConference.core_opinion')}</p>
-                              <p className="text-gray-700 text-sm italic">"{figure.keyOpinion}"</p>
+                              <p className="text-sm text-gray-500 dark:text-ink-400">{t('roundTableConference.core_opinion')}</p>
+                              <p className="text-gray-700 dark:text-ink-200 text-sm italic">"{figure.keyOpinion}"</p>
                             </div>
 
                             <div className="mb-3">
-                              <p className="text-sm text-gray-500">{t('roundTableConference.key_concept')}</p>
-                              <p className="text-gray-700">{figure.keyConcept}</p>
+                              <p className="text-sm text-gray-500 dark:text-ink-400">{t('roundTableConference.key_concept')}</p>
+                              <p className="text-gray-700 dark:text-ink-200">{figure.keyConcept}</p>
                             </div>
 
                             <div className="mb-3">
-                              <p className="text-sm text-gray-500">{t('roundTableConference.modern_relevance')}</p>
-                              <p className="text-gray-600 text-sm">{figure.modernRelevance}</p>
+                              <p className="text-sm text-gray-500 dark:text-ink-400">{t('roundTableConference.modern_relevance')}</p>
+                              <p className="text-gray-600 dark:text-ink-300 text-sm">{figure.modernRelevance}</p>
                             </div>
 
                             <div className="flex flex-wrap gap-1">
@@ -229,8 +229,8 @@ const RoundTableConferencePage: React.FC = () => {
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center text-gray-500 py-12">
-                        <FaUsers className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                      <div className="text-center text-gray-500 dark:text-ink-400 py-12">
+                        <FaUsers className="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-ink-600" />
                         <p>{t('roundTableConference.min_participants')}</p>
                       </div>
                     )}
@@ -422,19 +422,19 @@ const DiscussionSession: React.FC<{
           </div>
 
           {isCompleted && (
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl shadow-lg p-6 mb-6">
-              <h3 className="text-xl font-bold text-green-800 mb-4 flex items-center gap-2">
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl shadow-lg p-6 mb-6">
+              <h3 className="text-xl font-bold text-green-800 dark:text-green-300 mb-4 flex items-center gap-2">
                 <FaGlobe className="text-green-500" />
                 {t('roundTableConference.summary_title')}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-white rounded-xl p-4">
-                  <h4 className="font-bold text-gray-800 mb-2">{t('roundTableConference.summary_theme')}</h4>
-                  <p className="text-gray-700">{topic.title}</p>
+                <div className="bg-white dark:bg-ink-800 rounded-xl p-4">
+                  <h4 className="font-bold text-gray-800 dark:text-ink-100 mb-2">{t('roundTableConference.summary_theme')}</h4>
+                  <p className="text-gray-700 dark:text-ink-200">{topic.title}</p>
                 </div>
-                <div className="bg-white rounded-xl p-4">
-                  <h4 className="font-bold text-gray-800 mb-2">{t('roundTableConference.discussion_count_label')}</h4>
-                  <p className="text-gray-700">{t('roundTableConference.summary_count', { count: participants.length })}</p>
+                <div className="bg-white dark:bg-ink-800 rounded-xl p-4">
+                  <h4 className="font-bold text-gray-800 dark:text-ink-100 mb-2">{t('roundTableConference.discussion_count_label')}</h4>
+                  <p className="text-gray-700 dark:text-ink-200">{t('roundTableConference.summary_count', { count: participants.length })}</p>
                 </div>
               </div>
               <button

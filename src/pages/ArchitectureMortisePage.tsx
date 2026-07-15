@@ -56,7 +56,7 @@ const ArchitectureMortisePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 dark:from-ink-950 dark:via-ink-950 dark:to-ink-900 py-8 px-4">
       <div className="max-w-7xl mx-auto">
         <RevealOnScroll>
           <SectionHeader
@@ -263,7 +263,7 @@ const AncientStructureModal: React.FC<{
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div
-        className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white dark:bg-ink-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
       >
         <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white p-6 rounded-t-2xl">
           <div className="flex items-start justify-between">
@@ -290,45 +290,45 @@ const AncientStructureModal: React.FC<{
 
         <div className="p-6">
           <div className="prose max-w-none">
-            <p className="text-gray-700 text-lg leading-relaxed mb-6">
+            <p className="text-gray-700 dark:text-ink-200 text-lg leading-relaxed mb-6">
               {structure.description}
             </p>
 
-            <h3 className="text-xl font-bold text-gray-800 mb-3 border-l-4 border-orange-500 pl-3">
+            <h3 className="text-xl font-bold text-gray-800 dark:text-ink-100 mb-3 border-l-4 border-orange-500 pl-3">
               {t('architectureMortise.technical_features')}
             </h3>
             <ul className="space-y-2 mb-6">
               {structure.technicalFeatures.map((feature, index) => (
                 <li key={index} className="flex items-start gap-2">
                   <span className="text-orange-500 mt-1">•</span>
-                  <span className="text-gray-700">{feature}</span>
+                  <span className="text-gray-700 dark:text-ink-200">{feature}</span>
                 </li>
               ))}
             </ul>
 
-            <h3 className="text-xl font-bold text-gray-800 mb-3 border-l-4 border-amber-500 pl-3">
+            <h3 className="text-xl font-bold text-gray-800 dark:text-ink-100 mb-3 border-l-4 border-amber-500 pl-3">
               {t('architectureMortise.building_features')}
             </h3>
-            <p className="text-gray-700 mb-4">{structure.highlight}</p>
+            <p className="text-gray-700 dark:text-ink-200 mb-4">{structure.highlight}</p>
 
-            <h3 className="text-xl font-bold text-gray-800 mb-3 border-l-4 border-amber-600 pl-3">
+            <h3 className="text-xl font-bold text-gray-800 dark:text-ink-100 mb-3 border-l-4 border-amber-600 pl-3">
               {t('architectureMortise.visitor_experience')}
             </h3>
             <ul className="space-y-2 mb-6">
               {structure.visitorExperience.map((experience, index) => (
                 <li key={index} className="flex items-start gap-2">
                   <span className="text-amber-500 mt-1">•</span>
-                  <span className="text-gray-700">{experience}</span>
+                  <span className="text-gray-700 dark:text-ink-200">{experience}</span>
                 </li>
               ))}
             </ul>
 
-            <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-4 border-2 border-orange-200">
-              <h3 className="text-lg font-bold text-gray-800 mb-2 flex items-center gap-2">
+            <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30 rounded-xl p-4 border-2 border-orange-200 dark:border-orange-800">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-ink-100 mb-2 flex items-center gap-2">
                 <FaLightbulb className="text-orange-500" />
                 {t('architectureMortise.construction_challenge')}
               </h3>
-              <p className="text-gray-700">{structure.constructionChallenge}</p>
+              <p className="text-gray-700 dark:text-ink-200">{structure.constructionChallenge}</p>
             </div>
           </div>
         </div>

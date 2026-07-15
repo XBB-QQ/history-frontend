@@ -14,6 +14,13 @@ export interface ClothingItem {
   historicalNote: string;
 }
 
+/** 服饰图片资源（来自 Wikimedia Commons，CC0/Public Domain/CC BY 等开放授权） */
+export interface ClothingImage {
+  url: string;
+  caption: string;
+  license: string;
+}
+
 export interface DynastyClothing {
   id: string;
   dynasty: string;
@@ -24,6 +31,8 @@ export interface DynastyClothing {
   colorSystem: string;
   rankSystem: string;
   culturalMeaning: string;
+  /** 该朝代相关文物图片（壁画/陶俑/绘画/服饰实物等） */
+  images: ClothingImage[];
 }
 
 export const DYNASTY_CLOTHING: DynastyClothing[] = [
@@ -76,6 +85,33 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
     colorSystem: '尚玄（黑）尚黄，五方正色（青赤黄白黑）对应五行五方',
     rankSystem: '以冕旒数量、衣章纹样、玉佩组数区分天子至士人的等级',
     culturalMeaning: '先秦服饰是礼制的物化表现，"垂衣裳而天下治"体现了服饰的政治功能',
+    images: [
+      {
+        url: '/images/clothing/shang-zhou-0-960px-Bronze_Colossal_Standing_Figure__Sanxingdui_a.jpg',
+        caption: '三星堆青铜大立人像（商代，服饰纹饰繁复，体现古蜀祭司服饰）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/shang-zhou-1-960px-Sanxingdui_Bronze_Standing_Figure__9950576136_.jpg',
+        caption: '三星堆青铜立人像（另一角度，可见冠帽与衣纹细节）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/shang-zhou-2-960px-Bronze_Figure_with_Headdress__Sanxingdui.jpg',
+        caption: '三星堆戴冠青铜人像（反映商代冠帽形制）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/shang-zhou-3-960px-Ancient_Shu_Altar_Reconstruction__Sanxingdui.jpg',
+        caption: '古蜀祭坛复原（三星堆博物馆藏，反映祭祀服饰）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/shang-zhou-4-960px-Pendant_in_the_shape_of_a_Human_Figure__China__Warring_States_period__.jpg',
+        caption: '战国玉人佩饰（哈佛大学萨克勒博物馆藏，反映深衣形制）',
+        license: 'Public domain',
+      },
+    ],
   },
   {
     id: 'qin-han',
@@ -126,6 +162,38 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
     colorSystem: '秦尚黑（水德），汉初尚赤（火德），东汉改尚黄',
     rankSystem: '以冠式（长冠/进贤冠/法冠）和绶带颜色区分官品等级',
     culturalMeaning: '汉代服饰奠定了汉服的基本形制，丝绸之路使丝绸成为中华文明的象征',
+    images: [
+      {
+        url: '/images/clothing/qin-han-1-Dahuting_tomb_mural_detail_of_a_woman__Eastern_Han.jpg',
+        caption: '打虎亭汉墓壁画·女性人物特写（东汉，反映曲裾深衣穿着效果）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/qin-han-2-960px-Dahuting_Eastern_Han_Tombs_Mural_-_29.jpg',
+        caption: '打虎亭汉墓壁画（东汉，反映汉代人物服饰全貌）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/qin-han-3-960px-Dahuting_Eastern_Han_Tombs_Mural_-_5.jpg',
+        caption: '打虎亭汉墓壁画（东汉宴饮/乐舞场景，人物服饰清晰）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/qin-han-4-960px-Dahuting_Eastern_Han_Tombs_Mural_-_20.jpg',
+        caption: '打虎亭汉墓壁画（东汉，反映鞋履与下裳形制）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/qin-han-5-960px-Dahuting_Eastern_Han_Tombs_Mural_-_30.jpg',
+        caption: '打虎亭汉墓壁画（东汉人物群像）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/qin-han-0-Dahuting_mural__Eastern_Han_Dynasty.jpg',
+        caption: '打虎亭汉墓壁画全景（河南密县，东汉晚期）',
+        license: 'Public domain',
+      },
+    ],
   },
   {
     id: 'wei-jin',
@@ -176,6 +244,38 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
     colorSystem: '尚白（魏）尚红（晋），南方崇素雅，北方尚鲜艳',
     rankSystem: '以服饰颜色和材质区分等级，裤褶颜色区分文武',
     culturalMeaning: '魏晋服饰反映了个性的解放和民族交融，为隋唐服饰的多元开放奠定基础',
+    images: [
+      {
+        url: '/images/clothing/extra-0-Seven_Sages_of_the_Bamboo_Grove_by_Honda_Tenj_.jpg',
+        caption: '竹林七贤图（反映魏晋宽衫大袖、幅巾束发的名士风度）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/extra-1-_____-Seven_Sages_of_the_Bamboo_Grove_MET_DP361155.jpg',
+        caption: '竹林七贤图（大都会博物馆藏本，反映褒衣博带之风）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/wei-jin-0-960px-Pottery_Figurine_of_Wei__Jin__or_Southern-Northern_Dynasties.jpg',
+        caption: '魏晋南北朝陶俑（反映当时襦裙与裤褶形制）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/wei-jin-5-960px-Northern_dynasties_soldiers_01.jpg',
+        caption: '北朝士兵陶俑（反映裤褶服便于骑射的特征）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/extra-2-Northern_Wei_Painted_Pottery_Female_Musician_03.jpg',
+        caption: '北魏彩绘女乐俑（反映北方鲜卑服饰与汉服交融）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/extra-3-Northern_Wei_Pottery_Musicians_from_Tomb_of_Yuan_Zhao__Luoyang_-_1.jpg',
+        caption: '北魏元邵墓乐俑（洛阳出土，反映北朝服饰）',
+        license: 'CC0',
+      },
+    ],
   },
   {
     id: 'tang',
@@ -226,6 +326,38 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
     colorSystem: '品色服：三品紫，四五品绯，六七品绿，八九品青',
     rankSystem: '以袍服颜色、革带材质（玉/犀/金/银/铜）和鱼袋区分官品',
     culturalMeaning: '唐代服饰是古代最开放的时期，胡服与汉服并存，体现了大唐的包容与自信',
+    images: [
+      {
+        url: '/images/clothing/tang-5-960px-Court_Ladies_of_the_Tang.jpg',
+        caption: '唐代仕女图（反映齐胸襦裙与披帛的穿着效果）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/tang-4-960px-Court_ladies_pounding_silk_from_a_painting_______by_Emperor_Huizong.jpg',
+        caption: '捣练图（宋徽宗摹唐代张萱原作，反映唐代女装全貌）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/extra-4-Tang-PolychromeGlazedFigurineOfWoman-ShanghaiMuseum-May27-08.jpg',
+        caption: '唐三彩女立俑（上海博物馆藏，反映唐代女性服饰实物）',
+        license: 'CC BY-SA 3.0',
+      },
+      {
+        url: '/images/clothing/extra-5-Tang_Dynasty_woman_with_long_silk_sleeves.JPG',
+        caption: '唐代女俑·长袖造型（反映半臂与披帛搭配）',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        url: '/images/clothing/extra-6-Tomb_figurine_of_a_horse_with_rider__China__Tang_dynasty__618-906_AD__earthenware_with_traces_of.jpg',
+        caption: '唐代骑马俑（斯德哥尔摩远东博物馆藏，反映圆领袍衫与胡服）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/extra-7-Cavalier_en_armure_Yide_Tang_Guimet.jpg',
+        caption: '唐代武士骑马俑（吉美博物馆藏，反映圆领袍配革带靴）',
+        license: 'CC BY-SA 4.0',
+      },
+    ],
   },
   {
     id: 'song',
@@ -276,6 +408,33 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
     colorSystem: '尚青绿等素雅色，禁用正色（黄/紫），品色服沿用唐制但更素淡',
     rankSystem: '以幞头展角长度、袍服颜色、革带材质区分官品',
     culturalMeaning: '宋代服饰受理学影响趋向保守内敛，瘦长造型体现了文人审美和理性精神',
+    images: [
+      {
+        url: '/images/clothing/song-1-960px-Portrait_de_Song_Taizu.jpg',
+        caption: '宋太祖赵匡胤画像（反映展角幞头与圆领袍形制）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/song-5-Song_court_lady.jpg',
+        caption: '宋代宫女图（反映褙子修身瘦长的特征）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/extra-8-___.jpg',
+        caption: '文会图（反映宋代文人直裰与日常服饰）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/extra-9-Dame_Guoguo_partant_faire_une_promenade___cheval__copie_par_Li_Gonglin.jpg',
+        caption: '虢国夫人游春图摹本（李公麟，反映宋代女性襦裙）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/extra-10-Refusing_the_Seat_-_Anonymous_painter_during_the_Song_dynasty.jpg',
+        caption: '宋代画作·辞座图（反映宋代士人服饰）',
+        license: 'Public domain',
+      },
+    ],
   },
   {
     id: 'yuan',
@@ -326,6 +485,38 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
     colorSystem: '尚白（蒙古尚白），质孙服一日一色',
     rankSystem: '以质孙服颜色、冠帽装饰、革带材质区分等级',
     culturalMeaning: '元代服饰是蒙古与汉族文化的交融，质孙服制度体现了大一统下的民族融合',
+    images: [
+      {
+        url: '/images/clothing/yuan-0-960px-YuanEmperorAlbumKhubilaiPortrait.jpg',
+        caption: '元世祖忽必烈画像（反映钹笠冠与蒙古袍服）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/yuan-1-960px-YuanEmperorAlbumKhubilaiFull.jpg',
+        caption: '忽必烈全身像（反映质孙服与蒙古服饰全貌）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/yuan-4-Man_wearing_a_Mongol_robe_with_underarm_openings.JPG',
+        caption: '蒙古袍实物（腋下开衩，反映辫线袄形制）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/extra-12-Liu-Kuan-Tao-Jagd.JPG',
+        caption: '刘贯道《元世祖出猎图》（反映元代帝王狩猎服饰）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/yuan-3-Qubilai_Setsen_Khaan.JPG',
+        caption: '元世祖画像（另一版本，可见冠帽细节）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/extra-13-___________.jpg',
+        caption: '元太宗窝阔台汗画像（反映蒙古帝王冠帽）',
+        license: 'CC0',
+      },
+    ],
   },
   {
     id: 'ming',
@@ -376,6 +567,33 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
     colorSystem: '尚赤（红），品色服：一至四品绯，五至七品青，八九品绿',
     rankSystem: '以补子纹样、腰带材质（玉/犀角/金/银/角）和冠帽区分官品',
     culturalMeaning: '明代服饰是对汉文化的复兴，补子制度将服饰等级推向极致，影响了朝鲜越南服饰',
+    images: [
+      {
+        url: '/images/clothing/ming-2-960px-A_Seated_Portrait_of_Ming_Emperor_Taizu.jpg',
+        caption: '明太祖朱元璋坐像（反映乌纱帽与补服形制）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/ming-1-960px-Portrait_assis_de_l_empereur_Ming_Chengzu.jpg',
+        caption: '明成祖朱棣坐像（反映明代帝王冠服与补子）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/ming-0-960px-Ming_Xuanzong.jpg',
+        caption: '明宣宗坐像（反映乌纱帽与圆领袍）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/ming-5-960px-Ming_Shenzong__1_.jpg',
+        caption: '明神宗坐像（反映明代晚期帝王服饰与补子纹样）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/extra-14-Portrait_assis_de_l_empereur_Tianqi.jpg',
+        caption: '明熹宗坐像（反映明代冠帽与袍服细节）',
+        license: 'Public domain',
+      },
+    ],
   },
   {
     id: 'qing',
@@ -426,6 +644,38 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
     colorSystem: '尚黄（帝王专用），品色服：石青色外褂为主，以补子和顶戴区分',
     rankSystem: '以顶戴材质、花翎眼数、补子纹样、朝珠材质综合区分官品',
     culturalMeaning: '清代服饰是满汉文化碰撞的产物，剃发易服政策深刻影响了近代中国人的外貌认同',
+    images: [
+      {
+        url: '/images/clothing/qing-0-960px-20241025_Dragon_Robe_of_Daoguang_Emperor__Qing_Dynasty_02.jpg',
+        caption: '清道光帝龙袍实物（反映清代皇帝吉服龙袍）',
+        license: 'CC BY-SA 4.0',
+      },
+      {
+        url: '/images/clothing/qing-1-960px-Qing_Dragon_Robe_a.jpg',
+        caption: '清代龙袍正面（反映马蹄袖与龙纹刺绣）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/qing-2-960px-Qing_Dragon_Robe_b.jpg',
+        caption: '清代龙袍背面（反映补子与龙纹布局）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/qing-4-960px-1913.158_-_Emperor_s_Jifu__Semiformal_Court_Robe_.jpg',
+        caption: '清代皇帝吉服袍（博物馆藏，反映吉服全貌）',
+        license: 'CC0',
+      },
+      {
+        url: '/images/clothing/extra-16-Man_s_semi-formal_court_robe__jifu__-_Google_Art_Project.jpg',
+        caption: '清代男子吉服袍（Google Art Project，反映长袍马褂形制）',
+        license: 'Public domain',
+      },
+      {
+        url: '/images/clothing/qing-3-960px-Robe__dragon__AM_12081-1_.jpg',
+        caption: '清代龙袍实物（反映朝珠搭配与服饰等级）',
+        license: 'CC BY 4.0',
+      },
+    ],
   },
 ];
 
