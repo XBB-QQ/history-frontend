@@ -174,18 +174,8 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
         license: 'CC0',
       },
       {
-        url: '/images/clothing/qin-han-3-960px-Dahuting_Eastern_Han_Tombs_Mural_-_5.jpg',
-        caption: '打虎亭汉墓壁画（东汉宴饮/乐舞场景，人物服饰清晰）',
-        license: 'CC0',
-      },
-      {
         url: '/images/clothing/qin-han-4-960px-Dahuting_Eastern_Han_Tombs_Mural_-_20.jpg',
         caption: '打虎亭汉墓壁画（东汉，反映鞋履与下裳形制）',
-        license: 'CC0',
-      },
-      {
-        url: '/images/clothing/qin-han-5-960px-Dahuting_Eastern_Han_Tombs_Mural_-_30.jpg',
-        caption: '打虎亭汉墓壁画（东汉人物群像）',
         license: 'CC0',
       },
       {
@@ -246,8 +236,8 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
     culturalMeaning: '魏晋服饰反映了个性的解放和民族交融，为隋唐服饰的多元开放奠定基础',
     images: [
       {
-        url: '/images/clothing/extra-0-Seven_Sages_of_the_Bamboo_Grove_by_Honda_Tenj_.jpg',
-        caption: '竹林七贤图（反映魏晋宽衫大袖、幅巾束发的名士风度）',
+        url: '/images/clothing/wei-jin-2-960px-Pottery_Figurine_of_Wei__Jin__or_Southern-Northern_Dynasties__10369815.jpg',
+        caption: '魏晋南北朝陶俑（反映当时宽衫大袖与幅巾束发）',
         license: 'CC0',
       },
       {
@@ -343,9 +333,9 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
         license: 'CC BY-SA 3.0',
       },
       {
-        url: '/images/clothing/extra-5-Tang_Dynasty_woman_with_long_silk_sleeves.JPG',
-        caption: '唐代女俑·长袖造型（反映半臂与披帛搭配）',
-        license: 'CC BY-SA 4.0',
+        url: '/images/clothing/tang-1-960px-Court_Ladies_Preparing_Newly-Woven_Silk.jpg',
+        caption: '捣练图（宋代摹本，反映唐代女装全貌与半臂披帛）',
+        license: 'Public domain',
       },
       {
         url: '/images/clothing/extra-6-Tomb_figurine_of_a_horse_with_rider__China__Tang_dynasty__618-906_AD__earthenware_with_traces_of.jpg',
@@ -410,13 +400,13 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
     culturalMeaning: '宋代服饰受理学影响趋向保守内敛，瘦长造型体现了文人审美和理性精神',
     images: [
       {
-        url: '/images/clothing/song-1-960px-Portrait_de_Song_Taizu.jpg',
-        caption: '宋太祖赵匡胤画像（反映展角幞头与圆领袍形制）',
+        url: '/images/clothing/song-0-960px-Portrait_de_Song_Xuanzu.jpg',
+        caption: '宋宣祖画像（反映宋代帝王冠服与袍服形制）',
         license: 'Public domain',
       },
       {
-        url: '/images/clothing/song-5-Song_court_lady.jpg',
-        caption: '宋代宫女图（反映褙子修身瘦长的特征）',
+        url: '/images/clothing/song-2-960px-Portrait_de_Song_Taizong.jpg',
+        caption: '宋太宗画像（反映展角幞头与圆领袍形制）',
         license: 'Public domain',
       },
       {
@@ -425,8 +415,8 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
         license: 'Public domain',
       },
       {
-        url: '/images/clothing/extra-9-Dame_Guoguo_partant_faire_une_promenade___cheval__copie_par_Li_Gonglin.jpg',
-        caption: '虢国夫人游春图摹本（李公麟，反映宋代女性襦裙）',
+        url: '/images/clothing/song-4-960px-SongEmperorAlbumZhenzongPortrait.jpg',
+        caption: '宋真宗画像（反映宋代帝王服饰与冠帽细节）',
         license: 'Public domain',
       },
       {
@@ -510,11 +500,6 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
         url: '/images/clothing/yuan-3-Qubilai_Setsen_Khaan.JPG',
         caption: '元世祖画像（另一版本，可见冠帽细节）',
         license: 'Public domain',
-      },
-      {
-        url: '/images/clothing/extra-13-___________.jpg',
-        caption: '元太宗窝阔台汗画像（反映蒙古帝王冠帽）',
-        license: 'CC0',
       },
     ],
   },
@@ -646,23 +631,13 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
     culturalMeaning: '清代服饰是满汉文化碰撞的产物，剃发易服政策深刻影响了近代中国人的外貌认同',
     images: [
       {
-        url: '/images/clothing/qing-0-960px-20241025_Dragon_Robe_of_Daoguang_Emperor__Qing_Dynasty_02.jpg',
-        caption: '清道光帝龙袍实物（反映清代皇帝吉服龙袍）',
-        license: 'CC BY-SA 4.0',
+        url: '/images/clothing/qing-5-960px-Robe__dragon__AM_12081-3_.jpg',
+        caption: '清代龙袍实物（反映龙纹刺绣与服饰工艺）',
+        license: 'CC BY 4.0',
       },
       {
         url: '/images/clothing/qing-1-960px-Qing_Dragon_Robe_a.jpg',
         caption: '清代龙袍正面（反映马蹄袖与龙纹刺绣）',
-        license: 'CC0',
-      },
-      {
-        url: '/images/clothing/qing-2-960px-Qing_Dragon_Robe_b.jpg',
-        caption: '清代龙袍背面（反映补子与龙纹布局）',
-        license: 'CC0',
-      },
-      {
-        url: '/images/clothing/qing-4-960px-1913.158_-_Emperor_s_Jifu__Semiformal_Court_Robe_.jpg',
-        caption: '清代皇帝吉服袍（博物馆藏，反映吉服全貌）',
         license: 'CC0',
       },
       {
