@@ -1,5 +1,47 @@
 # 迭代记录 — 五千年史馆前端
 
+## 2026-07-20 · P0 安全走查与修复（第三批前端配套：B1 quiz 泄题修复）
+
+### 一、背景
+
+第三批后端漏洞 B1（QuestionDTO 答案泄露）需要前端配套调整。后端出题端点不再返回 `correctIndex`/`explanation`，前端类型和高亮逻辑需相应调整。
+
+### 二、问题
+
+[`QuizDialog.tsx`](file:///d:/claudeCode/history-frontend/src/components/quiz/QuizDialog.tsx) 原逻辑：用户选择选项后（`selected !== null`），立即用 `question.correctIndex` 高亮正确/错误答案。但 `question` 来自出题端点 `fetchDailyQuiz`，出题端点返回的 `correctIndex` 让用户在提交前就能看到正确答案 → 作弊风险。
+
+### 三、修复
+
+#### api.ts 类型拆分
+
+| 类型 | 用途 | 字段 |
+|------|------|------|
+| `QuizQuestionPublic` | 出题端点返回（fetchDailyQuiz/fetchRandomQuiz） | 不含 correctIndex/explanation |
+| `QuizQuestion` | 答题端点返回（QuizResult.question） | 含 correctIndex/explanation |
+
+#### QuizDialog.tsx 高亮逻辑调整
+
+| 阶段 | 原逻辑 | 新逻辑 |
+|------|--------|--------|
+| 选择后未提交 | 用 `question.correctIndex` 高亮正确/错误（泄题） | 只标记选中项（蓝色边框 `border-accent bg-accent/10`） |
+| 提交后 | 用 `question.correctIndex` 高亮 | 用 `result.question.correctIndex` 高亮 |
+
+#### 测试 mock 更新
+
+- `fetchDailyQuiz` mock 去掉 `correctIndex`（模拟真实出题端点）
+- `submitQuizAnswer` mock 加上 `question` 字段（含 `correctIndex`）
+
+### 四、验证
+
+- `npx tsc --noEmit`：exit 0
+- `npx vitest run`：51 文件 286 测试全通过
+
+### 五、教训
+
+1. **出题端点不能返回答案字段**：correctIndex/explanation 必须在答题后才返回，否则前端可在提交前读到正确答案
+2. **UI 状态机要分清「选中」和「已提交」**：原逻辑选择后立即高亮正确答案，应该改为提交后才高亮；选中阶段只标记用户选了哪个
+3. **测试 mock 要和真实后端响应一致**：mock fetchDailyQuiz 不含 correctIndex，mock submitQuizAnswer 含 question 字段，才能测出真实行为
+
 ## 2026-07-20 · P0 安全走查与修复（第二批：前端功能 bug 3 条）
 
 ### 一、背景

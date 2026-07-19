@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   fetchDailyQuiz,
   submitQuizAnswer,
-  type QuizQuestion,
+  type QuizQuestionPublic,
   type QuizResult,
 } from '@/services/api';
 import { useUserStore } from '@/store/userStore';
@@ -12,7 +12,7 @@ import { useUserStore } from '@/store/userStore';
  * 展示一道每日问答题目，答完显示解析
  */
 export default function QuizDialog({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const [question, setQuestion] = useState<QuizQuestion | null>(null);
+  const [question, setQuestion] = useState<QuizQuestionPublic | null>(null);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<number | null>(null);
   const [result, setResult] = useState<QuizResult | null>(null);
@@ -139,14 +139,17 @@ export default function QuizDialog({ isOpen, onClose }: { isOpen: boolean; onClo
               <div className="space-y-2 mb-6">
                 {question.options.map((opt, i) => {
                   let cls = 'border-ink-200 dark:border-ink-700 hover:border-accent/50 ';
-                  if (selected !== null) {
-                    if (i === question.correctIndex) {
+                  // 安全修复 B1：选择后只标记选中项，提交后用 result.question.correctIndex 高亮正确/错误
+                  if (result) {
+                    if (i === result.question.correctIndex) {
                       cls = 'border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400';
-                    } else if (i === selected && i !== question.correctIndex) {
+                    } else if (i === selected && i !== result.question.correctIndex) {
                       cls = 'border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400';
                     } else {
                       cls = 'border-ink-200 dark:border-ink-700 opacity-50';
                     }
+                  } else if (selected === i) {
+                    cls = 'border-accent bg-accent/10 text-accent';
                   }
                   return (
                     <button
@@ -157,10 +160,10 @@ export default function QuizDialog({ isOpen, onClose }: { isOpen: boolean; onClo
                     >
                       <span className="font-medium">{String.fromCharCode(65 + i)}</span>
                       <span className="ml-2">{opt}</span>
-                      {selected !== null && i === question.correctIndex && (
+                      {result && i === result.question.correctIndex && (
                         <span className="float-right text-green-500">✓</span>
                       )}
-                      {selected === i && i !== question.correctIndex && (
+                      {result && selected === i && i !== result.question.correctIndex && (
                         <span className="float-right text-red-500">✗</span>
                       )}
                     </button>

@@ -730,6 +730,18 @@ export interface QuizQuestion {
   category: string | null;
 }
 
+/** 安全修复 B1：出题端点返回的题目（不含 correctIndex/explanation，防泄题） */
+export interface QuizQuestionPublic {
+  id: number;
+  question: string;
+  options: string[];
+  difficulty: 'easy' | 'medium' | 'hard';
+  dynasty: string | null;
+  eventId: string | null;
+  personId: string | null;
+  category: string | null;
+}
+
 export interface QuizResult {
   correct: boolean;
   pointsEarned: number;
@@ -737,13 +749,13 @@ export interface QuizResult {
   explanation: string | null;
 }
 
-/** 获取每日题目 */
-export async function fetchDailyQuiz(): Promise<QuizQuestion> {
-  const data = await fetchJSON<QuizQuestion>(`${BASE_URL}/user/quiz/daily`);
+/** 获取每日题目（出题版，不含 correctIndex/explanation） */
+export async function fetchDailyQuiz(): Promise<QuizQuestionPublic> {
+  const data = await fetchJSON<QuizQuestionPublic>(`${BASE_URL}/user/quiz/daily`);
   return data;
 }
 
-/** 提交答案 */
+/** 提交答案（返回完整 QuizResult，含 correctIndex/explanation） */
 export async function submitQuizAnswer(questionId: number, selectedIndex: number): Promise<QuizResult> {
   const data = await fetchJSON<QuizResult>(`${BASE_URL}/user/quiz/answer`, {
     method: 'POST',
@@ -753,9 +765,9 @@ export async function submitQuizAnswer(questionId: number, selectedIndex: number
   return data;
 }
 
-/** 获取随机题目 */
-export async function fetchRandomQuiz(page = 0, size = 10): Promise<{ content: QuizQuestion[]; total: number }> {
-  const data = await fetchJSON<{ content: QuizQuestion[]; totalElements: number }>(
+/** 获取随机题目（出题版，不含 correctIndex/explanation） */
+export async function fetchRandomQuiz(page = 0, size = 10): Promise<{ content: QuizQuestionPublic[]; total: number }> {
+  const data = await fetchJSON<{ content: QuizQuestionPublic[]; totalElements: number }>(
     `${BASE_URL}/user/quiz/random?page=${page}&size=${size}`
   );
   return {

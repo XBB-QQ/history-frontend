@@ -450,3 +450,27 @@ prefetch(chars)   // 批量预抓
 
 - `npx tsc --noEmit`：exit 0
 - `npx vitest run`：51 文件 286 测试全通过
+
+## P0 安全修复（第三批前端配套：B1 quiz 泄题修复）
+
+> 2026-07-20 · P0 安全走查与修复第三批（前后端联动）
+
+### B1：QuizDialog 选项高亮逻辑修复（防泄题）
+
+- **问题**：原 [`QuizDialog.tsx`](file:///d:/claudeCode/history-frontend/src/components/quiz/QuizDialog.tsx) 在用户选择选项后立即用 `question.correctIndex` 高亮正确答案（绿色）和错误答案（红色），用户在提交前就能看到正确答案，导致每日挑战形同虚设
+- **根因**：后端 `/api/user/quiz/daily` 端点返回的 QuestionDTO 包含 `correctIndex` 和 `explanation` 字段，前端在答题前就能读到正确答案
+- **修复**：
+  - 后端拆分 DTO：出题端点改返回 `QuestionPublicDTO`（不含 `correctIndex` / `explanation`），答题后通过 `QuizResult.question`（完整 QuestionDTO）返回正确答案和解析
+  - 前端 [`api.ts`](file:///d:/claudeCode/history-frontend/src/services/api.ts) 新增 `QuizQuestionPublic` 接口（不含 `correctIndex` / `explanation`），`fetchDailyQuiz` 返回类型改为 `Promise<QuizQuestionPublic>`
+  - [`QuizDialog.tsx`](file:///d:/claudeCode/history-frontend/src/components/quiz/QuizDialog.tsx) 选项高亮逻辑重写：
+    - **选择阶段**（`selected !== null && !result`）：只标记选中项（蓝色边框），不高亮正确答案
+    - **已提交阶段**（`result` 存在）：用 `result.question.correctIndex` 高亮正确答案（绿色 ✓）和错误选项（红色 ✗）
+  - [`QuizDialog.test.tsx`](file:///d:/claudeCode/history-frontend/src/components/quiz/QuizDialog.test.tsx) 测试 mock 同步更新：
+    - `fetchDailyQuiz` mock 去掉 `correctIndex` 字段（模拟真实出题端点）
+    - `submitQuizAnswer` mock 加上 `question` 字段（含 `correctIndex`，模拟答题后返回完整信息）
+
+### 验证
+
+- `npx tsc --noEmit`：exit 0
+- `npx vitest run`：51 文件 286 测试全通过
+- 后端配套修改：见 [history-backend/README.md](../history-backend/README.md) 的「生产部署安全要点（P0 修复）」表格 B1/B2 行

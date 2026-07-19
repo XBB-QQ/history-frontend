@@ -8,18 +8,28 @@ import QuizDialog from './QuizDialog';
 import { useUserStore } from '@/store/userStore';
 
 vi.mock('@/services/api', () => ({
+  // 安全修复 B1：出题端点 mock 不含 correctIndex（模拟真实后端响应）
   fetchDailyQuiz: vi.fn().mockResolvedValue({
     id: 1,
     question: '秦始皇统一中国是在哪一年？',
     options: ['前221年', '前202年', '前256年', '前356年'],
-    correctIndex: 0,
     difficulty: 'easy',
     category: '政治',
     dynasty: '秦',
   }),
+  // 答题端点 mock 返回完整 question（含 correctIndex）+ explanation
   submitQuizAnswer: vi.fn().mockResolvedValue({
     correct: true,
     pointsEarned: 10,
+    question: {
+      id: 1,
+      question: '秦始皇统一中国是在哪一年？',
+      options: ['前221年', '前202年', '前256年', '前356年'],
+      correctIndex: 0,
+      difficulty: 'easy',
+      category: '政治',
+      dynasty: '秦',
+    },
     explanation: '公元前221年，秦始皇统一六国',
   }),
 }));
