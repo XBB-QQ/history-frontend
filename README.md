@@ -283,3 +283,50 @@ char-evolution 输入「王」看演变
 
 - [`CharEvolutionPage.tsx`](file:///d:/claudeCode/history-frontend/src/pages/CharEvolutionPage.tsx) — `useSearchParams` query 预选字 + 跳转按钮
 - [`OracleBoneGamePage.tsx`](file:///d:/claudeCode/history-frontend/src/pages/OracleBoneGamePage.tsx) — svgCache + 三态渲染 + 双向跳转
+
+## oracle-game 随机挑战模式（120 字完全随机出题）
+
+题库从 40 字扩展到 120 字，支持完全随机出题。底部模式切换：经典题库（40 字）/ 随机挑战（120 字）。
+
+### 字池结构
+
+[`randomCharPool.ts`](file:///d:/claudeCode/history-frontend/src/data/features/randomCharPool.ts) 内置 120 字，8 分类：
+
+| 分类 | 字数 | 示例 |
+|------|------|------|
+| 自然 | 20 | 日月星辰风雨云雷电山河海石土田天地气 |
+| 动物 | 20 | 龙凤龟鱼鸟马牛羊鸡犬猪猫虎鹿象蛇兔燕虫贝 |
+| 植物 | 12 | 木林森禾米竹花草果叶根茶 |
+| 人体 | 16 | 人大小口目耳鼻舌牙手足心首面身血 |
+| 器物 | 20 | 刀弓矢车舟网鼎玉金银门窗床席皿壶斗尺伞灯 |
+| 动作 | 16 | 走奔飞看听言食饮立坐卧舞射牧耕渔 |
+| 方位 | 8 | 上下左右中东西北 |
+| 数字 | 8 | 一二三四五六七八 |
+
+每字含 `char` + `meaning` + `category` 三字段；甲骨文 SVG 通过 `fetchCharEvolutionByChar` 实时抓取（hanziyuan.net）。
+
+### 选项生成（修复原 slice bug）
+
+原 `questions.slice(currentQuestion, currentQuestion + 4)` 有两个问题：
+1. 最后几题选项不足（5 题模式第 5 题只有 1 个选项）
+2. 正确答案总在第一个（连续 4 题选项，第 N 题正确答案是 options[0]）
+
+新 `currentOptions` useMemo：
+- 正确答案 + 从题库随机选 3 个干扰项
+- 4 选项 Fisher-Yates shuffle 打乱位置
+- 每题都有 4 个选项，正确答案位置随机
+
+### 适配器模式复用答题逻辑
+
+RandomChar（3 字段）→ OracleBoneChar（13 字段）通过 `adaptRandomToOracle` 适配，缺字段填默认值，复用现有答题/计分/结果页逻辑，避免分叉代码。
+
+### 动态满分判定
+
+结果页评级按题数动态计算：
+- `totalScore = questions.length * 10`
+- perfect: `score === totalScore`
+- excellent: `score >= totalScore * 0.8`
+- good: `score >= totalScore * 0.6`
+- poor: `score < totalScore * 0.6`
+
+适配经典 5 题（满分 50）/ 随机 5/10/20 题（满分 50/100/200）。

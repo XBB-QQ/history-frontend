@@ -1,5 +1,67 @@
 # 迭代记录 — 五千年史馆前端
 
+## 2026-07-19 · oracle-game 新增「随机挑战」模式（120 字完全随机出题）
+
+### 一、背景
+
+用户反馈 oracle-game 题库只有 40 个固定字，涉及字太少。经 AskUserQuestion 决策采用「完全随机出题」方案：从 120 字字池随机选字，实时抓取甲骨文 SVG 出题。
+
+### 二、改动
+
+#### 新建 `randomCharPool.ts`（120 字字池）
+
+| 分类 | 字数 | 示例 |
+|------|------|------|
+| 自然 | 20 | 日月星辰风雨云雷电山河海石土田天地气 |
+| 动物 | 20 | 龙凤龟鱼鸟马牛羊鸡犬猪猫虎鹿象蛇兔燕虫贝 |
+| 植物 | 12 | 木林森禾米竹花草果叶根茶 |
+| 人体 | 16 | 人大小口目耳鼻舌牙手足心首面身血 |
+| 器物 | 20 | 刀弓矢车舟网鼎玉金银门窗床席皿壶斗尺伞灯 |
+| 动作 | 16 | 走奔飞看听言食饮立坐卧舞射牧耕渔 |
+| 方位 | 8 | 上下左右中东西北 |
+| 数字 | 8 | 一二三四五六七八 |
+
+每字含 `char` + `meaning` + `category` 三字段；`getRandomChars(count)` Fisher-Yates 随机选 N 字。
+
+#### OracleBoneGamePage 改造
+
+| 改动点 | 说明 |
+|--------|------|
+| `mode` state | `'classic' \| 'random'`，默认 classic |
+| `randomQuestionCount` | 5/10/20 题，默认 10 |
+| `adaptRandomToOracle` | RandomChar 适配为 OracleBoneChar，缺字段填默认值，复用现有答题逻辑 |
+| `handleModeChange` | 切换模式时重置游戏并生成新题库 |
+| `handleRandomCountChange` | 改题数时重新生成题库 |
+| `currentOptions` useMemo | 生成 4 选项（正确 + 3 干扰 shuffle），**修复原 slice 逻辑两个 bug**：1) 最后几题选项不足；2) 正确答案总在第一个 |
+| 结果页满分判定 | 改为动态 `totalScore = questions.length * 10`，适配 5/10/20 题 |
+| UI 模式切换 | 底部两个按钮（经典绿色 / 随机琥珀色）+ 条件渲染（经典显示分类/难度，随机显示题数选择） |
+
+### 三、选项 bug 修复说明
+
+原逻辑 `questions.slice(currentQuestion, currentQuestion + 4)` 有两个问题：
+1. **最后几题选项不足**：5 题模式下第 5 题只有 1 个选项
+2. **正确答案总在第一个**：选项是连续 4 题，第 N 题的正确答案总是 options[0]
+
+新逻辑 `currentOptions`：
+- 正确答案 + 从题库随机选 3 个干扰项
+- 4 个选项 Fisher-Yates shuffle 打乱位置
+- 每题都有 4 个选项，正确答案位置随机
+
+### 四、验证
+
+- **tsc**：通过
+- **vitest**：51 文件 / 286 测试全通过
+- **浏览器实测**：源码层面 6 项检查全 PASS（模式按钮/题数选择/SVG 渲染/选项 shuffle/动态满分/Network 请求）
+- **Git**：commit `2d44c10` 已 push
+
+### 五、教训
+
+1. **适配器模式复用逻辑**：RandomChar 只有 3 字段，OracleBoneChar 有 13 字段。用 `adaptRandomToOracle` 填默认值，避免改答题逻辑，是最小改动
+2. **修复 bug 要趁早**：原 slice 选项逻辑有两个 bug，用户没抱怨但确实存在问题。借这次改动一并修复，不留技术债
+3. **动态计算而非硬编码**：满分判定 `score === 50` 改为 `score === totalScore`，适配任意题数
+
+---
+
 ## 2026-07-19 · char-evolution 与 oracle-game 互通 + 游戏页面接入真实字源 SVG
 
 ### 一、背景
