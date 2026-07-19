@@ -9,6 +9,7 @@
 
 import { Client, type IMessage, type StompSubscription } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { useUserStore } from '@/store/userStore';
 
 const HTTP_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 const WS_BASE = HTTP_BASE.replace(/^http/, 'ws').replace(/\/api$/, '');
@@ -127,8 +128,13 @@ export function connectRoom(
   playerName: string,
   callbacks: RoomCallbacks,
 ): RoomConnection {
+  // 安全修复 S6：后端 /ws-game 握手期校验 JWT，token 通过 query string 传递
+  const token = useUserStore.getState().token;
+  const wsUrl = token
+    ? `${WS_BASE}/ws-game?token=${encodeURIComponent(token)}`
+    : `${WS_BASE}/ws-game`;
   const stomp = new Client({
-    webSocketFactory: () => new SockJS(`${WS_BASE}/ws-game`),
+    webSocketFactory: () => new SockJS(wsUrl),
     reconnectDelay: 3000,
     heartbeatIncoming: 10000,
     heartbeatOutgoing: 10000,

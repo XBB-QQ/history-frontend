@@ -474,3 +474,22 @@ prefetch(chars)   // 批量预抓
 - `npx tsc --noEmit`：exit 0
 - `npx vitest run`：51 文件 286 测试全通过
 - 后端配套修改：见 [history-backend/README.md](../history-backend/README.md) 的「生产部署安全要点（P0 修复）」表格 B1/B2 行
+
+## P0 安全修复（第四批前端配套：S6 WebSocket 鉴权）
+
+> 2026-07-20 · P0 安全走查与修复第四批（前后端联动）
+
+### S6：gameRoomApi SockJS 连接加 token query string
+
+- **问题**：[`gameRoomApi.ts`](file:///d:/claudeCode/history-frontend/src/services/gameRoomApi.ts) `connectRoom` 中 SockJS 连接 URL 是 `${WS_BASE}/ws-game`，无鉴权信息。后端 S6 修复后握手期要求 `?token=xxx`，否则返回 401，导致联机剧本杀功能完全不可用
+- **修复**：
+  - import `useUserStore`，从 `useUserStore.getState().token` 取 JWT
+  - SockJS URL 拼接 `?token=${encodeURIComponent(token)}`
+  - token 为空时仍走原 URL（后端会返回 401，由 onStompError 处理）
+- **约束**：SockJS 不支持自定义 header（浏览器限制），WebSocket 鉴权只能走 query string token；token 用 `encodeURIComponent` 编码避免 JWT 中的 `.` 影响 URL 解析
+
+### 验证
+
+- `npx tsc --noEmit`：exit 0
+- `npx vitest run`：51 文件 286 测试全通过
+- 后端配套修改：见 [history-backend/README.md](../history-backend/README.md) 的「生产部署安全要点（P0 修复）」表格 S4/S5/S6/S7 行

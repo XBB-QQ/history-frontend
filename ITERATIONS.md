@@ -1,5 +1,45 @@
 # 迭代记录 — 五千年史馆前端
 
+## 2026-07-20 · P0 安全走查与修复（第四批前端配套：S6 WebSocket 鉴权）
+
+### 一、背景
+
+第四批后端安全修复 S6 给 WebSocket `/ws-game` 端点加了握手期 JWT 校验。SockJS 不支持自定义 header，token 必须通过 query string 传递，前端 SockJS 客户端需相应调整。
+
+### 二、问题
+
+[`gameRoomApi.ts`](file:///d:/claudeCode/history-frontend/src/services/gameRoomApi.ts) 原 `connectRoom` 中 SockJS 连接 URL 是 `${WS_BASE}/ws-game`，无任何鉴权信息。后端 S6 修复后，握手期会要求 `?token=xxx`，否则返回 401 拒绝连接，导致游戏房间功能完全不可用。
+
+### 三、修复
+
+```typescript
+import { useUserStore } from '@/store/userStore';
+
+export function connectRoom(roomId, playerId, playerName, callbacks): RoomConnection {
+  // 安全修复 S6：后端 /ws-game 握手期校验 JWT，token 通过 query string 传递
+  const token = useUserStore.getState().token;
+  const wsUrl = token
+    ? `${WS_BASE}/ws-game?token=${encodeURIComponent(token)}`
+    : `${WS_BASE}/ws-game`;
+  const stomp = new Client({
+    webSocketFactory: () => new SockJS(wsUrl),
+    // ...
+  });
+}
+```
+
+### 四、验证
+
+- `npx tsc --noEmit`：exit 0
+- `npx vitest run`：51 文件 286 测试全通过
+- 后端配套修改：见 [history-backend/README.md](../history-backend/README.md) 的「生产部署安全要点（P0 修复）」表格 S4/S5/S6/S7 行
+
+### 五、教训
+
+- SockJS 不支持自定义 header（浏览器 SockJS 限制），WebSocket 鉴权只能走 query string token
+- token 用 `encodeURIComponent` 编码，避免 JWT 中的 `.` 或特殊字符影响 URL 解析
+- 用户未登录时 token 为空，后端会返回 401，前端 SockJS 会触发 onStompError，业务层应处理此场景
+
 ## 2026-07-20 · P0 安全走查与修复（第三批前端配套：B1 quiz 泄题修复）
 
 ### 一、背景
