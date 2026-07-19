@@ -370,3 +370,55 @@ infinite 模式产生的 `OracleBoneChar[]` 复用既有逻辑，零分叉：
 - currentOptions shuffle（正确 + 3 干扰 Fisher-Yates 打乱）
 - 动态满分判定（`totalScore = questions.length * 10`）
 - 题干不泄题（答题前不显示答案字，答完后显示正确答案作为复盘）
+
+## oracle-game 四项体验优化（错题本/历史最高分/字源释义/全局缓存/进度可视化）
+
+### 错题本 + 历史最高分
+
+[`oracleGameStore.ts`](file:///d:/claudeCode/history-frontend/src/store/oracleGameStore.ts) — zustand + localStorage 持久化（key=`oracle-game-stats`）：
+
+| 字段 | 说明 |
+|------|------|
+| `wrongChars` | 错题本（同字去重，限 100 条） |
+| `bestScore` / `bestAccuracy` | 历史最高分 / 正确率 |
+| `totalGames` | 累计答题次数 |
+
+- 答错自动入错题本；结束时调 `recordResult` 返回 `{ newBestScore, newBestAccuracy }`
+- 结果页展示历史最高分 chip + 破纪录动画 + 错题本卡片（可单删/清空）
+- 第四模式按钮「复习错题」（rose 色），`adaptWrongToOracle` 适配器复用答题逻辑
+
+### 答完显示字源释义
+
+答题后展开 amber 卡片三栏：字形（`visualDescription`）+ 背景（`culturalContext`）+ 年代（`dynasty`）。随机/无限/复习模式不展示（避免占位文字噪声）。答对/答错状态 chip 即时反馈。
+
+### svgCache 提升到全局 store
+
+[`charEvolutionStore.ts`](file:///d:/claudeCode/history-frontend/src/store/charEvolutionStore.ts) — zustand store，会话级共享（无持久化）：
+
+```typescript
+getOrFetch(char)  // 命中 cache 即返回，未命中调 API 并写入 cache
+prefetch(chars)   // 批量预抓
+```
+
+[`OracleBoneGamePage.tsx`](file:///d:/claudeCode/history-frontend/src/pages/OracleBoneGamePage.tsx) 和 [`CharEvolutionPage.tsx`](file:///d:/claudeCode/history-frontend/src/pages/CharEvolutionPage.tsx) 都接入 `getOrFetch`：
+
+- 答题页抓过的字，演变页打开秒开
+- infinite 模式同一字重出时秒回
+- 字典区前 10 字预加载改用 `prefetch`
+
+### infinite 进度可视化
+
+`generateInfiniteQuiz` 每批 `Promise.all` 完成后更新 `{ found, needed, tried, hitRate }`，loading 区显示：
+
+- spinner + 文字提示
+- 进度条（purple→pink 渐变，宽度随 found/needed 动态变化）
+- 「已找到 X / Y 字 · 已尝试 Z 字 · 命中率 N%」
+
+### 四模式对比
+
+| 模式 | 颜色 | 字源 | 题数 |
+|------|------|------|------|
+| 经典题库 | 绿色 | 内置 40 字（带分类/难度） | 5 题 |
+| 随机挑战 | 琥珀色 | 内置 120 字字池 | 5/10/20 题 |
+| 无限挑战 | 紫色 | Unicode CJK 2万字动态抓取 | 5/10/20 题 |
+| 复习错题 | 玫红 | localStorage 错题本 | 错题数量 |

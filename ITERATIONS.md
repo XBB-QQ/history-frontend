@@ -1,5 +1,124 @@
 # 迭代记录 — 五千年史馆前端
 
+## 2026-07-19 · oracle-game 四项体验优化（错题本/历史最高分/字源释义/全局缓存/进度可视化）
+
+### 一、背景
+
+用户问「目前还有哪里可以优化丰富的」，按优先级推荐 4 项可执行优化。用户原话「按顺序执行，记得闭环哦」——要求每项都做到「实现 → 验证 → commit/push → 文档同步」完整闭环。
+
+### 二、任务1：错题本 + 历史最高分
+
+#### 新建 [`oracleGameStore.ts`](file:///d:/claudeCode/history-frontend/src/store/oracleGameStore.ts)
+
+zustand + localStorage 持久化（key=`oracle-game-stats`），最大错题 100 条，同字去重保留最新错误时间。
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `wrongChars` | `WrongCharEntry[]` | 错题本：`{ char, meaning, wrongAt }` |
+| `bestScore` | `number` | 历史最高分（绝对值） |
+| `bestAccuracy` | `number` | 历史最高正确率（0-1） |
+| `totalGames` | `number` | 累计答题次数 |
+| `addWrong` | fn | 答错时调用，同字去重 |
+| `removeWrong` | fn | 单字移除 |
+| `clearWrong` | fn | 清空错题本 |
+| `recordResult` | fn | 结束时调用，返回 `{ newBestScore, newBestAccuracy }` |
+
+#### OracleBoneGamePage 接入
+
+| 改动点 | 说明 |
+|--------|------|
+| `GameMode` 类型 | 扩展为 `'classic' \| 'random' \| 'infinite' \| 'review'` |
+| `handleAnswer` | 答错时 `addWrong({ char, meaning, wrongAt: Date.now() })` |
+| `handleNextQuestion` | 结束时 `recordResult(score, questions.length)` 返回破纪录提示 |
+| `handleRestart` / `handleModeChange` | 新增 review 分支：从错题本生成题库 |
+| `adaptWrongToOracle` | 新适配器：WrongCharEntry → OracleBoneChar（13 字段填默认值） |
+| 结果页 UI | 历史最高分 chip + 破纪录动画 + 错题本卡片（可单删/清空）+「复习错题」第四模式按钮（rose 色） |
+
+### 三、任务2：答完显示字源释义
+
+答题后展开 amber 卡片，展示三栏：
+
+| 栏位 | 数据来源 | 显示条件 |
+|------|----------|----------|
+| 字形 | `visualDescription` | 非占位文字（排除「随机挑战字」「无限模式字」「错题复习」） |
+| 背景 | `culturalContext` | 非空 |
+| 年代 | `dynasty` | 非空 |
+
+加答对/答错状态 chip（green/red）即时反馈。
+
+### 四、任务3：svgCache 提升到全局 store
+
+#### 新建 [`charEvolutionStore.ts`](file:///d:/claudeCode/history-frontend/src/store/charEvolutionStore.ts)
+
+zustand store，**无 localStorage 持久化**（SVG 数据较大，会话级共享即可，刷新即失效）。
+
+```typescript
+interface CharEvolutionState {
+  cache: Record<string, CharEvolutionData | null>;  // null=已抓取失败
+  getOrFetch: (char: string) => Promise<CharEvolutionData | null>;
+  prefetch: (chars: string[]) => Promise<void>;
+  clear: () => void;
+}
+```
+
+`getOrFetch` 语义：命中 cache 即返回，未命中调 `fetchCharEvolutionByChar` 并写入 cache。
+
+#### 两页接入
+
+| 文件 | 改动 |
+|------|------|
+| `OracleBoneGamePage.tsx` | 删除本地 `svgCache` state 和 `fetchOracleSvg`；订阅 `charCache` + `getOrFetch`；字典区前 10 字预加载改用 `prefetch`；`generateInfiniteQuiz` 改走 `getOrFetch` |
+| `CharEvolutionPage.tsx` | URL query 预选字 + `handleSearch` 两处 `fetchCharEvolutionByChar` 都改走 `getOrFetch` |
+
+**收益**：答题页抓过的字，演变页打开秒开；infinite 模式同一字重出时秒回。
+
+### 五、任务4：infinite 进度可视化
+
+#### 新增 state
+
+```typescript
+const [infiniteProgress, setInfiniteProgress] = useState<{
+  found: number;      // 已找到
+  needed: number;     // 需要
+  tried: number;      // 已尝试
+  hitRate: number;    // 命中率（0-1）
+} | null>(null);
+```
+
+#### `generateInfiniteQuiz` 每批更新进度
+
+```typescript
+// 每批 Promise.all 完成后
+const triedTotal = triedChars.size;
+const hitRate = triedTotal > 0 ? collected.length / triedTotal : 0;
+setInfiniteProgress({ found: collected.length, needed: count, tried: triedTotal, hitRate });
+```
+
+#### UI 改造
+
+loading 区从「spinner + 一行文字」升级为：
+
+- spinner
+- 文字提示
+- **进度条**（purple→pink 渐变，宽度随 found/needed 动态变化）
+- 「已找到 X / Y 字 · 已尝试 Z 字 · 命中率 N%」
+
+### 六、验证
+
+- **tsc**：通过（0 错误）
+- **vitest**：51 文件 / 286 测试全通过
+- **Git**：commit `dbf1ec2` 已 push（4 files changed, 405 insertions, 57 deletions）
+
+### 七、教训
+
+1. **zustand store 是 localStorage 持久化的最简洁方式**：比手写 `useEffect + localStorage.getItem/setItem` 干净，且 store 内的方法可以封装业务逻辑（如 `recordResult` 返回破纪录提示）
+2. **全局 cache 消除重复抓取的关键是「store 提供 getOrFetch 语义」**：调用方代码几乎不变（只换函数名 `fetchCharEvolutionByChar` → `getOrFetch`），但行为变成「命中即返回」
+3. **进度可视化让 5-15s 等待变成可接受的体验**：命中率展示还能反推调优 BATCH_SIZE（当前 8 字一批，命中率约 50%）
+4. **适配器模式让新 mode 极简**：review 模式只多了 `adaptWrongToOracle` 一个函数 + `handleRestart`/`handleModeChange` 的 review 分支，零分叉复用答题/计分/结果页逻辑
+5. **会话级 vs 持久化**：错题本和成绩必须持久化（跨刷新保留），SVG cache 会话级即可（数据大，刷新后重新抓也不慢）
+
+---
+
 ## 2026-07-19 · oracle-game 新增「无限挑战」模式（Unicode CJK 2万字动态生成）
 
 ### 一、背景
