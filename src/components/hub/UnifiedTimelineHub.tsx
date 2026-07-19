@@ -6,6 +6,8 @@
  * 年份滑块和数据加载由父页面负责，本组件只做展示。
  */
 
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useT } from '@/i18n/i18n';
 import type { YearSnapshot } from '@/utils/timelineSnapshot';
 import { METRIC_LABELS } from '@/data/features/dynastyCompare';
@@ -53,6 +55,9 @@ function SnapshotCard({
 
 export default function UnifiedTimelineHub({ snapshot, loading = false }: UnifiedTimelineHubProps) {
   const t = useT();
+  // B4: 事件/人物卡片展开状态
+  const [eventsExpanded, setEventsExpanded] = useState(false);
+  const [personsExpanded, setPersonsExpanded] = useState(false);
 
   if (loading) {
     return (
@@ -149,9 +154,15 @@ export default function UnifiedTimelineHub({ snapshot, loading = false }: Unifie
             accent="text-accent"
           >
             <ul className="space-y-2">
-              {snapshot.events.slice(0, 5).map((e) => (
+              {(eventsExpanded ? snapshot.events : snapshot.events.slice(0, 5)).map((e) => (
                 <li key={e.id} className="text-xs">
-                  <div className="font-bold text-ink-700 dark:text-ink-300">{e.title}</div>
+                  <Link
+                    to="/timeline"
+                    className="font-bold text-ink-700 dark:text-ink-300 hover:text-accent transition-colors"
+                    title={e.title}
+                  >
+                    {e.title}
+                  </Link>
                   {e.description && (
                     <p className="text-ink-500 dark:text-ink-400 line-clamp-2 mt-0.5">
                       {e.description}
@@ -160,7 +171,16 @@ export default function UnifiedTimelineHub({ snapshot, loading = false }: Unifie
                 </li>
               ))}
               {snapshot.events.length > 5 && (
-                <li className="text-xs text-ink-400 italic">+{snapshot.events.length - 5} …</li>
+                <li>
+                  <button
+                    onClick={() => setEventsExpanded(v => !v)}
+                    className="text-xs text-accent hover:underline"
+                  >
+                    {eventsExpanded
+                      ? `▲ ${t('timelineHub.collapse')}`
+                      : `▼ ${t('timelineHub.expand_all')} (+${snapshot.events.length - 5})`}
+                  </button>
+                </li>
               )}
             </ul>
           </SnapshotCard>
@@ -174,14 +194,29 @@ export default function UnifiedTimelineHub({ snapshot, loading = false }: Unifie
             accent="text-emerald-600 dark:text-emerald-400"
           >
             <ul className="space-y-1.5">
-              {snapshot.persons.slice(0, 6).map((p) => (
+              {(personsExpanded ? snapshot.persons : snapshot.persons.slice(0, 6)).map((p) => (
                 <li key={p.id} className="text-xs flex items-baseline justify-between gap-2">
-                  <span className="font-bold text-ink-700 dark:text-ink-300">{p.name}</span>
+                  <Link
+                    to="/persons"
+                    className="font-bold text-ink-700 dark:text-ink-300 hover:text-accent transition-colors"
+                    title={p.name}
+                  >
+                    {p.name}
+                  </Link>
                   <span className="text-ink-400 text-[10px]">{p.yearsDisplay}</span>
                 </li>
               ))}
               {snapshot.persons.length > 6 && (
-                <li className="text-xs text-ink-400 italic">+{snapshot.persons.length - 6} …</li>
+                <li>
+                  <button
+                    onClick={() => setPersonsExpanded(v => !v)}
+                    className="text-xs text-emerald-600 dark:text-emerald-400 hover:underline"
+                  >
+                    {personsExpanded
+                      ? `▲ ${t('timelineHub.collapse')}`
+                      : `▼ ${t('timelineHub.expand_all')} (+${snapshot.persons.length - 6})`}
+                  </button>
+                </li>
               )}
             </ul>
           </SnapshotCard>

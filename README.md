@@ -493,3 +493,28 @@ prefetch(chars)   // 批量预抓
 - `npx tsc --noEmit`：exit 0
 - `npx vitest run`：51 文件 286 测试全通过
 - 后端配套修改：见 [history-backend/README.md](../history-backend/README.md) 的「生产部署安全要点（P0 修复）」表格 S4/S5/S6/S7 行
+
+## timeline-hub 体验优化（A1+A2+A3+B4+B6 五项）
+
+> 2026-07-20 · 统一时间轴 Hub 页面交互升级
+
+### 优化清单
+
+| 编号 | 优化项 | 说明 |
+|------|--------|------|
+| A1 | 键盘 + 自动播放 | ←/→ 单步 ±1 年，Shift+←/→ 跳 ±10 年，空格 播放/暂停；▶ 自动穿越每 800ms +1 年；URL `?year=xxx` 双向同步 |
+| A2 | 朝代节点联动 | MiniPreview 11 个朝代节点响应 scrubber，当前朝代高亮放大 + 脉冲动画，点击节点跳到该朝代中期年份 |
+| A3 | 随机穿越 + 历史上的今天 | 🎲 随机穿越从「有数据的年份池」抽取（避免空快照）；📅 历史上的今天调 `/api/public/today` 拿当日事件，点击跳转 |
+| B4 | 卡片可展开 + 可跳转 | 事件/人物卡片 > 5/6 条显示「展开全部」按钮；每条事件/人物加 `<Link>` 跳到 `/timeline` / `/persons` |
+| B6 | 数据密度条 | scrubber 下方 100 格密度条，颜色深浅 = 该区间 events + persons 数量，当前年份有黑色指示线 |
+
+### 涉及文件
+
+- [`src/pages/TimelineHubPage.tsx`](src/pages/TimelineHubPage.tsx)：A1/A2/A3/B6 主逻辑
+- [`src/components/hub/UnifiedTimelineHub.tsx`](src/components/hub/UnifiedTimelineHub.tsx)：B4 卡片展开 + 跳转
+- [`src/i18n/locales/zh.json`](src/i18n/locales/zh.json) / [`en.json`](src/i18n/locales/en.json)：新增 14 个 timelineHub i18n key
+
+### 验证
+
+- `npx tsc --noEmit`：exit 0
+- `npx vitest run`：51 文件 286 测试全通过

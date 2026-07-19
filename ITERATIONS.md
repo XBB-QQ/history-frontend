@@ -1,5 +1,88 @@
 # 迭代记录 — 五千年史馆前端
 
+## 2026-07-20 · timeline-hub 体验优化（A1+A2+A3+B4+B6 五项）
+
+### 一、背景
+P0 安全走查 15 条全部修复完成后，用户问「timeline-hub 这个页面头脑风暴一下，优化丰富一下」。给出 12 项清单分四档（A 核心/B 信息/C 跨模块/D 锦上添花），用户选推荐组合 A1+A2+A3+B4+B6，原话「按顺序执行，记得同步文档，闭环测试」。
+
+### 二、五项优化详情
+
+#### A1 键盘 + 自动播放
+- **文件**：[`TimelineHubPage.tsx`](src/pages/TimelineHubPage.tsx)
+- **改动**：
+  - 全局 `keydown` 监听：←/→ 单步 ±1 年，Shift+←/→ 跳 ±10 年，空格 播放/暂停
+  - 忽略 input/textarea 焦点（避免和滑块/输入框冲突）
+  - ▶ 自动穿越按钮：每 800ms +1 年，到 yearRange[1] 自动停止
+  - URL `?year=xxx` 双向同步：用 `isInternalUrlChange` ref 标志内部变化，避免 URL→state→URL 循环
+  - 键盘提示文本：「← → 单步 · Shift+← → 跳10年 · 空格 播放/暂停」
+
+#### A2 MiniPreview 与 scrubber 联动
+- **文件**：[`TimelineHubPage.tsx`](src/pages/TimelineHubPage.tsx) 的 `TimelineMiniPreview` 组件
+- **改动**：
+  - 接收 `year + onJump` props
+  - 内置 11 个朝代节点（夏商周秦汉三国唐宋元明清）+ 中期年份
+  - 当前年份对应朝代高亮放大 + scale-125 + ring-4 + animate-pulse
+  - 其他节点半透明 opacity-60，hover 恢复
+  - 节点改为 `<button>`，点击跳到该朝代中期年份
+
+#### A3 随机穿越 + 历史上的今天
+- **文件**：[`TimelineHubPage.tsx`](src/pages/TimelineHubPage.tsx)
+- **改动**：
+  - 🎲 随机穿越按钮：从「有数据的年份池」随机抽取
+    - 年份池 = events.year ∪ 每朝代 5 个采样点（朝代首末 + 三个中间点）
+    - 避免全范围随机导致空快照
+  - 📅 历史上的今天：调 `fetchTodayEvents()` 拿当日历史事件
+    - 失败不阻塞（`.catch(() => [])`）
+    - 展示前 5 条 chip：`{年份} · {标题前10字}…`
+    - 点击 chip 跳到该年份
+
+#### B4 事件/人物卡片可展开 + 可跳转
+- **文件**：[`UnifiedTimelineHub.tsx`](src/components/hub/UnifiedTimelineHub.tsx)
+- **改动**：
+  - 加 `eventsExpanded` / `personsExpanded` state
+  - 事件卡片：> 5 条显示「▼ 展开全部 (+N)」按钮，展开后显示全部 + 「▲ 收起」
+  - 人物卡片：> 6 条显示「▼ 展开全部 (+N)」按钮，同上
+  - 每条事件标题改为 `<Link to="/timeline">`，hover 变 accent 色
+  - 每条人物名字改为 `<Link to="/persons">`，hover 变 accent 色
+  - import 增加 `useState` + `Link`
+
+#### B6 数据完整度可视化
+- **文件**：[`TimelineHubPage.tsx`](src/pages/TimelineHubPage.tsx)
+- **改动**：
+  - `densityMap`：Map<year, count>，聚合 events.year + persons 中间年份
+  - `densityMax`：全局最大值（用于归一化）
+  - `densityBars`：100 个色块，每格代表 (max-min)/100 年区间
+  - 渲染：100 个绝对定位 div，left: i%，width: 1%
+    - 颜色：`rgba(220, 38, 38, ${0.2 + intensity * 0.8})`（红色透明度 0.2-1.0）
+    - 无数据：transparent
+    - title 提示：`{年份} · {密度百分比}%`
+  - 当前年份黑色指示线（w-0.5 bg-ink-900 dark:bg-white）
+  - 标题：「数据密度 · 稀疏 → 丰富」
+
+### 三、i18n 文案新增
+`zh.json` / `en.json` 的 `timelineHub` 节点新增 14 个 key：
+- `auto_play_start` / `auto_play_stop` / `playing_indicator`
+- `random_year` / `today_in_history`
+- `keyboard_hint`
+- `data_density` / `density_low` / `density_high`
+- `expand_all` / `collapse`
+- `view_detail` / `view_person`（未用，预留）
+- `no_data_years`（未用，预留）
+
+### 四、闭环验证
+- ✅ `npx tsc --noEmit` exit 0
+- ✅ `npx vitest run` 51 文件 286 测试全通过
+- ✅ 文档同步：CLAUDE.md / ITERATIONS.md / README.md
+
+### 五、教训
+1. URL 双向同步要用 ref 标志内部变化，否则会死循环（state → URL → state → URL …）
+2. 键盘事件 listener 依赖 `[year, yearRange]` 重建，每次年份变化都重绑，但 React useEffect 自动清理上一次的 listener，不会泄漏
+3. 数据密度条用 100 个绝对定位 div 比 canvas 简单，且天然可访问（每格有 title 提示）
+4. 随机穿越要避免空快照——从「有数据的年份池」抽，而不是全范围随机
+5. 卡片展开 state 放在父组件（UnifiedTimelineHub）而非子组件（SnapshotCard），因为展开是列表级状态
+
+---
+
 ## 2026-07-20 · P0 安全走查与修复（第四批前端配套：S6 WebSocket 鉴权）
 
 ### 一、背景
