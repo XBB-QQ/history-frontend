@@ -280,9 +280,13 @@ const OracleBoneGamePage = () => {
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                     {t('oracleBoneGame.select_char')}
                   </h2>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {t('oracleBoneGame.oracle_label', { oracle: currentQuestionData?.character, simplified: currentQuestionData?.traditional })}
-                  </p>
+                  {/* 答题前不显示答案字（避免泄题）；答完后显示正确答案作为复盘 */}
+                  {selectedAnswer && (
+                    <p className="text-gray-600 dark:text-gray-400">
+                      正确答案：<span className="font-bold text-green-600 dark:text-green-400">{currentQuestionData?.traditional}</span>
+                      {currentQuestionData?.meaning && <span className="ml-2 text-sm">（{currentQuestionData.meaning}）</span>}
+                    </p>
+                  )}
                 </div>
 
                 {/* Answer Options */}
