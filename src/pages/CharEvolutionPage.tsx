@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { CHAR_EVOLUTIONS } from '@/data/features/charEvolution';
 import { fetchCharEvolutions } from '@/services/api';
 import { useT } from '@/i18n/i18n';
@@ -34,6 +34,8 @@ export default function CharEvolutionPage() {
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string>('全部');
+  // M3 修复：保存 setInterval id，组件卸载或重新开始动画时清理
+  const animationTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     fetchCharEvolutions()
@@ -53,12 +55,20 @@ export default function CharEvolutionPage() {
     : allChars.filter((e) => CHAR_CATEGORY_MAP[e.char] === activeCategory);
 
   const startAnimation = useCallback(() => {
+    // M3 修复：开始新动画前先清理旧 timer，避免泄漏
+    if (animationTimerRef.current) {
+      clearInterval(animationTimerRef.current);
+      animationTimerRef.current = null;
+    }
     setIsAnimating(true);
     setActiveStage(0);
-    const timer = setInterval(() => {
+    animationTimerRef.current = setInterval(() => {
       setActiveStage((prev) => {
         if (prev >= (evolution?.stages.length ?? 1) - 1) {
-          clearInterval(timer);
+          if (animationTimerRef.current) {
+            clearInterval(animationTimerRef.current);
+            animationTimerRef.current = null;
+          }
           setIsAnimating(false);
           return prev;
         }
@@ -66,6 +76,16 @@ export default function CharEvolutionPage() {
       });
     }, 1200);
   }, [evolution]);
+
+  // M3 修复：组件卸载时清理 timer，避免 setState on unmounted
+  useEffect(() => {
+    return () => {
+      if (animationTimerRef.current) {
+        clearInterval(animationTimerRef.current);
+        animationTimerRef.current = null;
+      }
+    };
+  }, []);
 
   const handleSearch = useCallback(() => {
     const ch = inputValue.trim();

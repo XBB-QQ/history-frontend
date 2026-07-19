@@ -111,6 +111,7 @@ import Footer from './components/layout/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
 import ScrollProgress from './components/common/ScrollProgress';
 import SearchModal from './components/common/SearchModal';
+import RequireAdmin from './components/common/RequireAdmin';
 import DetailModal from './components/detail/DetailModal';
 import BackgroundLayer from './components/background/BackgroundLayer';
 import SceneSwitcher from './components/scene/SceneSwitcher';
@@ -264,7 +265,7 @@ function App() {
 
           {/* 后台管理路由 */}
           <Route path="/admin/login" element={<AdminLoginPage />} />
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route path="/admin" element={<RequireAdmin><AdminLayout /></RequireAdmin>}>
             <Route index element={<AdminDashboard />} />
             <Route path="events" element={<EventsEditor />} />
             <Route path="events/:editId" element={<EventsEditor />} />

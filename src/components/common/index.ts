@@ -8,3 +8,4 @@ export { default as Skeleton } from './Skeleton';
 export { default as ScrollProgress } from './ScrollProgress';
 export { default as ScrollToTop } from './ScrollToTop';
 export { default as LanguageSwitcher } from './LanguageSwitcher';
+export { default as RequireAdmin } from './RequireAdmin';
