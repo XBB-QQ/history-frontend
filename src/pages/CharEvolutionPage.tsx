@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { CHAR_EVOLUTIONS } from '@/data/features/charEvolution';
 import { fetchCharEvolutions, fetchCharEvolutionByChar } from '@/services/api';
 import { useT } from '@/i18n/i18n';
@@ -37,6 +38,7 @@ const ANIMATION_INTERVAL_MS = 1200;
 
 export default function CharEvolutionPage() {
   const t = useT();
+  const [searchParams] = useSearchParams();
   const [allChars, setAllChars] = useState<CharData[]>(CHAR_EVOLUTIONS as CharData[]);
   const [selectedChar, setSelectedChar] = useState<string>('王');
   const [activeStage, setActiveStage] = useState<number>(0);
@@ -61,6 +63,42 @@ export default function CharEvolutionPage() {
         setLoading(false);
       });
   }, []);
+
+  // URL query 预选字：?char=王 自动选中并演示
+  // 仅在首次挂载或 query 变化时触发，避免与用户手动输入冲突
+  useEffect(() => {
+    const ch = searchParams.get('char');
+    if (!ch || ch.length !== 1) return;
+    setInputValue(ch);
+    // 复用 handleSearch 逻辑：先查内置，未命中再抓取
+    // 这里直接调 fetchCharEvolutionByChar 是为了避免 handleSearch 的 useCallback 依赖循环
+    const found = allChars.find((e) => e.char === ch);
+    if (found) {
+      setFetchedChar(null);
+      setSelectedChar(ch);
+      setActiveStage(0);
+      setNotFound(false);
+      // 等 evolution 重新计算后再启动动画——用 setTimeout 0 让出渲染帧
+      setTimeout(() => startAnimation(found.stages.length), 0);
+    } else if (!loading) {
+      // 内置未命中：抓取 hanziyuan
+      setFetchingChar(true);
+      setFetchedChar(null);
+      fetchCharEvolutionByChar(ch)
+        .then((data) => {
+          if (data && data.stages && data.stages.length > 0) {
+            setFetchedChar(data as CharData);
+            setActiveStage(0);
+            setTimeout(() => startAnimation(data.stages.length), 0);
+          } else {
+            setNotFound(true);
+          }
+        })
+        .catch(() => setNotFound(true))
+        .finally(() => setFetchingChar(false));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, loading]);
 
   // 渲染数据源：优先 fetchedChar（hanziyuan 抓取的字源数据），否则用内置数据
   const evolution = fetchedChar || allChars.find((e) => e.char === selectedChar);
@@ -415,6 +453,12 @@ export default function CharEvolutionPage() {
           >
             {t('charEvolution.final_stage')}
           </button>
+          <Link
+            to="/oracle-game"
+            className="px-6 py-3 rounded-xl border border-accent/50 text-accent font-bold hover:bg-accent/10 transition-colors text-sm"
+          >
+            挑战甲骨文答题 →
+          </Link>
         </div>
 
         {/* 当前阶段详细解说 */}

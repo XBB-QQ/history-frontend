@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import SectionHeader from '@/components/common/SectionHeader';
 import RevealOnScroll from '@/components/common/RevealOnScroll';
 import {
@@ -7,6 +8,7 @@ import {
   getOracleCharsByCategory,
   getOracleCharsByDifficulty
 } from '@/data/features/oracleData';
+import { fetchCharEvolutionByChar } from '@/services/api';
 import { useT } from '@/i18n/i18n';
 
 const OracleBoneGamePage = () => {
@@ -19,6 +21,10 @@ const OracleBoneGamePage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
 
+  // 字 → 甲骨文 svgXml 缓存（key=简体字，value=SVG XML 或 null 表示抓取失败）
+  // 命中 null 时 fallback 到 emoji，避免重复请求
+  const [svgCache, setSvgCache] = useState<Record<string, string | null>>({});
+
   const questions = useMemo(() => {
     return currentQuiz;
   }, [currentQuiz]);
@@ -26,6 +32,30 @@ const OracleBoneGamePage = () => {
   const currentQuestionData = useMemo(() => {
     return questions[currentQuestion];
   }, [currentQuestion, questions]);
+
+  // 抓取单字甲骨文 SVG（取 stages[0] 即甲骨文阶段）
+  // 失败时缓存 null，fallback 到原 emoji
+  const fetchOracleSvg = useCallback(async (ch: string) => {
+    if (svgCache[ch] !== undefined) return;
+    try {
+      const data = await fetchCharEvolutionByChar(ch);
+      const oracleSvg = data.stages?.[0]?.svgXml;
+      setSvgCache((prev) => ({ ...prev, [ch]: oracleSvg ?? null }));
+    } catch {
+      setSvgCache((prev) => ({ ...prev, [ch]: null }));
+    }
+  }, [svgCache]);
+
+  // 当前题目变化时抓取该字甲骨文 SVG
+  useEffect(() => {
+    const ch = currentQuestionData?.traditional;
+    if (ch) fetchOracleSvg(ch);
+  }, [currentQuestionData, fetchOracleSvg]);
+
+  // 字典区前 10 字批量预加载
+  useEffect(() => {
+    ORACLE_BONE_CHARS.slice(0, 10).forEach((c) => fetchOracleSvg(c.traditional));
+  }, [fetchOracleSvg]);
 
   const handleAnswer = (answer: string) => {
     if (!selectedAnswer) {
@@ -128,8 +158,18 @@ const OracleBoneGamePage = () => {
 
                 {/* Question */}
                 <div className="text-center py-8">
-                  <div className="text-8xl mb-6 animate-pulse">
-                    {currentQuestionData?.icon || '📜'}
+                  {/* 甲骨文真实字源 SVG（hanziyuan.net），加载中或失败 fallback 到 emoji */}
+                  <div className="w-32 h-32 mx-auto mb-6 flex items-center justify-center">
+                    {currentQuestionData && svgCache[currentQuestionData.traditional] ? (
+                      <div
+                        className="w-full h-full dark:invert [&_svg]:w-full [&_svg]:h-full"
+                        dangerouslySetInnerHTML={{ __html: svgCache[currentQuestionData.traditional]! }}
+                      />
+                    ) : currentQuestionData && svgCache[currentQuestionData.traditional] === undefined ? (
+                      <div className="text-8xl animate-pulse">{currentQuestionData.icon || '📜'}</div>
+                    ) : (
+                      <div className="text-8xl opacity-50">{currentQuestionData?.icon || '📜'}</div>
+                    )}
                   </div>
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                     {t('oracleBoneGame.select_char')}
@@ -215,12 +255,20 @@ const OracleBoneGamePage = () => {
                         <span className="text-sm text-gray-600 dark:text-gray-400">
                           {t('oracleBoneGame.question_no', { index: index + 1, oracle: q.character, simplified: q.traditional })}
                         </span>
-                        {selectedAnswer === q.traditional && (
-                          <span className="text-xl">✓</span>
-                        )}
-                        {selectedAnswer !== q.traditional && selectedAnswer !== '' && (
-                          <span className="text-xl">✗</span>
-                        )}
+                        <div className="flex items-center gap-3">
+                          {selectedAnswer === q.traditional && (
+                            <span className="text-xl">✓</span>
+                          )}
+                          {selectedAnswer !== q.traditional && selectedAnswer !== '' && (
+                            <span className="text-xl">✗</span>
+                          )}
+                          <Link
+                            to={`/char-evolution?char=${encodeURIComponent(q.traditional)}`}
+                            className="text-xs px-2 py-1 rounded border border-amber-400/50 text-amber-600 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
+                          >
+                            查看演变 →
+                          </Link>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -289,11 +337,21 @@ const OracleBoneGamePage = () => {
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {ORACLE_BONE_CHARS.slice(0, 10).map((char) => (
-              <div
+              <Link
                 key={char.id}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 text-center hover:shadow-xl transition-all transform hover:scale-105 cursor-pointer"
+                to={`/char-evolution?char=${encodeURIComponent(char.traditional)}`}
+                className="block bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 text-center hover:shadow-xl transition-all transform hover:scale-105 cursor-pointer"
               >
-                <div className="text-4xl mb-2">{char.icon}</div>
+                <div className="w-16 h-16 mx-auto mb-2 flex items-center justify-center">
+                  {svgCache[char.traditional] ? (
+                    <div
+                      className="w-full h-full dark:invert [&_svg]:w-full [&_svg]:h-full"
+                      dangerouslySetInnerHTML={{ __html: svgCache[char.traditional]! }}
+                    />
+                  ) : (
+                    <div className="text-4xl opacity-50">{char.icon}</div>
+                  )}
+                </div>
                 <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
                   {char.character}
                 </div>
@@ -303,7 +361,7 @@ const OracleBoneGamePage = () => {
                 <div className="text-xs text-gray-500 dark:text-gray-500">
                   {char.meaning}
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
