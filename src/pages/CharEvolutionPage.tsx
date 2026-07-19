@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { CHAR_EVOLUTIONS } from '@/data/features/charEvolution';
-import { fetchCharEvolutions } from '@/services/api';
+import { fetchCharEvolutions, fetchCharEvolutionByChar } from '@/services/api';
 import { useT } from '@/i18n/i18n';
 
 /** 统一的汉字演变数据类型（兼容本地数据和后端 API 响应） */
 type CharData = {
   char: string;
   meaning: string;
-  stages: Array<{ name: string; era: string; description: string; svgPath: string }>;
+  stages: Array<{ name: string; era: string; description: string; svgPath?: string; svgXml?: string }>;
 };
 
 /** 汉字分类映射（UI 层概念，不进后端数据） */
@@ -44,6 +44,8 @@ export default function CharEvolutionPage() {
   const [inputValue, setInputValue] = useState('');
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [fetchingChar, setFetchingChar] = useState(false);
+  const [fetchedChar, setFetchedChar] = useState<CharData | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>('全部');
   // M3 修复：保存 setInterval id，组件卸载或重新开始动画时清理
   const animationTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -60,7 +62,8 @@ export default function CharEvolutionPage() {
       });
   }, []);
 
-  const evolution = allChars.find((e) => e.char === selectedChar);
+  // 渲染数据源：优先 fetchedChar（hanziyuan 抓取的字源数据），否则用内置数据
+  const evolution = fetchedChar || allChars.find((e) => e.char === selectedChar);
   const filteredChars = activeCategory === '全部'
     ? allChars
     : allChars.filter((e) => CHAR_CATEGORY_MAP[e.char] === activeCategory);
@@ -138,22 +141,58 @@ export default function CharEvolutionPage() {
   }, [evolution, isAnimating, startAnimation, stopAnimation]);
 
   // 输入即演示：搜索命中后立即开始演变动画
-  const handleSearch = useCallback(() => {
+  // 1. 先查内置数据（allChars）；2. 未命中则调后端单字 API（hanziyuan 抓取）；3. 都失败提示未收录
+  const handleSearch = useCallback(async () => {
     const ch = inputValue.trim();
     if (!ch) return;
+    setNotFound(false);
     const found = allChars.find((e) => e.char === ch);
     if (found) {
+      // 命中内置数据：清空 fetchedChar，切回内置渲染
+      setFetchedChar(null);
       setSelectedChar(ch);
       setActiveStage(0);
-      setNotFound(false);
-      // 直接传入 stages 数量，立即开始演示，无需等 evolution 重算
       startAnimation(found.stages.length);
-    } else {
+      return;
+    }
+    // 未命中内置数据：调后端单字 API 实时抓取
+    setFetchingChar(true);
+    setFetchedChar(null);
+    try {
+      const data = await fetchCharEvolutionByChar(ch);
+      if (data && data.stages && data.stages.length > 0) {
+        setFetchedChar(data as CharData);
+        setActiveStage(0);
+        startAnimation(data.stages.length);
+      } else {
+        setNotFound(true);
+      }
+    } catch (err) {
+      console.warn('字源数据抓取失败', err);
       setNotFound(true);
+    } finally {
+      setFetchingChar(false);
     }
   }, [inputValue, allChars, startAnimation]);
 
-  if (!evolution) return null;
+  // 既没数据也没在抓取时直接返回 null（仅在初始化或异常状态）
+  if (!evolution) {
+    if (fetchingChar) {
+      return (
+        <div className="min-h-screen bg-gradient-to-b from-rice to-stone-100 dark:from-ink-950 dark:to-ink-900 py-8 px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="text-3xl font-bold text-ink-900 dark:text-ink-100 font-serif mb-6">
+              {t('charEvolution.title')}
+            </div>
+            <div className="text-lg text-ink-500 animate-pulse">
+              正在从 hanziyuan.net 抓取「{inputValue.trim()}」的字源数据...
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  }
   const currentStage = evolution.stages[activeStage];
   const totalStages = evolution.stages.length;
 
@@ -198,7 +237,7 @@ export default function CharEvolutionPage() {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            placeholder="输入任意汉字即可看完整演变演示（如：马、龙、鱼）"
+            placeholder="输入任意汉字（未收录字会自动从 hanziyuan.net 抓取）"
             maxLength={1}
             className="w-72 px-4 py-2 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 text-ink-900 dark:text-ink-100 text-sm focus:outline-none focus:border-accent"
           />
@@ -213,10 +252,22 @@ export default function CharEvolutionPage() {
           快捷键：← → 切换阶段 · 空格 播放/暂停 · 共收录 {allChars.length} 字
         </div>
 
-        {/* 未收录提示 */}
+        {/* 未收录提示 — 内置 + hanziyuan 均失败时显示 */}
         {notFound && (
           <div className="mb-4 p-3 rounded-lg border border-amber-300 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 text-sm text-center">
-            未收录「{inputValue.trim()}」的演变数据，当前共收录 {allChars.length} 个汉字
+            <div>未收录「{inputValue.trim()}」的演变数据，且 hanziyuan.net 抓取失败</div>
+            <div className="mt-1 text-xs">
+              可访问{' '}
+              <a
+                href={`https://hanziyuan.net/#${inputValue.trim()}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-amber-800 dark:hover:text-amber-200"
+              >
+                hanziyuan.net/#{inputValue.trim()}
+              </a>{' '}
+              查看
+            </div>
           </div>
         )}
 
@@ -224,6 +275,13 @@ export default function CharEvolutionPage() {
         {loading && (
           <div className="mb-4 text-center text-sm text-ink-400">
             正在从后端加载汉字数据...
+          </div>
+        )}
+
+        {/* 抓取中提示（输入非内置字时调用 hanziyuan） */}
+        {fetchingChar && (
+          <div className="mb-4 p-3 rounded-lg border border-blue-300 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 text-sm text-center animate-pulse">
+            正在从 hanziyuan.net 实时抓取「{inputValue.trim()}」的字源数据，请稍候...
           </div>
         )}
 
@@ -249,7 +307,7 @@ export default function CharEvolutionPage() {
           {filteredChars.map((e) => (
             <button
               key={e.char}
-              onClick={() => { setSelectedChar(e.char); setActiveStage(0); setIsAnimating(false); setNotFound(false); }}
+              onClick={() => { setSelectedChar(e.char); setActiveStage(0); setIsAnimating(false); setNotFound(false); setFetchedChar(null); }}
               className={`w-12 h-12 rounded-lg text-xl font-serif font-bold transition-all border-2 ${
                 selectedChar === e.char
                   ? 'border-accent bg-accent/10 dark:bg-accent/5 scale-110'
@@ -264,17 +322,25 @@ export default function CharEvolutionPage() {
         {/* 当前汉字展示 */}
         <div className="flex flex-col items-center mb-6">
           <div className="w-48 h-48 rounded-2xl border-2 border-ink-200 dark:border-ink-700 bg-ink-50/30 dark:bg-ink-800/30 flex items-center justify-center mb-4 overflow-hidden relative">
-            <svg viewBox="0 0 60 90" width="160" height="160" className="transition-all duration-500">
-              <path
-                d={currentStage.svgPath}
-                stroke="#27231e"
-                strokeWidth="3"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="transition-all duration-500"
+            {currentStage.svgXml ? (
+              // hanziyuan 抓取的真实字源 SVG：完整 XML，dark 模式下反色显示
+              <div
+                className="w-40 h-40 flex items-center justify-center dark:invert [&_svg]:w-full [&_svg]:h-full [&_svg]:max-w-[160px] [&_svg]:max-h-[160px]"
+                dangerouslySetInnerHTML={{ __html: currentStage.svgXml }}
               />
-            </svg>
+            ) : (
+              <svg viewBox="0 0 60 90" width="160" height="160" className="transition-all duration-500">
+                <path
+                  d={currentStage.svgPath}
+                  stroke="#27231e"
+                  strokeWidth="3"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="transition-all duration-500"
+                />
+              </svg>
+            )}
             {/* 演示进度角标 */}
             <div className="absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-ink-900/70 text-white">
               {activeStage + 1}/{totalStages}
@@ -381,16 +447,23 @@ export default function CharEvolutionPage() {
                     : 'border-ink-200 dark:border-ink-700 hover:border-accent/50'
                 }`}
               >
-                <svg viewBox="0 0 60 90" width="50" height="50">
-                  <path
-                    d={stage.svgPath}
-                    stroke="#27231e"
-                    strokeWidth="2"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                {stage.svgXml ? (
+                  <div
+                    className="w-[50px] h-[50px] flex items-center justify-center dark:invert [&_svg]:w-full [&_svg]:h-full"
+                    dangerouslySetInnerHTML={{ __html: stage.svgXml }}
                   />
-                </svg>
+                ) : (
+                  <svg viewBox="0 0 60 90" width="50" height="50">
+                    <path
+                      d={stage.svgPath}
+                      stroke="#27231e"
+                      strokeWidth="2"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                )}
                 <div className="text-xs text-ink-500 text-center mt-1">{stage.name}</div>
               </div>
             ))}

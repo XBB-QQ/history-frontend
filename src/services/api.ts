@@ -814,13 +814,20 @@ export interface CharEvolutionData {
     name: string;
     era: string;
     description: string;
-    svgPath: string;
+    svgPath?: string;
+    /** hanziyuan 抓取的真实字源 SVG XML（前端优先用此渲染） */
+    svgXml?: string;
   }>;
 }
 
 /** 获取所有汉字演变数据（后端内置 30 字），失败时抛错 */
 export async function fetchCharEvolutions(): Promise<CharEvolutionData[]> {
   return await fetchJSON<CharEvolutionData[]>(`${BASE_URL}/char-evolution`);
+}
+
+/** 查询单个汉字演变数据（后端未命中时实时抓取 hanziyuan.net），失败时抛错 */
+export async function fetchCharEvolutionByChar(ch: string): Promise<CharEvolutionData> {
+  return await fetchJSON<CharEvolutionData>(`${BASE_URL}/char-evolution/${encodeURIComponent(ch)}`);
 }
 
 /** 获取事件关联数据 */
