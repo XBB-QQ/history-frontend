@@ -143,6 +143,16 @@ export const INVENTIONS: InventionNode[] = [
     importance: 'major',
   },
   {
+    id: 'dujiangyan',
+    name: '都江堰',
+    dynasty: '战国·秦',
+    year: '前256年',
+    description: '李冰父子主持修建的无坝引水工程，鱼嘴分水、飞沙堰排沙、宝瓶口引水，至今灌溉成都平原2200余年，世界现存最古老的水利工程之一',
+    category: 'engineering',
+    dependsOn: [],
+    importance: 'world-changing',
+  },
+  {
     id: 'bridges',
     name: '拱桥技术',
     dynasty: '隋',
@@ -258,8 +268,28 @@ export const INVENTIONS: InventionNode[] = [
     dependsOn: ['decimal'],
     importance: 'major',
   },
+  {
+    id: 'solar-terms',
+    name: '二十四节气',
+    dynasty: '战国/汉',
+    year: '前104年《太初历》确立',
+    description: '基于太阳黄道划分的历法体系，指导农耕千年，2016年列入联合国非遗，是唯一被现代公历仍广泛使用的中国古代历法',
+    category: 'math',
+    dependsOn: [],
+    importance: 'world-changing',
+  },
 
   // ─── 医学 ───
+  {
+    id: 'tcm-theory',
+    name: '中医理论体系',
+    dynasty: '战国/汉',
+    year: '前3世纪-前1世纪',
+    description: '《黄帝内经》奠基，以阴阳五行、脏腑经络、气血津液为核心，构建了天人合一的整体医学观，是中医理论源头，影响东亚医学两千余年',
+    category: 'medicine',
+    dependsOn: [],
+    importance: 'world-changing',
+  },
   {
     id: 'acupuncture',
     name: '针灸',
@@ -267,7 +297,7 @@ export const INVENTIONS: InventionNode[] = [
     year: '前2世纪',
     description: '经络穴位理论与针刺疗法，至今仍是全球认可的中医技术',
     category: 'medicine',
-    dependsOn: [],
+    dependsOn: ['tcm-theory'],
     importance: 'major',
   },
   {
@@ -277,8 +307,20 @@ export const INVENTIONS: InventionNode[] = [
     year: '约1世纪',
     description: '《神农本草经》系统记载365种药物，是中药学奠基之作',
     category: 'medicine',
-    dependsOn: [],
+    dependsOn: ['tcm-theory'],
     importance: 'significant',
+  },
+
+  // ─── 综合·百科 ───
+  {
+    id: 'tiangong-kaiwu',
+    name: '天工开物',
+    dynasty: '明',
+    year: '1637年',
+    description: '宋应星著，系统总结明代农业手工业技术，涵盖冶金、纺织、制瓷、造纸等18个生产门类，被誉为"中国17世纪的工艺百科全书"，已译成多国文字',
+    category: 'agriculture',
+    dependsOn: ['paper', 'cast-iron', 'silk'],
+    importance: 'major',
   },
 ];
 

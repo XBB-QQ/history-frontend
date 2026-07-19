@@ -17,18 +17,18 @@ interface NavGroup {
 }
 
 /** 核心导航项（始终显示在顶栏） */
-const PRIMARY_NAV = [
-  { labelKey: 'nav.home', path: '/' },
-  { labelKey: 'nav.timeline', path: '/timeline-hub' },
-  { labelKey: 'nav.dynasties', path: '/dynasties' },
-  { labelKey: 'nav.persons', path: '/persons' },
-  { labelKey: 'nav.knowledge', path: '/knowledge' },
-  { labelKey: 'nav.map', path: '/map' },
-  { labelKey: 'nav.favorites', path: '/favorites' },
+export const PRIMARY_NAV = [
+  { labelKey: 'nav.home', path: '/', emoji: '🏠' },
+  { labelKey: 'nav.timeline', path: '/timeline-hub', emoji: '⏳' },
+  { labelKey: 'nav.dynasties', path: '/dynasties', emoji: '🏛' },
+  { labelKey: 'nav.persons', path: '/persons', emoji: '👤' },
+  { labelKey: 'nav.knowledge', path: '/knowledge', emoji: '📚' },
+  { labelKey: 'nav.map', path: '/map', emoji: '🗺' },
+  { labelKey: 'nav.favorites', path: '/favorites', emoji: '⭐' },
 ];
 
 /** 分组导航项（收纳到"更多"下拉菜单） */
-const NAV_GROUPS: NavGroup[] = [
+export const NAV_GROUPS: NavGroup[] = [
   {
     id: 'ai',
     labelKey: 'nav.group_ai',
@@ -81,6 +81,7 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: 'nav.viz_document_generator', path: '/document-generator' },
       { labelKey: 'nav.viz_drama_fact_check', path: '/drama-fact-check' },
       { labelKey: 'nav.viz_annual_report', path: '/annual-report' },
+      { labelKey: 'nav.viz_hot_pages', path: '/hot' },
     ],
   },
   {
@@ -129,6 +130,28 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: 'nav.learn_huaxia_origin', path: '/huaxia-origin' },
       { labelKey: 'nav.learn_compare', path: '/compare' },
       { labelKey: 'nav.learn_classroom_teacher', path: '/classroom/teacher' },
+      { labelKey: 'nav.learn_classroom_student', path: '/classroom/student' },
+    ],
+  },
+  {
+    id: 'literature',
+    labelKey: 'nav.group_literature',
+    emoji: '文',
+    items: [
+      { labelKey: 'nav.lit_poetry', path: '/literature/poetry' },
+      { labelKey: 'nav.lit_painting', path: '/literature/painting' },
+      { labelKey: 'nav.lit_opera', path: '/literature/opera' },
+      { labelKey: 'nav.lit_architecture', path: '/literature/architecture' },
+      { labelKey: 'nav.lit_ware', path: '/literature/ware' },
+    ],
+  },
+  {
+    id: 'heritage',
+    labelKey: 'nav.group_heritage',
+    emoji: '藏',
+    items: [
+      { labelKey: 'nav.heritage_relics', path: '/relics' },
+      { labelKey: 'nav.heritage_classics', path: '/classics' },
     ],
   },
 ];

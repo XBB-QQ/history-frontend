@@ -1,5 +1,5 @@
 {
-  "success": 61,
+  "success": 70,
   "failed": 3,
   "items": [
     {
@@ -429,6 +429,69 @@
     {
       "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Man%27s_semi-formal_court_robe_%28jifu%29_-_Google_Art_Project.jpg/960px-Man%27s_semi-formal_court_robe_%28jifu%29_-_Google_Art_Project.jpg",
       "localPath": "/images/clothing/extra-16-Man_s_semi-formal_court_robe__jifu__-_Google_Art_Project.jpg"
+    },
+    {
+      "dynasty": "song",
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Along_the_River_During_the_Qingming_Festival_%28Qing_Court_Version%29.jpg/960px-Along_the_River_During_the_Qingming_Festival_%28Qing_Court_Version%29.jpg",
+      "localPath": "/images/clothing/civ-song-qingming-1.jpg",
+      "caption": "清明上河图·局部（清院本，反映宋代市井百姓服饰全貌）",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "song",
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Along_the_River_During_the_Qingming_Festival_%28Qing_Court_Version%29_2.jpg/960px-Along_the_River_During_the_Qingming_Festival_%28Qing_Court_Version%29_2.jpg",
+      "localPath": "/images/clothing/civ-song-qingming-2.jpg",
+      "caption": "清明上河图·局部二（清院本，反映宋代商贩与劳动百姓服饰）",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "dynasty": "song",
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/4/49/Li_Sung_001.jpg",
+      "localPath": "/images/clothing/civ-song-lisung.jpg",
+      "caption": "李嵩画作（反映宋代市井生活与平民服饰）",
+      "license": "Public domain"
+    },
+    {
+      "dynasty": "yuan",
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/20260515_Carved_Brick_Figurine_of_a_Musician_Playing_the_Clappers.jpg/960px-20260515_Carved_Brick_Figurine_of_a_Musician_Playing_the_Clappers.jpg",
+      "localPath": "/images/clothing/civ-yuan-musician-clappers.jpg",
+      "caption": "元代乐舞砖俑·拍板乐人（反映民间艺人服饰）",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "dynasty": "yuan",
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/20260515_Carved_Brick_Figurine_of_a_Musician_Playing_the_Panpipes.jpg/960px-20260515_Carved_Brick_Figurine_of_a_Musician_Playing_the_Panpipes.jpg",
+      "localPath": "/images/clothing/civ-yuan-musician-panpipes.jpg",
+      "caption": "元代乐舞砖俑·排箫乐人（反映民间艺人头巾与短袍）",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "dynasty": "yuan",
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/20260515_Carved_Brick_Figurine_of_a_Drum_Dancer.jpg/960px-20260515_Carved_Brick_Figurine_of_a_Drum_Dancer.jpg",
+      "localPath": "/images/clothing/civ-yuan-drum-dancer.jpg",
+      "caption": "元代乐舞砖俑·鼓舞人（反映民间舞蹈服饰）",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "dynasty": "yuan",
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/20260515_Carved_Brick_Figurine_of_a_Musician_Playing_the_Three-String_Zither.jpg/960px-20260515_Carved_Brick_Figurine_of_a_Musician_Playing_the_Three-String_Zither.jpg",
+      "localPath": "/images/clothing/civ-yuan-musician-zither.jpg",
+      "caption": "元代乐舞砖俑·三弦乐人（反映民间乐人巾帽与袍服）",
+      "license": "CC BY-SA 4.0"
+    },
+    {
+      "dynasty": "wei-jin",
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Northern_Wei_Painted_Pottery_Female_Musician_02.jpg/960px-Northern_Wei_Painted_Pottery_Female_Musician_02.jpg",
+      "localPath": "/images/clothing/civ-weijin-female-musician-02.jpg",
+      "caption": "北魏彩绘女乐俑（反映北方民间女性襦裙与发髻）",
+      "license": "CC0"
+    },
+    {
+      "dynasty": "wei-jin",
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Northern_Wei_Painted_Pottery_Female_Musician_05.jpg/960px-Northern_Wei_Painted_Pottery_Female_Musician_05.jpg",
+      "localPath": "/images/clothing/civ-weijin-female-musician-05.jpg",
+      "caption": "北魏彩绘女乐俑（反映民间乐人服饰细节）",
+      "license": "CC0"
     }
   ]
 }

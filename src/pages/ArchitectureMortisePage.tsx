@@ -67,8 +67,8 @@ const ArchitectureMortisePage: React.FC = () => {
         </RevealOnScroll>
 
         <RevealOnScroll>
-          <div className="mb-8 bg-white rounded-2xl shadow-lg p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+          <div className="mb-8 bg-white dark:bg-ink-800 rounded-2xl shadow-lg p-6">
+            <h3 className="text-xl font-bold text-gray-800 dark:text-ink-100 mb-4 flex items-center gap-2">
               <FaTools className="text-orange-500" />
               {t('architectureMortise.filter_title')}
             </h3>
@@ -80,7 +80,7 @@ const ArchitectureMortisePage: React.FC = () => {
                   className={`px-4 py-2 rounded-full transition-all duration-300 ${
                     selectedCategory === category
                       ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg transform scale-105'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : 'bg-gray-100 dark:bg-ink-700 text-gray-700 dark:text-ink-200 hover:bg-gray-200 dark:hover:bg-ink-600'
                   }`}
                 >
                   {category === '全部' ? t('architectureMortise.all') : category}
@@ -93,7 +93,7 @@ const ArchitectureMortisePage: React.FC = () => {
                   className={`px-4 py-2 rounded-full transition-all duration-300 ${
                     selectedDynasty === dynasty
                       ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg transform scale-105'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : 'bg-gray-100 dark:bg-ink-700 text-gray-700 dark:text-ink-200 hover:bg-gray-200 dark:hover:bg-ink-600'
                   }`}
                 >
                   {dynasty === '全部' ? t('architectureMortise.all') : dynasty}
@@ -106,7 +106,7 @@ const ArchitectureMortisePage: React.FC = () => {
                   className={`px-4 py-2 rounded-full transition-all duration-300 ${
                     selectedStructureType === type
                       ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg transform scale-105'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : 'bg-gray-100 dark:bg-ink-700 text-gray-700 dark:text-ink-200 hover:bg-gray-200 dark:hover:bg-ink-600'
                   }`}
                 >
                   {type === '全部' ? t('architectureMortise.all') : type}
@@ -118,13 +118,13 @@ const ArchitectureMortisePage: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <RevealOnScroll>
-            <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="bg-white dark:bg-ink-800 rounded-2xl shadow-lg p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                <h3 className="text-2xl font-bold text-gray-800 dark:text-ink-100 flex items-center gap-2">
                   <FaCubes className="text-orange-500" />
                   {t('architectureMortise.types_title')}
                 </h3>
-                <span className="text-sm bg-orange-100 text-orange-600 px-3 py-1 rounded-full">
+                <span className="text-sm bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 px-3 py-1 rounded-full">
                   {t('architectureMortise.types_count', { count: filteredMortiseTypes.length })}
                 </span>
               </div>
@@ -135,20 +135,20 @@ const ArchitectureMortisePage: React.FC = () => {
                     key={mortise.id}
                     className={`p-4 rounded-xl cursor-pointer transition-all duration-300 ${
                       mortise.structureType === selectedStructureType
-                        ? 'bg-gradient-to-r from-orange-50 to-amber-50 border-2 border-orange-300 shadow-md'
-                        : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
+                        ? 'bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border-2 border-orange-300 dark:border-orange-700 shadow-md'
+                        : 'bg-gray-50 dark:bg-ink-700/50 hover:bg-gray-100 dark:hover:bg-ink-700 border-2 border-transparent'
                     }`}
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <h4 className="text-lg font-bold text-gray-800">{mortise.name}</h4>
-                      <span className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded">
+                      <h4 className="text-lg font-bold text-gray-800 dark:text-ink-100">{mortise.name}</h4>
+                      <span className="text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 px-2 py-1 rounded">
                         {mortise.dynasty}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 mb-3">{mortise.description}</p>
+                    <p className="text-sm text-gray-600 dark:text-ink-300 mb-3">{mortise.description}</p>
                     <div className="flex flex-wrap gap-2">
                       {mortise.tags.slice(0, 3).map(tag => (
-                        <span key={tag} className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded">
+                        <span key={tag} className="text-xs bg-gray-200 dark:bg-ink-700 text-gray-600 dark:text-ink-300 px-2 py-1 rounded">
                           {tag}
                         </span>
                       ))}
@@ -160,13 +160,13 @@ const ArchitectureMortisePage: React.FC = () => {
           </RevealOnScroll>
 
           <RevealOnScroll>
-            <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="bg-white dark:bg-ink-800 rounded-2xl shadow-lg p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                <h3 className="text-2xl font-bold text-gray-800 dark:text-ink-100 flex items-center gap-2">
                   <FaHistory className="text-orange-500" />
                   {t('architectureMortise.structures_title')}
                 </h3>
-                <span className="text-sm bg-amber-100 text-amber-600 px-3 py-1 rounded-full">
+                <span className="text-sm bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 px-3 py-1 rounded-full">
                   {t('architectureMortise.structures_count', { count: filteredStructures.length })}
                 </span>
               </div>
@@ -175,7 +175,7 @@ const ArchitectureMortisePage: React.FC = () => {
                 <select
                   value={selectedBuildingType}
                   onChange={(e) => setSelectedBuildingType(e.target.value)}
-                  className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none"
+                  className="w-full px-4 py-2 border-2 border-gray-200 dark:border-ink-700 rounded-xl focus:border-orange-500 focus:outline-none bg-white dark:bg-ink-900 text-gray-800 dark:text-ink-100"
                 >
                   {buildingTypeOptions.map(bt => {
                     const type = BUILDING_TYPES.find(b => b.id === bt.id);
@@ -191,19 +191,19 @@ const ArchitectureMortisePage: React.FC = () => {
                   <div
                     key={structure.id}
                     onClick={() => handleStructureClick(structure)}
-                    className="p-4 rounded-xl cursor-pointer transition-all duration-300 bg-gray-50 hover:bg-gray-100 border-2 border-transparent hover:border-orange-200"
+                    className="p-4 rounded-xl cursor-pointer transition-all duration-300 bg-gray-50 dark:bg-ink-700/50 hover:bg-gray-100 dark:hover:bg-ink-700 border-2 border-transparent hover:border-orange-200 dark:hover:border-orange-700"
                   >
                     <div className="flex items-start justify-between mb-2">
-                      <h4 className="text-lg font-bold text-gray-800">{structure.name}</h4>
-                      <span className="text-xs bg-amber-100 text-amber-600 px-2 py-1 rounded">
+                      <h4 className="text-lg font-bold text-gray-800 dark:text-ink-100">{structure.name}</h4>
+                      <span className="text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 px-2 py-1 rounded">
                         {structure.dynasty}·{structure.era}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 mb-2">{structure.highlight}</p>
-                    <p className="text-sm text-gray-500 mb-3 line-clamp-2">{structure.description}</p>
+                    <p className="text-sm text-gray-600 dark:text-ink-300 mb-2">{structure.highlight}</p>
+                    <p className="text-sm text-gray-500 dark:text-ink-400 mb-3 line-clamp-2">{structure.description}</p>
                     <div className="flex flex-wrap gap-2">
                       {structure.technicalFeatures.slice(0, 3).map(feature => (
-                        <span key={feature} className="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded">
+                        <span key={feature} className="text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-2 py-1 rounded">
                           {feature}
                         </span>
                       ))}

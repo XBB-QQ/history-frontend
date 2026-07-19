@@ -13,8 +13,25 @@ import type {
   BrowseSummary,
   PersonaContext,
 } from '@/types/userPersona';
+import { useUserStore } from '@/store/userStore';
+import * as personaApi from '@/services/personaApi';
 
 const STORAGE_KEY = 'history_museum_persona';
+
+let syncTimer: ReturnType<typeof setTimeout> | null = null;
+
+/** 防抖同步到后端（2 秒内多次变更只 PUT 一次，未登录静默跳过） */
+function scheduleBackendSync(persona: UserPersona): void {
+  const token = useUserStore.getState().token;
+  if (!token) return;
+  if (syncTimer) clearTimeout(syncTimer);
+  syncTimer = setTimeout(() => {
+    syncTimer = null;
+    personaApi.savePersona(token, persona).catch(() => {
+      // 同步失败静默，localStorage 仍有数据
+    });
+  }, 2000);
+}
 
 const DEFAULT_DIMENSIONS: PersonaDimensions = {
   military: 50,
@@ -34,13 +51,14 @@ function loadPersona(): UserPersona | null {
   }
 }
 
-/** 将 persona 保存到 localStorage */
+/** 将 persona 保存到 localStorage，并触发防抖后端同步 */
 function savePersona(persona: UserPersona): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(persona));
   } catch {
     // localStorage 满量时静默忽略
   }
+  scheduleBackendSync(persona);
 }
 
 /** 从现有数据源构建初始 persona */
@@ -141,6 +159,9 @@ interface PersonaState {
   // 管理
   clearPersona: () => void;
   reset: () => void;
+
+  // 跨设备同步
+  loadFromBackend: () => Promise<void>;
 }
 
 export const usePersonaStore = create<PersonaState>((set, get) => ({
@@ -296,6 +317,26 @@ export const usePersonaStore = create<PersonaState>((set, get) => ({
     localStorage.removeItem(STORAGE_KEY);
     set({ persona: null, hasData: false, dataCount: 0 });
   },
+
+  loadFromBackend: async () => {
+    const token = useUserStore.getState().token;
+    if (!token) return;
+    try {
+      const cloud = await personaApi.fetchPersona(token);
+      if (cloud) {
+        // 云端优先：覆盖本地
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(cloud));
+        } catch {
+          // localStorage 写入失败静默
+        }
+        set({ persona: cloud });
+      }
+      // 云端无数据时本地保留不变（首次跨设备登录云端还没数据）
+    } catch {
+      // 拉取失败保留本地
+    }
+  },
 }));
 
 /** 便捷 Hook — 获取 persona 上下文字符串（供 LLM prompt 使用） */
@@ -306,3 +347,16 @@ export function usePersonaContext(): string {
     .filter(Boolean);
   return parts.join('\n');
 }
+
+// ===== 跨设备同步触发器 =====
+// 1. 模块加载时若已登录（userStore.init 已从 localStorage 恢复 token），拉取一次云端画像
+if (useUserStore.getState().token) {
+  usePersonaStore.getState().loadFromBackend();
+}
+
+// 2. 监听登录状态变化：token null→value 时拉取云端画像（云端优先覆盖本地）
+useUserStore.subscribe((state, prevState) => {
+  if (state.token !== prevState.token && state.token) {
+    usePersonaStore.getState().loadFromBackend();
+  }
+});

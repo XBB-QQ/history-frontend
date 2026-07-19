@@ -10,6 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -106,31 +107,32 @@ function isValidImage(buf) {
 async function downloadWithRetry(url, destPath, maxRetries = 5) {
   for (let i = 0; i < maxRetries; i++) {
     try {
-      const resp = await fetch(url, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
-          'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-          'Referer': 'https://commons.wikimedia.org/',
-        },
-      });
-      if (!resp.ok) {
-        if (resp.status === 429) {
-          const wait = 10000 + 5000 * i;
-          console.log(`    429, waiting ${wait}ms...`);
-          await sleep(wait);
-          continue;
-        }
-        throw new Error(`HTTP ${resp.status}`);
+      // 用 curl.exe 下载（比 Node.js fetch 更可靠，DNS/SSL 兼容性更好）
+      const args = [
+        '-s', '-L',
+        '--max-time', '60',
+        '-o', destPath,
+        '-w', '%{http_code}',
+        '-H', 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        '-H', 'Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+        '-H', 'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8',
+        '-H', 'Referer: https://commons.wikimedia.org/',
+        url,
+      ];
+      const httpCode = execFileSync('curl.exe', args, { encoding: 'utf-8', timeout: 90000 }).trim();
+
+      if (httpCode !== '200') {
+        throw new Error(`HTTP ${httpCode}`);
       }
-      const buf = Buffer.from(await resp.arrayBuffer());
+
+      const buf = fs.readFileSync(destPath);
       const validation = isValidImage(buf);
       if (!validation.ok) {
         console.log(`    Invalid: ${validation.reason}, retrying...`);
+        fs.unlinkSync(destPath);
         await sleep(3000);
         continue;
       }
-      fs.writeFileSync(destPath, buf);
       return { size: buf.length, type: validation.reason };
     } catch (err) {
       if (i === maxRetries - 1) throw err;
@@ -146,15 +148,18 @@ async function main() {
   console.log(`目标目录: ${TARGET_DIR}`);
   console.log(`待下载: ${CIVILIAN_IMAGES.length} 个文件\n`);
 
-  // 先测试网络连通性
+  // 先测试网络连通性（用 curl.exe，比 Node.js fetch 更可靠）
   console.log('测试网络连通性...');
   try {
-    const testResp = await fetch('https://upload.wikimedia.org/', { method: 'HEAD', signal: AbortSignal.timeout(10000) });
-    console.log(`网络连通: HTTP ${testResp.status}\n`);
+    const httpCode = execFileSync('curl.exe', [
+      '-s', '-o', 'NUL', '-w', '%{http_code}',
+      '--max-time', '15',
+      'https://upload.wikimedia.org/',
+    ], { encoding: 'utf-8', timeout: 20000 }).trim();
+    console.log(`网络连通: HTTP ${httpCode}\n`);
   } catch (err) {
     console.log(`网络不通: ${err.message}`);
     console.log('请等网络恢复后重新运行此脚本。');
-    console.log('提示: 可以用 curl.exe 测试: curl.exe -s -o NUL -w "HTTP %{http_code}" "https://upload.wikimedia.org/"');
     process.exit(1);
   }
 

@@ -417,8 +417,8 @@ export async function searchEvents(query: string): Promise<FrontendEvent[]> {
  * 获取所有朝代
  * 后端数据缺失的朝代（如南北朝、五代十国）用本地 dynasties.json 补充
  *
- * TODO: 后端已通过 V20260712_006__seed_dynasties.sql 补全朝代数据，
- * 重启后端验证数据完整后，可移除本地 JSON fallback 逻辑
+ * 注：后端已通过 V20260712_006__seed_dynasties.sql 补全朝代数据。
+ * 本地 fallback 保留作为离线/降级方案，不删除。
  */
 export async function fetchDynasties(): Promise<FrontendDynasty[]> {
   let backendDynasties: FrontendDynasty[] = [];

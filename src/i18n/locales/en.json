@@ -15,6 +15,15 @@
     "group_viz": "Visualization",
     "group_culture": "Culture",
     "group_learn": "Learning",
+    "group_literature": "Literature & Arts",
+    "group_heritage": "Heritage",
+    "lit_poetry": "Poetry",
+    "lit_painting": "Painting & Calligraphy",
+    "lit_opera": "Opera",
+    "lit_architecture": "Architecture",
+    "lit_ware": "Wares",
+    "heritage_relics": "Relics",
+    "heritage_classics": "Classics",
     "ai_rag_qa": "Q&A",
     "ai_cross_debate": "Cross-Debate",
     "ai_historian": "AI Historian",
@@ -49,6 +58,10 @@
     "viz_drama_fact_check": "Drama Fact Check",
     "viz_artifact_quiz": "Artifact Quiz",
     "viz_annual_report": "Annual Report",
+    "viz_hot_pages": "Hot Pages",
+    "topic_detail": "Topic Detail",
+    "surname_detail": "Surname Detail",
+    "admin": "Admin Console",
     "culture_tech_tree": "Tech Tree",
     "culture_char_evolution": "Character Evolution",
     "culture_dynasty_food": "Dynasty Food",
@@ -82,7 +95,8 @@
     "learn_topics": "Topics",
     "learn_huaxia_origin": "Huaxia Origin",
     "learn_compare": "Compare",
-    "learn_classroom_teacher": "Classroom",
+    "learn_classroom_teacher": "Classroom · Teacher",
+    "learn_classroom_student": "Classroom · Student",
     "search_title": "Search (Ctrl+K)",
     "theme_toggle": "Toggle theme",
     "menu": "Menu",
@@ -107,6 +121,17 @@
     "no_data": "No data available",
     "page_not_found": "Page not found",
     "back_home": "Back to Home"
+  },
+  "hot": {
+    "title": "Hot Pages",
+    "subtitle": "Based on real visit statistics, showing the most popular pages",
+    "empty": "No visit data yet. Browse a few pages and come back.",
+    "tab_all": "All",
+    "tab_7d": "Last 7d",
+    "tab_30d": "Last 30d",
+    "cold_title": "Cold Page Alerts",
+    "cold_subtitle": "Least visited pages, might be content blind spots",
+    "cold_empty": "No cold page data yet"
   },
   "home": {
     "title": "Five Millennium Museum",
@@ -243,6 +268,7 @@
     "brand_desc": "History as a mirror reflects rise and fall. Explore 5000 years of Chinese civilization.",
     "quick_nav": "Quick Navigation",
     "tech_stack": "Tech Stack",
+    "widget_docs": "Widget API Docs",
     "version_info": "Five Millennium Museum v0.1.0 — For learning demo only",
     "back_to_top": "Back to Top"
   },
@@ -2159,7 +2185,6 @@
     "confirm_delete": "Confirm delete?",
     "load_failed": "Load failed",
     "save_failed": "Save failed",
-    "delete_failed": "Delete failed",
-    "surname_map_manage": "Surname Map Management"
+    "delete_failed": "Delete failed"
   }
 }

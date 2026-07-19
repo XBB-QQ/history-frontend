@@ -61,8 +61,8 @@ const RoundTableConferencePage: React.FC = () => {
         </RevealOnScroll>
 
         <RevealOnScroll>
-          <div className="mb-8 bg-white rounded-2xl shadow-lg p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+          <div className="mb-8 bg-white dark:bg-ink-800 rounded-2xl shadow-lg p-6">
+            <h3 className="text-xl font-bold text-gray-800 dark:text-ink-100 mb-4 flex items-center gap-2">
               <FaComments className="text-purple-500" />
               {t('roundTableConference.select_topic')}
             </h3>
@@ -75,7 +75,7 @@ const RoundTableConferencePage: React.FC = () => {
                   className={`p-4 rounded-xl cursor-pointer transition-all duration-300 ${
                     selectedTopic === topic.id
                       ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg transform scale-105'
-                      : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent hover:border-purple-200'
+                      : 'bg-gray-50 dark:bg-ink-700/50 hover:bg-gray-100 dark:hover:bg-ink-700 border-2 border-transparent hover:border-purple-200 dark:hover:border-purple-700'
                   }`}
                 >
                   <h4 className="font-bold text-lg mb-2">{topic.title}</h4>
@@ -97,30 +97,30 @@ const RoundTableConferencePage: React.FC = () => {
           {currentTopic && (
             <div>
               <RevealOnScroll>
-                <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                <div className="bg-white dark:bg-ink-800 rounded-2xl shadow-lg p-6 mb-6">
                   <div className="flex items-start justify-between mb-6">
                     <div>
-                      <h3 className="text-2xl font-bold text-gray-800 mb-2 flex items-center gap-2">
+                      <h3 className="text-2xl font-bold text-gray-800 dark:text-ink-100 mb-2 flex items-center gap-2">
                         <FaLightbulb className="text-purple-500" />
                         {currentTopic.title}
                       </h3>
-                      <p className="text-gray-600">{currentTopic.description}</p>
+                      <p className="text-gray-600 dark:text-ink-300">{currentTopic.description}</p>
                     </div>
                   </div>
 
-                  <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-4 mb-6">
-                    <h4 className="font-bold text-gray-800 mb-2">{t('roundTableConference.discussion_question')}</h4>
-                    <p className="text-gray-700 italic">"{currentTopic.question}"</p>
+                  <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-xl p-4 mb-6">
+                    <h4 className="font-bold text-gray-800 dark:text-ink-100 mb-2">{t('roundTableConference.discussion_question')}</h4>
+                    <p className="text-gray-700 dark:text-ink-200 italic">"{currentTopic.question}"</p>
                   </div>
 
                   <div className="mb-6">
-                    <h4 className="font-bold text-gray-800 mb-3">{t('roundTableConference.historical_background')}</h4>
-                    <p className="text-gray-600">{currentTopic.historicalContext}</p>
+                    <h4 className="font-bold text-gray-800 dark:text-ink-100 mb-3">{t('roundTableConference.historical_background')}</h4>
+                    <p className="text-gray-600 dark:text-ink-300">{currentTopic.historicalContext}</p>
                   </div>
 
                   <div className="flex flex-wrap gap-2 mb-6">
                     {currentTopic.tags.map(tag => (
-                      <span key={tag} className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm">
+                      <span key={tag} className="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm">
                         {tag}
                       </span>
                     ))}
@@ -130,13 +130,13 @@ const RoundTableConferencePage: React.FC = () => {
 
               <RevealOnScroll>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                  <div className="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                  <div className="bg-white dark:bg-ink-800 rounded-2xl shadow-lg p-6">
+                    <h3 className="text-xl font-bold text-gray-800 dark:text-ink-100 mb-4 flex items-center gap-2">
                       <FaUsers className="text-purple-500" />
                       {t('roundTableConference.select_participants')}
                     </h3>
 
-                    <p className="text-sm text-gray-600 mb-4">
+                    <p className="text-sm text-gray-600 dark:text-ink-300 mb-4">
                       {t('roundTableConference.select_participants_tip')}
                     </p>
 
@@ -147,18 +147,18 @@ const RoundTableConferencePage: React.FC = () => {
                           onClick={() => toggleParticipant(figure.id)}
                           className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
                             participants.includes(figure.id)
-                              ? 'bg-gradient-to-r from-purple-100 to-blue-100 border-2 border-purple-400'
-                              : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
+                              ? 'bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 border-2 border-purple-400 dark:border-purple-600'
+                              : 'bg-gray-50 dark:bg-ink-700/50 hover:bg-gray-100 dark:hover:bg-ink-700 border-2 border-transparent'
                           }`}
                         >
                           <span className="text-2xl">{figure.avatar}</span>
                           <div className="flex-1">
-                            <h4 className="font-bold text-gray-800">{figure.displayName}</h4>
-                            <p className="text-sm text-gray-600">{figure.role}</p>
+                            <h4 className="font-bold text-gray-800 dark:text-ink-100">{figure.displayName}</h4>
+                            <p className="text-sm text-gray-600 dark:text-ink-300">{figure.role}</p>
                           </div>
                           <div className="flex flex-wrap gap-1">
                             {figure.tags.slice(0, 2).map(tag => (
-                              <span key={tag} className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded">
+                              <span key={tag} className="text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded">
                                 {tag}
                               </span>
                             ))}
@@ -317,39 +317,39 @@ const DiscussionSession: React.FC<{
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 overflow-y-auto">
       <div className="min-h-screen py-8 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-2xl p-6 mb-6">
+          <div className="bg-white dark:bg-ink-800 rounded-2xl shadow-2xl p-6 mb-6">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                <h3 className="text-2xl font-bold text-gray-800 dark:text-ink-100 flex items-center gap-2">
                   <FaLightbulb className="text-purple-500" />
                   {topic.title}
                 </h3>
-                <p className="text-gray-600">{topic.description}</p>
+                <p className="text-gray-600 dark:text-ink-300">{topic.description}</p>
               </div>
               <button
                 onClick={onClose}
-                className="text-gray-500 hover:text-gray-700 text-2xl"
+                className="text-gray-500 dark:text-ink-400 hover:text-gray-700 dark:hover:text-ink-200 text-2xl"
               >
                 ✕
               </button>
             </div>
 
-            <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-4 mb-6">
-              <p className="text-gray-700 text-lg">{t('roundTableConference.discussion_question')}"{topic.question}"</p>
+            <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-xl p-4 mb-6">
+              <p className="text-gray-700 dark:text-ink-200 text-lg">{t('roundTableConference.discussion_question')}"{topic.question}"</p>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+          <div className="bg-white dark:bg-ink-800 rounded-2xl shadow-lg p-6 mb-6">
+            <h3 className="text-xl font-bold text-gray-800 dark:text-ink-100 mb-6 flex items-center gap-2">
               <FaComments className="text-purple-500" />
               {t('roundTableConference.discussion_title')}
             </h3>
 
             {discussionPoints.length === 0 ? (
               <div className="text-center py-12">
-                <FaUsers className="w-20 h-20 mx-auto mb-4 text-gray-300" />
-                <p className="text-gray-500 text-lg">{t('roundTableConference.discussion_empty')}</p>
-                <p className="text-gray-400 mt-2">{t('roundTableConference.discussion_empty_tip')}</p>
+                <FaUsers className="w-20 h-20 mx-auto mb-4 text-gray-300 dark:text-ink-600" />
+                <p className="text-gray-500 dark:text-ink-400 text-lg">{t('roundTableConference.discussion_empty')}</p>
+                <p className="text-gray-400 dark:text-ink-500 mt-2">{t('roundTableConference.discussion_empty_tip')}</p>
               </div>
             ) : (
               <div className="space-y-6 mb-6">
@@ -362,32 +362,32 @@ const DiscussionSession: React.FC<{
                       key={point.id}
                       className={`p-4 rounded-xl ${
                         point.position === 'left'
-                          ? 'bg-gradient-to-r from-purple-50 to-transparent border-l-4 border-purple-400'
+                          ? 'bg-gradient-to-r from-purple-50 to-transparent dark:from-purple-900/20 dark:to-transparent border-l-4 border-purple-400 dark:border-purple-600'
                           : point.position === 'center'
-                          ? 'bg-gradient-to-r from-purple-100 to-blue-100 border-l-4 border-purple-500'
-                          : 'bg-gradient-to-l from-blue-50 to-transparent border-r-4 border-blue-400'
+                          ? 'bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 border-l-4 border-purple-500 dark:border-purple-500'
+                          : 'bg-gradient-to-l from-blue-50 to-transparent dark:from-blue-900/20 dark:to-transparent border-r-4 border-blue-400 dark:border-blue-600'
                       }`}
                     >
                       <div className="flex items-start gap-3 mb-3">
                         <span className="text-3xl">{point.speakerAvatar}</span>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <h4 className="font-bold text-gray-800">{point.speakerName}</h4>
-                            <span className="text-sm text-purple-600 bg-purple-100 px-2 py-0.5 rounded">
+                            <h4 className="font-bold text-gray-800 dark:text-ink-100">{point.speakerName}</h4>
+                            <span className="text-sm text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30 px-2 py-0.5 rounded">
                               {point.speakerRole}
                             </span>
                           </div>
                           {isPast && (
-                            <span className="text-xs text-gray-500">{t('roundTableConference.speaker_no', { no: point.timestamp + 1 })}</span>
+                            <span className="text-xs text-gray-500 dark:text-ink-400">{t('roundTableConference.speaker_no', { no: point.timestamp + 1 })}</span>
                           )}
                         </div>
                       </div>
-                      <div className="bg-white rounded-lg p-3 mb-3">
-                        <p className="text-gray-700 italic">"{point.content}"</p>
+                      <div className="bg-white dark:bg-ink-900 rounded-lg p-3 mb-3">
+                        <p className="text-gray-700 dark:text-ink-200 italic">"{point.content}"</p>
                       </div>
                       {isCurrent && (
-                        <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-3">
-                          <p className="text-sm text-yellow-800">
+                        <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded-lg p-3">
+                          <p className="text-sm text-yellow-800 dark:text-yellow-300">
                             {t('roundTableConference.think_question')}
                           </p>
                         </div>
@@ -396,7 +396,7 @@ const DiscussionSession: React.FC<{
                         <div className="flex gap-2">
                           <button
                             onClick={() => goToSpeaker(point.timestamp)}
-                            className="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded hover:bg-purple-200"
+                            className="text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-3 py-1 rounded hover:bg-purple-200 dark:hover:bg-purple-900/50"
                           >
                             {t('roundTableConference.review')}
                           </button>

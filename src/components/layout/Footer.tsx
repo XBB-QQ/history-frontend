@@ -68,6 +68,11 @@ export default function Footer() {
                 <li>Tailwind CSS</li>
                 <li>Zustand 状态管理</li>
                 <li>Spring Boot 后端</li>
+                <li>
+                  <Link to="/docs/widgets" className="hover:text-accent transition-colors">
+                    {t('footer.widget_docs')}
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>

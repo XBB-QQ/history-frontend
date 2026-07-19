@@ -21,19 +21,7 @@ const TARGET_DIR = path.join(ROOT, 'public', 'images', 'clothing');
 
 // 替换映射：旧 URL → 新 URL + 新 caption + 新 license
 const REPLACEMENTS = [
-  // ===== 宋代：帝王画像 → 清明上河图 + 李嵩画作 =====
-  {
-    oldUrl: '/images/clothing/song-0-960px-Portrait_de_Song_Xuanzu.jpg',
-    newUrl: '/images/clothing/civ-song-qingming-1.jpg',
-    newCaption: '清明上河图·局部（清院本，反映宋代市井百姓服饰全貌）',
-    newLicense: 'Public domain',
-  },
-  {
-    oldUrl: '/images/clothing/song-2-960px-Portrait_de_Song_Taizong.jpg',
-    newUrl: '/images/clothing/civ-song-qingming-2.jpg',
-    newCaption: '清明上河图·局部二（清院本，反映宋代商贩与劳动百姓服饰）',
-    newLicense: 'CC BY-SA 4.0',
-  },
+  // ===== 宋代：帝王画像 → 李嵩画作（清明上河图因超长横卷不适合展示，已弃用）=====
   {
     oldUrl: '/images/clothing/song-4-960px-SongEmperorAlbumZhenzongPortrait.jpg',
     newUrl: '/images/clothing/civ-song-lisung.jpg',

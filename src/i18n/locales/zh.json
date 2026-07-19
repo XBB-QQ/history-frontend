@@ -15,6 +15,15 @@
     "group_viz": "可视化",
     "group_culture": "文化",
     "group_learn": "学习",
+    "group_literature": "文学艺术",
+    "group_heritage": "文物典籍",
+    "lit_poetry": "诗词",
+    "lit_painting": "书画",
+    "lit_opera": "戏曲",
+    "lit_architecture": "建筑",
+    "lit_ware": "器物",
+    "heritage_relics": "文物图鉴",
+    "heritage_classics": "典籍原典",
     "ai_rag_qa": "问答",
     "ai_cross_debate": "跨时空辩论",
     "ai_historian": "AI 史官",
@@ -49,6 +58,10 @@
     "viz_drama_fact_check": "影视勘误",
     "viz_artifact_quiz": "信物鉴定",
     "viz_annual_report": "年度报告",
+    "viz_hot_pages": "热度榜",
+    "topic_detail": "专题详情",
+    "surname_detail": "姓氏详情",
+    "admin": "管理后台",
     "culture_tech_tree": "科技树",
     "culture_char_evolution": "汉字演变",
     "culture_dynasty_food": "历代食谱",
@@ -82,7 +95,8 @@
     "learn_topics": "专题长文",
     "learn_huaxia_origin": "华夏溯源",
     "learn_compare": "人物对比",
-    "learn_classroom_teacher": "班级史馆",
+    "learn_classroom_teacher": "班级史馆·教师",
+    "learn_classroom_student": "班级史馆·学生",
     "search_title": "搜索 (Ctrl+K)",
     "theme_toggle": "切换主题",
     "menu": "菜单",
@@ -107,6 +121,17 @@
     "no_data": "暂无数据",
     "page_not_found": "页面未找到",
     "back_home": "返回首页"
+  },
+  "hot": {
+    "title": "页面热度榜",
+    "subtitle": "基于真实访问统计，展示最受用户欢迎的页面",
+    "empty": "暂无访问数据，去浏览几个页面再来看看吧",
+    "tab_all": "全部",
+    "tab_7d": "近7天",
+    "tab_30d": "近30天",
+    "cold_title": "冷门页面预警",
+    "cold_subtitle": "访问次数最少的页面，可能是内容盲区",
+    "cold_empty": "暂无冷门页面数据"
   },
   "home": {
     "title": "五千年史馆",
@@ -243,6 +268,7 @@
     "brand_desc": "以史为鉴，可知兴替。探索中华文明五千年辉煌历史。",
     "quick_nav": "快速导航",
     "tech_stack": "技术栈",
+    "widget_docs": "Widget API 文档",
     "version_info": "五千年史馆 v0.1.0 — 仅供学习演示用途",
     "back_to_top": "回到顶部"
   },
@@ -2159,7 +2185,6 @@
     "confirm_delete": "确定删除？",
     "load_failed": "加载失败",
     "save_failed": "保存失败",
-    "delete_failed": "删除失败",
-    "surname_map_manage": "姓氏地图管理"
+    "delete_failed": "删除失败"
   }
 }

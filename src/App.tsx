@@ -1,6 +1,8 @@
 import { Suspense, lazy, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { useI18nStore, useT } from '@/i18n/i18n';
+import { recordPageView } from '@/services/analyticsApi';
+import { useUserStore } from '@/store/userStore';
 import HomePage from './pages/HomePage';
 const TimelinePage = lazy(() => import('./pages/TimelinePage'));
 const TimelineHubPage = lazy(() => import('./pages/TimelineHubPage'));
@@ -80,11 +82,19 @@ const ScriptKillerPage = lazy(() => import('./pages/ScriptKillerPage'));
 const EntropyModelPage = lazy(() => import('./pages/EntropyModelPage'));
 const FuturePredictionPage = lazy(() => import('./pages/FuturePredictionPage'));
 const StoryQuestPage = lazy(() => import('./pages/StoryQuestPage'));
+const PoetryPage = lazy(() => import('./pages/literature/PoetryPage'));
+const PaintingPage = lazy(() => import('./pages/literature/PaintingPage'));
+const OperaPage = lazy(() => import('./pages/literature/OperaPage'));
+const ArchitectureOverviewPage = lazy(() => import('./pages/literature/ArchitecturePage'));
+const WarePage = lazy(() => import('./pages/literature/WarePage'));
+const RelicsPage = lazy(() => import('./pages/RelicsPage'));
+const ClassicsPage = lazy(() => import('./pages/ClassicsPage'));
 const MediaBridgePage = lazy(() => import('./pages/MediaBridgePage'));
 const MultiplayerMysteryPage = lazy(() => import('./pages/MultiplayerMysteryPage'));
 const TeacherDashboardPage = lazy(() => import('./pages/classroom/TeacherDashboard'));
 const StudentAssignmentPage = lazy(() => import('./pages/classroom/StudentAssignmentPage'));
 const HuaxiaOriginPage = lazy(() => import('./pages/HuaxiaOriginPage'));
+const HotPagesPage = lazy(() => import('./pages/HotPagesPage'));
 
 // 后台管理页面（不用 lazy，避免 SSR 问题）
 import AdminLoginPage from './pages/admin/AdminLoginPage';
@@ -111,7 +121,9 @@ import { preloadAllSceneFonts } from './utils/fontLoader';
 
 function App() {
   const t = useT();
+  const location = useLocation();
   const hydrateFromStorage = useSceneStore((s) => s.hydrateFromStorage);
+  const user = useUserStore((s) => s.user);
 
   // 启动时恢复场景偏好 + 后台预加载所有字体
   useEffect(() => {
@@ -130,6 +142,11 @@ function App() {
     }
     return () => clearTimeout(timer);
   }, [hydrateFromStorage]);
+
+  // 路由切换时上报页面访问埋点（fire-and-forget，失败静默）
+  useEffect(() => {
+    recordPageView(location.pathname, user?.username);
+  }, [location.pathname, user?.username]);
 
   return (
     <BackgroundLayer>
@@ -235,7 +252,15 @@ function App() {
 <Route path="/entropy-model" element={<EntropyModelPage />} />
 <Route path="/future-prediction" element={<FuturePredictionPage />} />
           <Route path="/story-quest" element={<StoryQuestPage />} />
+          <Route path="/literature/poetry" element={<PoetryPage />} />
+          <Route path="/literature/painting" element={<PaintingPage />} />
+          <Route path="/literature/opera" element={<OperaPage />} />
+          <Route path="/literature/architecture" element={<ArchitectureOverviewPage />} />
+          <Route path="/literature/ware" element={<WarePage />} />
+          <Route path="/relics" element={<RelicsPage />} />
+          <Route path="/classics" element={<ClassicsPage />} />
           <Route path="/media-bridge" element={<MediaBridgePage />} />
+          <Route path="/hot" element={<HotPagesPage />} />
 
           {/* 后台管理路由 */}
           <Route path="/admin/login" element={<AdminLoginPage />} />

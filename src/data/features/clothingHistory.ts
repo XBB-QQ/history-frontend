@@ -236,8 +236,8 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
     culturalMeaning: '魏晋服饰反映了个性的解放和民族交融，为隋唐服饰的多元开放奠定基础',
     images: [
       {
-        url: '/images/clothing/wei-jin-2-960px-Pottery_Figurine_of_Wei__Jin__or_Southern-Northern_Dynasties__10369815.jpg',
-        caption: '魏晋南北朝陶俑（反映当时宽衫大袖与幅巾束发）',
+        url: '/images/clothing/civ-weijin-female-musician-02.jpg',
+        caption: '北魏彩绘女乐俑（反映北方民间女性襦裙与发髻）',
         license: 'CC0',
       },
       {
@@ -246,8 +246,8 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
         license: 'CC0',
       },
       {
-        url: '/images/clothing/wei-jin-0-960px-Pottery_Figurine_of_Wei__Jin__or_Southern-Northern_Dynasties.jpg',
-        caption: '魏晋南北朝陶俑（反映当时襦裙与裤褶形制）',
+        url: '/images/clothing/civ-weijin-female-musician-05.jpg',
+        caption: '北魏彩绘女乐俑（反映民间乐人服饰细节）',
         license: 'CC0',
       },
       {
@@ -415,8 +415,8 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
         license: 'Public domain',
       },
       {
-        url: '/images/clothing/song-4-960px-SongEmperorAlbumZhenzongPortrait.jpg',
-        caption: '宋真宗画像（反映宋代帝王服饰与冠帽细节）',
+        url: '/images/clothing/civ-song-lisung.jpg',
+        caption: '李嵩画作（反映宋代市井生活与平民服饰）',
         license: 'Public domain',
       },
       {
@@ -477,14 +477,14 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
     culturalMeaning: '元代服饰是蒙古与汉族文化的交融，质孙服制度体现了大一统下的民族融合',
     images: [
       {
-        url: '/images/clothing/yuan-0-960px-YuanEmperorAlbumKhubilaiPortrait.jpg',
-        caption: '元世祖忽必烈画像（反映钹笠冠与蒙古袍服）',
-        license: 'Public domain',
+        url: '/images/clothing/civ-yuan-musician-clappers.jpg',
+        caption: '元代乐舞砖俑·拍板乐人（反映民间艺人服饰）',
+        license: 'CC BY-SA 4.0',
       },
       {
-        url: '/images/clothing/yuan-1-960px-YuanEmperorAlbumKhubilaiFull.jpg',
-        caption: '忽必烈全身像（反映质孙服与蒙古服饰全貌）',
-        license: 'Public domain',
+        url: '/images/clothing/civ-yuan-musician-panpipes.jpg',
+        caption: '元代乐舞砖俑·排箫乐人（反映民间艺人头巾与短袍）',
+        license: 'CC BY-SA 4.0',
       },
       {
         url: '/images/clothing/yuan-4-Man_wearing_a_Mongol_robe_with_underarm_openings.JPG',
@@ -492,9 +492,9 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
         license: 'Public domain',
       },
       {
-        url: '/images/clothing/extra-12-Liu-Kuan-Tao-Jagd.JPG',
-        caption: '刘贯道《元世祖出猎图》（反映元代帝王狩猎服饰）',
-        license: 'Public domain',
+        url: '/images/clothing/civ-yuan-drum-dancer.jpg',
+        caption: '元代乐舞砖俑·鼓舞人（反映民间舞蹈服饰）',
+        license: 'CC BY-SA 4.0',
       },
       {
         url: '/images/clothing/yuan-3-Qubilai_Setsen_Khaan.JPG',
@@ -559,13 +559,13 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
         license: 'Public domain',
       },
       {
-        url: '/images/clothing/ming-1-960px-Portrait_assis_de_l_empereur_Ming_Chengzu.jpg',
-        caption: '明成祖朱棣坐像（反映明代帝王冠服与补子）',
+        url: '/images/clothing/civ-ming-peddler-2.png',
+        caption: '明人货郎图轴（反映明代民间小商贩短褐与头巾）',
         license: 'Public domain',
       },
       {
-        url: '/images/clothing/ming-0-960px-Ming_Xuanzong.jpg',
-        caption: '明宣宗坐像（反映乌纱帽与圆领袍）',
+        url: '/images/clothing/civ-ming-peddler-1.jpg',
+        caption: '计盛货郎图（明初，反映民间商贩百工衣着与市井生活）',
         license: 'Public domain',
       },
       {
@@ -631,14 +631,14 @@ export const DYNASTY_CLOTHING: DynastyClothing[] = [
     culturalMeaning: '清代服饰是满汉文化碰撞的产物，剃发易服政策深刻影响了近代中国人的外貌认同',
     images: [
       {
-        url: '/images/clothing/qing-5-960px-Robe__dragon__AM_12081-3_.jpg',
-        caption: '清代龙袍实物（反映龙纹刺绣与服饰工艺）',
-        license: 'CC BY 4.0',
+        url: '/images/clothing/civ-qing-farming-2.png',
+        caption: '绵亿耕织图册·八（反映清代农民劳作短衣与斗笠）',
+        license: 'Public domain',
       },
       {
-        url: '/images/clothing/qing-1-960px-Qing_Dragon_Robe_a.jpg',
-        caption: '清代龙袍正面（反映马蹄袖与龙纹刺绣）',
-        license: 'CC0',
+        url: '/images/clothing/civ-qing-farming-1.png',
+        caption: '绵亿耕织图册·五（反映清代农家男女日常劳作服饰）',
+        license: 'Public domain',
       },
       {
         url: '/images/clothing/extra-16-Man_s_semi-formal_court_robe__jifu__-_Google_Art_Project.jpg',
