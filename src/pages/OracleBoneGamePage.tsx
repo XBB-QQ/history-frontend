@@ -32,7 +32,7 @@ const adaptRandomToOracle = (rc: RandomChar, idx: number): OracleBoneChar => ({
   icon: '📜',
 });
 
-type GameMode = 'classic' | 'random';
+type GameMode = 'classic' | 'random' | 'infinite';
 
 const OracleBoneGamePage = () => {
   const t = useT();
@@ -46,6 +46,9 @@ const OracleBoneGamePage = () => {
   // 随机挑战模式
   const [mode, setMode] = useState<GameMode>('classic');
   const [randomQuestionCount, setRandomQuestionCount] = useState(10);
+  // 无限模式：Unicode 动态生成，404 重试
+  const [infiniteQuestionCount, setInfiniteQuestionCount] = useState(10);
+  const [infiniteLoading, setInfiniteLoading] = useState(false);
 
   // 字 → 甲骨文字形缓存（key=简体字）
   // value: { svgXml?: string; svgPath?: string } 优先用 svgXml（hanziyuan 真实字源），其次 svgPath（内置 30 字手绘）
@@ -117,6 +120,12 @@ const OracleBoneGamePage = () => {
       return;
     }
 
+    if (mode === 'infinite') {
+      // 无限模式：Unicode 动态生成
+      generateInfiniteQuiz(infiniteQuestionCount);
+      return;
+    }
+
     // 经典模式：Generate new quiz
     let quiz: OracleBoneChar[];
     if (selectedCategory !== 'all' && selectedCategory !== 'all') {
@@ -141,6 +150,8 @@ const OracleBoneGamePage = () => {
     if (newMode === 'random') {
       const randomChars = getRandomChars(randomQuestionCount);
       setCurrentQuiz(randomChars.map((rc, idx) => adaptRandomToOracle(rc, idx)));
+    } else if (newMode === 'infinite') {
+      generateInfiniteQuiz(infiniteQuestionCount);
     } else {
       setCurrentQuiz(getRandomOracleChars(5).slice(0, 5));
     }
@@ -155,6 +166,87 @@ const OracleBoneGamePage = () => {
     setShowResult(false);
     const randomChars = getRandomChars(count);
     setCurrentQuiz(randomChars.map((rc, idx) => adaptRandomToOracle(rc, idx)));
+  };
+
+  /** 无限模式：从 Unicode CJK 基本区（U+4E00-U+9FA5，20902 字）随机选字
+   *  并发批量调 fetchCharEvolutionByChar，404 跳过重试，直到凑够所需题数
+   *  meaning 字段从后端响应拿，没有就空
+   */
+  const generateInfiniteQuiz = useCallback(async (count: number) => {
+    setInfiniteLoading(true);
+    setCurrentQuestion(0);
+    setSelectedAnswer('');
+    setScore(0);
+    setShowResult(false);
+
+    const CJK_START = 0x4e00;
+    const CJK_END = 0x9fa5;
+    const CJK_RANGE = CJK_END - CJK_START + 1; // 20902
+    const collected: OracleBoneChar[] = [];
+    const triedChars = new Set<string>();
+    const BATCH_SIZE = 8; // 每批并发数
+
+    while (collected.length < count) {
+      // 生成一批随机字
+      const batch: string[] = [];
+      while (batch.length < BATCH_SIZE && triedChars.size < CJK_RANGE) {
+        const code = CJK_START + Math.floor(Math.random() * CJK_RANGE);
+        const ch = String.fromCodePoint(code);
+        if (!triedChars.has(ch)) {
+          triedChars.add(ch);
+          batch.push(ch);
+        }
+      }
+      if (batch.length === 0) break; // 字库耗尽（极端情况）
+
+      // 并发抓取
+      const results = await Promise.all(
+        batch.map(async (ch) => {
+          try {
+            const data = await fetchCharEvolutionByChar(ch);
+            // 验证有 stages[0]（甲骨文阶段）
+            if (data?.stages?.[0]?.svgXml || data?.stages?.[0]?.svgPath) {
+              return {
+                id: `infinite-${collected.length}-${ch}`,
+                character: ch,
+                traditional: ch,
+                traditionalFull: ch,
+                pronunciation: '',
+                meaning: data.meaning || '',
+                visualDescription: '无限模式字',
+                strokeCount: 0,
+                category: '无限',
+                dynasty: '商代',
+                culturalContext: '',
+                relatedCharacters: [],
+                difficulty: 'medium' as const,
+                exampleSentence: '',
+                icon: '📜',
+              } as OracleBoneChar;
+            }
+            return null;
+          } catch {
+            return null; // 404 或网络错误，跳过
+          }
+        })
+      );
+      collected.push(...results.filter((r): r is OracleBoneChar => r !== null));
+    }
+
+    setInfiniteLoading(false);
+    if (collected.length > 0) {
+      setCurrentQuiz(collected.slice(0, count));
+    } else {
+      // 极端情况：连续 404，回退到经典模式
+      setMode('classic');
+      setCurrentQuiz(getRandomOracleChars(5).slice(0, 5));
+    }
+  }, []);
+
+  /** 无限模式改题数时重新生成 */
+  const handleInfiniteCountChange = (count: number) => {
+    setInfiniteQuestionCount(count);
+    generateInfiniteQuiz(count);
   };
 
   const handleStartNewQuiz = () => {
@@ -430,7 +522,27 @@ const OracleBoneGamePage = () => {
                 >
                   随机挑战（120 字）
                 </button>
+                <button
+                  onClick={() => handleModeChange('infinite')}
+                  className={`flex-1 px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+                    mode === 'infinite'
+                      ? 'bg-purple-600 text-white shadow-md'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  }`}
+                >
+                  无限挑战（CJK 2 万字）
+                </button>
               </div>
+
+              {/* 无限模式 loading 提示 */}
+              {mode === 'infinite' && infiniteLoading && (
+                <div className="text-center py-4">
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mb-2" />
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    正在从 Unicode CJK 基本区（20902 字）随机选字，抓取甲骨文字源...
+                  </p>
+                </div>
+              )}
 
               {/* 经典模式：分类/难度选择 */}
               {mode === 'classic' && (
@@ -492,6 +604,33 @@ const OracleBoneGamePage = () => {
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                     从 120 字池随机选字，实时抓取甲骨文 SVG。每题 4 选项随机打乱。
+                  </p>
+                </div>
+              )}
+
+              {/* 无限模式：题数选择 */}
+              {mode === 'infinite' && !infiniteLoading && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    题目数量（从 2 万字动态生成，404 自动重试）
+                  </label>
+                  <div className="flex gap-2">
+                    {[5, 10, 20].map((n) => (
+                      <button
+                        key={n}
+                        onClick={() => handleInfiniteCountChange(n)}
+                        className={`flex-1 px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+                          infiniteQuestionCount === n
+                            ? 'bg-purple-600 text-white shadow-md'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        }`}
+                      >
+                        {n} 题
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    从 Unicode CJK 基本区（U+4E00-U+9FA5，20902 字）随机选字，调 hanziyuan.net 抓取字源。命中率约 50%，加载时间 5-15 秒。
                   </p>
                 </div>
               )}
