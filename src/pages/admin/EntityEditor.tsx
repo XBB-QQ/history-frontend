@@ -23,7 +23,7 @@ interface EditorProps {
   idKey?: string;
 }
 
-function EntityEditor({ type, title, listFn, deleteFn, fields, idKey = 'id' }: EditorProps) {
+function EntityEditor({ type, title, listFn, saveFn, deleteFn, fields, idKey = 'id' }: EditorProps) {
   const t = useT();
   const navigate = useNavigate();
   const { editId } = useParams<{ editId: string }>();
@@ -58,9 +58,12 @@ function EntityEditor({ type, title, listFn, deleteFn, fields, idKey = 'id' }: E
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!editing) return;
     setSaving(true);
     setError('');
     try {
+      // 安全修复 F2：必须调用 saveFn 把数据落库，原代码漏调导致 admin 4 个编辑器（朝代/事件/人物/知识）新增编辑全部失效
+      await saveFn(editing);
       setEditing(null);
       await loadData();
       navigate(`/admin/${type}`);

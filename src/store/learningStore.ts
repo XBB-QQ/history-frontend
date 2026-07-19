@@ -1,4 +1,8 @@
 import { create } from 'zustand';
+import { fetchJSON } from '@/services/api';
+
+// 安全修复 F1：BASE_URL 与 api.ts 保持一致
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
 export interface ReadingListItem {
   id: number;
@@ -93,13 +97,9 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     try {
       const token = localStorage.getItem('user_token');
       if (!token) return;
-      const res = await fetch(`/api/learning/lists`, {
-        headers: { 'X-User-Id': token || '' },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        set({ lists: data });
-      }
+      // 安全修复 F1/B2：路径加 /user 前缀，删除 X-User-Id header（fetchJSON 自动注入 Authorization）
+      const data = await fetchJSON<ReadingListItem[]>(`${BASE_URL}/user/learning/lists`);
+      set({ lists: data });
     } catch {}
   },
 
@@ -107,40 +107,26 @@ export const useLearningStore = create<LearningState>((set, get) => ({
     try {
       const token = localStorage.getItem('user_token');
       if (!token) return;
-      const res = await fetch(`/api/learning/progress`, {
-        headers: { 'X-User-Id': token || '' },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        const moduleProgress = aggregateModuleProgress(data);
-        set({ progress: data, moduleProgress });
-      }
+      const data = await fetchJSON<ProgressItem[]>(`${BASE_URL}/user/learning/progress`);
+      const moduleProgress = aggregateModuleProgress(data);
+      set({ progress: data, moduleProgress });
     } catch {}
   },
 
   createList: async (name, description = '') => {
-    const token = localStorage.getItem('user_token');
-    const res = await fetch(`/api/learning/lists`, {
+    const data = await fetchJSON<ReadingListItem>(`${BASE_URL}/user/learning/lists`, {
       method: 'POST',
-      headers: {
-        'X-User-Id': token || '',
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, description }),
     });
-    const data = await res.json();
     set((s) => ({ lists: [...s.lists, data] }));
     return data;
   },
 
   addResource: async (listId, type, id, title) => {
-    const token = localStorage.getItem('user_token');
-    await fetch(`/api/learning/lists/${listId}/resources`, {
+    await fetchJSON(`${BASE_URL}/user/learning/lists/${listId}/resources`, {
       method: 'POST',
-      headers: {
-        'X-User-Id': token || '',
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ resourceType: type, resourceId: id, title }),
     });
     // Refresh lists
@@ -148,10 +134,8 @@ export const useLearningStore = create<LearningState>((set, get) => ({
   },
 
   removeResource: async (listId, resourceId) => {
-    const token = localStorage.getItem('user_token');
-    await fetch(`/api/learning/lists/${listId}/resources/${resourceId}`, {
+    await fetchJSON(`${BASE_URL}/user/learning/lists/${listId}/resources/${resourceId}`, {
       method: 'DELETE',
-      headers: { 'X-User-Id': token || '' },
     });
     await get().fetchLists();
   },

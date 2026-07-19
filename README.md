@@ -422,3 +422,31 @@ prefetch(chars)   // 批量预抓
 | 随机挑战 | 琥珀色 | 内置 120 字字池 | 5/10/20 题 |
 | 无限挑战 | 紫色 | Unicode CJK 2万字动态抓取 | 5/10/20 题 |
 | 复习错题 | 玫红 | localStorage 错题本 | 错题数量 |
+
+## P0 安全修复（第二批：前端功能 bug 3 条）
+
+> 2026-07-20 · P0 安全走查与修复第二批
+
+### F1：quiz/learning 8 端点路径 + 鉴权方式
+
+- **问题**：3 个 quiz 端点（daily/answer/random）+ 5 个 learning 端点缺失 `/user` 前缀；[`learningStore.ts`](file:///d:/claudeCode/history-frontend/src/store/learningStore.ts) 把 JWT token 当 username 传 `X-User-Id` header，后端 `findByUsername(token)` 查不到用户，导致正常用户功能失效 + IDOR 风险
+- **修复**：
+  - [`api.ts`](file:///d:/claudeCode/history-frontend/src/services/api.ts) `fetchJSON` 改为 `export`，自动从 `useUserStore.getState().token` 注入 `Authorization: Bearer` header
+  - 8 个端点路径全部加 `/user` 前缀
+  - 删除 `X-User-Id` header
+  - 类型名修正（`LearningList` → `ReadingListItem`，`LearningProgress` → `ProgressItem`）
+
+### F2：EntityEditor handleSave 漏调 saveFn
+
+- **问题**：admin 4 个编辑器（朝代/事件/人物/知识）的新增、编辑全部失效——UI 不报错但数据没落库
+- **修复**：[`EntityEditor.tsx`](file:///d:/claudeCode/history-frontend/src/pages/admin/EntityEditor.tsx) `handleSave` 补 `await saveFn(editing)`
+
+### F3：TitleGeneratorPage 重复展开
+
+- **问题**：`setGeneratedTitles([...newTitles, ...newTitles])` 把同一数组展开两次，生成 3 个显示 6 个且两两重复
+- **修复**：改为 `setGeneratedTitles(newTitles)`
+
+### 验证
+
+- `npx tsc --noEmit`：exit 0
+- `npx vitest run`：51 文件 286 测试全通过

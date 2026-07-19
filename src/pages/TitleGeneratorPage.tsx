@@ -79,7 +79,8 @@ const TitleGeneratorPage = () => {
         : getRandomEraName();
       newTitles.push(title);
     }
-    setGeneratedTitles([...newTitles, ...newTitles]);
+    // 安全修复 F3：去掉重复展开，原 [...newTitles, ...newTitles] 会把同一数组展开两次导致生成 3 个显示 6 个且两两重复
+    setGeneratedTitles(newTitles);
   };
 
   const handleTitleClick = (title: string) => {

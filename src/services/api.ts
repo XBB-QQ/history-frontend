@@ -1,6 +1,8 @@
 // 五千年史馆 — API 客户端
 // 调用 Spring Boot 后端 REST API，返回前端类型格式
 
+import { useUserStore } from '@/store/userStore';
+
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
 // ──────────────────────────────────────────────
@@ -355,10 +357,22 @@ function adaptKnowledge(dto: BackendKnowledgeDTO): FrontendKnowledge {
 // API 函数
 // ──────────────────────────────────────────────
 
-async function fetchJSON<T>(url: string, init?: RequestInit): Promise<T> {
+// 安全修复 B2/F1：统一通过 Authorization: Bearer 传递身份，移除 X-User-Id header
+// 避免 IDOR（攻击者塞别人 username 即可冒充）+ 修复前端传 token 当 username 的语义错位
+
+export async function fetchJSON<T>(url: string, init?: RequestInit): Promise<T> {
+  // 自动注入 Authorization header（如果用户已登录）
+  const token = useUserStore.getState().token;
+  const headers: Record<string, string> = { 'Accept': 'application/json' };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
   const response = await fetch(url, {
-    headers: { 'Accept': 'application/json' },
     ...init,
+    headers: {
+      ...headers,
+      ...(init?.headers as Record<string, string> | undefined),
+    },
   });
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status} ${response.statusText} for ${url}`);
@@ -725,13 +739,13 @@ export interface QuizResult {
 
 /** 获取每日题目 */
 export async function fetchDailyQuiz(): Promise<QuizQuestion> {
-  const data = await fetchJSON<QuizQuestion>(`${BASE_URL}/quiz/daily`);
+  const data = await fetchJSON<QuizQuestion>(`${BASE_URL}/user/quiz/daily`);
   return data;
 }
 
 /** 提交答案 */
 export async function submitQuizAnswer(questionId: number, selectedIndex: number): Promise<QuizResult> {
-  const data = await fetchJSON<QuizResult>(`${BASE_URL}/quiz/answer`, {
+  const data = await fetchJSON<QuizResult>(`${BASE_URL}/user/quiz/answer`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ questionId, selectedIndex }),
@@ -742,7 +756,7 @@ export async function submitQuizAnswer(questionId: number, selectedIndex: number
 /** 获取随机题目 */
 export async function fetchRandomQuiz(page = 0, size = 10): Promise<{ content: QuizQuestion[]; total: number }> {
   const data = await fetchJSON<{ content: QuizQuestion[]; totalElements: number }>(
-    `${BASE_URL}/quiz/random?page=${page}&size=${size}`
+    `${BASE_URL}/user/quiz/random?page=${page}&size=${size}`
   );
   return {
     content: data.content,

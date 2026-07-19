@@ -1,5 +1,104 @@
 # 迭代记录 — 五千年史馆前端
 
+## 2026-07-20 · P0 安全走查与修复（第二批：前端功能 bug 3 条）
+
+### 一、背景
+
+第一批部署与凭证 6 条 P0 修复后（commit `7a1d5eb` + `073a0c2`），继续按 15 条 P0 清单推进第二批前端功能 bug 3 条（F1/F2/F3）。用户原话「按顺序执行修复，记得不要速度需要的是准确度，记得闭环验证文档同步」。
+
+### 二、F1：quiz/learning 8 端点路径 + X-User-Id 改用 Authorization
+
+#### 问题
+
+- 8 个用户相关端点缺失 `/user` 前缀：3 个 quiz（daily/answer/random）+ 5 个 learning（lists GET/POST、progress GET、lists/{id}/resources POST/DELETE）
+- [`learningStore.ts`](file:///d:/claudeCode/history-frontend/src/store/learningStore.ts) 把 JWT token 当 username 传：`headers: { 'X-User-Id': token }`，后端 `findByUsername(userId)` 当 username 用 → 正常用户功能失效 + IDOR 风险
+
+#### 修复
+
+| 文件 | 改动 |
+|------|------|
+| [`api.ts`](file:///d:/claudeCode/history-frontend/src/services/api.ts) | `fetchJSON` 改为 `export`，自动从 `useUserStore.getState().token` 取 token 注入 `Authorization: Bearer` header；3 个 quiz 路径加 `/user` 前缀（daily/answer/random） |
+| [`learningStore.ts`](file:///d:/claudeCode/history-frontend/src/store/learningStore.ts) | 5 个方法改用 `fetchJSON`，路径加 `/user`，删除 `X-User-Id` header；类型名修正（`LearningList` → `ReadingListItem`，`LearningProgress` → `ProgressItem`） |
+
+#### fetchJSON 自动鉴权实现
+
+```typescript
+export async function fetchJSON<T>(url: string, init?: RequestInit): Promise<T> {
+  const token = useUserStore.getState().token;
+  const headers: Record<string, string> = { 'Accept': 'application/json' };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  const response = await fetch(url, {
+    ...init,
+    headers: { ...headers, ...(init?.headers as Record<string, string> | undefined) },
+  });
+  if (!response.ok) {
+    throw new Error(`API request failed: ${response.status} ${response.statusText} for ${url}`);
+  }
+  return response.json();
+}
+```
+
+### 三、F2：EntityEditor handleSave 漏调 saveFn
+
+#### 问题
+
+[`EntityEditor.tsx`](file:///d:/claudeCode/history-frontend/src/pages/admin/EntityEditor.tsx) 的 `handleSave` 只做 `setEditing(null) + loadData()`，没调用 `saveFn` 把编辑结果落库。导致 admin 4 个编辑器（朝代/事件/人物/知识）的新增、编辑全部失效——UI 不报错但数据没保存。
+
+#### 修复
+
+`EditorProps` 已有 `saveFn` 字段，`handleSave` 补 `await saveFn(editing)`：
+
+```typescript
+const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  if (!editing) return;
+  setSaving(true);
+  setError('');
+  try {
+    await saveFn(editing);  // 补：必须落库
+    setEditing(null);
+    await loadData();
+    navigate(`/admin/${type}`);
+  } catch (e: unknown) {
+    setError(e instanceof Error ? e.message : t('admin.save_failed'));
+  } finally {
+    setSaving(false);
+  }
+};
+```
+
+### 四、F3：TitleGeneratorPage 重复展开
+
+#### 问题
+
+[`TitleGeneratorPage.tsx`](file:///d:/claudeCode/history-frontend/src/pages/TitleGeneratorPage.tsx) 的 `generateMultipleTitles`：
+
+```typescript
+setGeneratedTitles([...newTitles, ...newTitles]);  // 把同一数组展开两次
+```
+
+生成 3 个显示 6 个且两两重复，生成 6 个显示 12 个。
+
+#### 修复
+
+```typescript
+setGeneratedTitles(newTitles);
+```
+
+### 五、验证
+
+- `npx tsc --noEmit`：exit 0
+- `npx vitest run`：51 文件 286 测试全通过（仅 React Router v7 future flag 警告，非错误）
+
+### 六、教训
+
+1. **类型名一致性**：`fetchJSON<T>` 的泛型参数必须和 `interface` 定义同名，否则 tsc 报 `Cannot find name`。原代码用了 `LearningList`/`LearningProgress`，但实际 interface 是 `ReadingListItem`/`ProgressItem`，是早期重命名遗留
+2. **统一鉴权优于分散塞 header**：`fetchJSON` 自动注入 `Authorization` 比每个 store 自己读 token 塞 `X-User-Id` 干净，且避免「把 token 当 username」的语义错误
+3. **admin 编辑器 save 漏调是隐性 bug**：UI 不报错、不抛异常，用户以为保存成功但数据没落库，比显性 bug 更危险。`EditorProps` 有 `saveFn` 字段却不用，是典型的「接口定义了但实现忘记调」
+4. **数组重复展开是低级但高频错误**：`[...arr, ...arr]` 看起来像「合并两个数组」，实际是「把同一个数组展开两次」，review 时要警惕
+
 ## 2026-07-19 · oracle-game 四项体验优化（错题本/历史最高分/字源释义/全局缓存/进度可视化）
 
 ### 一、背景
