@@ -6,10 +6,33 @@ import {
   ORACLE_BONE_CHARS,
   getRandomOracleChars,
   getOracleCharsByCategory,
-  getOracleCharsByDifficulty
+  getOracleCharsByDifficulty,
+  type OracleBoneChar
 } from '@/data/features/oracleData';
+import { getRandomChars, type RandomChar } from '@/data/features/randomCharPool';
 import { fetchCharEvolutionByChar } from '@/services/api';
 import { useT } from '@/i18n/i18n';
+
+/** 随机字适配为 OracleBoneChar，缺字段填默认值，复用现有答题逻辑 */
+const adaptRandomToOracle = (rc: RandomChar, idx: number): OracleBoneChar => ({
+  id: `random-${idx}-${rc.char}`,
+  character: rc.char,
+  traditional: rc.char,
+  traditionalFull: rc.char,
+  pronunciation: '',
+  meaning: rc.meaning,
+  visualDescription: '随机挑战字',
+  strokeCount: 0,
+  category: rc.category,
+  dynasty: '商代',
+  culturalContext: '',
+  relatedCharacters: [],
+  difficulty: 'medium',
+  exampleSentence: '',
+  icon: '📜',
+});
+
+type GameMode = 'classic' | 'random';
 
 const OracleBoneGamePage = () => {
   const t = useT();
@@ -17,9 +40,12 @@ const OracleBoneGamePage = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
-  const [currentQuiz, setCurrentQuiz] = useState(ORACLE_BONE_CHARS.slice(0, 5));
+  const [currentQuiz, setCurrentQuiz] = useState<OracleBoneChar[]>(ORACLE_BONE_CHARS.slice(0, 5));
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
+  // 随机挑战模式
+  const [mode, setMode] = useState<GameMode>('classic');
+  const [randomQuestionCount, setRandomQuestionCount] = useState(10);
 
   // 字 → 甲骨文字形缓存（key=简体字）
   // value: { svgXml?: string; svgPath?: string } 优先用 svgXml（hanziyuan 真实字源），其次 svgPath（内置 30 字手绘）
@@ -84,8 +110,15 @@ const OracleBoneGamePage = () => {
     setScore(0);
     setShowResult(false);
 
-    // Generate new quiz
-    let quiz: typeof ORACLE_BONE_CHARS;
+    if (mode === 'random') {
+      // 随机挑战：从 120 字池随机选 N 字，适配成 OracleBoneChar 复用答题逻辑
+      const randomChars = getRandomChars(randomQuestionCount);
+      setCurrentQuiz(randomChars.map((rc, idx) => adaptRandomToOracle(rc, idx)));
+      return;
+    }
+
+    // 经典模式：Generate new quiz
+    let quiz: OracleBoneChar[];
     if (selectedCategory !== 'all' && selectedCategory !== 'all') {
       quiz = getOracleCharsByCategory(selectedCategory);
     } else if (selectedDifficulty !== 'all') {
@@ -95,6 +128,33 @@ const OracleBoneGamePage = () => {
     }
 
     setCurrentQuiz(quiz.slice(0, 5));
+  };
+
+  /** 切换模式时重置游戏 */
+  const handleModeChange = (newMode: GameMode) => {
+    if (newMode === mode) return;
+    setMode(newMode);
+    setCurrentQuestion(0);
+    setSelectedAnswer('');
+    setScore(0);
+    setShowResult(false);
+    if (newMode === 'random') {
+      const randomChars = getRandomChars(randomQuestionCount);
+      setCurrentQuiz(randomChars.map((rc, idx) => adaptRandomToOracle(rc, idx)));
+    } else {
+      setCurrentQuiz(getRandomOracleChars(5).slice(0, 5));
+    }
+  };
+
+  /** 随机模式改题数时重新生成 */
+  const handleRandomCountChange = (count: number) => {
+    setRandomQuestionCount(count);
+    setCurrentQuestion(0);
+    setSelectedAnswer('');
+    setScore(0);
+    setShowResult(false);
+    const randomChars = getRandomChars(count);
+    setCurrentQuiz(randomChars.map((rc, idx) => adaptRandomToOracle(rc, idx)));
   };
 
   const handleStartNewQuiz = () => {
@@ -126,6 +186,30 @@ const OracleBoneGamePage = () => {
 
     return answers;
   }, [currentQuestion, selectedAnswer, questions]);
+
+  // 生成 4 个选项：正确答案 + 3 个干扰项（从题库随机选），shuffle 打乱位置
+  // 修复原 slice 逻辑的两个问题：1) 最后几题选项不足；2) 正确答案总在第一个
+  const currentOptions = useMemo<OracleBoneChar[]>(() => {
+    if (!currentQuestionData) return [];
+    const correct = currentQuestionData;
+    const others = questions.filter((q) => q.id !== correct.id);
+    // Fisher-Yates 随机选 3 个干扰项
+    const shuffled = [...others];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    const distractors = shuffled.slice(0, 3);
+    // 4 选项 shuffle
+    const options = [correct, ...distractors];
+    for (let i = options.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [options[i], options[j]] = [options[j], options[i]];
+    }
+    return options;
+    // 依赖 currentQuestion 而非 currentQuestionData，避免每次 questions 引用变化重算
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentQuestion, questions]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50 to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -227,9 +311,9 @@ const OracleBoneGamePage = () => {
                       </button>
                     </>
                   ) : (
-                    questions.slice(currentQuestion, currentQuestion + 4).map((q) => (
+                    currentOptions.map((q, idx) => (
                       <button
-                        key={q.id}
+                        key={`${q.id}-${idx}`}
                         onClick={() => handleAnswer(q.traditional)}
                         disabled={!!selectedAnswer}
                         className={`p-6 rounded-xl text-4xl font-bold transition-all transform hover:scale-105 ${
@@ -256,10 +340,14 @@ const OracleBoneGamePage = () => {
                     {t('oracleBoneGame.final_score', { score })}
                   </p>
                   <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
-                    {score === 50 && t('oracleBoneGame.result_perfect')}
-                    {score > 40 && t('oracleBoneGame.result_excellent')}
-                    {score > 30 && t('oracleBoneGame.result_good')}
-                    {score <= 30 && t('oracleBoneGame.result_poor')}
+                    {(() => {
+                      // 按题数动态计算满分，适配经典 5 题 / 随机 5/10/20 题
+                      const totalScore = questions.length * 10;
+                      if (score === totalScore) return t('oracleBoneGame.result_perfect');
+                      if (score >= totalScore * 0.8) return t('oracleBoneGame.result_excellent');
+                      if (score >= totalScore * 0.6) return t('oracleBoneGame.result_good');
+                      return t('oracleBoneGame.result_poor');
+                    })()}
                   </p>
 
                   {/* Result Details */}
@@ -314,39 +402,95 @@ const OracleBoneGamePage = () => {
               </>
             )}
 
-            {/* Quiz Options */}
-            <div className="flex flex-wrap gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-              <div className="flex-1 min-w-[200px]">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {t('oracleBoneGame.category_label')}
-                </label>
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => handleCategoryChange(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            {/* Mode Switcher + Quiz Options */}
+            <div className="pt-6 border-t border-gray-200 dark:border-gray-700 space-y-4">
+              {/* 模式切换 */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleModeChange('classic')}
+                  className={`flex-1 px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+                    mode === 'classic'
+                      ? 'bg-green-600 text-white shadow-md'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  }`}
                 >
-                  <option value="all">{t('oracleBoneGame.all_category')}</option>
-                  <option value="自然">{t('oracleBoneGame.category_nature')}</option>
-                  <option value="社会">{t('oracleBoneGame.category_society')}</option>
-                  <option value="生活">{t('oracleBoneGame.category_life')}</option>
-                </select>
+                  经典题库（40 字）
+                </button>
+                <button
+                  onClick={() => handleModeChange('random')}
+                  className={`flex-1 px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+                    mode === 'random'
+                      ? 'bg-amber-600 text-white shadow-md'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  }`}
+                >
+                  随机挑战（120 字）
+                </button>
               </div>
 
-              <div className="flex-1 min-w-[200px]">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {t('oracleBoneGame.difficulty_label')}
-                </label>
-                <select
-                  value={selectedDifficulty}
-                  onChange={(e) => handleDifficultyChange(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                >
-                  <option value="all">{t('oracleBoneGame.all_difficulty')}</option>
-                  <option value="easy">{t('oracleBoneGame.difficulty_easy')}</option>
-                  <option value="medium">{t('oracleBoneGame.difficulty_medium')}</option>
-                  <option value="hard">{t('oracleBoneGame.difficulty_hard')}</option>
-                </select>
-              </div>
+              {/* 经典模式：分类/难度选择 */}
+              {mode === 'classic' && (
+                <div className="flex flex-wrap gap-4">
+                  <div className="flex-1 min-w-[200px]">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      {t('oracleBoneGame.category_label')}
+                    </label>
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => handleCategoryChange(e.target.value)}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    >
+                      <option value="all">{t('oracleBoneGame.all_category')}</option>
+                      <option value="自然">{t('oracleBoneGame.category_nature')}</option>
+                      <option value="社会">{t('oracleBoneGame.category_society')}</option>
+                      <option value="生活">{t('oracleBoneGame.category_life')}</option>
+                    </select>
+                  </div>
+
+                  <div className="flex-1 min-w-[200px]">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      {t('oracleBoneGame.difficulty_label')}
+                    </label>
+                    <select
+                      value={selectedDifficulty}
+                      onChange={(e) => handleDifficultyChange(e.target.value)}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    >
+                      <option value="all">{t('oracleBoneGame.all_difficulty')}</option>
+                      <option value="easy">{t('oracleBoneGame.difficulty_easy')}</option>
+                      <option value="medium">{t('oracleBoneGame.difficulty_medium')}</option>
+                      <option value="hard">{t('oracleBoneGame.difficulty_hard')}</option>
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              {/* 随机模式：题数选择 */}
+              {mode === 'random' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    题目数量
+                  </label>
+                  <div className="flex gap-2">
+                    {[5, 10, 20].map((n) => (
+                      <button
+                        key={n}
+                        onClick={() => handleRandomCountChange(n)}
+                        className={`flex-1 px-4 py-2 rounded-lg font-bold text-sm transition-all ${
+                          randomQuestionCount === n
+                            ? 'bg-amber-600 text-white shadow-md'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        }`}
+                      >
+                        {n} 题
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    从 120 字池随机选字，实时抓取甲骨文 SVG。每题 4 选项随机打乱。
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
