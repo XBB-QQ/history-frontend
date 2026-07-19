@@ -92,7 +92,7 @@ export async function generateTodayGreetings(): Promise<GreetingMessage[]> {
         id: `greeting_${figure.id}_${Date.now()}`,
         figureId: figure.id,
         figureName: figure.name,
-        figureEmoji: figure.emoji,
+        figureEmoji: figure.emoji ?? '',
         content,
         date: getTodayString(),
         time: timeStr,

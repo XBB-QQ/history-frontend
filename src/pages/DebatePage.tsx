@@ -77,7 +77,7 @@ export default function DebatePage() {
               }`}
             >
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-xl">{topic.proSide.icon}</span>
+                {topic.proSide.icon && <span className="text-xl">{topic.proSide.icon}</span>}
                 <span className="font-bold text-red-700 dark:text-red-300">{topic.proSide.label}</span>
               </div>
               <ul className="space-y-2">
@@ -99,7 +99,7 @@ export default function DebatePage() {
               }`}
             >
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-xl">{topic.conSide.icon}</span>
+                {topic.conSide.icon && <span className="text-xl">{topic.conSide.icon}</span>}
                 <span className="font-bold text-blue-700 dark:text-blue-300">{topic.conSide.label}</span>
               </div>
               <ul className="space-y-2">

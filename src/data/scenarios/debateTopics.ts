@@ -17,6 +17,8 @@ export interface DebateTopic {
 export interface DebateSide {
   label: string;
   arguments: string[];
+  /** 正反方图标 emoji（可选，未配置时 UI 不显示图标） */
+  icon?: string;
 }
 
 export const DEBATE_TOPICS: DebateTopic[] = [

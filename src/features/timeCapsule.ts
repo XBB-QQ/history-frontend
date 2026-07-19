@@ -53,7 +53,7 @@ export function createCapsule(
     content,
     guardFigureId,
     guardFigureName: figure.name,
-    guardFigureEmoji: figure.emoji,
+    guardFigureEmoji: figure.emoji ?? '',
     openDate,
     createdAt: Date.now(),
   };

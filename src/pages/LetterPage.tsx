@@ -56,7 +56,7 @@ export default function LetterPage() {
         id: genLetterId(),
         figureId: selectedFigure.id,
         figureName: selectedFigure.name,
-        figureEmoji: selectedFigure.emoji,
+        figureEmoji: selectedFigure.emoji ?? '',
         userContent: letterContent.trim(),
         replyContent: reply,
         createdAt: Date.now(),
