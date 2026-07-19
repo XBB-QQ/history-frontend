@@ -185,3 +185,65 @@ wikisource:
 - 前端：
   - [`classicsApi.ts`](file:///d:/claudeCode/history-frontend/src/services/classicsApi.ts) — 新增 `searchWikisourceBooks` / `fetchWikisourceFulltext` 及对应类型
   - [`ClassicFulltext.tsx`](file:///d:/claudeCode/history-frontend/src/pages/classics/ClassicFulltext.tsx) — 双源切换 UI + 自动 fallback
+
+## 汉字演变 API 集成（任意字查询）
+
+支持输入任意汉字查看从甲骨文到楷书的字形演变演示，三级降级保证可用性。
+
+### 三级降级策略
+
+```
+用户输入汉字
+  ↓
+查内置 30 字（手绘简化 SVG path）→ 命中：直接演示
+  ↓ 未命中
+调后端 /api/char-evolution/{char} → hanziyuan.net 抓取
+  ↓ 成功                         ↓ 失败
+渲染真实字源 SVG XML             显示"未收录" + hanziyuan 外链
+```
+
+### 后端代理端点
+
+| 端点 | 方法 | 说明 |
+|------|------|------|
+| `/api/char-evolution` | GET | 返回内置 30 字列表 |
+| `/api/char-evolution/{char}` | GET | 查询单字演变数据，三级降级 |
+
+### hanziyuan.net 反爬绕过
+
+hanziyuan.net 用 ASP.NET Core antiforgery，curl/PowerShell POST `/etymology` 返回 404（TLS 指纹被识别为 bot）。Java HttpClient 的 TLS 指纹与浏览器接近能成功。
+
+抓取流程两步：
+1. GET 主页拿 `Bronze` cookie（antiforgery token）
+2. POST `/etymology` body 带 `chinese=字&Bronze=token`，headers 带 `X-Requested-With` / `Chinese` / `Seal` / `Referer` / `Origin`
+
+24h 内存缓存（`ConcurrentHashMap`），避免重复抓取。
+
+### 前端渲染策略
+
+```tsx
+{currentStage.svgXml ? (
+  // hanziyuan 真实字源 SVG：完整 XML，dark 模式反色
+  <div
+    className="dark:invert [&_svg]:w-full [&_svg]:h-full"
+    dangerouslySetInnerHTML={{ __html: currentStage.svgXml }}
+  />
+) : (
+  // 内置 30 字：SVG path，viewBox="0 0 60 90"
+  <svg viewBox="0 0 60 90"><path d={currentStage.svgPath} /></svg>
+)}
+```
+
+### 关键文件
+
+- 后端：
+  - [`HanziyuanFetcher.java`](file:///d:/claudeCode/history-backend/src/main/java/com/history/service/HanziyuanFetcher.java) — 抓取服务（HttpClient + CookieManager + 24h 缓存）
+  - [`CharEvolutionResponse.java`](file:///d:/claudeCode/history-backend/src/main/java/com/history/dto/CharEvolutionResponse.java) — DTO，`CharStageDTO` 含 `svgPath` / `svgXml` 二选一字段
+  - [`CharEvolutionController.java`](file:///d:/claudeCode/history-backend/src/main/java/com/history/controller/CharEvolutionController.java) — 三级降级控制器
+- 前端：
+  - [`api.ts`](file:///d:/claudeCode/history-frontend/src/services/api.ts) — `fetchCharEvolutionByChar(ch)` 单字接口
+  - [`CharEvolutionPage.tsx`](file:///d:/claudeCode/history-frontend/src/pages/CharEvolutionPage.tsx) — 输入即演示、svgXml 优先渲染、fetchingChar loading、未收录外链降级
+
+### 覆盖率
+
+hanziyuan.net 收录 6000+ 汉字，常用字成功率约 90%+。16 字抽样测试（猫/鸡/猪/蛇/凤/鹅/鸭/兔/狮/象/鹿/鹤/龟/龙/虎/鱼）15 成功 1 失败（「狮」字未收录）。

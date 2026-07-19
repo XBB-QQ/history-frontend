@@ -1,5 +1,98 @@
 # 迭代记录 — 五千年史馆前端
 
+## 2026-07-19 · 汉字演变任意字查询（hanziyuan.net 实时抓取）
+
+### 一、背景
+
+用户在 `char-evolution` 界面输入汉字看演变演示，反馈"三十个字太少了，我是想看哪个字输入哪个字"。内置 30 字（手绘简化 SVG path）远不够用，需要支持任意汉字。
+
+经 AskUserQuestion 决策采用 **方案：爬取 hanziyuan.net + 降级**（hanziyuan.net 是汉字叔叔字源数据库，收录 6000+ 汉字的真实字源 SVG）。
+
+### 二、后端实现
+
+| 文件 | 角色 | 改动 |
+|------|------|------|
+| `HanziyuanFetcher.java` | 抓取服务 | 新建，Java HttpClient 绕过反爬，24h 内存缓存 |
+| `CharEvolutionResponse.java` | DTO | `CharStageDTO` 新增 `svgXml` 字段（完整 SVG XML） |
+| `CharEvolutionController.java` | 控制器 | `GET /api/char-evolution/{char}` 三级降级：内置 → hanziyuan → 404+hint |
+
+#### 反爬绕过关键点
+
+hanziyuan.net 用 ASP.NET Core antiforgery，curl/PowerShell POST `/etymology` 返回 404（TLS 指纹被识别为 bot）。Java HttpClient 的 TLS 指纹与浏览器接近能成功。
+
+抓取流程两步：
+1. **GET 主页** 拿 `Bronze` cookie（antiforgery token）
+2. **POST `/etymology`** body 带 `chinese=字&Bronze=token`，headers 带 `X-Requested-With: XMLHttpRequest`、`Chinese: <codepoint>`、`Seal: <Bronze值>`、`Referer`、`Origin`
+
+#### HTML 解析策略
+
+响应是 20-270KB HTML，含 N 个 `data:image/svg+xml;base64,XXX` 数据 URI。解析步骤：
+1. 正则匹配阶段标题位置：`(甲骨文|金文|篆字|篆书|隶书|楷书)\s*\(\s*(\d+)\s*\)`
+2. 正则匹配所有 data URI 位置
+3. 按位置区间为每个阶段分配第 1 个 data URI
+4. base64 解码为 SVG XML
+5. 缺失阶段用 `STAGE_FALLBACK = {"篆字", "篆书", "隶书"}` 填充
+
+#### 缓存
+
+`ConcurrentHashMap<String, CacheEntry>`，`CacheEntry` 是 record `(data, expiresAt)`，TTL 24h。
+
+### 三、前端实现
+
+| 文件 | 改动 |
+|------|------|
+| `services/api.ts` | `CharEvolutionData.stages` 新增 `svgXml?: string`；新增 `fetchCharEvolutionByChar(ch)` 单字接口 |
+| `pages/CharEvolutionPage.tsx` | `handleSearch` 改 async：内置未命中 → 调 `fetchCharEvolutionByChar`；svgXml 优先用 `dangerouslySetInnerHTML` 渲染真实 SVG（dark 模式 `dark:invert` 反色）；新增 `fetchingChar` loading 提示、未收录时显示 hanziyuan 外链降级 |
+
+#### 渲染策略
+
+```tsx
+{currentStage.svgXml ? (
+  // hanziyuan 真实字源 SVG：完整 XML，dark 模式反色
+  <div
+    className="dark:invert [&_svg]:w-full [&_svg]:h-full"
+    dangerouslySetInnerHTML={{ __html: currentStage.svgXml }}
+  />
+) : (
+  // 内置 30 字：SVG path，viewBox="0 0 60 90"
+  <svg viewBox="0 0 60 90"><path d={currentStage.svgPath} /></svg>
+)}
+```
+
+#### 三级降级流程
+
+```
+用户输入汉字
+  ↓
+查 allChars（内置 30 字）→ 命中：直接演示
+  ↓ 未命中
+调 fetchCharEvolutionByChar → 后端查 hanziyuan
+  ↓ 成功                      ↓ 失败
+设置 fetchedChar + 演示      显示"未收录"+ hanziyuan 外链
+```
+
+### 四、验证
+
+- **tsc**：通过
+- **vitest**：51 文件 / 286 测试全通过
+- **接口测试**：16 字抽样（猫/鸡/猪/蛇/凤/鹅/鸭/兔/狮/象/鹿/鹤/龟/龙/虎/鱼），15 成功 1 失败（「狮」字 hanziyuan 未收录）
+- **覆盖率**：hanziyuan.net 收录 6000+ 汉字，常用字成功率约 90%+
+- **Git**：后端 commit `9666d7d`、前端 commit `7ae6e28`，均已 push
+
+### 五、教训
+
+1. **反爬要看 TLS 指纹**：curl/PowerShell 用 Schannel TLS 被识别为 bot，Java HttpClient 用 OpenJDK TLS 反而通过。同一个 URL 不同客户端行为不同
+2. **hanziyuan 数据稀疏性**：部分字（如「狗」）只有篆字阶段，甲骨文/金文无数据。当前用 fallback 填充相同 SVG，未来可优化为缺失阶段显示占位
+3. **后端代码变更必须重启**：新增 Service 类后必须 `mvn clean compile` + 重启 Spring Boot，否则跑旧代码返回旧报错
+4. **PowerShell 不支持 heredoc**：`git commit -m "$(cat <<'EOF'...EOF)"` 会失败，改用多个 `-m` 参数
+
+### 六、遗留
+
+- 缺失阶段的 fallback 体验待优化（当前 5 阶段显示相同 SVG）
+- hanziyuan 偶发抓取慢（2-5 秒），首次访问需等待 loading
+
+---
+
 ## 2026-07-19 · AI 古文翻译（GLM-4-Flash）+ 完整原文译文双栏对照
 
 ### 一、背景
