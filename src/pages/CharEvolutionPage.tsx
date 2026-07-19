@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { CHAR_EVOLUTIONS } from '@/data/features/charEvolution';
-import { fetchCharEvolutions, fetchCharEvolutionByChar } from '@/services/api';
+import { fetchCharEvolutions } from '@/services/api';
+import { useCharEvolutionStore } from '@/store/charEvolutionStore';
 import { useT } from '@/i18n/i18n';
 
 /** 统一的汉字演变数据类型（兼容本地数据和后端 API 响应） */
@@ -51,6 +52,8 @@ export default function CharEvolutionPage() {
   const [activeCategory, setActiveCategory] = useState<string>('全部');
   // M3 修复：保存 setInterval id，组件卸载或重新开始动画时清理
   const animationTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // 全局字源缓存（跨页面共享，命中即跳过请求）
+  const getOrFetch = useCharEvolutionStore((s) => s.getOrFetch);
 
   useEffect(() => {
     fetchCharEvolutions()
@@ -81,10 +84,10 @@ export default function CharEvolutionPage() {
       // 等 evolution 重新计算后再启动动画——用 setTimeout 0 让出渲染帧
       setTimeout(() => startAnimation(found.stages.length), 0);
     } else if (!loading) {
-      // 内置未命中：抓取 hanziyuan
+      // 内置未命中：抓取 hanziyuan（走全局 cache，跨页面共享）
       setFetchingChar(true);
       setFetchedChar(null);
-      fetchCharEvolutionByChar(ch)
+      getOrFetch(ch)
         .then((data) => {
           if (data && data.stages && data.stages.length > 0) {
             setFetchedChar(data as CharData);
@@ -193,11 +196,11 @@ export default function CharEvolutionPage() {
       startAnimation(found.stages.length);
       return;
     }
-    // 未命中内置数据：调后端单字 API 实时抓取
+    // 未命中内置数据：调后端单字 API 实时抓取（走全局 cache，跨页面共享）
     setFetchingChar(true);
     setFetchedChar(null);
     try {
-      const data = await fetchCharEvolutionByChar(ch);
+      const data = await getOrFetch(ch);
       if (data && data.stages && data.stages.length > 0) {
         setFetchedChar(data as CharData);
         setActiveStage(0);
@@ -211,7 +214,7 @@ export default function CharEvolutionPage() {
     } finally {
       setFetchingChar(false);
     }
-  }, [inputValue, allChars, startAnimation]);
+  }, [inputValue, allChars, startAnimation, getOrFetch]);
 
   // 既没数据也没在抓取时直接返回 null（仅在初始化或异常状态）
   if (!evolution) {
