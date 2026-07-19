@@ -1,5 +1,87 @@
 # 迭代记录 — 五千年史馆前端
 
+## 2026-07-19 · oracle-game 新增「无限挑战」模式（Unicode CJK 2万字动态生成）
+
+### 一、背景
+
+用户反馈上一轮新增的「随机挑战」模式虽有 120 字字池，但仍嫌太少。经 AskUserQuestion 提供两个选项：
+
+- **方案 A**：扩充字池到 500 字（仍为静态字池）
+- **方案 B**：Unicode CJK 动态生成（覆盖 2 万字，按需抓取）
+
+用户选 B 方案。优势：题库接近无限，任意生僻字都能出题；劣势：依赖后端 hanziyuan 抓取成功率，需 404 重试。
+
+### 二、改动
+
+#### OracleBoneGamePage 新增 infinite 模式
+
+| 改动点 | 说明 |
+|--------|------|
+| `GameMode` 类型 | 扩展为 `'classic' \| 'random' \| 'infinite'` |
+| `infiniteQuestionCount` state | 5/10/20 题，默认 10 |
+| `infiniteLoading` state | 抓取期间显示 loading spinner |
+| `generateInfiniteQuiz(count)` | 核心函数：CJK 随机选字 + 并发抓取 + 404 重试 |
+| `handleInfiniteCountChange` | 改题数时重新生成 |
+| `handleModeChange` / `handleRestart` | 支持 infinite 分支 |
+| UI | 第三个模式按钮（紫色）+ loading spinner + 题数选择 |
+
+#### `generateInfiniteQuiz` 实现要点
+
+```typescript
+const CJK_START = 0x4e00;
+const CJK_END = 0x9fa5;
+const CJK_RANGE = CJK_END - CJK_START + 1; // 20902
+
+while (collected.length < count) {
+  // 1. 生成一批随机字（BATCH_SIZE=8），用 Set 去重
+  // 2. Promise.all 并发调 fetchCharEvolutionByChar
+  // 3. 过滤 null（404 或无 SVG 的字）
+  // 4. collected.push(...results)
+  // 5. 极端情况字库耗尽时 break
+}
+```
+
+- **批量并发 8 字**：兼顾速度与后端压力（避免 20902 字全打过去）
+- **Set 去重**：triedChars 跟踪已试过的字，避免重复抓取
+- **验证 stages[0]**：必须存在 `svgXml` 或 `svgPath`，否则视为无甲骨文字源跳过
+- **回退机制**：极端情况（连续 404 字库耗尽）自动切回经典模式
+
+### 三、UI 三态切换
+
+底部三个模式按钮：
+
+| 按钮 | 颜色 | 行为 |
+|------|------|------|
+| 经典题库 | 绿色 | 5 题固定，可选分类/难度 |
+| 随机挑战 | 琥珀色 | 120 字池随机选 N 字 |
+| 无限挑战 | 紫色 | Unicode CJK 动态生成 N 字 |
+
+infinite 模式下加载时显示「正在从 Unicode 字库抓取甲骨文...」+ 旋转 spinner，抓取完毕后进入答题。
+
+### 四、渲染复用
+
+infinite 模式产生的 `OracleBoneChar[]` 直接喂给现有逻辑，零分叉：
+
+- **svgCache + 四态渲染**：svgXml（hanziyuan 真实字源）> svgPath（内置手绘）> 加载中 emoji pulse > fallback emoji
+- **currentOptions shuffle**：正确答案 + 3 干扰项 Fisher-Yates 打乱位置
+- **动态满分判定**：`totalScore = questions.length * 10`，适配 5/10/20 题
+- **题干不泄题**：答题前只显示「请选择对应的汉字」+ SVG；答完后显示「正确答案：舟（船）」作为复盘
+
+### 五、验证
+
+- **tsc**：通过（0 错误）
+- **vitest**：51 文件 / 286 测试全通过
+- **Git**：commit `7509a3c` 已 push
+
+### 六、教训
+
+1. **动态生成优于静态字池**：2 万字的字池即使硬编码也极大，且无法覆盖生僻字；Unicode CJK 一次解决
+2. **批量并发 + 404 跳过是标准模式**：Promise.all 8 字一批，失败的字跳过重试，循环直到凑够
+3. **适配器已就位时新模式极简**：上一轮的 `adaptRandomToOracle` 适配器把 OracleBoneChar 构造问题解决后，infinite 模式只需解决"如何造 OracleBoneChar[]"，核心就一个 `generateInfiniteQuiz` 函数
+4. **极端情况必须回退**：连续 404 字库耗尽虽然概率极低（20902 字里总有 SVG），但仍需回退到经典模式避免白屏
+
+---
+
 ## 2026-07-19 · oracle-game 新增「随机挑战」模式（120 字完全随机出题）
 
 ### 一、背景

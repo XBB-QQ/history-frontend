@@ -330,3 +330,43 @@ RandomChar（3 字段）→ OracleBoneChar（13 字段）通过 `adaptRandomToOr
 - poor: `score < totalScore * 0.6`
 
 适配经典 5 题（满分 50）/ 随机 5/10/20 题（满分 50/100/200）。
+
+## oracle-game 无限挑战模式（Unicode CJK 2万字动态生成）
+
+题库不再受静态字池限制，从 Unicode CJK 基本区（U+4E00-U+9FA5，共 20902 字）随机选字，按需调后端 `/api/char-evolution/{char}` 抓取甲骨文 SVG 出题。底部新增第三个紫色按钮「无限挑战」。
+
+### 核心函数 `generateInfiniteQuiz(count)`
+
+```typescript
+const CJK_START = 0x4e00;
+const CJK_END = 0x9fa5;
+const CJK_RANGE = CJK_END - CJK_START + 1; // 20902
+
+while (collected.length < count) {
+  // 1. 生成一批随机字（BATCH_SIZE=8），Set 去重
+  // 2. Promise.all 并发调 fetchCharEvolutionByChar
+  // 3. 过滤 null（404 或无 SVG 的字跳过）
+  // 4. collected.push(...results)
+}
+```
+
+- **批量并发 8 字**：兼顾速度与后端压力
+- **404 跳过重试**：hanziyuan 未收录的字返回 404，自动跳过换字重试
+- **回退机制**：极端情况（连续 404 字库耗尽）自动切回经典模式
+
+### 三模式对比
+
+| 模式 | 颜色 | 字源 | 题数 |
+|------|------|------|------|
+| 经典题库 | 绿色 | 内置 40 字（带分类/难度） | 5 题 |
+| 随机挑战 | 琥珀色 | 内置 120 字字池 | 5/10/20 题 |
+| 无限挑战 | 紫色 | Unicode CJK 2万字动态抓取 | 5/10/20 题 |
+
+### 渲染复用
+
+infinite 模式产生的 `OracleBoneChar[]` 复用既有逻辑，零分叉：
+
+- svgCache + 四态渲染（svgXml > svgPath > 加载中 emoji pulse > fallback emoji）
+- currentOptions shuffle（正确 + 3 干扰 Fisher-Yates 打乱）
+- 动态满分判定（`totalScore = questions.length * 10`）
+- 题干不泄题（答题前不显示答案字，答完后显示正确答案作为复盘）
