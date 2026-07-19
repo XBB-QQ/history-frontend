@@ -1,5 +1,59 @@
 # 迭代记录 — 五千年史馆前端
 
+## 2026-07-19 · char-evolution 与 oracle-game 互通 + 游戏页面接入真实字源 SVG
+
+### 一、背景
+
+用户提出 `oracle-game` 与 `char-evolution` 两个页面功能是否重叠、如何改进。分析结论：**定位不重叠（游戏 vs 学习），不应合并**；真正问题是 OracleBoneGamePage 用 emoji 假装甲骨文字形（如 `☀️` 代表「日」），体验失真，且两套字形数据各搞一份没共享。
+
+经 AskUserQuestion 决策采用 **方案 A+B 组合**：
+- **方案 A**：游戏页面接入真实字源（emoji → hanziyuan SVG）
+- **方案 B**：两个页面互相跳转（闭环体验）
+
+### 二、改动
+
+#### CharEvolutionPage（学习页 → 答题页）
+
+| 改动点 | 说明 |
+|--------|------|
+| URL query 预选字 | 新增 `useSearchParams`，解析 `?char=王` 自动选中并演示；内置未命中时调 `fetchCharEvolutionByChar` 抓取 hanziyuan，复用已有的 fetchingChar loading 提示 |
+| 「挑战甲骨文答题 →」按钮 | 自动播放按钮区新增 Link，跳转 `/oracle-game` |
+
+#### OracleBoneGamePage（答题页 → 学习页）
+
+| 改动点 | 说明 |
+|--------|------|
+| svgCache 字 → 甲骨文 SVG 缓存 | `useState<Record<string, string \| null>>`，value 为 SVG XML 或 null（失败 fallback） |
+| useEffect 跟随当前题抓取 | `currentQuestion` 变化时调 `fetchCharEvolutionByChar(ch)`，取 `stages[0].svgXml`（甲骨文阶段） |
+| 字典区前 10 字批量预加载 | 挂载时即并发抓取 10 个常用字，减少卡片显示延迟 |
+| 题目区渲染 | svgXml 优先用 `dangerouslySetInnerHTML` 渲染真实字源 SVG（dark 模式 `dark:invert` 反色）；加载中显示原 emoji + `animate-pulse`；失败 fallback 到原 emoji（opacity-50） |
+| 字典卡片改 Link | 整张卡片改为 `<Link to="/char-evolution?char=字">`，卡片内 emoji 同样替换为真实 SVG |
+| 结果页「查看演变 →」 | 每题对错图标旁新增链接，跳到对应字的演变演示页 |
+
+### 三、闭环体验流程
+
+```
+用户在 char-evolution 输入「王」看演变
+  → 点「挑战甲骨文答题」跳 oracle-game
+    → 题目区显示真实甲骨文 SVG（不再是 emoji）
+      → 答题完成，结果页点「查看演变」
+        → 跳回 char-evolution?char=字，自动演示
+```
+
+### 四、验证
+
+- **tsc**：通过
+- **vitest**：51 文件 / 286 测试全通过
+- **Git**：commit `409354b` 已 push
+
+### 五、教训
+
+1. **PowerShell 不支持多 `-m` 参数**：`git commit -m "..." -m "..."` 在 PowerShell 下会被 git 把后续 `-m` 内容当 pathspec，改用 here-string + 单个 `-m`
+2. **React Hook 顺序**：`useEffect` 引用的变量必须在前面声明，`const currentQuestionData = useMemo(...)` 要在 `useEffect` 之前
+3. **fallback 设计**：网络抓取必失败时，缓存 `null` 表示「已尝试且失败」，避免重复请求；UI 三态（svgXml / loading / fallback emoji）要分别处理
+
+---
+
 ## 2026-07-19 · 汉字演变任意字查询（hanziyuan.net 实时抓取）
 
 ### 一、背景
