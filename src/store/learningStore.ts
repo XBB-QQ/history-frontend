@@ -95,9 +95,8 @@ export const useLearningStore = create<LearningState>((set, get) => ({
 
   fetchLists: async () => {
     try {
-      const token = localStorage.getItem('user_token');
-      if (!token) return;
-      // 安全修复 F1/B2：路径加 /user 前缀，删除 X-User-Id header（fetchJSON 自动注入 Authorization）
+      // P0-3 token 治理：删除本地 token 检查，fetchJSON 已自动注入 Authorization；
+      // 调用方（LearningPage）已用 isAuthenticated 守门，未登录不会走到这里
       const data = await fetchJSON<ReadingListItem[]>(`${BASE_URL}/user/learning/lists`);
       set({ lists: data });
     } catch {}
@@ -105,8 +104,6 @@ export const useLearningStore = create<LearningState>((set, get) => ({
 
   fetchProgress: async () => {
     try {
-      const token = localStorage.getItem('user_token');
-      if (!token) return;
       const data = await fetchJSON<ProgressItem[]>(`${BASE_URL}/user/learning/progress`);
       const moduleProgress = aggregateModuleProgress(data);
       set({ progress: data, moduleProgress });

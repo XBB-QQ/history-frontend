@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useLearningStore } from '@/store/learningStore';
 import { useUserStore } from '@/store/userStore';
 import { useT } from '@/i18n/i18n';
@@ -40,12 +40,30 @@ function LearningPage() {
   const [newName, setNewName] = useState('');
   const [newDesc, setNewDesc] = useState('');
   const [expandedList, setExpandedList] = useState<number | null>(null);
+  // 新增：首次加载 skeleton + 清单搜索 + 排序
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState<'default' | 'name' | 'resources'>('default');
 
   useEffect(() => {
     if (!isAuthenticated) return;
-    fetchLists();
-    fetchProgress();
+    Promise.all([fetchLists(), fetchProgress()]).finally(() => setLoading(false));
   }, [isAuthenticated]);
+
+  // 清单搜索 + 排序
+  const filteredLists = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    const filtered = term
+      ? lists.filter((l) => l.name?.toLowerCase().includes(term))
+      : lists;
+    if (sortBy === 'name') {
+      return [...filtered].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    }
+    if (sortBy === 'resources') {
+      return [...filtered].sort((a, b) => b.resources.length - a.resources.length);
+    }
+    return filtered;
+  }, [lists, searchTerm, sortBy]);
 
   const overallPercent = moduleProgress.length > 0
     ? Math.round(moduleProgress.reduce((s, m) => s + m.percent, 0) / moduleProgress.length)
@@ -104,7 +122,7 @@ function LearningPage() {
 
         {/* 模块进度 */}
         {moduleProgress.length > 0 && (
-          <div className="grid grid-cols-2 gap-3 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
             {moduleProgress.map(m => (
               <ProgressBar key={m.type} percent={m.percent} label={m.label} icon={m.icon} />
             ))}
@@ -138,14 +156,56 @@ function LearningPage() {
         )}
 
         {/* Reading Lists */}
-        {lists.length === 0 ? (
+        {loading ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-16 bg-ink-100 dark:bg-ink-800 rounded-xl animate-pulse" />
+            ))}
+          </div>
+        ) : filteredLists.length === 0 ? (
           <div className="text-center py-12 text-ink-400">
             <p className="text-lg mb-1">{t('learning.no_list')}</p>
             <p className="text-sm">{t('learning.create_hint')}</p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {lists.map((list) => (
+          <>
+            {/* 清单搜索 + 排序 */}
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <div className="relative flex-1 min-w-[200px]">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder={t('learning.search_placeholder')}
+                  className="w-full px-3 py-1.5 pl-9 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-ink-900 dark:text-ink-100 focus:outline-none focus:border-accent text-sm"
+                />
+                <svg
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <div className="flex items-center gap-1 text-xs">
+                <span className="text-ink-400">{t('learning.sort_label')}</span>
+                {(['default', 'name', 'resources'] as const).map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setSortBy(s)}
+                    className={`px-2 py-1 rounded-md transition-colors ${
+                      sortBy === s ? 'bg-accent/10 text-accent font-bold' : 'text-ink-500 hover:text-accent'
+                    }`}
+                  >
+                    {t(`learning.sort_${s}`)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              {filteredLists.map((list) => (
               <div
                 key={list.id}
                 className="bg-white/60 dark:bg-ink-900/60 rounded-xl border border-ink-200 dark:border-ink-700 overflow-hidden"
@@ -187,7 +247,8 @@ function LearningPage() {
                 )}
               </div>
             ))}
-          </div>
+            </div>
+          </>
         )}
       </div>
     </div>

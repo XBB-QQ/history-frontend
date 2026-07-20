@@ -56,21 +56,32 @@ function KnowledgePage() {
 
         {activeTag && (
           <RevealOnScroll direction="fade" delay={150}>
-            <div className="text-left mb-4">
-              <span className="text-xs text-ink-400">
-                {t('knowledge.filter_label')}
-                {activeTag!.split(',').map(t => t.trim()).filter(Boolean).map((t, i) => (
-                  <span key={i} className="text-accent font-bold">
-                    {i > 0 && ' ∩ '}#{t}
-                  </span>
-                ))}
-                <button
-                  onClick={() => setActiveTag(null)}
-                  className="ml-2 text-ink-400 hover:text-accent transition-colors underline"
+            <div className="text-left mb-4 flex flex-wrap items-center gap-2">
+              <span className="text-xs text-ink-400">{t('knowledge.filter_label')}</span>
+              {activeTag!.split(',').map(s => s.trim()).filter(Boolean).map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-accent/10 text-accent text-xs font-bold"
                 >
-                  {t('knowledge.clear_filter')}
-                </button>
-              </span>
+                  #{tag}
+                  <button
+                    onClick={() => {
+                      const remaining = activeTag!.split(',').map(s => s.trim()).filter(Boolean).filter(t => t !== tag);
+                      setActiveTag(remaining.length > 0 ? remaining.join(',') : null);
+                    }}
+                    className="hover:bg-accent/20 rounded-full w-4 h-4 flex items-center justify-center text-[10px]"
+                    title="移除标签"
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+              <button
+                onClick={() => setActiveTag(null)}
+                className="text-xs text-ink-400 hover:text-accent transition-colors underline"
+              >
+                {t('knowledge.clear_filter')}
+              </button>
             </div>
           </RevealOnScroll>
         )}

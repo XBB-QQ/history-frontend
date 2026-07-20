@@ -12,8 +12,11 @@ function ComparePage() {
   const [selected1, setSelected1] = useState<string>('');
   const [selected2, setSelected2] = useState<string>('');
   const [compareResult, setCompareResult] = useState<BackendPersonDTO[] | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showDropdown, setShowDropdown] = useState(false);
+  // 修复 bug：原代码两个 slot 共用同一 searchTerm/showDropdown，输入互相污染
+  const [searchTerm1, setSearchTerm1] = useState('');
+  const [searchTerm2, setSearchTerm2] = useState('');
+  const [showDropdown1, setShowDropdown1] = useState(false);
+  const [showDropdown2, setShowDropdown2] = useState(false);
 
   useEffect(() => {
     fetchAllPersons().then((data) => {
@@ -22,15 +25,24 @@ function ComparePage() {
     }).catch(() => setLoading(false));
   }, []);
 
-  const filteredPersons = persons.filter((p: any) =>
-    p.name.includes(searchTerm) || (p.tags || []).some((t: string) => t.includes(searchTerm))
+  // 每个 slot 独立过滤，避免互相干扰
+  const filteredPersons1 = persons.filter((p: any) =>
+    p.name.includes(searchTerm1) || (p.tags || []).some((t: string) => t.includes(searchTerm1))
+  ).slice(0, 10);
+  const filteredPersons2 = persons.filter((p: any) =>
+    p.name.includes(searchTerm2) || (p.tags || []).some((t: string) => t.includes(searchTerm2))
   ).slice(0, 10);
 
   const handleSelect = (person: BackendPersonDTO, slot: 1 | 2) => {
-    if (slot === 1) setSelected1(person.uid);
-    else setSelected2(person.uid);
-    setSearchTerm('');
-    setShowDropdown(false);
+    if (slot === 1) {
+      setSelected1(person.uid);
+      setSearchTerm1('');
+      setShowDropdown1(false);
+    } else {
+      setSelected2(person.uid);
+      setSearchTerm2('');
+      setShowDropdown2(false);
+    }
   };
 
   const handleCompare = () => {
@@ -55,6 +67,58 @@ function ComparePage() {
     );
   }
 
+  // 渲染单个 slot 输入框 + 下拉
+  const renderSlot = (slot: 1 | 2) => {
+    const selectedUid = slot === 1 ? selected1 : selected2;
+    const searchTerm = slot === 1 ? searchTerm1 : searchTerm2;
+    const setSearchTerm = slot === 1 ? setSearchTerm1 : setSearchTerm2;
+    const showDropdown = slot === 1 ? showDropdown1 : showDropdown2;
+    const setShowDropdown = slot === 1 ? setShowDropdown1 : setShowDropdown2;
+    const filtered = slot === 1 ? filteredPersons1 : filteredPersons2;
+    const setSelected = slot === 1 ? setSelected1 : setSelected2;
+    const labelKey = slot === 1 ? 'compare.person_a' : 'compare.person_b';
+
+    return (
+      <div className="relative">
+        <label className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 block">{t(labelKey)}</label>
+        <div className="relative">
+          <input
+            type="text"
+            placeholder={t('compare.search_placeholder')}
+            value={searchTerm || (persons.find((p) => p.uid === selectedUid)?.name || '')}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setShowDropdown(true);
+              setSelected('');
+            }}
+            onFocus={() => setShowDropdown(true)}
+            className="w-full px-4 py-3 rounded-xl border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-ink-900 dark:text-ink-100 focus:outline-none focus:border-accent"
+          />
+          {showDropdown && searchTerm && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-700 rounded-xl shadow-xl z-30 max-h-48 overflow-y-auto">
+              {filtered.length === 0 ? (
+                <div className="px-4 py-3 text-sm text-ink-400">{t('compare.no_match')}</div>
+              ) : (
+                filtered.map((p) => (
+                  <button
+                    key={p.uid}
+                    onMouseDown={() => handleSelect(p, slot)}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors"
+                  >
+                    <span className="font-medium">{p.name}</span>
+                    {p.dynastyName && (
+                      <span className="ml-2 text-ink-400 text-xs">{p.dynastyName}</span>
+                    )}
+                  </button>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-paper dark:bg-ink-950 pt-24 pb-12 px-4">
       <div className="max-w-5xl mx-auto">
@@ -67,79 +131,8 @@ function ComparePage() {
 
         {/* Selector */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          {/* Slot 1 */}
-          <div className="relative">
-            <label className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 block">{t('compare.person_a')}</label>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder={t('compare.search_placeholder')}
-                value={searchTerm || (persons.find((p) => p.uid === selected1)?.name || '')}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setShowDropdown(true);
-                  setSelected1('');
-                }}
-                onFocus={() => setShowDropdown(true)}
-                className="w-full px-4 py-3 rounded-xl border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-ink-900 dark:text-ink-100 focus:outline-none focus:border-accent"
-              />
-              {showDropdown && searchTerm && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-700 rounded-xl shadow-xl z-30 max-h-48 overflow-y-auto">
-                  {filteredPersons.length === 0 ? (
-                    <div className="px-4 py-3 text-sm text-ink-400">{t('compare.no_match')}</div>
-                  ) : (
-                    filteredPersons.map((p) => (
-                      <button
-                        key={p.uid}
-                        onMouseDown={() => handleSelect(p, 1)}
-                        className="w-full text-left px-4 py-2 text-sm hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors"
-                      >
-                        <span className="font-medium">{p.name}</span>
-                        {p.dynastyName && (
-                          <span className="ml-2 text-ink-400 text-xs">{p.dynastyName}</span>
-                        )}
-                      </button>
-                    ))
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Slot 2 */}
-          <div>
-            <label className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-2 block">{t('compare.person_b')}</label>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder={t('compare.search_placeholder')}
-                value={searchTerm === '' && selected2 ? persons.find((p) => p.uid === selected2)?.name || '' : searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setShowDropdown(true);
-                  setSelected2('');
-                }}
-                onFocus={() => setShowDropdown(true)}
-                className="w-full px-4 py-3 rounded-xl border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-ink-900 dark:text-ink-100 focus:outline-none focus:border-accent"
-              />
-              {showDropdown && searchTerm && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-ink-900 border border-ink-200 dark:border-ink-700 rounded-xl shadow-xl z-30 max-h-48 overflow-y-auto">
-                  {filteredPersons.map((p) => (
-                    <button
-                      key={p.uid}
-                      onMouseDown={() => handleSelect(p, 2)}
-                      className="w-full text-left px-4 py-2 text-sm hover:bg-ink-50 dark:hover:bg-ink-800 transition-colors"
-                    >
-                      <span className="font-medium">{p.name}</span>
-                      {p.dynastyName && (
-                        <span className="ml-2 text-ink-400 text-xs">{p.dynastyName}</span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+          {renderSlot(1)}
+          {renderSlot(2)}
         </div>
 
         {/* Compare Button */}
@@ -216,19 +209,19 @@ function ComparePage() {
                   <div>
                     <h4 className="text-sm font-bold text-ink-700 dark:text-ink-300 mb-1">{t('compare.tags')}</h4>
                     <div className="flex flex-wrap gap-1">
-                      {person.tags.map((t) => (
-                        <span key={t} className="text-xs px-2 py-0.5 bg-ink-50 dark:bg-ink-800/50 rounded-full text-ink-400">
-                          #{t}
+                      {person.tags.map((tag) => (
+                        <span key={tag} className="text-xs px-2 py-0.5 bg-ink-50 dark:bg-ink-800/50 rounded-full text-ink-400">
+                          #{tag}
                         </span>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* Click to view detail */}
+                {/* Click to view detail — 修复 bug：原 person.id 改 person.uid，与其他位置一致 */}
                 <div className="text-center mt-6">
                   <button
-                    onClick={() => navigate(`/persons?id=${person.id}`)}
+                    onClick={() => navigate(`/persons?id=${person.uid}`)}
                     className="text-sm text-accent hover:underline"
                   >
                     {t('compare.view_detail')} →
@@ -240,8 +233,8 @@ function ComparePage() {
         )}
 
         {/* Click outside to close dropdown */}
-        {showDropdown && (
-          <div className="fixed inset-0 z-20" onClick={() => setShowDropdown(false)} />
+        {(showDropdown1 || showDropdown2) && (
+          <div className="fixed inset-0 z-20" onClick={() => { setShowDropdown1(false); setShowDropdown2(false); }} />
         )}
       </div>
     </div>

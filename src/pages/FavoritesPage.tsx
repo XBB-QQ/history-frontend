@@ -29,12 +29,12 @@ const typeColors: Record<FavoriteType, string> = {
   knowledge: 'bg-gold/10 text-gold',
 };
 
-const FILTER_TABS: { value: FilterType; label: string; icon: string }[] = [
-  { value: 'all', label: '全部', icon: '◆' },
-  { value: 'event', label: '事件', icon: '事' },
-  { value: 'person', label: '人物', icon: '人' },
-  { value: 'dynasty', label: '朝代', icon: '朝' },
-  { value: 'knowledge', label: '知识', icon: '知' },
+const FILTER_TABS: { value: FilterType; labelKey: string; icon: string }[] = [
+  { value: 'all', labelKey: 'favorite.filter_all', icon: '◆' },
+  { value: 'event', labelKey: 'favorite.type_event', icon: '事' },
+  { value: 'person', labelKey: 'favorite.type_person', icon: '人' },
+  { value: 'dynasty', labelKey: 'favorite.type_dynasty', icon: '朝' },
+  { value: 'knowledge', labelKey: 'favorite.type_knowledge', icon: '知' },
 ];
 
 function FavoriteItem({ id, type, title, pinned }: { id: string; type: FavoriteType; title: string; pinned: boolean }) {
@@ -170,7 +170,7 @@ export default function FavoritesPage() {
                       }`}
                     >
                       <span className="text-[10px]">{tab.icon}</span>
-                      <span>{tab.label}</span>
+                      <span>{t(tab.labelKey)}</span>
                       <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
                         filter === tab.value ? 'bg-white/20' : 'bg-ink-100 dark:bg-ink-800'
                       }`}>
@@ -183,14 +183,14 @@ export default function FavoritesPage() {
                 {/* 视图切换 + 导出按钮 */}
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div className="flex items-center gap-2 text-xs">
-                    <span className="text-ink-400">视图：</span>
+                    <span className="text-ink-400">{t('favorite.view_label')}</span>
                     <button
                       onClick={() => setGroupByType(false)}
                       className={`px-2.5 py-1 rounded-md transition-colors ${
                         !groupByType ? 'bg-accent/10 text-accent font-bold' : 'text-ink-500 hover:text-accent'
                       }`}
                     >
-                      列表
+                      {t('favorite.view_list')}
                     </button>
                     <button
                       onClick={() => setGroupByType(true)}
@@ -198,18 +198,18 @@ export default function FavoritesPage() {
                         groupByType ? 'bg-accent/10 text-accent font-bold' : 'text-ink-500 hover:text-accent'
                       }`}
                     >
-                      按类型分组
+                      {t('favorite.view_grouped')}
                     </button>
                   </div>
                   <button
                     onClick={handleExport}
                     className="px-3 py-1.5 text-xs rounded-lg border border-ink-200 dark:border-ink-700 text-ink-600 dark:text-ink-400 hover:border-accent/50 hover:text-accent transition-all flex items-center gap-1.5"
-                    title="导出收藏为 JSON 文件"
+                    title={t('favorite.export_tooltip')}
                   >
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
-                    导出 JSON
+                    {t('favorite.export_json')}
                   </button>
                 </div>
               </div>
@@ -218,8 +218,8 @@ export default function FavoritesPage() {
             {/* 列表/分组视图 */}
             {filteredFavorites.length === 0 ? (
               <div className="text-center py-12 text-ink-400">
-                <p className="text-lg mb-1">该分类下暂无收藏</p>
-                <p className="text-sm">切换其他筛选试试</p>
+                <p className="text-lg mb-1">{t('favorite.filter_empty_title')}</p>
+                <p className="text-sm">{t('favorite.filter_empty_hint')}</p>
               </div>
             ) : groupByType && groupedFavorites ? (
               <div className="space-y-6">
@@ -240,7 +240,7 @@ export default function FavoritesPage() {
                         {items.map((fav) => (
                           <div key={fav.id} className="relative group">
                             <FavoriteItem {...fav} />
-                            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                               <button
                                 onClick={(e) => { e.stopPropagation(); togglePin(fav.id); }}
                                 className="p-1.5 rounded-lg hover:bg-ink-100 dark:hover:bg-ink-700 text-ink-400 hover:text-accent transition-colors"
@@ -251,7 +251,12 @@ export default function FavoritesPage() {
                                 </svg>
                               </button>
                               <button
-                                onClick={(e) => { e.stopPropagation(); removeFavorite(fav.id); }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (window.confirm(t('favorite.confirm_remove'))) {
+                                    removeFavorite(fav.id);
+                                  }
+                                }}
                                 className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 text-ink-400 hover:text-red-600 transition-colors"
                                 title={t('favorite.remove_label')}
                               >
@@ -272,7 +277,7 @@ export default function FavoritesPage() {
                 {filteredFavorites.map((fav) => (
                   <div key={fav.id} className="relative group">
                     <FavoriteItem {...fav} />
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={(e) => { e.stopPropagation(); togglePin(fav.id); }}
                         className="p-1.5 rounded-lg hover:bg-ink-100 dark:hover:bg-ink-700 text-ink-400 hover:text-accent transition-colors"
@@ -283,7 +288,12 @@ export default function FavoritesPage() {
                         </svg>
                       </button>
                       <button
-                        onClick={(e) => { e.stopPropagation(); removeFavorite(fav.id); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (window.confirm(t('favorite.confirm_remove'))) {
+                            removeFavorite(fav.id);
+                          }
+                        }}
                         className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 text-ink-400 hover:text-red-600 transition-colors"
                         title={t('favorite.remove_label')}
                       >

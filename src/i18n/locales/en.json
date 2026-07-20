@@ -158,13 +158,19 @@
   },
   "dynasties": {
     "title": "Dynasties",
+    "description": "Overview of 5000 years of Chinese dynastic changes",
     "period": "Period",
     "founder": "Founder",
     "capital": "Capital",
     "duration": "Duration",
     "highlights": "Highlights",
     "fall_reason": "Fall Reason",
-    "legacy": "Legacy"
+    "legacy": "Legacy",
+    "search_placeholder": "Search dynasty / founder / capital",
+    "filter_all": "All",
+    "result_count": "{{count}} dynasties",
+    "no_match": "No matching dynasties found",
+    "no_match_hint": "Try different keywords"
   },
   "learning": {
     "title": "Learning Progress",
@@ -185,7 +191,13 @@
     "description_placeholder": "Description (optional)",
     "create_btn": "Create",
     "resource_count": "{{n}} resources",
-    "no_description": "No description"
+    "no_description": "No description",
+    "search_placeholder": "Search list name",
+    "sort_label": "Sort:",
+    "sort_default": "Default",
+    "sort_name": "By name",
+    "sort_resources": "By resource count",
+    "loading": "Loading..."
   },
   "knowledge": {
     "title": "Knowledge Cards",
@@ -205,11 +217,23 @@
     "title": "Figures",
     "list_desc": "Figures List",
     "description": "From pre-Qin to modern times, overview of 5000 years of notable figures",
-    "load_failed": "Failed to load, please try again later"
+    "load_failed": "Failed to load, please try again later",
+    "search_placeholder": "Search by name / tag / bio",
+    "filter_all": "All dynasties",
+    "filter_dynasty": "Dynasty filter",
+    "result_count": "{{count}} figures",
+    "no_match": "No matching figures found",
+    "no_match_hint": "Try different keywords or dynasty filter",
+    "load_more": "Load more",
+    "showing_count": "Showing {{shown}} / {{total}}"
   },
   "timeline": {
     "title": "Timeline",
-    "events_desc": "Chronicle"
+    "events_desc": "Chronicle",
+    "search_placeholder": "Search event title / description",
+    "search_result": "{{count}} events matched",
+    "no_match": "No matching events found",
+    "no_match_hint": "Try different keywords or filters"
   },
   "time_travel": {
     "title": "Time Travel",
@@ -274,7 +298,16 @@
     "type_event": "Event",
     "type_person": "Person",
     "type_dynasty": "Dynasty",
-    "type_knowledge": "Knowledge"
+    "type_knowledge": "Knowledge",
+    "filter_all": "All",
+    "view_label": "View:",
+    "view_list": "List",
+    "view_grouped": "Grouped by type",
+    "export_json": "Export JSON",
+    "export_tooltip": "Export favorites as JSON file",
+    "filter_empty_title": "No favorites in this category",
+    "filter_empty_hint": "Try another filter",
+    "confirm_remove": "Remove this favorite?"
   },
   "footer": {
     "about": "About",
@@ -539,7 +572,13 @@
     "load_failed": "Failed to load, please refresh",
     "no_data": "No ranking data yet",
     "answered_correct": "{{answered}} answered · {{correct}} correct",
-    "points": "Points"
+    "points": "Points",
+    "load_more": "Load more",
+    "no_more": "All {{total}} loaded",
+    "total_count": "Total participants: {{total}}",
+    "me_badge": "ME",
+    "me_not_in_list": "You're not on the board yet, keep quizzing!",
+    "me_rank": "My rank: #{{rank}}"
   },
   "artifactQuiz": {
     "title": "Artifact Quiz",

@@ -112,6 +112,7 @@ import ScrollToTop from './components/common/ScrollToTop';
 import ScrollProgress from './components/common/ScrollProgress';
 import SearchModal from './components/common/SearchModal';
 import RequireAdmin from './components/common/RequireAdmin';
+import ErrorBoundary from './components/common/ErrorBoundary';
 import DetailModal from './components/detail/DetailModal';
 import BackgroundLayer from './components/background/BackgroundLayer';
 import SceneSwitcher from './components/scene/SceneSwitcher';
@@ -157,6 +158,7 @@ function App() {
       <Navbar />
       <ThemeManager />
       <SceneTransition />
+      <ErrorBoundary>
       <Suspense
         fallback={
           <div className="min-h-screen flex items-center justify-center bg-paper dark:bg-ink-950">
@@ -280,6 +282,7 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
+      </ErrorBoundary>
       <Footer />
       <SearchModal />
       <DetailModal />

@@ -1,5 +1,8 @@
 import type { EventItem } from '@/types';
 
+/** "全部" 筛选值常量 — 避免在多处硬编码 '全部' 字符串，i18n 切换时不会失效 */
+export const ALL_FILTER = '全部';
+
 interface TimelineFiltersProps {
   events: EventItem[];
   selectedDynasty: string;
@@ -16,7 +19,7 @@ function getUniqueValues(events: EventItem[], field: 'dynasty' | 'category'): st
     const val = e[field];
     if (val && val !== '未知' && val !== '') values.add(val);
   });
-  return ['全部', ...Array.from(values).sort()];
+  return [ALL_FILTER, ...Array.from(values).sort()];
 }
 
 export default function TimelineFilters({
@@ -76,8 +79,8 @@ export default function TimelineFilters({
       {hasActiveFilter && (
         <span className="text-xs text-ink-400 dark:text-ink-500 ml-auto">
           共 {events.filter((e) => {
-            if (selectedDynasty !== '全部' && e.dynasty !== selectedDynasty) return false;
-            if (selectedCategory !== '全部' && e.category !== selectedCategory) return false;
+            if (selectedDynasty !== ALL_FILTER && e.dynasty !== selectedDynasty) return false;
+            if (selectedCategory !== ALL_FILTER && e.category !== selectedCategory) return false;
             return true;
           }).length} 条结果
         </span>

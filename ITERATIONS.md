@@ -1,5 +1,106 @@
 # 迭代记录 — 五千年史馆前端
 
+## 2026-07-20 · P0 安全三件套（XSS + ErrorBoundary + token 治理）
+
+### 一、背景
+C 方案 8 页面优化完成后，对全项目做了一次系统性安全/性能扫描，发现 3 个 P0 级问题：CommentSection 真实 XSS 漏洞、ErrorBoundary 全项目缺失、token 治理分散。本轮一次性修复。
+
+### 二、修复详情
+
+#### 1. CommentSection XSS 漏洞（[`CommentSection.tsx`](src/components/comments/CommentSection.tsx)）
+- **问题**：自写 `renderMarkdown` 函数未做 HTML 转义，直接 `dangerouslySetInnerHTML` 渲染。用户输入 `<img onerror=alert(1)>` 即可触发存储型 XSS
+- **修复**：删除自写 `renderMarkdown`，改用项目已有的 [`Markdown.tsx`](src/components/common/Markdown.tsx) 组件（基于 `react-markdown` + `remark-gfm`，默认不渲染 raw HTML）
+- **附带收益**：评论支持完整 GFM 语法（表格、删除线、任务列表等），原先只支持粗体/链接/行内代码三种
+
+#### 2. ErrorBoundary 全项目缺失（新建 [`ErrorBoundary.tsx`](src/components/common/ErrorBoundary.tsx)）
+- **问题**：`grep ErrorBoundary` 全项目 0 匹配，任何子组件 throw 即整页白屏
+- **修复**：新建 `ErrorBoundary` class 组件（getDerivedStateFromError + componentDidCatch + 重试/回首页按钮）
+- **接入位置**（[`App.tsx`](src/App.tsx)）：包在 `Suspense` 外层，路由区域出错时 Navbar/Footer 仍可用，lazy 加载失败也能被捕获
+- **降级 UI**：直接读 `useI18nStore.getState()` 避免 class 组件 hook 限制，中英双语
+
+#### 3. token 治理统一（[`learningStore.ts`](src/store/learningStore.ts) + [`contributionApi.ts`](src/services/contributionApi.ts)）
+- **问题**：5 处直接 `localStorage.getItem('user_token')`，与 `fetchJSON` 的 token 注入逻辑重复
+- **修复**：
+  - `learningStore`：删除 `fetchLists`/`fetchProgress` 中的本地 token 检查（调用方 `LearningPage` 已用 `isAuthenticated` 守门）
+  - `contributionApi`：删除 `getAuthHeaders` 函数，`submitContribution`/`getMyContributions` 改用 `fetchJSON`，统一由 `fetchJSON` 从 `useUserStore.getState().token` 读取并注入 Authorization
+- **保留**：`userStore` 的 token 读写（源头，保留）
+
+### 三、闭环验证
+- `npx tsc --noEmit`：exit 0
+- `npx vitest run`：51 文件 286 测试全通过
+
+### 四、教训
+1. **造了轮子又不用**：项目早有安全的 `Markdown.tsx`，`CommentSection` 却自写了一个不安全的版本。安全审计应优先检查「是否有已存在的安全实现」
+2. **ErrorBoundary 是 React 项目基线**：SPA 任何子组件 throw 都会整页白屏，ErrorBoundary 应该是 Day 1 就接入的基线设施
+3. **token 治理应单一来源**：所有 API 调用应走统一的 `fetchJSON`，避免每个 service 自己读 localStorage。分散的 token 读取不仅重复，还容易遗漏 401 处理
+
+## 2026-07-20 · C 方案 8 页面优化（P0 + P1 + P2 全优）
+
+### 一、背景
+用户问「还有哪些地方有更好的优化」。系统性扫描后给出 P0/P1/P2 三档共 8 项问题，用户选 C 方案（全优）。本轮一次性完成 8 页面 + 跨页面共性问题修复。
+
+### 二、8 页面优化详情
+
+#### P0 · ComparePage 双 bug 修复（[`ComparePage.tsx`](src/pages/ComparePage.tsx)）
+- **bug 1**：两个 slot 共用 `searchTerm`/`showDropdown` state，slot1 输入污染 slot2 → 拆分为 `searchTerm1/2`、`showDropdown1/2`，提取 `renderSlot(slot)` 函数消除重复
+- **bug 2**：跳转 `person.id`（number）与其他位置 `person.uid`（string）不一致 → 统一用 `uid`
+- **bug 3**：`tags.map((t) => ...)` 中 `t` 遮蔽翻译函数 `t` → 改为 `tag`
+
+#### P1-1 · FavoritesPage 移动端 + i18n + 删除确认（[`FavoritesPage.tsx`](src/pages/FavoritesPage.tsx)）
+- 操作按钮 `opacity-0 group-hover:opacity-100` → `opacity-100 md:opacity-0 md:group-hover:opacity-100`（移动端常驻）
+- `FILTER_TABS` 的 `label` 改 `labelKey` 走 i18n
+- 删除按钮加 `window.confirm(t('favorite.confirm_remove'))` 二次确认
+- 视图切换/导出按钮文案全部走 i18n
+
+#### P1-2 · PersonsPage 搜索/筛选/分页重写（[`PersonsPage.tsx`](src/pages/PersonsPage.tsx)）
+- 新增搜索框（姓名/标签/简介）+ 朝代筛选 chips + 分页（PAGE_SIZE=24，加载更多）
+- `availableDynasties` 按数据动态生成
+- 筛选条件变化时 `setVisibleCount(PAGE_SIZE)` 重置分页
+
+#### P1-3 · LeaderboardPage 加载更多/我的排名（[`LeaderboardPage.tsx`](src/pages/LeaderboardPage.tsx)）
+- `handleLoadMore` 分页累加 + `loadingMore` 状态
+- `meRank` useMemo 查找当前用户 + 顶部排名条 + 行高亮 `bg-accent/10 ring-2 ring-accent/30`
+- 总人数显示
+
+#### P2-1 · TimelinePage ALL_FILTER 常量 + URL 同步（[`TimelineFilters.tsx`](src/components/timeline/TimelineFilters.tsx) + [`TimelinePage.tsx`](src/pages/TimelinePage.tsx)）
+- 导出 `ALL_FILTER = '全部'` 常量，所有硬编码替换
+- `useSearchParams` 双向同步 dynasty/category/q 三个参数，支持刷新/分享还原视图
+- 新增搜索框 + 结果计数 + 空状态
+
+#### P2-2 · KnowledgePage chip UI 多标签（[`KnowledgePage.tsx`](src/pages/KnowledgePage.tsx)）
+- `∩` 文本表达 → chip UI（每个标签独立 `✕` 删除按钮）
+- 点击 `✕` 从 `activeTag` 字符串中移除对应标签
+
+#### P2-3 · DynastiesPage i18n 修复 + 搜索（[`DynastiesPage.tsx`](src/pages/DynastiesPage.tsx)）
+- 修复 bug：`description={t('dynasties.title')}` 复用了 title 的 key → 新增 `dynasties.description`
+- 新增搜索框（朝代名/开国君主/都城）+ 结果计数
+
+#### P2-4 · LearningPage skeleton + 清单搜索排序（[`LearningPage.tsx`](src/pages/LearningPage.tsx)）
+- 新增 `loading` state + `Promise.all([fetchLists(), fetchProgress()]).finally(() => setLoading(false))`
+- 新增清单搜索 + 排序（default/name/resources）
+- `grid-cols-2` → `grid-cols-1 sm:grid-cols-2` 窄屏适配
+- skeleton 加载态
+
+### 三、i18n key 新增
+zh.json / en.json 同步新增：
+- `favorite.filter_all` / `view_label` / `view_list` / `view_grouped` / `export_json` / `export_tooltip` / `filter_empty_title` / `filter_empty_hint` / `confirm_remove`
+- `persons.search_placeholder` / `filter_all` / `filter_dynasty` / `result_count` / `no_match` / `no_match_hint` / `load_more` / `showing_count`
+- `leaderboard.load_more` / `no_more` / `total_count` / `me_badge` / `me_not_in_list` / `me_rank`
+- `timeline.search_placeholder` / `search_result` / `no_match` / `no_match_hint`
+- `dynasties.description` / `search_placeholder` / `filter_all` / `result_count` / `no_match` / `no_match_hint`
+- `learning.search_placeholder` / `sort_label` / `sort_default` / `sort_name` / `sort_resources` / `loading`
+
+### 四、闭环验证
+- `npx tsc --noEmit`：exit 0
+- `npx vitest run`：51 文件 286 测试全通过
+
+### 五、教训
+1. **状态隔离是双 slot 组件的基础**：ComparePage 双 slot 共用 state 是典型的「复制粘贴没改全」bug，提取 `renderSlot(slot)` 函数可以从结构上避免
+2. **`'全部'` 硬编码应抽常量**：i18n 切换时 `'全部'` 字符串无法匹配英文名，导致筛选失效。抽成 `ALL_FILTER` 常量后所有引用点统一
+3. **URL 状态同步提升分享体验**：`useSearchParams` 双向同步让刷新/分享链接都能还原视图，是列表页的标配
+4. **移动端按钮应常驻**：`opacity-0 group-hover:opacity-100` 在移动端无 hover，操作不可见。`opacity-100 md:opacity-0 md:group-hover:opacity-100` 才是正确的响应式策略
+5. **i18n key 复用是隐形 bug**：`description={t('dynasties.title')}` 看起来能工作，但语义错误，且未来改 title 会连带改 description
+
 ## 2026-07-20 · map 页面古地名优化（B + 2 方案：智能匹配朝代 + 全省默认古名）
 
 ### 一、背景

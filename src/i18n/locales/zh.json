@@ -158,13 +158,19 @@
   },
   "dynasties": {
     "title": "历代朝代",
+    "description": "纵览中华五千年朝代更迭，探寻兴衰之道",
     "period": "时期",
     "founder": "开国",
     "capital": "都城",
     "duration": "国祚",
     "highlights": "亮点",
     "fall_reason": "灭亡原因",
-    "legacy": "历史遗产"
+    "legacy": "历史遗产",
+    "search_placeholder": "搜索朝代名 / 开国君主 / 都城",
+    "filter_all": "全部",
+    "result_count": "共 {{count}} 个朝代",
+    "no_match": "未找到匹配的朝代",
+    "no_match_hint": "尝试更换关键词"
   },
   "learning": {
     "title": "学习进度",
@@ -185,7 +191,13 @@
     "description_placeholder": "描述（可选）",
     "create_btn": "创建",
     "resource_count": "{{n}} 个资源",
-    "no_description": "无描述"
+    "no_description": "无描述",
+    "search_placeholder": "搜索清单名称",
+    "sort_label": "排序：",
+    "sort_default": "默认",
+    "sort_name": "按名称",
+    "sort_resources": "按资源数",
+    "loading": "加载中..."
   },
   "knowledge": {
     "title": "史海钩沉",
@@ -205,11 +217,23 @@
     "title": "人物志",
     "list_desc": "人物列表",
     "description": "从先秦到近代，纵览五千年风云人物",
-    "load_failed": "加载失败，请稍后重试"
+    "load_failed": "加载失败，请稍后重试",
+    "search_placeholder": "搜索人物姓名 / 标签 / 简介",
+    "filter_all": "全部朝代",
+    "filter_dynasty": "朝代筛选",
+    "result_count": "共 {{count}} 位人物",
+    "no_match": "未找到匹配的人物",
+    "no_match_hint": "尝试更换关键词或朝代筛选",
+    "load_more": "加载更多",
+    "showing_count": "已显示 {{shown}} / {{total}}"
   },
   "timeline": {
     "title": "时间轴",
-    "events_desc": "大事记"
+    "events_desc": "大事记",
+    "search_placeholder": "搜索事件标题 / 描述",
+    "search_result": "共匹配 {{count}} 条事件",
+    "no_match": "未找到匹配的事件",
+    "no_match_hint": "尝试更换关键词或筛选条件"
   },
   "time_travel": {
     "title": "时间旅行",
@@ -274,7 +298,16 @@
     "type_event": "事件",
     "type_person": "人物",
     "type_dynasty": "朝代",
-    "type_knowledge": "知识"
+    "type_knowledge": "知识",
+    "filter_all": "全部",
+    "view_label": "视图：",
+    "view_list": "列表",
+    "view_grouped": "按类型分组",
+    "export_json": "导出 JSON",
+    "export_tooltip": "导出收藏为 JSON 文件",
+    "filter_empty_title": "该分类下暂无收藏",
+    "filter_empty_hint": "切换其他筛选试试",
+    "confirm_remove": "确定要移除这条收藏吗？"
   },
   "footer": {
     "about": "关于",
@@ -539,7 +572,13 @@
     "load_failed": "加载失败，请刷新重试",
     "no_data": "暂无排名数据",
     "answered_correct": "答题 {{answered}} 题 · 正确 {{correct}} 题",
-    "points": "积分"
+    "points": "积分",
+    "load_more": "加载更多",
+    "no_more": "已加载全部 {{total}} 位",
+    "total_count": "总参与人数：{{total}}",
+    "me_badge": "我",
+    "me_not_in_list": "您尚未上榜，继续答题冲榜！",
+    "me_rank": "我的排名：第 {{rank}} 位"
   },
   "artifactQuiz": {
     "title": "历史信物鉴定",

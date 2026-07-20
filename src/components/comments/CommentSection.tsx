@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/store/userStore';
+import Markdown from '@/components/common/Markdown';
 
 interface Reply {
   id: number;
@@ -28,17 +29,8 @@ interface CommentSectionProps {
   resourceType: string;
 }
 
-/** 简单 Markdown 转 HTML（粗体、链接、代码块） */
-function renderMarkdown(text: string): string {
-  let html = text
-    // 粗体
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    // 链接
-    .replace(/(?<!")((?:https?:\/\/|www\.)[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener" class="text-accent underline">$1</a>')
-    // 行内代码
-    .replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 bg-ink-100 dark:bg-ink-800 rounded text-xs font-mono">$1</code>');
-  return html;
-}
+// 安全修复 P0-1：删除自写的 renderMarkdown（未做 HTML 转义，存在 XSS 漏洞），
+// 改用项目已有的 Markdown 组件（基于 react-markdown，默认不渲染 raw HTML）
 
 /** 模拟评论数据 */
 const MOCK_COMMENTS: Comment[] = [
@@ -221,7 +213,7 @@ export default function CommentSection({ resourceId: _resourceId, resourceType: 
                   <span className="text-sm font-bold text-ink-900 dark:text-ink-100">{c.author}</span>
                   <span className="text-xs text-ink-400">{c.timestamp}</span>
                 </div>
-                <p className="text-sm text-ink-700 dark:text-ink-300" dangerouslySetInnerHTML={{ __html: renderMarkdown(c.content) }} />
+                <Markdown className="text-sm text-ink-700 dark:text-ink-300 [&_p]:my-0">{c.content}</Markdown>
                 <div className="flex items-center gap-3 mt-1.5">
                   <button
                     onClick={() => handleLike(c.id)}
@@ -282,7 +274,7 @@ export default function CommentSection({ resourceId: _resourceId, resourceType: 
                             <span className="text-xs font-bold text-ink-700 dark:text-ink-300">{r.author}</span>
                             <span className="text-[10px] text-ink-400">{r.timestamp}</span>
                           </div>
-                          <p className="text-xs text-ink-600 dark:text-ink-400" dangerouslySetInnerHTML={{ __html: renderMarkdown(r.content) }} />
+                          <Markdown className="text-xs text-ink-600 dark:text-ink-400 [&_p]:my-0">{r.content}</Markdown>
                           <button
                             onClick={() => handleReplyLike(c.id, r.id)}
                             className={`text-[10px] flex items-center gap-0.5 mt-0.5 ${
