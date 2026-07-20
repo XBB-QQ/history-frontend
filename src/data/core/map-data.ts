@@ -10,11 +10,11 @@ import type { MapRegion, DynastyMapData } from '@/types/map';
 
 /** 将经纬度映射到 SVG 坐标的辅助函数 */
 function lngLatToPath(lngMin: number, latMin: number, lngMax: number, latMax: number): { x1: number; y1: number; x2: number; y2: number } {
-  // SVG viewBox: 0 0 800 600
+  // SVG viewBox: 0 0 1000 600 (5:3，接近中国实际经纬度跨度比 62:36 ≈ 1.72)
   // 经度范围 73-135 (宽度62)，纬度范围 18-54 (高度36)
-  const x1 = ((lngMin - 73) / 62) * 800;
+  const x1 = ((lngMin - 73) / 62) * 1000;
   const y1 = 600 - ((latMax - 18) / 36) * 600; // Y轴翻转
-  const x2 = ((lngMax - 73) / 62) * 800;
+  const x2 = ((lngMax - 73) / 62) * 1000;
   const y2 = 600 - ((latMin - 18) / 36) * 600;
   return { x1, y1, x2, y2 };
 }
@@ -34,12 +34,77 @@ function polyPath(points: [number, number][]): string {
   return `M${segments.join(' L')} Z`;
 }
 
-/** 将经纬度映射到 SVG 坐标（viewBox 0 0 800 600） */
+/** 生成不闭合折线 SVG path（用于河流、长城等装饰线） */
+function linePath(points: [number, number][]): string {
+  const segments = points.map(([lng, lat]) => {
+    const { x1: x, y1: y } = lngLatToPath(lng, lat, lng, lat);
+    return `${x},${y}`;
+  });
+  return `M${segments.join(' L')}`;
+}
+
+/** 将经纬度映射到 SVG 坐标（viewBox 0 0 1000 600，5:3 比例） */
 export function lngLatToXY(lng: number, lat: number): { x: number; y: number } {
-  const x = ((lng - 73) / 62) * 800;
+  const x = ((lng - 73) / 62) * 1000;
   const y = 600 - ((lat - 18) / 36) * 600;
   return { x, y };
 }
+
+// ──────────────────────────────────────────────
+// 装饰元素：黄河、长江、长城（简化经纬度折线）
+// ──────────────────────────────────────────────
+
+/** 黄河路径（源头 → 入海） */
+export function yellowRiverPath(): string {
+  return linePath([
+    [96, 35],   // 源头
+    [103, 36],  // 兰州
+    [108, 41],  // 河套
+    [111, 39],  // 太原北
+    [113, 35],  // 郑州
+    [117, 37],  // 济南
+    [119, 38],  // 入海
+  ]);
+}
+
+/** 长江路径（源头 → 入海） */
+export function yangtzeRiverPath(): string {
+  return linePath([
+    [97, 33],   // 源头
+    [104, 29],  // 宜宾
+    [107, 30],  // 重庆
+    [114, 30],  // 武汉
+    [118, 32],  // 南京
+    [122, 31],  // 上海入海
+  ]);
+}
+
+/** 长城大致走向（西起嘉峪关，东至山海关） */
+export function greatWallPath(): string {
+  return linePath([
+    [98, 40],   // 嘉峪关
+    [106, 40],  // 银川北
+    [112, 41],  // 大同
+    [115, 41],  // 居庸关
+    [119, 40],  // 山海关
+  ]);
+}
+
+/** 关键历史城市（永久标记，不只都城） */
+export interface KeyCity {
+  name: string;
+  pos: [number, number];
+  /** 简短历史标签 */
+  label: string;
+}
+
+export const keyCities: KeyCity[] = [
+  { name: '长安', pos: [109, 34], label: '十三朝古都' },
+  { name: '洛阳', pos: [112, 34], label: '九朝古都' },
+  { name: '北京', pos: [116, 39], label: '元明清都' },
+  { name: '南京', pos: [118, 32], label: '六朝古都' },
+  { name: '成都', pos: [104, 30], label: '蜀汉都城' },
+];
 
 export const mapRegions: MapRegion[] = [
   // 新疆

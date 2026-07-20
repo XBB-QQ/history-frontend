@@ -111,7 +111,7 @@ export default function MapPage() {
           <div className="lg:col-span-3">
             <RevealOnScroll direction="scale" threshold={0.1}>
               <div className="bg-white/60 dark:bg-ink-900/60 rounded-2xl shadow-lg p-4 border border-ink-100 dark:border-ink-700">
-                <div className="aspect-[4/3]">
+                <div className="aspect-[5/3]">
                   <MapSVG
                     highlightedRegionIds={highlightedIds}
                     capitalPos={currentData ? [currentData.capitalPos[0], currentData.capitalPos[1]] : null}

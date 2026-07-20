@@ -72,6 +72,20 @@
   100% { transform: scale(8); opacity: 0; }
 }
 
+/* 印章盖下（朝代切换时疆域印章动画） */
+@keyframes sealStamp {
+  0% { transform: scale(0.3) translateY(-30px); opacity: 0; }
+  60% { transform: scale(1.15) translateY(2px); opacity: 1; }
+  80% { transform: scale(0.96) translateY(-1px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* 疆域填色扩散（首次高亮时的渐显） */
+@keyframes dynastyFillIn {
+  0% { fill-opacity: 0; stroke-width: 0; }
+  100% { fill-opacity: 1; stroke-width: 2; }
+}
+
 /* 视差滚动山峦呼吸（用于 MountainMist 多层视差） */
 @keyframes parallaxSway {
   0%, 100% { transform: translateX(0); }

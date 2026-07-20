@@ -32,7 +32,7 @@ export default function SurnameMigrationMap({ migration, originPlace }: SurnameM
 
   return (
     <svg
-      viewBox="0 0 800 600"
+      viewBox="0 0 1000 600"
       className="w-full h-auto"
       preserveAspectRatio="xMidYMid meet"
       xmlns="http://www.w3.org/2000/svg"
@@ -71,9 +71,12 @@ export default function SurnameMigrationMap({ migration, originPlace }: SurnameM
       />
 
       {/* 南海诸岛示意框 */}
-      <g opacity="0.3">
-        <rect x="620" y="440" width="120" height="100" rx="4" fill="none" stroke="#94a3b8" strokeWidth="0.5" />
-        <text x="680" y="435" textAnchor="middle" fontSize="8" fill="#94a3b8">南海诸岛</text>
+      <g opacity="0.4">
+        <rect x="850" y="440" width="130" height="110" rx="4" fill="none" stroke="#94a3b8" strokeWidth="0.6" strokeDasharray="3,2" />
+        <text x="915" y="435" textAnchor="middle" fontSize="9" fill="#94a3b8">南海诸岛</text>
+        {[[880, 470], [910, 490], [940, 475], [895, 510], [930, 525]].map(([x, y], i) => (
+          <circle key={i} cx={x} cy={y} r="1.5" fill="#94a3b8" />
+        ))}
       </g>
 
       {/* 迁徙路径（带流动动画） */}

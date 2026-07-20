@@ -1,5 +1,81 @@
 # 迭代记录 — 五千年史馆前端
 
+## 2026-07-20 · map 页面优化（C 方案：扩宽 + 增强 + 疆域动画）
+
+### 一、背景
+用户反馈「map 这个页面优化一下，现在地图太方了，有没更好的方案」。诊断后核心问题是 viewBox `0 0 800 600`（4:3 比例）偏方，而中国实际经纬度跨度比 62:36 ≈ 1.72（接近 5:3）。给出 A/B/C 三档方案（A 仅扩宽 / B 扩宽+视觉增强 / C 扩宽+增强+疆域动画），用户选 C。
+
+### 二、C 方案八项优化详情
+
+#### 1. 比例扩宽（4:3 → 5:3）
+- [`map-data.ts`](src/data/core/map-data.ts)：`lngLatToPath` / `lngLatToXY` 的 x 分母 `800 → 1000`，所有 path 坐标自动按 5:3 横向拉伸，无需重写
+- [`MapSVG.tsx`](src/components/map/MapSVG.tsx)：`viewBox="0 0 1000 600"`，背景圆 `cx=500 r=350`
+- [`MapPage.tsx`](src/pages/MapPage.tsx)：容器 `aspect-[4/3] → aspect-[5/3]`
+- [`SurnameMigrationMap.tsx`](src/components/map/SurnameMigrationMap.tsx)：同步 viewBox + 南海诸岛小框位置
+
+#### 2. 河流装饰
+新增 `yellowRiverPath()` / `yangtzeRiverPath()` 折线 path（用 `linePath` 不闭合）：
+- 黄河：源头 → 兰州 → 河套 → 太原北 → 郑州 → 济南 → 入海（7 点折线，蓝色 #3B82F6）
+- 长江：源头 → 宜宾 → 重庆 → 武汉 → 南京 → 上海（6 点折线，深蓝 #1E40AF，更粗）
+
+#### 3. 长城装饰
+新增 `greatWallPath()`：嘉峪关 → 银川北 → 大同 → 居庸关 → 山海关（5 点折线，虚线 `5,2` 砖石感）
+
+#### 4. 关键城市永久标记
+新增 `keyCities` 数组（5 个）：长安 / 洛阳 / 北京 / 南京 / 成都，每个带 `label` 历史标签。在地图上画菱形（旋转 45° 小方块）+ 城市名标签。如果某城市正好是当前朝代都城，则用朝代色填充并跳过名称（避免与都城标记重叠）。
+
+#### 5. 都城多层环纹
+原单圆 + 闪烁 → 三层环纹 + 高光：
+- 外环 r=14 脉冲扩散（r 10→18，opacity 0.6→0）
+- 中环 r=9 呼吸（r 7→10）
+- 实心点 r=4.5
+- 中心高光 r=1.5 白色
+- 都城名标签带 paper 色背景
+
+#### 6. 朝代信息卡换印章风
+原左上角 200×44 矩形 → 左下角圆形印章：
+- 印章圆 r=30 朝代色填充
+- 双层白环装饰（r=30 + r=26）
+- 印章中心：朝代名首字（22px 白字）
+- 右侧：朝代全名（16px）+ 都城信息（10px）
+- 用 `key={selectedDynastyName}` + CSS `sealStamp` 动画 → 切换朝代时印章从上方掉落并轻微回弹（cubic-bezier 弹性曲线）
+
+#### 7. 南海诸岛小框美化
+原单一矩形 → 虚线框 + 6 个岛屿点示意（坐标 `[[880, 470], [910, 490], [940, 475], [895, 510], [930, 525], [870, 500]]`），位置移到右下角 (850, 440)
+
+#### 8. hover 省份气泡 + 疆域填色渐变
+- `hoverRegion` state：onMouseEnter 记录省份名 + 中心坐标，onMouseLeave 清空
+- 气泡：在省份中心上方画 paper 色背景矩形 + 省名白字
+- 非高亮省份 hover 时 fillOpacity 0.05 → 0.2，strokeWidth 0.5 → 1.2
+- 高亮省份用 `url(#dynastyFill)` 径向渐变填充（中心 0.55 → 边缘 0.2），transition 0.7s 渐变填色
+
+### 三、CSS keyframes 新增（[`animations.css`](src/styles/animations.css)）
+
+```css
+@keyframes sealStamp {
+  0% { transform: scale(0.3) translateY(-30px); opacity: 0; }
+  60% { transform: scale(1.15) translateY(2px); opacity: 1; }
+  80% { transform: scale(0.96) translateY(-1px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes dynastyFillIn {
+  0% { fill-opacity: 0; stroke-width: 0; }
+  100% { fill-opacity: 1; stroke-width: 2; }
+}
+```
+
+### 四、闭环验证
+- `npx tsc --noEmit`：exit 0
+- `npx vitest run`：51 文件 286 测试全通过
+
+### 五、教训
+1. **改 viewBox 比例不一定需要重写坐标**：只要所有 path 都通过 `lngLatToPath` / `lngLatToXY` 按经纬度映射生成，改映射函数的分母即可整体缩放。这是「数据驱动视图」的好处
+2. **SVG 内 CSS animation 需 `transformBox: 'fill-box'`**：默认 SVG 元素 transform-origin 是 SVG 根坐标系，要 per-element 缩放必须设 `transformBox: 'fill-box' + transformOrigin: 'center'`
+3. **`key={selectedDynastyName}` 触发重 mount 重新播放动画**：React 复用 DOM 时 CSS animation 只播一次，要每次切换都重播必须用 key 强制重 mount
+4. **河流不能用 `polyPath`（带 Z 闭合）**：河流是不闭合折线，需要单独的 `linePath` 函数
+5. **多地图组件同步修改**：`lngLatToXY` 是共享导出，改了分母后所有用它的组件（MapSVG / SurnameMigrationMap）的 viewBox 都要同步改，否则坐标会超出右边界
+
 ## 2026-07-20 · 首页体验优化（B4+B5+A1+C8 四项）
 
 ### 一、背景

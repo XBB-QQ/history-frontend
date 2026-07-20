@@ -494,6 +494,36 @@ prefetch(chars)   // 批量预抓
 - `npx vitest run`：51 文件 286 测试全通过
 - 后端配套修改：见 [history-backend/README.md](../history-backend/README.md) 的「生产部署安全要点（P0 修复）」表格 S4/S5/S6/S7 行
 
+## map 页面优化（C 方案：扩宽 + 增强 + 疆域动画）
+
+> 2026-07-20 · 地图从「方正单调」升级为「比例舒展 + 视觉丰富 + 朝代切换有动画」
+
+### 优化清单
+
+| 编号 | 优化项 | 说明 |
+|------|--------|------|
+| 1 | 比例扩宽 | viewBox `0 0 800 600`（4:3）→ `0 0 1000 600`（5:3，接近中国实际经纬度跨度比 1.72）；`lngLatToPath` / `lngLatToXY` x 分母同步 800 → 1000，所有 path 自动横向拉伸 |
+| 2 | 河流装饰 | 新增黄河（蓝 #3B82F6）/ 长江（深蓝 #1E40AF）折线 path，源头→入海 7/6 点连线 |
+| 3 | 长城装饰 | 新增长城 5 点折线（嘉峪关→山海关），虚线 `5,2` 砖石感 |
+| 4 | 5 关键城市永久标记 | 长安/洛阳/北京/南京/成都，菱形标记 + 名称，与都城标记联动 |
+| 5 | 都城多层环纹 | 外环脉冲扩散 + 中环呼吸 + 实心点 + 中心高光，4 层环纹 |
+| 6 | 朝代信息卡换印章风 | 左下角圆形印章 r=30（朝代色 + 双层白环 + 朝代名首字），切换朝代时 `sealStamp` 动画（从上方掉落并轻微回弹） |
+| 7 | 南海诸岛小框美化 | 单一矩形 → 虚线框 + 6 个岛屿点示意 |
+| 8 | hover 省份气泡 + 疆域填色渐变 | hover 显示省份名气泡，高亮区域用径向渐变填充 + 0.7s 渐变填色 |
+
+### 涉及文件
+
+- [`src/data/core/map-data.ts`](src/data/core/map-data.ts)：`lngLatToPath` / `lngLatToXY` 改分母，新增 `linePath` / `yellowRiverPath` / `yangtzeRiverPath` / `greatWallPath` / `keyCities`
+- [`src/components/map/MapSVG.tsx`](src/components/map/MapSVG.tsx)：viewBox + 8 项视觉增强
+- [`src/pages/MapPage.tsx`](src/pages/MapPage.tsx)：容器 `aspect-[5/3]`
+- [`src/components/map/SurnameMigrationMap.tsx`](src/components/map/SurnameMigrationMap.tsx)：同步 viewBox + 南海诸岛小框位置
+- [`src/styles/animations.css`](src/styles/animations.css)：新增 `sealStamp` / `dynastyFillIn` keyframes
+
+### 验证
+
+- `npx tsc --noEmit`：exit 0
+- `npx vitest run`：51 文件 286 测试全通过
+
 ## 首页体验优化（B4+B5+A1+C8 四项）
 
 > 2026-07-20 · 首页从「被动展示」升级为「主动探索入口」
