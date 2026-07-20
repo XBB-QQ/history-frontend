@@ -354,7 +354,7 @@ const TitleDetailModal = ({ titleInfo, titleDetail, onClose }: TitleDetailModalP
     : Math.random() * 10;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
@@ -362,7 +362,7 @@ const TitleDetailModal = ({ titleInfo, titleDetail, onClose }: TitleDetailModalP
       />
 
       {/* Modal Content */}
-      <div className="relative bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-3xl w-full my-8">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-8 rounded-t-3xl">
           <button

@@ -245,7 +245,7 @@ const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalPr
   const gradientClass = ENERGY_COLORS[scent.energy as keyof typeof ENERGY_COLORS] || ENERGY_COLORS.calm;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
@@ -253,7 +253,7 @@ const ScentDetailModal = ({ scent, onClose, getEnergyBadge }: ScentDetailModalPr
       />
 
       {/* Modal Content */}
-      <div className="relative bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-4xl w-full my-8">
         {/* Header with Gradient */}
         <div className={`relative bg-gradient-to-r ${gradientClass} p-8 rounded-t-3xl`}>
           <button

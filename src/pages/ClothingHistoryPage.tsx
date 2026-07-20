@@ -149,11 +149,11 @@ export default function ClothingHistoryPage() {
 
         {selectedDynasty && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+            className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4"
             onClick={() => setSelectedDynasty(null)}
           >
             <div
-              className="bg-white dark:bg-ink-900 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8"
+              className="relative bg-white dark:bg-ink-900 rounded-2xl shadow-2xl max-w-2xl w-full my-8 p-6 md:p-8"
               onClick={e => e.stopPropagation()}
             >
               <div className="flex items-start justify-between mb-4">

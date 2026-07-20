@@ -431,9 +431,9 @@ function TransportDetailModal({ data, onClose }: {
   const item = data.data as TransportRoute | TransportEra;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white dark:bg-ink-900 rounded-3xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-ink-200 dark:border-ink-700">
+      <div className="relative bg-white dark:bg-ink-900 rounded-3xl shadow-2xl max-w-3xl w-full my-8 border border-ink-200 dark:border-ink-700">
         <div className="bg-gradient-to-r from-orange-500 to-amber-500 p-8 rounded-t-3xl">
           <button onClick={onClose} className="absolute top-4 right-4 text-white/80 hover:text-white text-3xl">✕</button>
           <div className="flex items-center gap-4">
