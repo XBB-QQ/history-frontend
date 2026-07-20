@@ -494,6 +494,30 @@ prefetch(chars)   // 批量预抓
 - `npx vitest run`：51 文件 286 测试全通过
 - 后端配套修改：见 [history-backend/README.md](../history-backend/README.md) 的「生产部署安全要点（P0 修复）」表格 S4/S5/S6/S7 行
 
+## map 页面古地名优化（B + 2 方案：智能匹配朝代 + 全省默认古名）
+
+> 2026-07-20 · 地图从「现代省名」升级为「古名为主、hover 对照现代名」
+
+### 优化清单
+
+| 项 | 说明 |
+|------|------|
+| 朝代→古名映射表 | 13 朝代 × 各自高亮省份共约 150 条古名（如秦朝陕西=内史、唐朝=关内道、明朝=陕西布政司、清朝=陕西省） |
+| 全省默认显示古名 | 高亮区域大字粗体（fontSize 12），非高亮区域小字暗色（fontSize 9 + opacity 0.55），hover 时非高亮提亮到 0.85 |
+| hover 双行对照气泡 | 第一行古名（粗体朝代色）+ 第二行「今 · 现代省名」+ 下方小三角指向；古名=现代名时降级单行 |
+| 三级 fallback | 朝代表 → region.aliases[0] → region.name，保证任何情况都有显示内容 |
+| 朝代切换自动更新 | 切换朝代时全省古名自动更新（如陕西在秦/唐/明/清显示不同古名） |
+
+### 涉及文件
+
+- [`src/data/core/map-data.ts`](src/data/core/map-data.ts)：新增 `dynastyRegionAlias` 数据表（13 朝代）+ `getRegionAlias()` 辅助函数
+- [`src/components/map/MapSVG.tsx`](src/components/map/MapSVG.tsx)：所有省份默认显示古名 + hover 双行气泡
+
+### 验证
+
+- `npx tsc --noEmit`：exit 0
+- `npx vitest run`：51 文件 286 测试全通过
+
 ## map 页面优化（C 方案：扩宽 + 增强 + 疆域动画）
 
 > 2026-07-20 · 地图从「方正单调」升级为「比例舒展 + 视觉丰富 + 朝代切换有动画」

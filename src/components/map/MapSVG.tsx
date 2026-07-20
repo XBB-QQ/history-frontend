@@ -10,6 +10,7 @@ import {
   yangtzeRiverPath,
   greatWallPath,
   keyCities,
+  getRegionAlias,
 } from '@/data/core/map-data';
 
 interface MapSVGProps {
@@ -44,7 +45,7 @@ export default React.memo(function MapSVG({
   selectedDynastyName,
 }: MapSVGProps) {
   const dynastyColor = useMemo(() => getDynastyColor(selectedDynastyName), [selectedDynastyName]);
-  const [hoverRegion, setHoverRegion] = useState<{ name: string; x: number; y: number } | null>(null);
+  const [hoverRegion, setHoverRegion] = useState<{ name: string; ancientName: string; x: number; y: number } | null>(null);
 
   return (
     <svg
@@ -122,10 +123,11 @@ export default React.memo(function MapSVG({
         const isHighlighted = highlightedRegionIds.has(region.id);
         const center = lngLatToXY(region.center[0], region.center[1]);
         const isHover = hoverRegion?.name === region.name;
+        const ancientName = getRegionAlias(selectedDynastyName, region.id, region.aliases, region.name);
         return (
           <g
             key={region.id}
-            onMouseEnter={() => setHoverRegion({ name: region.name, x: center.x, y: center.y })}
+            onMouseEnter={() => setHoverRegion({ name: region.name, ancientName, x: center.x, y: center.y })}
             onMouseLeave={() => setHoverRegion(null)}
             className="cursor-pointer"
           >
@@ -141,21 +143,23 @@ export default React.memo(function MapSVG({
                   : 'text-ink-200 dark:text-ink-600'
               }`}
             />
-            {/* 区域名称标注（高亮区域显示） */}
-            {isHighlighted && (
-              <text
-                x={center.x}
-                y={center.y}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                className="text-ink-800 dark:text-ink-200 font-bold pointer-events-none"
-                fontSize="11"
-                fill="currentColor"
-                opacity="0.85"
-              >
-                {region.name}
-              </text>
-            )}
+            {/* 古名标注：高亮区域大字粗体，非高亮区域小字暗色 */}
+            <text
+              x={center.x}
+              y={center.y}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              className={`pointer-events-none transition-all duration-500 ${
+                isHighlighted
+                  ? 'text-ink-900 dark:text-ink-100 font-bold'
+                  : 'text-ink-400 dark:text-ink-500'
+              }`}
+              fontSize={isHighlighted ? 12 : 9}
+              fill="currentColor"
+              opacity={isHighlighted ? 0.95 : isHover ? 0.85 : 0.55}
+            >
+              {ancientName}
+            </text>
           </g>
         );
       })}
@@ -292,28 +296,61 @@ export default React.memo(function MapSVG({
         })()}
       </g>
 
-      {/* hover 省份气泡（跟随省份中心） */}
+      {/* hover 省份气泡：古名 → 现代名 对照 */}
       {hoverRegion && (
         <g className="pointer-events-none">
           {(() => {
             const x = hoverRegion.x;
-            const y = hoverRegion.y - 14;
-            const textW = hoverRegion.name.length * 12 + 14;
+            // 气泡放在省份中心上方 28px
+            const bubbleY = hoverRegion.y - 28;
+            // 气泡宽度：取古名和现代名中较长的 + 边距
+            const maxLen = Math.max(hoverRegion.ancientName.length, hoverRegion.name.length);
+            const textW = Math.max(80, maxLen * 14 + 24);
+            const isSameName = hoverRegion.ancientName === hoverRegion.name;
             return (
               <>
+                {/* 气泡背景：双行高度，若古名=现代名则单行 */}
                 <rect
                   x={x - textW / 2}
-                  y={y - 14}
+                  y={bubbleY - (isSameName ? 12 : 22)}
                   width={textW}
-                  height="18"
-                  rx="3"
+                  height={isSameName ? 18 : 38}
+                  rx="4"
                   fill="currentColor"
                   className="text-ink-900 dark:text-ink-700"
                   fillOpacity="0.95"
                 />
-                <text x={x} y={y - 1} textAnchor="middle" fontSize="11" fontWeight="bold" fill="white">
-                  {hoverRegion.name}
+                {/* 第一行：古名（粗体白色） */}
+                <text
+                  x={x}
+                  y={bubbleY - (isSameName ? 1 : 9)}
+                  textAnchor="middle"
+                  fontSize="12"
+                  fontWeight="bold"
+                  fill={dynastyColor}
+                >
+                  {hoverRegion.ancientName}
                 </text>
+                {/* 第二行：今：现代名（小字浅色） */}
+                {!isSameName && (
+                  <text
+                    x={x}
+                    y={bubbleY + 8}
+                    textAnchor="middle"
+                    fontSize="10"
+                    fill="white"
+                    opacity="0.85"
+                  >
+                    今 · {hoverRegion.name}
+                  </text>
+                )}
+                {/* 气泡指向小三角 */}
+                <polygon
+                  points={`${x - 4},${bubbleY + 11} ${x + 4},${bubbleY + 11} ${x},${bubbleY + 16}`}
+                  fill="currentColor"
+                  className="text-ink-900 dark:text-ink-700"
+                  fillOpacity="0.95"
+                />
               </>
             );
           })()}
