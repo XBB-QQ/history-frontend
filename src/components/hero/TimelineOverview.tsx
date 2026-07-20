@@ -103,6 +103,8 @@ export default function TimelineOverview() {
         {/* 朝代条 */}
         {positioned.map(({ d, i, left, width, color }) => {
           const isHover = hoverIdx === i;
+          // 安全限制：left + width 不超过 100%，避免横向溢出
+          const safeWidth = Math.min(Math.max(0.8, width), 100 - left);
           return (
             <button
               key={d.id}
@@ -110,7 +112,7 @@ export default function TimelineOverview() {
               onMouseEnter={() => setHoverIdx(i)}
               onMouseLeave={() => setHoverIdx(null)}
               className="absolute top-1/2 -translate-y-1/2 group"
-              style={{ left: `${left}%`, width: `${Math.max(0.8, width)}%` }}
+              style={{ left: `${left}%`, width: `${safeWidth}%` }}
               title={`${d.name} · ${d.period} · 开国 ${d.founder}`}
             >
               {/* 朝代色条 */}

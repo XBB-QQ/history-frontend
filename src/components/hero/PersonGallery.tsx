@@ -109,7 +109,7 @@ export default function PersonGallery() {
 
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto pb-3 -mx-1 px-1 snap-x scrollbar-hide"
+        className="flex gap-4 overflow-x-auto pb-3 snap-x scrollbar-hide"
         style={{ scrollbarWidth: 'none' }}
       >
         {persons.map((p, i) => (

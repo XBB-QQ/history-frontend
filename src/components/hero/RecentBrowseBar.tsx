@@ -72,7 +72,7 @@ export default function RecentBrowseBar() {
           {t('home.recent_browse_clear')}
         </button>
       </div>
-      <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 snap-x">
+      <div className="flex gap-3 overflow-x-auto pb-2 snap-x">
         {top5.map(item => (
           <button
             key={`${item.type}-${item.id}`}

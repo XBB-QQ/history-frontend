@@ -7,6 +7,10 @@
 @tailwind utilities;
 
 @layer base {
+  html, body {
+    /* 兜底：裁剪意外横向溢出（负 margin / SVG 百分比定位 / 动画初始位移） */
+    overflow-x: hidden;
+  }
   body {
     @apply antialiased;
     margin: 0;
