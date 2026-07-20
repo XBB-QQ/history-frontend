@@ -22,7 +22,9 @@ import { findShortestPath, compareDynasties, findReachableCities, type PathResul
 import { useT } from '@/i18n/i18n';
 
 const ALL_DYNASTIES = ['商', '周', '秦', '汉', '唐', '宋', '元', '明', '清'];
-const CITY_NAMES = Object.values(ALL_CITIES);
+// 修复 bug：ALL_CITIES 是 {中文name: 拼音id} 映射，原 Object.values 取到拼音 id，
+// 导致下拉框显示拼音且 findShortestPath(ALL_CITIES[startCity]) 查找失败。改用 Object.keys 取中文 name。
+const CITY_NAMES = Object.keys(ALL_CITIES);
 
 const TransportTimelinePage = () => {
   const t = useT();
