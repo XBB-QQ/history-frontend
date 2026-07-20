@@ -8,8 +8,9 @@
 
 @layer base {
   html, body {
-    /* 兜底：裁剪意外横向溢出（负 margin / SVG 百分比定位 / 动画初始位移） */
-    overflow-x: hidden;
+    /* 兜底：裁剪意外横向溢出（负 margin / SVG 百分比定位 / 动画初始位移）
+       用 clip 而非 hidden——hidden 会把 overflow-y 强制为 auto 产生双竖向滚动条，clip 不影响另一轴 */
+    overflow-x: clip;
   }
   body {
     @apply antialiased;
