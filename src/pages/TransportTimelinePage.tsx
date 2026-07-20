@@ -17,6 +17,7 @@ import {
   sortErasByTimeline,
   type TransportRoute,
   type TransportEra,
+  type CityNode,
 } from '@/data/features/transportData';
 import { findShortestPath, compareDynasties, findReachableCities, type PathResult } from '@/utils/routeFinder';
 import { useT } from '@/i18n/i18n';
@@ -222,26 +223,20 @@ const TransportTimelinePage = () => {
             {/* 路径结果 */}
             {pathResult && (
               <div className="p-4 rounded-xl bg-white dark:bg-ink-900 border-2 border-accent/30 mb-4">
-                <h4 className="font-bold text-accent mb-2">{t('transportTimeline.shortest_path', { dynasty: selectedDynasty })}</h4>
-                <div className="flex flex-wrap items-center gap-2 mb-3">
-                  {pathResult.route.map((city: string, i: number) => (
-                    <span key={i} className="px-3 py-1 rounded-full bg-accent/10 text-accent text-sm font-bold">
-                      {city}
-                    </span>
-                  ))}
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <h4 className="font-bold text-accent mb-3">{t('transportTimeline.shortest_path', { dynasty: selectedDynasty })}</h4>
+                <TransportPathMap route={pathResult.route} nodes={TRANSPORT_GRAPH.nodes} />
+                <div className="grid grid-cols-3 gap-3 mt-3">
                   <div className="text-sm">
                     <span className="text-ink-500">{t('transportTimeline.duration_label')}</span>
-                    <span className="font-bold text-ink-900 dark:text-ink-100">{t('transportTimeline.duration_value', { days: pathResult.totalDays })}</span>
+                    <span className="font-bold text-ink-900 dark:text-ink-100 ml-1">{t('transportTimeline.duration_value', { days: pathResult.totalDays })}</span>
                   </div>
                   <div className="text-sm">
                     <span className="text-ink-500">{t('transportTimeline.distance_label')}</span>
-                    <span className="font-bold text-ink-900 dark:text-ink-100">{t('transportTimeline.distance_value', { km: pathResult.totalDistanceKm })}</span>
+                    <span className="font-bold text-ink-900 dark:text-ink-100 ml-1">{t('transportTimeline.distance_value', { km: pathResult.totalDistanceKm })}</span>
                   </div>
-                  <div className="text-sm col-span-2 md:col-span-1">
+                  <div className="text-sm">
                     <span className="text-ink-500">{t('transportTimeline.speed_factor_label')}</span>
-                    <span className="font-bold text-ink-900 dark:text-ink-100">{pathResult.speedFactor}</span>
+                    <span className="font-bold text-ink-900 dark:text-ink-100 ml-1">{pathResult.speedFactor}</span>
                   </div>
                 </div>
               </div>
@@ -521,6 +516,91 @@ function TransportDetailModal({ data, onClose }: {
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * 路径地图：简化欧亚大陆网格 + 城市点按真实经纬度定位 + 路径折线
+ * 不画地图轮廓（避免依赖复杂的 path 数据），用网格背景体现"地图"视觉
+ */
+function TransportPathMap({ route, nodes }: { route: string[]; nodes: CityNode[] }) {
+  // 经纬度范围（覆盖欧亚大陆：经度 -10 到 140，纬度 20 到 60）
+  const LNG_MIN = -10, LNG_MAX = 140;
+  const LAT_MIN = 20, LAT_MAX = 60;
+  const W = 1000, H = 400;
+
+  const lngLatToXY = (lng: number, lat: number) => ({
+    x: ((lng - LNG_MIN) / (LNG_MAX - LNG_MIN)) * W,
+    y: ((LAT_MAX - lat) / (LAT_MAX - LAT_MIN)) * H,
+  });
+
+  // 找出路径中的节点（按 route 顺序）
+  const routeNodes = route
+    .map(name => nodes.find(n => n.name === name))
+    .filter(Boolean) as CityNode[];
+
+  if (routeNodes.length === 0) return null;
+
+  // 生成路径折线 d 属性
+  const pathD = routeNodes
+    .map((n, i) => {
+      const { x, y } = lngLatToXY(n.lng, n.lat);
+      return `${i === 0 ? 'M' : 'L'}${x},${y}`;
+    })
+    .join(' ');
+
+  return (
+    <svg
+      viewBox={`0 0 ${W} ${H}`}
+      className="w-full h-auto rounded-lg bg-ink-50 dark:bg-ink-800 border border-ink-200 dark:border-ink-700"
+      style={{ aspectRatio: `${W} / ${H}` }}
+    >
+      <defs>
+        <pattern id="transport-grid" width="50" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 50 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.15" />
+        </pattern>
+      </defs>
+      <rect width={W} height={H} fill="url(#transport-grid)" className="text-ink-400" />
+
+      {/* 路径折线（红色虚线） */}
+      <path
+        d={pathD}
+        fill="none"
+        stroke="#dc2626"
+        strokeWidth="2.5"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        strokeDasharray="6 3"
+      />
+
+      {/* 城市点 + 标签 */}
+      {routeNodes.map((node, i) => {
+        const { x, y } = lngLatToXY(node.lng, node.lat);
+        const isStart = i === 0;
+        const isEnd = i === routeNodes.length - 1;
+        const color = isStart ? '#16a34a' : isEnd ? '#dc2626' : '#fbbf24';
+        const r = isStart || isEnd ? 7 : 5;
+        // 标签交替放在点的上方/下方，避免相邻城市重叠
+        const labelDy = i % 2 === 0 ? -8 : 16;
+        return (
+          <g key={node.id}>
+            <circle cx={x} cy={y} r={r} fill={color} stroke="white" strokeWidth="2" />
+            <text
+              x={x + 10}
+              y={y + labelDy}
+              fontSize="13"
+              fontWeight="bold"
+              fill="currentColor"
+              className="text-ink-900 dark:text-ink-100"
+            >
+              {node.name}
+              {isStart && <tspan fill="#16a34a" fontSize="10"> 起</tspan>}
+              {isEnd && <tspan fill="#dc2626" fontSize="10"> 终</tspan>}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
   );
 }
 
