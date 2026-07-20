@@ -2,9 +2,14 @@ import { useEffect, useState } from 'react';
 import HeroAnimation from '@/components/hero/HeroAnimation';
 import TodayBanner from '@/components/hero/TodayBanner';
 import DailyRecommendCard from '@/components/hero/DailyRecommendCard';
+import HomeSearchBox from '@/components/hero/HomeSearchBox';
+import TimelineOverview from '@/components/hero/TimelineOverview';
+import RecentBrowseBar from '@/components/hero/RecentBrowseBar';
+import PersonGallery from '@/components/hero/PersonGallery';
 import TimeTravelBar from '@/components/time/TimeTravelBar';
 import TimeTravelPanel from '@/components/time/TimeTravelPanel';
 import QuizDialog from '@/components/quiz/QuizDialog';
+import RevealOnScroll from '@/components/common/RevealOnScroll';
 import { fetchTimelineEvents } from '@/services/api';
 import { useT } from '@/i18n/i18n';
 import type { EventItem } from '@/types';
@@ -22,6 +27,21 @@ function HomePage() {
     <div className="min-h-screen flex flex-col items-center bg-paper dark:bg-ink-950">
       <TimeTravelBar />
       <HeroAnimation />
+
+      {/* B4: 首页搜索框（Hero 下方） */}
+      <RevealOnScroll direction="up" delay={100}>
+        <div className="w-full max-w-5xl px-4 mt-6">
+          <HomeSearchBox />
+        </div>
+      </RevealOnScroll>
+
+      {/* A1: 最近浏览继续浏览条 */}
+      <RevealOnScroll direction="up" delay={150}>
+        <div className="w-full max-w-5xl px-4 mt-6">
+          <RecentBrowseBar />
+        </div>
+      </RevealOnScroll>
+
       <TodayBanner />
 
       {/* 每日挑战入口 */}
@@ -48,6 +68,21 @@ function HomePage() {
       <div className="w-full max-w-5xl px-4 mt-8">
         <DailyRecommendCard />
       </div>
+
+      {/* B5: 五千年时间轴缩略图 */}
+      <RevealOnScroll direction="up" delay={100}>
+        <div className="w-full max-w-5xl px-4 mt-8">
+          <TimelineOverview />
+        </div>
+      </RevealOnScroll>
+
+      {/* C8: 五千年人物长廊 */}
+      <RevealOnScroll direction="up" delay={150}>
+        <div className="w-full max-w-5xl px-4 mt-8">
+          <PersonGallery />
+        </div>
+      </RevealOnScroll>
+
       <TimeTravelPanel events={events} />
 
       {/* 每日挑战弹窗 */}

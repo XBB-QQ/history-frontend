@@ -494,6 +494,49 @@ prefetch(chars)   // 批量预抓
 - `npx vitest run`：51 文件 286 测试全通过
 - 后端配套修改：见 [history-backend/README.md](../history-backend/README.md) 的「生产部署安全要点（P0 修复）」表格 S4/S5/S6/S7 行
 
+## 首页体验优化（B4+B5+A1+C8 四项）
+
+> 2026-07-20 · 首页从「被动展示」升级为「主动探索入口」
+
+### 优化清单
+
+| 编号 | 优化项 | 说明 |
+|------|--------|------|
+| B4 | 首页搜索框 | Hero 下方加搜索框 + 即时联想（debounce 300ms + 事件/人物/朝代 分组），↑↓ 键选择，回车跳 `/search?q=xxx` |
+| B5 | 五千年时间轴缩略图 | 横向 SVG 时间轴，每朝代按年份比例分布，hover 显示朝代/时期/开国/都城气泡，点击跳详情 |
+| A1 | 最近浏览继续浏览条 | localStorage 持久化最近 10 条浏览记录，首页展示前 5 条横向卡片，按类型染色，显示相对时间 |
+| C8 | 五千年人物长廊 | 横向滚动 12 个标志性人物（孔子→毛泽东），朝代色渐变 + 大姓名 + 印章 + quote，hover 放大 |
+
+### 涉及文件
+
+**新建**：
+- [`src/components/hero/HomeSearchBox.tsx`](src/components/hero/HomeSearchBox.tsx)：B4 搜索框
+- [`src/components/hero/TimelineOverview.tsx`](src/components/hero/TimelineOverview.tsx)：B5 时间轴
+- [`src/components/hero/RecentBrowseBar.tsx`](src/components/hero/RecentBrowseBar.tsx)：A1 浏览条
+- [`src/store/recentBrowseStore.ts`](src/store/recentBrowseStore.ts)：A1 zustand store
+- [`src/components/hero/PersonGallery.tsx`](src/components/hero/PersonGallery.tsx)：C8 人物长廊
+
+**修改**：
+- [`src/pages/HomePage.tsx`](src/pages/HomePage.tsx)：挂载 4 个新组件
+- [`src/i18n/locales/zh.json`](src/i18n/locales/zh.json) / [`en.json`](src/i18n/locales/en.json)：新增 14 个 home i18n key
+
+### 挂载顺序
+
+```
+TimeTravelBar → HeroAnimation
+→ B4 HomeSearchBox（搜索是一等公民）
+→ A1 RecentBrowseBar（回访用户秒回上下文）
+→ TodayBanner → 每日挑战 → DailyRecommendCard
+→ B5 TimelineOverview（五千年空间感）
+→ C8 PersonGallery（视觉亮点）
+→ TimeTravelPanel
+```
+
+### 验证
+
+- `npx tsc --noEmit`：exit 0
+- `npx vitest run`：51 文件 286 测试全通过
+
 ## timeline-hub 体验优化（A1+A2+A3+B4+B6 五项）
 
 > 2026-07-20 · 统一时间轴 Hub 页面交互升级

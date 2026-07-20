@@ -1,5 +1,99 @@
 # 迭代记录 — 五千年史馆前端
 
+## 2026-07-20 · 首页体验优化（B4+B5+A1+C8 四项）
+
+### 一、背景
+timeline-hub 优化完成后，用户问「首页还有优化吗」。给出 12 项清单分四档（A 内容/B 交互/C 视觉/D 锦上添花），用户选推荐组合 B4+B5+A1+C8，原话「按顺序执行，记得同步文档，闭环测试」。
+
+### 二、四项优化详情
+
+#### B4 首页搜索框（带即时联想）
+- **新建文件**：[`src/components/hero/HomeSearchBox.tsx`](src/components/hero/HomeSearchBox.tsx)
+- **核心逻辑**：
+  - 输入文字 → debounce 300ms → 并行调 `searchEvents` / `searchPersons` + 本地 dynasties 过滤
+  - 分组显示：事件/人物/朝代 各最多 3 条，每组带计数和颜色标签
+  - 键盘：↑↓ 高亮选择，Esc 关闭，回车跳 `/search?q=xxx` 或高亮项直达
+  - 点击外部自动关闭（mousedown 监听 + container ref）
+- **设计点**：搜索图标左对齐，loading 时右侧显示 `…`，无结果显示「无匹配结果」
+
+#### B5 五千年时间轴缩略图横栏
+- **新建文件**：[`src/components/hero/TimelineOverview.tsx`](src/components/hero/TimelineOverview.tsx)
+- **核心逻辑**：
+  - 横向 SVG 时间轴，范围前 2100 → 公元 2100（共 4200 年）
+  - 每个朝代按 `periodStart/End` 比例分布到百分比位置
+  - 预定义 19 色色板（夏灰/商紫/周琥珀/秦墨黑/汉红/...）
+  - hover 高亮：色条变高 h-8 + 显示气泡（朝代名/时期/开国/都城）
+  - 7 个刻度：前2000 / 前1000 / 0 / 500 / 1000 / 1500 / 2000
+  - 点击跳 `/dynasties/:id`
+- **设计点**：宽度 < 3% 的朝代不显示文字，仅色条；色条最小宽度 0.8% 保证可见
+
+#### A1 最近浏览继续浏览条
+- **新建文件**：
+  - [`src/store/recentBrowseStore.ts`](src/store/recentBrowseStore.ts)：zustand store
+  - [`src/components/hero/RecentBrowseBar.tsx`](src/components/hero/RecentBrowseBar.tsx)：展示组件
+- **核心逻辑**：
+  - `recentBrowseStore`：localStorage key=`history_museum_recent_browse`，max 10 条
+  - `recordVisit({ type, id, title, subtitle, link })`：去重（同 type+id）后置顶，截断到 max
+  - `RecentBrowseBar`：横向卡片条显示最近 5 条
+    - 4 种类型染色：event 红 / person 绿 / dynasty 紫 / knowledge 琥珀
+    - 相对时间：刚刚 / X 分钟前 / X 小时前 / X 天前 / 日期
+    - 空时显示「暂无浏览记录」
+    - 「清空」按钮一键清除
+- **跨页面写入约定**：各详情页 `openDetail` 时调 `recordVisit`（后续接入）
+
+#### C8 五千年人物长廊横向滚动
+- **新建文件**：[`src/components/hero/PersonGallery.tsx`](src/components/hero/PersonGallery.tsx)
+- **核心逻辑**：
+  - 预定义 12 个标志性人物名字：孔子/秦始皇/汉武帝/诸葛亮/唐太宗/李白/苏轼/成吉思汗/朱元璋/康熙/孙中山/毛泽东
+  - `fetchPersons(0, 100)` 取 100 条，按预定义名字顺序筛选
+  - 不足 6 个回退到前 12 个
+  - 每人卡片：
+    - 顶部：朝代色渐变背景（19 朝代色映射）+ 大姓名 + 朝代 + 年代 + 印章装饰
+    - 底部：quote 引用（`「{quote}」`）或 bio 兜底 + 字号
+  - hover 放大 -translate-y-1 + shadow-xl
+  - 左右箭头按钮滚动 320px（约一个卡片宽度）
+  - 点击跳 `/persons?highlight={id}`
+- **设计点**：朝代色用渐变 `from-X-500 to-X-700`，姓名用 text-2xl font-black tracking-wider
+
+### 三、i18n 文案新增
+`zh.json` / `en.json` 的 `home` 节点新增 14 个 key：
+- `search_placeholder` / `search_hint` / `search_no_result`
+- `search_suggestion_events` / `search_suggestion_persons` / `search_suggestion_dynasties`
+- `timeline_overview_title` / `timeline_overview_subtitle`
+- `recent_browse_title` / `recent_browse_empty` / `recent_browse_clear`
+- `person_gallery_title` / `person_gallery_subtitle`
+- `person_gallery_quote_prefix` / `person_gallery_quote_suffix`
+
+### 四、挂载顺序
+[`HomePage.tsx`](src/pages/HomePage.tsx) 修改后挂载顺序：
+
+```
+TimeTravelBar
+HeroAnimation
+B4 HomeSearchBox        ← 新增（Hero 下方，搜索是一等公民）
+A1 RecentBrowseBar      ← 新增（最近浏览，回访用户秒回上下文）
+TodayBanner
+每日挑战入口
+DailyRecommendCard
+B5 TimelineOverview     ← 新增（五千年空间感）
+C8 PersonGallery        ← 新增（人物长廊，视觉亮点）
+TimeTravelPanel
+```
+
+### 五、闭环验证
+- ✅ `npx tsc --noEmit` exit 0
+- ✅ `npx vitest run` 51 文件 286 测试全通过
+- ✅ 文档同步：CLAUDE.md / ITERATIONS.md / README.md
+
+### 六、教训
+1. 搜索框 debounce 300ms 是体验甜点——太短打字卡顿，太长反馈迟钝
+2. 朝代色板用预定义 Map 比从 API 字段取色更稳定（API 返回的 color 可能为空）
+3. 最近浏览 store 放 zustand 而非组件 state，因为要跨页面写入（详情页 openDetail 时调 recordVisit）
+4. 人物长廊用预定义名字筛选比按年代排序更有代表性（确保 12 人覆盖各朝代）
+5. 横向滚动用 `scrollBy({ left, behavior: 'smooth' })` 比 useRef 计算位置简单
+
+---
+
 ## 2026-07-20 · timeline-hub 体验优化（A1+A2+A3+B4+B6 五项）
 
 ### 一、背景

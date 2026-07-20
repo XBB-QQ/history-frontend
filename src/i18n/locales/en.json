@@ -139,7 +139,22 @@
     "today_title": "This Day in History",
     "recommend_title": "Today's Recommendation",
     "daily_quiz": "Daily History Challenge",
-    "daily_quiz_desc": "One history question per day, earn points"
+    "daily_quiz_desc": "One history question per day, earn points",
+    "search_placeholder": "Search events, persons, dynasties…",
+    "search_hint": "Press Enter for full results",
+    "search_suggestion_events": "Events",
+    "search_suggestion_persons": "Persons",
+    "search_suggestion_dynasties": "Dynasties",
+    "search_no_result": "No results",
+    "timeline_overview_title": "5000-Year Timeline",
+    "timeline_overview_subtitle": "Click a dynasty for details",
+    "recent_browse_title": "Continue Browsing",
+    "recent_browse_empty": "No history yet",
+    "recent_browse_clear": "Clear",
+    "person_gallery_title": "5000-Year Person Gallery",
+    "person_gallery_subtitle": "Scroll horizontally to explore",
+    "person_gallery_quote_prefix": "\"",
+    "person_gallery_quote_suffix": "\""
   },
   "dynasties": {
     "title": "Dynasties",

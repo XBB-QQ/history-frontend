@@ -139,7 +139,22 @@
     "today_title": "历史上的今天",
     "recommend_title": "今日推荐",
     "daily_quiz": "每日历史挑战",
-    "daily_quiz_desc": "每天一道历史题，答对加分"
+    "daily_quiz_desc": "每天一道历史题，答对加分",
+    "search_placeholder": "搜索事件、人物、朝代…",
+    "search_hint": "回车查看全部结果",
+    "search_suggestion_events": "事件",
+    "search_suggestion_persons": "人物",
+    "search_suggestion_dynasties": "朝代",
+    "search_no_result": "无匹配结果",
+    "timeline_overview_title": "五千年时间轴",
+    "timeline_overview_subtitle": "点击朝代进入详情",
+    "recent_browse_title": "继续浏览",
+    "recent_browse_empty": "暂无浏览记录",
+    "recent_browse_clear": "清空",
+    "person_gallery_title": "五千年人物长廊",
+    "person_gallery_subtitle": "横滑查看历代人物",
+    "person_gallery_quote_prefix": "「",
+    "person_gallery_quote_suffix": "」"
   },
   "dynasties": {
     "title": "历代朝代",
